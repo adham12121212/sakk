@@ -14,15 +14,20 @@ class ProfileHeader extends StatelessWidget {
     required this.displayEmail,
     required this.avatarUrl,
     required this.onBack,
+    this.onPickAvatar,
+    this.isUploadingAvatar = false,
   });
 
   final String displayName;
   final String displayEmail;
   final String? avatarUrl;
   final VoidCallback onBack;
+  final VoidCallback? onPickAvatar;
+  final bool isUploadingAvatar;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       height: 350.h,
@@ -54,24 +59,28 @@ class ProfileHeader extends StatelessWidget {
             child: IgnorePointer(child: Blob(size: 260.w)),
           ),
 
-          Positioned(
+          PositionedDirectional(
             top: 60.w,
-            left: 20.w,
+            start: 20.w,
             child: CircleIconButton(
               icon: Icons.arrow_back,
               onTap: onBack,
-              color: AppColors.white,
+              color: colorScheme.onSurface,
             ),
           ),
 
           Positioned(
             top: 100.w,
-            right: 100.w,
-            left: 100.w,
-            child: ProfileAvatar(
-              name: displayName,
-              avatarUrl: avatarUrl,
-              size: 140,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ProfileAvatar(
+                name: displayName,
+                avatarUrl: avatarUrl,
+                size: 140,
+                onTap: onPickAvatar,
+                isUploading: isUploadingAvatar,
+              ),
             ),
           ),
 

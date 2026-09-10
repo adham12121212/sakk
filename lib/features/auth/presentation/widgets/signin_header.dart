@@ -9,51 +9,33 @@ class SigninHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.only(
-        top: 45.h,
-        bottom: 35.h,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
 
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 78.w,
-            height: 78.w,
-            decoration: BoxDecoration(
-              color: colors.surface,
-              borderRadius: BorderRadius.circular(22.r),
-            ),
-            child: Center(
-              child: Text(
-                'ص',
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 40.h),
+        Container(
+          width: 78.w,
+          height: 78.w,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(22.r),
+          ),
+          child: Center(
+            child: Text(
+              'ص',
+              style: TextStyle(
+                fontSize: 32.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
               ),
             ),
           ),
+        ),
 
-          SizedBox(height: 18.h),
-
-          Text(
-            l10n.appName,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

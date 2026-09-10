@@ -7,6 +7,7 @@ class UserModel extends UserEntity {
     required super.email,
     required super.name,
      super.phoneNumber,
+    required super.avatarUrl,
   });
 
   factory UserModel.fromSupabaseUser(User user) {
@@ -15,6 +16,7 @@ class UserModel extends UserEntity {
       email: user.email ?? '',
       name: user.userMetadata?['name'] ?? '',
       phoneNumber: user.phone,
+      avatarUrl: user.userMetadata?['avatar_url'] ?? '',
     );
   }
 

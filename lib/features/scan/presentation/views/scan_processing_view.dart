@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakk/features/scan/presentation/views/reviewproduct_view.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/processing_field_spec.dart';
@@ -13,6 +14,7 @@ class ScanProcessingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return const _ScanProcessingBody();
   }
 }
@@ -29,6 +31,7 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
     with TickerProviderStateMixin {
   late final AnimationController _pulseController;
   late final AnimationController _shimmerController;
+
   Timer? _fakeProgressTimer;
 
   double _progress = 0.0;
@@ -68,7 +71,8 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
     _fakeProgressTimer?.cancel();
     setState(() => _progress = 1.0);
 
-    for (var i = 0; i < scanProcessingFields.length; i++) {
+    final fieldCount = buildScanProcessingFields(context).length;
+    for (var i = 0; i < fieldCount; i++) {
       if (!mounted) return;
       await Future.delayed(const Duration(milliseconds: 220));
       if (!mounted) return;
@@ -99,30 +103,26 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FB),
-        body: SafeArea(
-          child: BlocConsumer<ScanCubit, ScanState>(
-            listener: (context, state) {
-              if (state is ScanEditing) {
-                _revealAndNavigate(context.read<ScanCubit>(), state.scanned);
-              }
-            },
-            builder: (context, state) {
-              if (state is ScanProcessingFailed) {
-                return _ErrorView(message: state.message);
-              }
-              return _ProcessingBody(
-                progress: _progress,
-                data: state is ScanLoaded ? state.scanned : null,
-                revealedCount: _revealedCount,
-                pulseController: _pulseController,
-                shimmerController: _shimmerController,
-              );
-            },
-          ),
+    return Scaffold(
+      body: SafeArea(
+        child: BlocConsumer<ScanCubit, ScanState>(
+          listener: (context, state) {
+            if (state is ScanEditing) {
+              _revealAndNavigate(context.read<ScanCubit>(), state.scanned);
+            }
+          },
+          builder: (context, state) {
+            if (state is ScanProcessingFailed) {
+              return _ErrorView(message: state.message);
+            }
+            return _ProcessingBody(
+              progress: _progress,
+              data: state is ScanLoaded ? state.scanned : null,
+              revealedCount: _revealedCount,
+              pulseController: _pulseController,
+              shimmerController: _shimmerController,
+            );
+          },
         ),
       ),
     );
@@ -136,6 +136,8 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -151,7 +153,7 @@ class _ErrorView extends StatelessWidget {
                 context.read<ScanCubit>().close();
                 Navigator.of(context).pop();
               },
-              child: const Text('Back'),
+              child: Text(l10n.back),
             ),
           ],
         ),
@@ -179,6 +181,9 @@ class _ProcessingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final fields = buildScanProcessingFields(context);
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
       children: [
@@ -208,14 +213,14 @@ class _ProcessingBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        const Text(
-          'AI is Processing',
+        Text(
+          l10n.aiIsProcessing,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: -0.3),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: -0.3),
         ),
         const SizedBox(height: 6),
         Text(
-          _completed ? 'Extraction Complete' : 'Extracting Data...',
+          _completed ? l10n.extractionComplete : l10n.extractingData,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: _completed ? const Color(0xFF22C55E) : Colors.grey.shade500,
@@ -227,7 +232,7 @@ class _ProcessingBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Progress', style: TextStyle(color: Colors.grey, fontSize: 13)),
+            Text(l10n.progressLabel, style: const TextStyle(color: Colors.grey, fontSize: 13)),
             Text(
               '${(progress * 100).round()}%',
               style: const TextStyle(color: Colors.grey, fontSize: 13),
@@ -249,11 +254,11 @@ class _ProcessingBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        for (var i = 0; i < scanProcessingFields.length; i++)
+        for (var i = 0; i < fields.length; i++)
           ProcessingFieldTile(
             key: ValueKey('field-$i'),
-            spec: scanProcessingFields[i],
-            value: data == null ? null : scanProcessingFields[i].valueOf(data!),
+            spec: fields[i],
+            value: data == null ? null : fields[i].valueOf(data!),
             revealed: i < revealedCount,
             shimmerAnimation: shimmerController,
           ),

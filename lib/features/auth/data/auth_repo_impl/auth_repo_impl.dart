@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
@@ -84,5 +86,81 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<void> signOut() {
     return _authDataSource.signOut();
+  }
+
+  @override
+  Future<Either<Failure, void>> sendPasswordResetOtp({required String email}) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      await _authDataSource.sendPasswordResetOtp(email);
+      return const Right(null);
+    } on ServerException catch (e, st) {
+      _logger.error(
+        'Server error during sendPasswordResetOtp',
+        error: e,
+        stackTrace: st,
+        data: {'email': PiiMasker.maskEmail(email)},
+      );
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during sendPasswordResetOtp', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      await _authDataSource.verifyPasswordResetOtp(email: email, otp: otp);
+      return const Right(null);
+    } on ServerException catch (e, st) {
+      _logger.error('Server error during verifyPasswordResetOtp', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during verifyPasswordResetOtp', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updatePassword({required String newPassword}) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      await _authDataSource.updatePassword(newPassword);
+      return const Right(null);
+    } on ServerException catch (e, st) {
+      _logger.error('Server error during updatePassword', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during updatePassword', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateAvatar(File imageFile) async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      final response = await _authDataSource.updateAvatar(imageFile);
+      return Right(response);
+    } on ServerException catch (e, st) {
+      _logger.error('Server error during updateAvatar', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during updateAvatar', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
   }
 }

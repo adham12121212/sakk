@@ -6,6 +6,7 @@ import 'package:sakk/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:sakk/features/auth/presentation/widgets/signin_view_body.dart';
 
 import '../../../../core/route/app_router.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SigninViewConsumerBody extends StatelessWidget {
   const SigninViewConsumerBody({super.key});
@@ -18,7 +19,7 @@ class SigninViewConsumerBody extends StatelessWidget {
           case AuthSuccess():
             AppSnackBar.success(
               context,
-              'Welcome back!',
+              AppLocalizations.of(context)!.welcomeback,
             );
            context.go(AppRoutes.home);
             break;

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:sakk/core/error/supabase_error_mapper.dart';
 import 'package:sakk/features/auth/data/models/user_model.dart';
 
 import '../../../../core/error/Exceptions.dart';
+import '../../../../core/service/storage_service.dart';
 import '../../../../core/service/supabase_client.dart';
 
 abstract class AuthDataSource {
@@ -14,12 +17,17 @@ abstract class AuthDataSource {
   });
   Future<void> signOut();
   UserModel?  getUser();
+
+  Future<void> sendPasswordResetOtp(String email);
+  Future<void> verifyPasswordResetOtp({required String email, required String otp});
+  Future<void> updatePassword(String newPassword);
+  Future<UserModel> updateAvatar(File imageFile);
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
   final SupabaseService _supabaseService;
-
-  AuthDataSourceImpl(this._supabaseService);
+ final StorageService _storageService;
+  AuthDataSourceImpl(this._supabaseService ,this._storageService);
 
   @override
   Future<UserModel> signIn(
@@ -31,7 +39,6 @@ class AuthDataSourceImpl implements AuthDataSource {
       if (user == null) {
         throw ServerException('Sign in failed: no user returned');
       }
-      print(user.phone);
       return UserModel.fromSupabaseUser(user);
     } catch (e, s) {
       return SupabaseErrorMapper.handle(e, s);
@@ -89,6 +96,66 @@ class AuthDataSourceImpl implements AuthDataSource {
     await _supabaseService.signOut();
   }
 
+  @override
+  Future<void> sendPasswordResetOtp(String email) async {
+    try {
+      await _supabaseService.resetPasswordForEmail(email);
+    } catch (e, s) {
+      SupabaseErrorMapper.handle(e, s);
+    }
+  }
+
+  @override
+  Future<void> verifyPasswordResetOtp({required String email, required String otp}) async {
+    try {
+      await _supabaseService.verifyRecoveryOtp(email: email, token: otp);
+    } catch (e, s) {
+      SupabaseErrorMapper.handle(e, s);
+    }
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _supabaseService.updatePassword(newPassword);
+    } catch (e, s) {
+      SupabaseErrorMapper.handle(e, s);
+    }
+  }
+
+  @override
+
+  Future<UserModel> updateAvatar(File imageFile) async {
+    try {
+      final user = _supabaseService.currentUser;
+      if (user == null) {
+        throw ServerException('No user found');
+      }
+
+      final fileExt = imageFile.path.split('.').last;
+      final storagePath = '${user.id}/avatar.$fileExt';
+
+      await _storageService.uploadFile(
+        bucket: 'avatars',
+        path: storagePath,
+        file: imageFile,
+        upsert: true,
+      );
+
+      final publicUrl = _storageService.getPublicUrl(
+        bucket: 'avatars',
+        path: storagePath,
+      );
+      final bustedUrl =
+          '$publicUrl?updated=${DateTime.now().millisecondsSinceEpoch}';
+
+      final updatedUser = await _supabaseService.updateUserMetadata(
+        {'avatar_url': bustedUrl},
+      );
+
+      return UserModel.fromSupabaseUser(updatedUser);
+    } catch (e, s) {
+      return SupabaseErrorMapper.handle(e, s);
+    }
+  }
 }
-
-

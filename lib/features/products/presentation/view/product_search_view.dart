@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../details/presentation/views/details_view.dart';
 import '../../../home/presentation/widgets/recent_product_data.dart';
 import '../cubit/product_cubit.dart';
@@ -13,7 +14,6 @@ class ProductSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return const _ProductSearchBody();
   }
 }
@@ -54,8 +54,9 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -80,10 +81,10 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                         onChanged: _runSearch,
                         onSubmitted: _submit,
                         textInputAction: TextInputAction.search,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Search products...',
-                          prefixIcon: Icon(Icons.search_rounded),
+                          hintText: l10n.searchProductsHint,
+                          prefixIcon: const Icon(Icons.search_rounded),
                         ),
                       ),
                     ),
@@ -108,7 +109,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                   if (state.results.isEmpty) {
                     return Center(
                       child: Text(
-                        'No products match "${state.query}"',
+                        l10n.noProductsMatchQuery(state.query),
                         style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
                       ),
                     );
@@ -156,7 +157,10 @@ class _RecentSearches extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       children: [
-        Text('Recent Searches', style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600)),
+        Text(
+          AppLocalizations.of(context)!.recentSearches,
+          style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+        ),
         SizedBox(height: 12.h),
         ...recentSearches.map(
               (query) => Padding(

@@ -43,7 +43,7 @@ class CategorySelector extends StatelessWidget {
                   ),
                   SizedBox(width: 6.w),
                   Text(
-                    CategoryUi.label(category),
+                    CategoryUi.label(context,category),
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,

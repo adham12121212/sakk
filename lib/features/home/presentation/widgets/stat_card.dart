@@ -24,6 +24,9 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20.r),
@@ -49,7 +52,7 @@ class StatCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 26.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -58,9 +61,9 @@ class StatCard extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: 13.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurface,
               ),
             ),
           ],

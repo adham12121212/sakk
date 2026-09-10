@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// A self-contained shimmer skeleton that mirrors the shape of
-/// [ReviewProductView]'s form, so the loading state reads as "this screen
-/// is materializing" rather than a generic blocking spinner.
+
 class ScanSkeletonLoader extends StatefulWidget {
   const ScanSkeletonLoader({super.key});
 
@@ -27,7 +25,6 @@ class _ScanSkeletonLoaderState extends State<ScanSkeletonLoader>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
@@ -96,7 +93,10 @@ class _ScanSkeletonLoaderState extends State<ScanSkeletonLoader>
     required double height,
     required double radius,
   }) {
-    // Sweep a soft highlight left-to-right across a base-colored box.
+    final colorScheme = Theme.of(context).colorScheme;
+    final baseColor = colorScheme.surfaceContainerHighest;
+    final highlightColor = colorScheme.surface;
+
     final t = _controller.value;
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
@@ -106,18 +106,14 @@ class _ScanSkeletonLoaderState extends State<ScanSkeletonLoader>
           return LinearGradient(
             begin: Alignment(-1.5 + 3 * t, 0),
             end: Alignment(-0.5 + 3 * t, 0),
-            colors: const [
-              Color(0xFFE9ECF1),
-              Color(0xFFF6F7F9),
-              Color(0xFFE9ECF1),
-            ],
+            colors: [baseColor, highlightColor, baseColor],
             stops: const [0.35, 0.5, 0.65],
           ).createShader(bounds);
         },
         child: Container(
           width: width,
           height: height,
-          color: const Color(0xFFE9ECF1),
+          color: baseColor,
         ),
       ),
     );

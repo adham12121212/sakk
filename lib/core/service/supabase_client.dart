@@ -33,4 +33,15 @@ abstract class SupabaseService {
         required String matchColumn,
         required dynamic matchValue,
       });
+
+    Future<void> resetPasswordForEmail(String email);
+
+  Future<void> verifyRecoveryOtp({required String email, required String token});
+
+  Future<void> updatePassword(String newPassword);
+
+  Future<User> updateUserMetadata(Map<String, dynamic> data);
+
 }
+
+

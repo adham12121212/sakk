@@ -1,4 +1,6 @@
- import 'package:dartz/dartz.dart';
+ import 'dart:io';
+
+import 'package:dartz/dartz.dart';
 import '../../../../core/error/Failure.dart';
 import '../entities/user_entity.dart';
 
@@ -13,5 +15,16 @@ abstract class AuthRepository {
   });
   Future<void> signOut();
   UserEntity?  getUser();
+
+  Future<Either<Failure, void>> sendPasswordResetOtp({required String email});
+
+  Future<Either<Failure, void>> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  });
+
+  Future<Either<Failure, void>> updatePassword({required String newPassword});
+  Future<Either<Failure, UserEntity>> updateAvatar(File imageFile);
+
 }
 

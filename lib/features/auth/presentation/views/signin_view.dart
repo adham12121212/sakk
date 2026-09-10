@@ -11,7 +11,6 @@ class SigninView extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: const Scaffold(
-        backgroundColor: Colors.white,
         body: SigninViewConsumerBody(),
       ),
     );

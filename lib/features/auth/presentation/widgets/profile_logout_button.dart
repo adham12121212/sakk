@@ -16,6 +16,7 @@ class ProfileLogoutButton extends StatelessWidget {
     final authCubit = context.read<AuthCubit>();
 
     final confirmed = await showDialog<bool>(
+      barrierColor: Colors.black.withOpacity(0.5),
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.logOutConfirmTitle),
@@ -23,7 +24,7 @@ class ProfileLogoutButton extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.cancel),
+            child: Text(l10n.cancel, style: TextStyle(color: AppColors.primary)),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -34,9 +35,6 @@ class ProfileLogoutButton extends StatelessWidget {
     );
 
     if (confirmed != true) return;
-    // Navigation happens in ProfileView's BlocListener once this actually
-    // completes (AuthLoading -> AuthInitial) — not here, so a slow/failed
-    // signOut can't leave the UI in a stuck "half logged out" state.
     await authCubit.signOut();
   }
 

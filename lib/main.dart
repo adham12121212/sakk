@@ -11,6 +11,7 @@ import 'core/logger/app_logger.dart';
 import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
 import 'core/service/notification_service.dart';
+import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'l10n/app_localizations.dart';
 
@@ -28,18 +29,20 @@ void main() async {
 
   final notificationService = getIt<NotificationService>();
 
-
   notificationService.onNotificationTap = _handleNotificationTap;
 
   try {
     await notificationService.init();
     await notificationService.requestPermission();
-  } catch (e) {
-    print(e);
+  } catch (e, stackTrace) {
+    getIt<AppLogger>().error(
+      'Notification service initialization failed',
+      error: e,
+      stackTrace: stackTrace,
+    );
   }
 
   runApp(const MyApp());
-
 
   final launchPayload = await notificationService.getLaunchPayload();
   if (launchPayload != null && launchPayload.isNotEmpty) {
@@ -56,9 +59,6 @@ void _handleNotificationTap(NotificationResponse response) {
 }
 
 void _openNotifications(String userId) {
-  // `appRouter` is a top-level GoRouter, so its navigation methods work
-  // without a BuildContext — exactly what's needed here, since a
-  // notification tap can happen before any screen/context exists yet.
   appRouter.push(AppRoutes.notifications, extra: userId);
 }
 
@@ -86,8 +86,8 @@ class MyApp extends StatelessWidget {
 
               locale: getIt<LocaleController>().value,
               themeMode: getIt<ThemeController>().value,
-              theme: ThemeData(brightness: Brightness.light),
-              darkTheme: ThemeData(brightness: Brightness.dark),
+              theme: AppTheme.light(),
+              darkTheme: AppTheme.dark(),
 
               localizationsDelegates: const [
                 AppLocalizations.delegate,
@@ -100,6 +100,15 @@ class MyApp extends StatelessWidget {
                 Locale('en'),
                 Locale('ar'),
               ],
+
+              localeResolutionCallback: (locale, supportedLocales) {
+                if (locale != null &&
+                    supportedLocales
+                        .any((l) => l.languageCode == locale.languageCode)) {
+                  return Locale(locale.languageCode);
+                }
+                return const Locale('en');
+              },
 
               debugShowCheckedModeBanner: false,
             );

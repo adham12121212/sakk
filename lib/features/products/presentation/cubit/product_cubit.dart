@@ -28,6 +28,10 @@ class ProductsCubit extends Cubit<ProductsState> {
     emit(newState);
   }
 
+   void reset() {
+    _safeEmit(const ProductsState());
+  }
+
   Future<void> loadIfNeeded() {
     if (state.hasLoadedOnce || state.isLoading) return Future.value();
     return refresh();
@@ -42,17 +46,12 @@ class ProductsCubit extends Cubit<ProductsState> {
           (failure) => _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
           (products) {
         _safeEmit(state.copyWith(products: products, isLoading: false, hasLoadedOnce: true));
-        // Fire-and-forget: don't block the UI on notification bookkeeping.
         unawaited(_warrantyNotificationService.checkAndNotify(products));
       },
     );
   }
 
-  /// Deletes the product and, on success, removes it from local state
-  /// immediately (no full refetch needed) and cancels any pending
-  /// scheduled reminders for it. Returns true on success, false on
-  /// failure (with state.error set) — callers can use this to decide
-  /// whether to pop/navigate.
+
   Future<bool> deleteProduct(String id) async {
     final result = await _deleteProductUseCase(id);
 

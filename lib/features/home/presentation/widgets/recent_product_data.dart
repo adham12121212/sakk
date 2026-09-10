@@ -4,61 +4,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
 
 class RecentProductData {
   const RecentProductData({
     required this.title,
     required this.brand,
-    required this.statusLabel,
-    required this.statusColor,
-    required this.statusBgColor,
-    required this.subtitle,
+    required this.status,
+    required this.daysRemaining,
     this.imageUrl,
     this.ringProgress,
-    this.ringColor,
   });
 
-
   factory RecentProductData.fromEntity(ProductEntity product) {
-    late final String statusLabel;
-    late final Color statusColor;
-    late final Color statusBgColor;
-    double? ringProgress;
-
-    switch (product.status) {
-      case WarrantyStatus.active:
-        statusLabel = 'Active';
-        statusColor = AppColors.success;
-        statusBgColor = AppColors.success.withOpacity(0.12);
-        ringProgress = _remainingFraction(product);
-        break;
-      case WarrantyStatus.expiring:
-        statusLabel = 'Expiring';
-        statusColor = const Color(0xFFF59E0B);
-        statusBgColor = const Color(0xFFFEF3C7);
-        ringProgress = _remainingFraction(product);
-        break;
-      case WarrantyStatus.expired:
-        statusLabel = 'Expired';
-        statusColor = AppColors.error;
-        statusBgColor = AppColors.error.withOpacity(0.12);
-        ringProgress = null;
-        break;
-    }
-
     return RecentProductData(
       title: product.name,
       brand: product.brand ?? '',
-      subtitle: product.status == WarrantyStatus.expired
-          ? 'Warranty expired'
-          : '${product.daysRemaining} days left',
-      statusLabel: statusLabel,
-      statusColor: statusColor,
-      statusBgColor: statusBgColor,
+      status: product.status,
+      daysRemaining: product.daysRemaining,
       imageUrl: product.imageUrl,
-      ringProgress: ringProgress,
-      ringColor: statusColor,
+      ringProgress: product.status == WarrantyStatus.expired
+          ? null
+          : _remainingFraction(product),
     );
   }
 
@@ -71,17 +39,10 @@ class RecentProductData {
 
   final String title;
   final String brand;
-
-  final String statusLabel;
-  final Color statusColor;
-  final Color statusBgColor;
-
-  final String subtitle;
-
+  final WarrantyStatus status;
+  final int daysRemaining;
   final String? imageUrl;
-
   final double? ringProgress;
-  final Color? ringColor;
 }
 
 class RecentProductTile extends StatelessWidget {
@@ -90,27 +51,56 @@ class RecentProductTile extends StatelessWidget {
   final RecentProductData data;
   final VoidCallback? onTap;
 
+  Color get _statusColor {
+    switch (data.status) {
+      case WarrantyStatus.active:
+        return AppColors.success;
+      case WarrantyStatus.expiring:
+        return const Color(0xFFF59E0B);
+      case WarrantyStatus.expired:
+        return AppColors.error;
+    }
+  }
+
+  Color get _statusBgColor {
+    switch (data.status) {
+      case WarrantyStatus.active:
+        return AppColors.success.withOpacity(0.12);
+      case WarrantyStatus.expiring:
+        return const Color(0xFFFEF3C7);
+      case WarrantyStatus.expired:
+        return AppColors.error.withOpacity(0.12);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final statusLabel = switch (data.status) {
+      WarrantyStatus.active => l10n.active,
+      WarrantyStatus.expiring => l10n.expiring,
+      WarrantyStatus.expired => l10n.expired,
+    };
+    final subtitle = data.status == WarrantyStatus.expired
+        ? l10n.warrantyExpired
+        : l10n.daysLeft(data.daysRemaining);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.card),
       child: Container(
         padding: EdgeInsets.all(AppSizes.s12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(AppRadius.card),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.03),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
-            ),
+            BoxShadow(color: Colors.black.withOpacity(.03), blurRadius: 12, offset: const Offset(0, 5)),
           ],
         ),
         child: Row(
           children: [
-            _StatusRingThumbnail(data: data),
+            _StatusRingThumbnail(data: data, ringColor: _statusColor),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
@@ -120,22 +110,16 @@ class RecentProductTile extends StatelessWidget {
                     data.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600,color:  colorScheme.onSurface),
                   ),
                   SizedBox(height: 2.h),
-                  Text(
-                    data.brand,
-                    style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
-                  ),
+                  Text(data.brand, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
                   SizedBox(height: 4.h),
                   Row(
                     children: [
-                      Icon(Icons.access_time_rounded, size: 14.sp, color: Colors.grey.shade500),
+                      Icon(Icons.access_time_rounded, size: 14.sp, color: colorScheme.onSurface.withOpacity(0.5)),
                       SizedBox(width: 4.w),
-                      Text(
-                        data.subtitle,
-                        style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
-                      ),
+                      Text(subtitle, style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withOpacity(0.6))),
                     ],
                   ),
                 ],
@@ -149,26 +133,16 @@ class RecentProductTile extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: AppSizes.s10, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: data.statusBgColor,
+                    color: _statusBgColor,
                     borderRadius: BorderRadius.circular(AppRadius.xl),
                   ),
                   child: Text(
-                    data.statusLabel,
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
-                      color: data.statusColor,
-                    ),
+                    statusLabel,
+                    style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: _statusColor),
                   ),
                 ),
                 SizedBox(height: 10.h),
-
-                Icon(
-                  Icons.chevron_left_rounded,
-                  size: 20.sp,
-                  color: Colors.grey.shade400,
-                  textDirection: TextDirection.rtl,
-                ),
+                Icon(Icons.chevron_left_rounded, size: 20.sp, color: colorScheme.onSurface.withOpacity(0.4), textDirection: TextDirection.rtl),
               ],
             ),
           ],
@@ -179,15 +153,17 @@ class RecentProductTile extends StatelessWidget {
 }
 
 class _StatusRingThumbnail extends StatelessWidget {
-  const _StatusRingThumbnail({required this.data});
+  const _StatusRingThumbnail({required this.data, required this.ringColor});
 
   final RecentProductData data;
+  final Color ringColor;
 
   static const double size = 52.0;
   static const double imageSize = 44.0;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: size,
       height: size,
@@ -201,8 +177,8 @@ class _StatusRingThumbnail extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: data.ringProgress,
                 strokeWidth: 3,
-                backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation(data.ringColor ?? Colors.grey),
+                backgroundColor: colorScheme.outline,
+                valueColor: AlwaysStoppedAnimation(ringColor),
               ),
             )
           else
@@ -211,7 +187,7 @@ class _StatusRingThumbnail extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey.shade200, width: 3),
+                border: Border.all(color: colorScheme.outline, width: 3),
               ),
             ),
           ClipOval(
@@ -223,22 +199,26 @@ class _StatusRingThumbnail extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 debugPrint('[RecentProductTile] Image.network failed for ${data.imageUrl}: $error');
-                return _fallbackIcon();
+                return _fallbackIcon(
+                  context
+                );
               },
             )
-                : _fallbackIcon(),
+                : _fallbackIcon(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _fallbackIcon() {
+  Widget _fallbackIcon(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: imageSize,
       height: imageSize,
-      color: Colors.grey.shade100,
-      child: Icon(Icons.devices_other_rounded, color: Colors.grey.shade400, size: 20.sp),
+      color: colorScheme.surfaceContainerHighest,
+      child: Icon(Icons.devices_other_rounded, color: colorScheme.onSurface.withOpacity(0.4), size: 20.sp),
     );
   }
+
 }
