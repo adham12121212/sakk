@@ -4,9 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/product_category.dart';
-import '../widgets/category_ui.dart';
+import '../widgets/category_card.dart';
 
 
 class CategoriesView extends StatelessWidget {
@@ -16,6 +17,7 @@ class CategoriesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final products = context.watch<ProductsCubit>().state.products;
 
     final counts = <ProductCategory, int>{
@@ -26,7 +28,6 @@ class CategoriesView extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +42,7 @@ class CategoriesView extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'Categories',
+                    l10n.categories,
                     style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -63,7 +64,7 @@ class CategoriesView extends StatelessWidget {
                   final count = counts[category] ?? 0;
                   final isSelected = category == currentCategory;
 
-                  return _CategoryCard(
+                  return CategoryCard(
                     category: category,
                     count: count,
                     isSelected: isSelected,
@@ -79,68 +80,3 @@ class CategoriesView extends StatelessWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({
-    required this.category,
-    required this.count,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final ProductCategory category;
-  final int count;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = CategoryUi.color(category);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: isSelected ? color : Colors.grey.shade200,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.03),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(14.r),
-              ),
-              child: Icon(CategoryUi.icon(category), color: color, size: 22.sp),
-            ),
-            const Spacer(),
-            Text(
-              CategoryUi.label(category),
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 2.h),
-            Text(
-              '$count ${count == 1 ? 'product' : 'products'}',
-              style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

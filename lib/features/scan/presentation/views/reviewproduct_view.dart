@@ -47,8 +47,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
 
   bool _controllersSeeded = false;
 
-  // Defaults to Other until seeded from the AI's guess (or the user picks
-  // one manually) — see _seedControllersIfNeeded.
+
   ProductCategory _selectedCategory = ProductCategory.other;
 
 
@@ -153,7 +152,6 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
         _seedControllersIfNeeded(scanned);
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF8F9FB),
           body: SafeArea(
             child: Column(
               children: [
@@ -194,7 +192,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                           CapsuleField(controller: _brandController),
                           SizedBox(height: 20.h),
 
-                          const FieldLabel('Category'),
+                           FieldLabel(l10n.category),
                           CategorySelector(
                             selected: _selectedCategory,
                             onChanged: (category) =>

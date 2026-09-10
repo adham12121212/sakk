@@ -9,10 +9,13 @@ import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/views/profile_view.dart';
 import '../../features/chat/presentation/cubit/chat_cubit.dart';
 import '../../features/chat/presentation/views/chat_view.dart';
+import '../../features/details/presentation/cubit/details_cubit.dart';
 import '../../features/details/presentation/views/details_view.dart';
+import '../../features/forget_password/presentation/views/forgot_password_view.dart';
 import '../../features/nav_bar/nav_bar.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/notification/presentation/views/notifications_view.dart';
+import '../../features/onboarding/presentation/views/onboarding_view.dart';
 import '../../features/products/domain/enties/product_entity.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/products/presentation/view/products_veiw.dart';
@@ -23,8 +26,10 @@ import '../di/get_it.dart';
 
 class AppRoutes {
   static const splash = '/';
+  static const onboarding = '/onboarding';
   static const signin = '/signin';
   static const signup = '/signup';
+  static const forgotPassword = '/forgot-password';
   static const home = '/home';
   static const details = '/details';
   static const products = '/products';
@@ -43,6 +48,10 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const SplashView(),
     ),
     GoRoute(
+      path: AppRoutes.onboarding,
+      builder: (context, state) => const OnboardingView(),
+    ),
+    GoRoute(
       path: AppRoutes.signin,
       builder: (context, state) =>
           BlocProvider(
@@ -57,6 +66,11 @@ final GoRouter appRouter = GoRouter(
             create: (_) => getIt<AuthCubit>(),
             child: const SignupView(),
           ),
+    ),
+    GoRoute(
+      path: AppRoutes.forgotPassword,
+
+      builder: (context, state) => const ForgotPasswordView(),
     ),
 
 
@@ -76,19 +90,22 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: AppRoutes.details,
-      builder: (context, state) =>
-          BlocProvider.value(
-            value: getIt<ProductsCubit>(),
-            child: DetailsView(product: state.extra as ProductEntity),
-          ),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: getIt<ProductsCubit>()),
+          BlocProvider(create: (_) => getIt<DetailsCubit>()),
+        ],
+        child: DetailsView(product: state.extra as ProductEntity),
+      ),
     ),
+
     GoRoute(
       path: AppRoutes.profile,
       builder: (context, state) =>
-      BlocProvider(
-        create: (_) => getIt<AuthCubit>(),
-        child: const ProfileView(),
-      ),
+          BlocProvider(
+            create: (_) => getIt<AuthCubit>(),
+            child: const ProfileView(),
+          ),
     ),
 
     StatefulShellRoute.indexedStack(

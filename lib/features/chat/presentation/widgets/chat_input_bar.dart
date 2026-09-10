@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ChatInputBar extends StatefulWidget {
   const ChatInputBar({super.key, required this.onSend, required this.isSending});
@@ -31,6 +32,9 @@ class _ChatInputBarState extends State<ChatInputBar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SafeArea(
       top: false,
       child: Padding(
@@ -43,7 +47,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 constraints: BoxConstraints(maxHeight: 120.h),
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: TextField(
@@ -52,12 +56,12 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   maxLines: 5,
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => _submit(),
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Ask about a product or warranty…',
+                    hintText: l10n!.askaboutaproductorwarranty,
                     isDense: true,
                   ),
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface),
                 ),
               ),
             ),

@@ -5,8 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
-import '../widgets/blob.dart';
+import '../../../../core/service/onboarding_service.dart';
 
 
 class SplashView extends StatefulWidget {
@@ -28,12 +29,15 @@ class _SplashViewState extends State<SplashView> {
     final minDelay = Future.delayed(const Duration(milliseconds: 1400));
 
     final session = Supabase.instance.client.auth.currentSession;
+    final hasSeenOnboarding = await getIt<OnboardingService>().hasSeenOnboarding();
 
     await minDelay;
     if (!mounted) return;
 
     if (session != null) {
       context.go(AppRoutes.home);
+    } else if (!hasSeenOnboarding) {
+      context.go(AppRoutes.onboarding);
     } else {
       context.go(AppRoutes.signin);
     }
@@ -60,12 +64,12 @@ class _SplashViewState extends State<SplashView> {
             Positioned(
               top: -60.w,
               left: -40.w,
-              child: Blob(size: 220.w),
+              child: _Blob(size: 220.w),
             ),
             Positioned(
               bottom: -80.w,
               right: -60.w,
-              child: Blob(size: 260.w),
+              child: _Blob(size: 260.w),
             ),
 
             Positioned.fill(
@@ -143,7 +147,22 @@ class _SplashViewState extends State<SplashView> {
   }
 }
 
+class _Blob extends StatelessWidget {
+  final double size;
+  const _Blob({required this.size});
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.white.withOpacity(0.06),
+      ),
+    );
+  }
+}
 
 class _LoadingDots extends StatefulWidget {
   const _LoadingDots();
@@ -206,10 +225,8 @@ class _LoadingDotsState extends State<_LoadingDots>
     );
   }
 
-  /// Smooth 0 -> 1 -> 0 pulse over the course of t in [0, 1].
   double _pulse(double t) {
     if (t < 0) t += 1.0;
-    // Only pulse during the first 60% of the cycle, rest is idle low state.
     if (t > 0.6) return 0.6;
     final normalized = t / 0.6;
     return 0.6 + 0.4 * (1 - (2 * normalized - 1).abs());

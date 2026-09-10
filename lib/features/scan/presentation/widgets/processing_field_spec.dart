@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
 import 'datex.dart';
 
-/// Describes a single field row shown on the scan-processing screen: how to
-/// read its display value from the scanned data, and how wide its loading
-/// skeleton should be while the value isn't available yet.
+
 class ProcessingFieldSpec {
   const ProcessingFieldSpec({
     required this.label,
@@ -16,38 +16,41 @@ class ProcessingFieldSpec {
   final double skeletonWidth;
 }
 
-/// The ordered set of fields revealed while a receipt is being processed.
-final List<ProcessingFieldSpec> scanProcessingFields = [
-  ProcessingFieldSpec(
-    label: 'Product Name',
-    valueOf: (d) => d.productName,
-    skeletonWidth: 150,
-  ),
-  ProcessingFieldSpec(
-    label: 'Brand',
-    valueOf: (d) => d.brand,
-    skeletonWidth: 90,
-  ),
-  ProcessingFieldSpec(
-    label: 'Price',
-    valueOf: (d) =>
-    d.price == null ? null : 'SAR ${d.price!.toStringAsFixed(0)}',
-    skeletonWidth: 110,
-  ),
-  ProcessingFieldSpec(
-    label: 'Purchase Date',
-    valueOf: (d) => d.purchaseDate?.toShortLabel(),
-    skeletonWidth: 130,
-  ),
-  ProcessingFieldSpec(
-    label: 'Warranty Duration',
-    valueOf: (d) =>
-    d.warrantyMonths == null ? null : 'Months ${d.warrantyMonths}',
-    skeletonWidth: 100,
-  ),
-  ProcessingFieldSpec(
-    label: 'Store',
-    valueOf: (d) => d.store,
-    skeletonWidth: 120,
-  ),
-];
+
+List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  final locale = Localizations.localeOf(context).languageCode;
+
+  return [
+    ProcessingFieldSpec(
+      label: l10n.productName,
+      valueOf: (d) => d.productName,
+      skeletonWidth: 150,
+    ),
+    ProcessingFieldSpec(
+      label: l10n.brand,
+      valueOf: (d) => d.brand,
+      skeletonWidth: 90,
+    ),
+    ProcessingFieldSpec(
+      label: l10n.price,
+      valueOf: (d) => d.price == null ? null : l10n.priceSar(d.price!.toStringAsFixed(0)),
+      skeletonWidth: 110,
+    ),
+    ProcessingFieldSpec(
+      label: l10n.purchaseDate,
+      valueOf: (d) => d.purchaseDate?.toShortLabel(locale),
+      skeletonWidth: 130,
+    ),
+    ProcessingFieldSpec(
+      label: l10n.warrantyDuration,
+      valueOf: (d) => d.warrantyMonths == null ? null : l10n.warrantyMonthsValue(d.warrantyMonths!),
+      skeletonWidth: 100,
+    ),
+    ProcessingFieldSpec(
+      label: l10n.store,
+      valueOf: (d) => d.store,
+      skeletonWidth: 120,
+    ),
+  ];
+}

@@ -6,19 +6,23 @@ import 'package:sakk/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:sakk/features/auth/presentation/widgets/signup_view_body.dart';
 
 import '../../../../core/route/app_router.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SignupViewConsumerBody extends StatelessWidget {
   const SignupViewConsumerBody({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         switch (state) {
           case AuthSuccess():
             AppSnackBar.success(
               context,
-              'Welcome to Sakk!',
+               l10n.welcometoSakk,
             );
 
             context.go(AppRoutes.home);

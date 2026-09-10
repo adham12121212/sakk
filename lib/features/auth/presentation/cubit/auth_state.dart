@@ -16,3 +16,10 @@ final class AuthError extends AuthState{
   final String message;
   AuthError(this.message);
 }
+
+final class AuthAvatarUpdating extends AuthState {}
+
+final class AuthAvatarUpdated extends AuthState {
+  final UserEntity user;
+  AuthAvatarUpdated(this.user);
+}

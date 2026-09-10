@@ -14,7 +14,7 @@ class FieldLabel extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: 13.sp,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           fontWeight: FontWeight.w500,
         ),
       ),

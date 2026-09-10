@@ -6,6 +6,7 @@ import 'package:sakk/features/details/presentation/cubit/details_cubit.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import '../../../scan/presentation/widgets/capsule_field.dart';
@@ -87,42 +88,44 @@ class _EditProductBodyState extends State<_EditProductBody> {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<DetailsCubit>().save(
-      id: widget.product.id,
-      name: _nameController.text.trim(),
-      brand: _emptyToNull(_brandController.text),
-      price: double.parse(_priceController.text.trim()),
-      purchaseDate: _purchaseDate,
-      warrantyMonths: int.parse(_warrantyController.text.trim()),
-      imageUrl: widget.product.imageUrl,
-      receiptUrl: widget.product.receiptUrl,
-      store: _emptyToNull(_storeController.text),
-      notes: _emptyToNull(_notesController.text),
-      category: _selectedCategory,
-      currency: 'EGP'
+        id: widget.product.id,
+        name: _nameController.text.trim(),
+        brand: _emptyToNull(_brandController.text),
+        price: double.parse(_priceController.text.trim()),
+        purchaseDate: _purchaseDate,
+        warrantyMonths: int.parse(_warrantyController.text.trim()),
+        imageUrl: widget.product.imageUrl,
+        receiptUrl: widget.product.receiptUrl,
+        store: _emptyToNull(_storeController.text),
+        notes: _emptyToNull(_notesController.text),
+        category: _selectedCategory,
+        currency: 'EGP'
     );
   }
 
   void _handleStateChange(BuildContext context, DetailsState state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state is DetailsFailure) {
       AppSnackBar.error(context, state.message);
     } else if (state is DetailsSuccess) {
-      AppSnackBar.success(context, 'Product updated');
+      AppSnackBar.success(context, l10n.productUpdated);
       Navigator.of(context).pop(true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocConsumer<DetailsCubit, DetailsState>(
       listener: _handleStateChange,
       builder: (context, state) {
         final isSaving = state is DetailsSaving;
-
         return Scaffold(
-          backgroundColor: const Color(0xFFF8F9FB),
           appBar: AppBar(
-            title: const Text('Edit Product'),
-            backgroundColor: const Color(0xFFF8F9FB),
+            title: Text(l10n.editProduct,style: TextStyle(
+              fontSize: 20.sp
+            ),),
             surfaceTintColor: Colors.transparent,
             elevation: 0,
           ),
@@ -134,20 +137,20 @@ class _EditProductBodyState extends State<_EditProductBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const FieldLabel('Product Name'),
+                    FieldLabel(l10n.productName),
                     CapsuleField(
                       controller: _nameController,
                       validator: (v) => (v == null || v.trim().isEmpty)
-                          ? 'Product name is required'
+                          ? l10n.productNameRequired
                           : null,
                     ),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Brand'),
+                    FieldLabel(l10n.brand),
                     CapsuleField(controller: _brandController),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Category'),
+                    FieldLabel(l10n.category),
                     CategorySelector(
                       selected: _selectedCategory,
                       onChanged: (category) =>
@@ -155,7 +158,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     ),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Price (EGP)'),
+                    FieldLabel(l10n.priceEgp),
                     CapsuleField(
                       controller: _priceController,
                       keyboardType:
@@ -163,13 +166,13 @@ class _EditProductBodyState extends State<_EditProductBody> {
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) return null;
                         return double.tryParse(v.trim()) == null
-                            ? 'Enter a valid number'
+                            ? l10n.invalidNumber
                             : null;
                       },
                     ),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Purchase Date'),
+                    FieldLabel(l10n.purchaseDate),
                     InkWell(
                       onTap: isSaving ? null : _pickPurchaseDate,
                       borderRadius: BorderRadius.circular(28.r),
@@ -185,28 +188,28 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     ),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Warranty (months)'),
+                    FieldLabel(l10n.warrantyMonths),
                     CapsuleField(
                       controller: _warrantyController,
                       keyboardType: TextInputType.number,
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) {
-                          return 'Warranty length is required';
+                          return l10n.warrantyRequired;
                         }
                         final n = int.tryParse(v.trim());
                         if (n == null || n < 0) {
-                          return 'Enter a valid number of months';
+                          return l10n.invalidWarrantyMonths;
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Store'),
+                    FieldLabel(l10n.store),
                     CapsuleField(controller: _storeController),
                     SizedBox(height: 20.h),
 
-                    const FieldLabel('Notes'),
+                    FieldLabel(l10n.notes),
                     CapsuleField(
                       controller: _notesController,
                       maxLines: 3,
@@ -234,7 +237,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
                             color: Colors.white,
                           ),
                         )
-                            : const Text('Save Changes'),
+                            : Text(l10n.saveChanges),
                       ),
                     ),
                   ],

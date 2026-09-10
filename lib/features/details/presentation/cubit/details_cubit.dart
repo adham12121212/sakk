@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/di/get_it.dart';
 import '../../../category/domain/entities/product_category.dart';
@@ -56,5 +60,34 @@ class DetailsCubit extends Cubit<DetailsState> {
         emit(DetailsSuccess(product));
       },
     );
+  }
+
+
+  Future<void> downloadInvoice(ProductEntity product) async {
+    final url = product.receiptUrl ?? product.imageUrl;
+    if (url == null) {
+      emit(const DetailsActionError('no_invoice_url'));
+      return;
+    }
+    emit(const DetailsActionInProgress());
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        throw Exception('Server returned ${response.statusCode}');
+      }
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/${product.name}_invoice.jpg');
+      await file.writeAsBytes(response.bodyBytes);
+      emit(DetailsDownloadReady(file.path, product.name));
+    } catch (e) {
+      emit(DetailsActionError(e));
+    }
+  }
+
+  Future<bool> delete(String productId) async {
+    emit(const DetailsActionInProgress());
+    final success = await _productsCubit.deleteProduct(productId);
+    emit(success ? const DetailsDeleted() : const DetailsActionError('delete_failed'));
+    return success;
   }
 }

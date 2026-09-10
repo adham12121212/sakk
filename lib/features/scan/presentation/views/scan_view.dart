@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/service/notification_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/sacn_source_button.dart';
 import 'scan_processing_view.dart';
@@ -37,10 +38,11 @@ class ScanViewState extends State<ScanView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        title: const Text('Scan Receipt'),
+        title: Text(l10n.scanReceiptTitle),
         backgroundColor: const Color(0xFFF8F9FB),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -70,38 +72,29 @@ class ScanViewState extends State<ScanView> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Scan your warranty receipt',
+                Text(
+                  l10n.scanYourWarrantyReceipt,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: -0.3,
-                  ),
+                  style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, letterSpacing: -0.3),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "We'll pull out the product, price, and warranty info automatically.",
+                  l10n.scanInstructions,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.4),
                 ),
                 const SizedBox(height: 32),
                 ScanSourceButton.filled(
                   icon: Icons.camera_alt_outlined,
-                  label: 'Take Photo',
+                  label: l10n.takePhoto,
                   onPressed: () => pickAndScan(ImageSource.camera),
                 ),
                 const SizedBox(height: 12),
                 ScanSourceButton.outlined(
                   icon: Icons.photo_library_outlined,
-                  label: 'Choose from Gallery',
+                  label: l10n.chooseFromGallery,
                   onPressed: () => pickAndScan(ImageSource.gallery),
                 ),
-
               ],
             ),
           ),

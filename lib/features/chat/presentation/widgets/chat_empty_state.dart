@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ChatEmptyState extends StatelessWidget {
-  const ChatEmptyState({super.key, required this.onSuggestionTap});
+  const ChatEmptyState({super.key, required this.onSuggestionTap, required this.l10n});
 
   final ValueChanged<String> onSuggestionTap;
+  final  AppLocalizations l10n;
 
-  static const _suggestions = [
-    'How do I add a new product?',
-    'What should I do if a product breaks?',
+
+  List<String> get _suggestions => [
+    l10n.howdoIaddanewproduct,
+    l10n.whatshouldIdoifaproductbreaks,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 32.w),
@@ -31,14 +36,14 @@ class ChatEmptyState extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             Text(
-              'Ask me anything',
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              l10n.askmeanything,
+              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold,color: colorScheme.onSurface)
             ),
             SizedBox(height: 6.h),
             Text(
-              "I can help with your products, warranties, and purchases.",
+              l10n.icanhelpwithyourproductswarrantiesandpurchases,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600, height: 1.4),
+              style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6), height: 1.4),
             ),
             SizedBox(height: 24.h),
             ..._suggestions.map(
@@ -51,13 +56,13 @@ class ChatEmptyState extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
+                      color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: colorScheme.outline),
                     ),
                     child: Text(
                       s,
-                      style: TextStyle(fontSize: 13.sp, color: AppColors.black.withOpacity(0.8)),
+                      style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.8)),
                     ),
                   ),
                 ),

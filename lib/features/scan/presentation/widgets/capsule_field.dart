@@ -9,19 +9,21 @@ class CapsuleShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.08),
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(28.r),
+        border: Border.all(color: colorScheme.outline),
       ),
       child: child,
     );
   }
 }
 
-/// A capsule-shaped text form field, styled to match [CapsuleShell].
 class CapsuleField extends StatelessWidget {
   const CapsuleField({
     super.key,
@@ -40,20 +42,24 @@ class CapsuleField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
       maxLines: maxLines,
       minLines: minLines,
-      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+      style: TextStyle(fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSurface),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.grey.withOpacity(0.08),
+        fillColor: colorScheme.surfaceContainerHighest,
         contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(28.r),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.4)),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(28.r),

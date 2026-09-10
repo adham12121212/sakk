@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constant/app_colors.dart';
 import '../../core/route/app_router.dart';
+import '../../l10n/app_localizations.dart';
 
 
 class ScaffoldWithNavBar extends StatelessWidget {
@@ -33,8 +34,10 @@ class _BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return BottomAppBar(
-      color: AppColors.white,
+      color: colorScheme.surface,
       elevation: 8,
       child: SizedBox(
         height: 60.h,
@@ -43,31 +46,31 @@ class _BottomBar extends StatelessWidget {
           children: [
             _NavItem(
               icon: Icons.home_rounded,
-              label: 'Home',
+              label: l10n.home,
               isActive: currentIndex == 0,
               onTap: () => onTap(0),
             ),
             _NavItem(
               icon: Icons.grid_view_rounded,
-              label: 'Products',
+              label: l10n.products,
               isActive: currentIndex == 1,
               onTap: () => onTap(1),
             ),
             _NavItem(
-              icon: Icons.camera_alt_rounded,
-              label: 'Camera',
+              icon: Icons.document_scanner_rounded,
+              label: l10n.scan,
               isActive: false,
               onTap: () => context.push(AppRoutes.scan),
             ),
             _NavItem(
               icon: Icons.bar_chart_rounded,
-              label: 'Analytics',
+              label: l10n.analytics,
               isActive: currentIndex == 2,
               onTap: () => onTap(2),
             ),
             _NavItem(
               icon: Icons.auto_awesome_rounded,
-              label: 'AI',
+              label: l10n.ai,
               isActive: currentIndex == 3,
               onTap: () => onTap(3),
             ),

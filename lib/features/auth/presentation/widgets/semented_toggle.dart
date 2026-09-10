@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
 
@@ -19,10 +18,15 @@ class SegmentedToggle<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        // Colors.grey.shade100 -> surfaceContainerHighest: a subtle fill
+        // that's light-grey in light mode and a lighter panel shade in
+        // dark mode, instead of staying hardcoded light in both.
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppRadius.xxl),
       ),
       child: Row(
@@ -35,7 +39,7 @@ class SegmentedToggle<T> extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: AppSizes.s12, vertical: 6.h),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : Colors.transparent,
+                color: isSelected ? colorScheme.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.xl),
               ),
               child: Text(
@@ -43,7 +47,9 @@ class SegmentedToggle<T> extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.white : Colors.grey.shade600,
+                  color: isSelected
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ),

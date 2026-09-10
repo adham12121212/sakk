@@ -20,14 +20,16 @@ class ProcessingFieldTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: revealed ? const Color(0xFFDCFCE7) : const Color(0xFFE5E7EB),
+          color:  revealed ? const Color(0xFFDCFCE7) : colorScheme.outline,
         ),
         boxShadow: [
           BoxShadow(
@@ -45,7 +47,7 @@ class ProcessingFieldTile extends StatelessWidget {
               children: [
                 Text(
                   spec.label,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style:  TextStyle(fontSize: 12, color: colorScheme.onSurface.withOpacity(0.6)),
                 ),
                 const SizedBox(height: 6),
                 AnimatedSwitcher(
@@ -64,9 +66,10 @@ class ProcessingFieldTile extends StatelessWidget {
                       ? Text(
                     value ?? '—',
                     key: const ValueKey('value'),
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface
                     ),
                   )
                       : ShimmerBar(

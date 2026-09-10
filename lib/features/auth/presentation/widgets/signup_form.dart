@@ -113,7 +113,7 @@ class _SignupFormState extends State<SignupForm> {
           Padding(
             padding: EdgeInsets.only(left: AppSizes.s4),
             child: Text(
-              'At least 8 characters',
+              l10n.atleast8characters,
               style: TextStyle(fontSize: 11.sp, color: AppColors.grey),
             ),
           ),
@@ -155,7 +155,7 @@ class _SignupFormState extends State<SignupForm> {
                   padding: EdgeInsets.only(top: 12.h),
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(color: AppColors.black.withOpacity(0.7), fontSize: 13.sp),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), fontSize: 13.sp),
                       children: [
                         TextSpan(text: l10n.agreeToTermsPrefix),
                         TextSpan(

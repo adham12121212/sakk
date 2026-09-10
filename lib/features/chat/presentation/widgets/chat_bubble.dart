@@ -13,6 +13,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -26,7 +27,7 @@ class ChatBubble extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: AppSizes.s16, vertical: AppSizes.s12),
             decoration: BoxDecoration(
-              color: isUser ? AppColors.primary : Colors.grey.shade100,
+              color: isUser ? AppColors.primary : colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(AppRadius.lg),
                 topRight: Radius.circular(AppRadius.lg),
@@ -39,7 +40,7 @@ class ChatBubble extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 height: 1.4,
-                color: isUser ? AppColors.white : AppColors.black,
+                color: isUser ? AppColors.white : colorScheme.onSurface,
               ),
             ),
           ),

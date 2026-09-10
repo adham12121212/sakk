@@ -19,9 +19,11 @@ class CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      customBorder: const CircleBorder(),
+      customBorder: const CircleBorder(
+      ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -29,13 +31,15 @@ class CircleIconButton extends StatelessWidget {
             width: 40.w,
             height: 40.w,
             decoration: BoxDecoration(
-              color: AppColors.grey.withOpacity(0.12),
+              color: colorScheme.surface,
               shape: BoxShape.circle,
             ),
             child: Icon(
                 icon,
                 size: 20.sp,
-                color:  color ),
+                color:  color,
+
+            ),
           ),
           if (showBadge)
             Positioned(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import '../../../../l10n/app_localizations.dart';
 
 class ConfidenceBanner extends StatelessWidget {
   const ConfidenceBanner({super.key, required this.confidence});
@@ -12,7 +12,8 @@ class ConfidenceBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final level = _levelFor(confidence);
+    final l10n = AppLocalizations.of(context)!;
+    final level = _levelFor(l10n, confidence);
     final percent = (confidence * 100).round();
 
     return Container(
@@ -40,7 +41,7 @@ class ConfidenceBanner extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                     children: [
-                      const TextSpan(text: 'Confidence Score: '),
+                      TextSpan(text: l10n.confidenceScoreLabel),
                       TextSpan(
                         text: '$percent%',
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -52,10 +53,7 @@ class ConfidenceBanner extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     level.subtext!,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: level.foreground.withOpacity(0.85),
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: level.foreground.withOpacity(0.85)),
                   ),
                 ],
               ],
@@ -66,7 +64,7 @@ class ConfidenceBanner extends StatelessWidget {
     );
   }
 
-  _ConfidenceLevel _levelFor(double confidence) {
+  _ConfidenceLevel _levelFor(AppLocalizations l10n, double confidence) {
     if (confidence >= _highThreshold) {
       return const _ConfidenceLevel(
         foreground: Color(0xFF15803D),
@@ -75,19 +73,18 @@ class ConfidenceBanner extends StatelessWidget {
       );
     }
     if (confidence >= _mediumThreshold) {
-      return const _ConfidenceLevel(
-        foreground: Color(0xFF92400E),
-        background: Color(0xFFFEF3C7),
+      return _ConfidenceLevel(
+        foreground: const Color(0xFF92400E),
+        background: const Color(0xFFFEF3C7),
         icon: Icons.warning_amber_rounded,
-        subtext: 'Please double-check the fields below.',
+        subtext: l10n.doubleCheckFieldsBelow,
       );
     }
-    return const _ConfidenceLevel(
-      foreground: Color(0xFF991B1B),
-      background: Color(0xFFFEE2E2),
+    return _ConfidenceLevel(
+      foreground: const Color(0xFF991B1B),
+      background: const Color(0xFFFEE2E2),
       icon: Icons.error_outline_rounded,
-      subtext:
-      "We weren't fully confident reading this receipt — please double-check every field.",
+      subtext: l10n.lowConfidenceWarning,
     );
   }
 }

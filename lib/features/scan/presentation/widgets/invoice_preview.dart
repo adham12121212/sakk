@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../l10n/app_localizations.dart';
 
-/// Thumbnail of the scanned receipt image with a tappable "preview" pill.
-/// Falls back to a placeholder icon when there is no image, or it fails to
-/// load.
 class InvoicePreview extends StatelessWidget {
   const InvoicePreview({
     super.key,
@@ -62,12 +60,8 @@ class _PreviewBadge extends StatelessWidget {
             const Icon(Icons.visibility_outlined, color: Colors.white, size: 16),
             SizedBox(width: 6.w),
             Text(
-              'Invoice Preview',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-              ),
+              AppLocalizations.of(context)!.invoicePreviewLabel,
+              style: TextStyle(color: Colors.white, fontSize: 13.sp, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -81,14 +75,12 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      color: Colors.grey.shade200,
+      color: colorScheme.surfaceContainerHighest,
       child: Center(
-        child: Icon(
-          Icons.receipt_long_outlined,
-          size: 40.sp,
-          color: Colors.grey.shade400,
-        ),
+        child: Icon(Icons.receipt_long_outlined, size: 40.sp, color: Colors.grey.shade400),
       ),
     );
   }

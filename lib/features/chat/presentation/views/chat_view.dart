@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/chat_bubble.dart';
@@ -39,12 +40,11 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('AI Assistant'),
-        backgroundColor: AppColors.white,
-        surfaceTintColor: Colors.transparent,
+        title: Text(l10n!.aIAssistant),
+          surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
       ),
@@ -66,6 +66,7 @@ class _ChatViewState extends State<ChatView> {
               Expanded(
                 child: state.messages.isEmpty
                     ? ChatEmptyState(
+                  l10n: l10n,
                   onSuggestionTap: (text) =>
                       context.read<ChatCubit>().sendMessage(text),
                 )

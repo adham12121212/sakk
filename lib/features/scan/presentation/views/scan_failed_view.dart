@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ScanFailedView extends StatelessWidget {
   const ScanFailedView({
@@ -14,8 +15,9 @@ class ScanFailedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32.w),
@@ -38,21 +40,14 @@ class ScanFailedView extends StatelessWidget {
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "Couldn't read that receipt",
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  l10n.couldNotReadReceipt,
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.black54,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black54, height: 1.4),
                 ),
                 SizedBox(height: 28.h),
                 SizedBox(
@@ -61,12 +56,10 @@ class ScanFailedView extends StatelessWidget {
                   child: FilledButton(
                     onPressed: onBack,
                     style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28.r),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.r)),
                       backgroundColor: AppColors.primary,
                     ),
-                    child: const Text('Try Another Photo'),
+                    child: Text(l10n.tryAnotherPhoto),
                   ),
                 ),
               ],

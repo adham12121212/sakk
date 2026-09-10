@@ -14,32 +14,29 @@ class SigninViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            keyboardDismissBehavior:
-            ScrollViewKeyboardDismissBehavior.onDrag,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight,
               ),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: [
-                    const SigninHeader(),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.w,
-                          vertical: 28.h,
-                        ),
-                        child: SigninForm(
-                          isLoading: isLoading,
-                        ),
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SigninHeader(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 28.h,
                     ),
-                  ],
-                ),
+                    child: SigninForm(
+                      isLoading: isLoading,
+                    ),
+                  ),
+                ],
               ),
             ),
           );

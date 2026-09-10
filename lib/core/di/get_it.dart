@@ -5,9 +5,13 @@ import '../../features/auth/data/auth_data_source/auth_data_source.dart';
 import '../../features/auth/data/auth_repo_impl/auth_repo_impl.dart';
 import '../../features/auth/domain/auth_repo/auth_repo.dart';
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
+import '../../features/auth/domain/usecase/send_password_reset_otp_usecase.dart';
 import '../../features/auth/domain/usecase/signin_usecase.dart';
 import '../../features/auth/domain/usecase/signout_usecase.dart';
 import '../../features/auth/domain/usecase/signup_usecase.dart';
+import '../../features/auth/domain/usecase/update_avatar_usecase.dart';
+import '../../features/auth/domain/usecase/update_password_usecase.dart';
+import '../../features/auth/domain/usecase/verify_password_reset_otp_usecase.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/chat/data/chat_data_source/chat_data_source.dart';
 import '../../features/chat/data/chat_repo_impl/chat_repo_impl.dart';
@@ -15,6 +19,7 @@ import '../../features/chat/domain/chat_repo/chat_repo.dart';
 import '../../features/chat/domain/usecase/send_message_use_case.dart';
 import '../../features/chat/presentation/cubit/chat_cubit.dart';
 import '../../features/details/presentation/cubit/details_cubit.dart';
+import '../../features/forget_password/presentation/cubit/password_reset_cubit.dart';
 import '../../features/notification/data/notification_data_source/notification_data_source.dart';
 import '../../features/notification/data/notification_repo_impl/notification_repo_impl.dart';
 import '../../features/notification/domain/notification_repo/notification_repo.dart';
@@ -37,6 +42,9 @@ import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
 import '../logger/console_logger.dart';
 import '../service/notification_service.dart';
+import '../service/onboarding_service.dart';
+import '../service/storage_service.dart';
+import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
 import '../service/supabase_client_impl.dart';
 import '../service/warranty_notification_service.dart';
@@ -50,21 +58,28 @@ GetIt getIt = GetIt.instance;
 
 
 void setupLocator() {
+
   getIt.registerLazySingleton<AppLogger>(() => ConsoleLogger());
 
   getIt.registerLazySingleton<SupabaseService>(
         () => SupabaseServiceImpl(Supabase.instance.client),
   );
+
+  getIt.registerLazySingleton<StorageService>(
+        () => StorageServiceImpl(Supabase.instance.client),
+  );
+
   getIt.registerLazySingleton<InternetConnection>(() => InternetConnection());
   getIt.registerLazySingleton<NetworkInfo>(
         () => NetworkInfoImpl(getIt<InternetConnection>()),
   );
   getIt.registerLazySingleton<AuthDataSource>(
-        () => AuthDataSourceImpl(getIt<SupabaseService>()),
+        () => AuthDataSourceImpl(getIt<SupabaseService>(), getIt<StorageService>()),
   );
   getIt.registerLazySingleton<AuthRepository>(
         () => AuthRepoImpl(getIt<AuthDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
   );
+
   getIt.registerLazySingleton<SignInUseCase>(
         () => SignInUseCaseImpl(getIt<AuthRepository>()),
   );
@@ -79,10 +94,15 @@ void setupLocator() {
       getIt<SignupUsecase>(),
       getIt<SignInUseCase>(),
       getIt<SignOutUseCase>(),
+      getIt<UpdateAvatarUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetUserUseCase>(
         () => GetUserUseCaseImpl(getIt<AuthRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateAvatarUseCase>(
+        () => UpdateAvatarUsecaseImpl(getIt<AuthRepository>()),
   );
 
   // ---- Settings ----
@@ -184,10 +204,31 @@ void setupLocator() {
   getIt.registerLazySingleton<SendMessageUseCase>(
         () => SendMessageUseCaseImpl(getIt<ChatRepo>()),
   );
-  // Singleton (not factory) so chat history survives switching tabs and
-  // coming back — matches ProductsCubit's reasoning elsewhere. Must be
-  // provided via BlocProvider.value, not create:, for the same reason.
+
+
   getIt.registerLazySingleton<ChatCubit>(
         () => ChatCubit(getIt<SendMessageUseCase>()),
   );
+
+
+  // alongside your other AuthCubit/usecase registrations:
+  getIt.registerLazySingleton<SendPasswordResetOtpUseCase>(
+        () => SendPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<VerifyPasswordResetOtpUseCase>(
+        () => VerifyPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<UpdatePasswordUseCase>(
+        () => UpdatePasswordUseCaseImpl(getIt<AuthRepository>()),
+  );
+  getIt.registerFactory<PasswordResetCubit>(
+        () => PasswordResetCubit(
+      getIt<SendPasswordResetOtpUseCase>(),
+      getIt<VerifyPasswordResetOtpUseCase>(),
+      getIt<UpdatePasswordUseCase>(),
+    ),
+  );
+
+
+  getIt.registerLazySingleton<OnboardingService>(() => OnboardingServiceImpl());
 }

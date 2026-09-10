@@ -517,6 +517,714 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @warrantyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty Status'**
+  String get warrantyStatus;
+
+  /// No description provided for @noProductsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No products yet'**
+  String get noProductsYet;
+
+  /// No description provided for @expiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring'**
+  String get expiring;
+
+  /// No description provided for @expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expired;
+
+  /// No description provided for @categoryBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Breakdown'**
+  String get categoryBreakdown;
+
+  /// No description provided for @welcomeback.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back!'**
+  String get welcomeback;
+
+  /// No description provided for @welcometoSakk.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Sakk!'**
+  String get welcometoSakk;
+
+  /// No description provided for @atleast8characters.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get atleast8characters;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'product'**
+  String get product;
+
+  /// No description provided for @electronics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics'**
+  String get electronics;
+
+  /// No description provided for @appliances.
+  ///
+  /// In en, this message translates to:
+  /// **'Appliances'**
+  String get appliances;
+
+  /// No description provided for @furniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get furniture;
+
+  /// No description provided for @vehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get vehicles;
+
+  /// No description provided for @accessories.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories'**
+  String get accessories;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @aIAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get aIAssistant;
+
+  /// No description provided for @howdoIaddanewproduct.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I add a new product?'**
+  String get howdoIaddanewproduct;
+
+  /// No description provided for @whatshouldIdoifaproductbreaks.
+  ///
+  /// In en, this message translates to:
+  /// **'What should I do if a product breaks?'**
+  String get whatshouldIdoifaproductbreaks;
+
+  /// No description provided for @askmeanything.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything'**
+  String get askmeanything;
+
+  /// No description provided for @icanhelpwithyourproductswarrantiesandpurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'I can help with your products, warranties, and purchases.'**
+  String get icanhelpwithyourproductswarrantiesandpurchases;
+
+  /// No description provided for @askaboutaproductorwarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about a product or warranty…'**
+  String get askaboutaproductorwarranty;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get editProduct;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @productUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Product updated'**
+  String get productUpdated;
+
+  /// No description provided for @deleteProductQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete product?'**
+  String get deleteProductQuestion;
+
+  /// No description provided for @deleteProductConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{productName}\" will be permanently removed. This can\'t be undone.'**
+  String deleteProductConfirmBody(Object productName);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @downloadInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Invoice'**
+  String get downloadInvoice;
+
+  /// No description provided for @noInvoiceAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoice available'**
+  String get noInvoiceAvailable;
+
+  /// No description provided for @couldNotOpenShareSheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the share sheet: {error}'**
+  String couldNotOpenShareSheet(Object error);
+
+  /// No description provided for @noInvoiceImageToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoice image to download for this product.'**
+  String get noInvoiceImageToDownload;
+
+  /// No description provided for @downloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed: {error}'**
+  String downloadFailed(Object error);
+
+  /// No description provided for @couldNotDeleteProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete this product. Please try again.'**
+  String get couldNotDeleteProduct;
+
+  /// No description provided for @warrantyPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty Period'**
+  String get warrantyPeriod;
+
+  /// No description provided for @detailsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get detailsTab;
+
+  /// No description provided for @invoiceTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice'**
+  String get invoiceTab;
+
+  /// No description provided for @daysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{1 day left} other{{days} days left}}'**
+  String daysLeft(int days);
+
+  /// No description provided for @warrantyExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty expired'**
+  String get warrantyExpired;
+
+  /// No description provided for @expiresOnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires on: {date}'**
+  String expiresOnLabel(Object date);
+
+  /// No description provided for @shareBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand: {brand}'**
+  String shareBrand(Object brand);
+
+  /// No description provided for @shareStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Store: {store}'**
+  String shareStore(Object store);
+
+  /// No description provided for @sharePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: {currency} {price}'**
+  String sharePrice(Object currency, Object price);
+
+  /// No description provided for @sharePurchased.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased: {date}'**
+  String sharePurchased(Object date);
+
+  /// No description provided for @shareWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty: {months} months'**
+  String shareWarranty(Object months);
+
+  /// No description provided for @shareExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires: {date}'**
+  String shareExpires(Object date);
+
+  /// No description provided for @shareInvoiceUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'\nInvoice: {url}'**
+  String shareInvoiceUrl(Object url);
+
+  /// No description provided for @invoiceShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice — {name}'**
+  String invoiceShareText(Object name);
+
+  /// No description provided for @months.
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get months;
+
+  /// No description provided for @enteryouremailandwellsendyouacodetoresetyourpassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we\'ll send you a code to reset your password.'**
+  String get enteryouremailandwellsendyouacodetoresetyourpassword;
+
+  /// No description provided for @sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Code'**
+  String get sendCode;
+
+  /// No description provided for @passwordupdatedpleasesigninagain.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated please sign in again'**
+  String get passwordupdatedpleasesigninagain;
+
+  /// No description provided for @enterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Code'**
+  String get enterCode;
+
+  /// No description provided for @weSentCodeTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a {length}-digit code to {email}'**
+  String weSentCodeTo(Object email, Object length);
+
+  /// No description provided for @newCodeSentToEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'A new code was sent to your email'**
+  String get newCodeSentToEmail;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get resendCode;
+
+  /// No description provided for @enterDigitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the {length}-digit code'**
+  String enterDigitCode(Object length);
+
+  /// No description provided for @setNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set New Password'**
+  String get setNewPassword;
+
+  /// No description provided for @chooseNewPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new password for your account.'**
+  String get chooseNewPasswordSubtitle;
+
+  /// No description provided for @updatePasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get updatePasswordButton;
+
+  /// No description provided for @recentProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Products'**
+  String get recentProducts;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @totalProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Products'**
+  String get totalProducts;
+
+  /// No description provided for @activeWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Warranties'**
+  String get activeWarranties;
+
+  /// No description provided for @expiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring Soon'**
+  String get expiringSoon;
+
+  /// No description provided for @warrantiesExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 warranty is expiring soon} other{{count} warranties are expiring soon}}'**
+  String warrantiesExpiringSoon(int count);
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning,'**
+  String get goodMorning;
+
+  /// No description provided for @goodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon,'**
+  String get goodAfternoon;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening,'**
+  String get goodEvening;
+
+  /// No description provided for @goodNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Good night,'**
+  String get goodNight;
+
+  /// No description provided for @guestFallbackName.
+  ///
+  /// In en, this message translates to:
+  /// **'there'**
+  String get guestFallbackName;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get scan;
+
+  /// No description provided for @ai.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get ai;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @nonotificationsyet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get nonotificationsyet;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get getStarted;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @onboardingScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Your Receipts'**
+  String get onboardingScanTitle;
+
+  /// No description provided for @onboardingScanDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap a photo of any receipt or warranty card and let AI pull out the details automatically.'**
+  String get onboardingScanDescription;
+
+  /// No description provided for @onboardingTrackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Every Warranty'**
+  String get onboardingTrackTitle;
+
+  /// No description provided for @onboardingTrackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'See at a glance which products are active, expiring soon, or already expired.'**
+  String get onboardingTrackDescription;
+
+  /// No description provided for @onboardingNotifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Never Miss a Deadline'**
+  String get onboardingNotifyTitle;
+
+  /// No description provided for @onboardingNotifyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified before a warranty runs out, so you never lose coverage you\'re entitled to.'**
+  String get onboardingNotifyDescription;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk — AI Warranty Manager'**
+  String get appTagline;
+
+  /// No description provided for @myProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'My Products'**
+  String get myProducts;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @nothingInThisFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this filter'**
+  String get nothingInThisFilter;
+
+  /// No description provided for @searchProductsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get searchProductsHint;
+
+  /// No description provided for @noProductsMatchQuery.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match \"{query}\"'**
+  String noProductsMatchQuery(Object query);
+
+  /// No description provided for @recentSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Searches'**
+  String get recentSearches;
+
+  /// No description provided for @couldNotReadReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read that receipt'**
+  String get couldNotReadReceipt;
+
+  /// No description provided for @tryAnotherPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Another Photo'**
+  String get tryAnotherPhoto;
+
+  /// No description provided for @aiIsProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is Processing'**
+  String get aiIsProcessing;
+
+  /// No description provided for @extractionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Extraction Complete'**
+  String get extractionComplete;
+
+  /// No description provided for @extractingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting Data...'**
+  String get extractingData;
+
+  /// No description provided for @progressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progressLabel;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @scanReceiptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Receipt'**
+  String get scanReceiptTitle;
+
+  /// No description provided for @scanYourWarrantyReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan your warranty receipt'**
+  String get scanYourWarrantyReceipt;
+
+  /// No description provided for @scanInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll pull out the product, price, and warranty info automatically.'**
+  String get scanInstructions;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @confidenceScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidence Score: '**
+  String get confidenceScoreLabel;
+
+  /// No description provided for @doubleCheckFieldsBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Please double-check the fields below.'**
+  String get doubleCheckFieldsBelow;
+
+  /// No description provided for @lowConfidenceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'We weren\'t fully confident reading this receipt — please double-check every field.'**
+  String get lowConfidenceWarning;
+
+  /// No description provided for @invoicePreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice Preview'**
+  String get invoicePreviewLabel;
+
+  /// No description provided for @priceSar.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR {price}'**
+  String priceSar(Object price);
+
+  /// No description provided for @warrantyDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty Duration'**
+  String get warrantyDuration;
+
+  /// No description provided for @warrantyMonthsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{months} months'**
+  String warrantyMonthsValue(Object months);
+
+  /// No description provided for @verifyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Details'**
+  String get verifyDetails;
+
+  /// No description provided for @reviewAndEditExtractedData.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and edit extracted data'**
+  String get reviewAndEditExtractedData;
 }
 
 class _AppLocalizationsDelegate

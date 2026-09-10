@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
-
-import '../../../details/presentation/views/details_view.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';
-import '../widgets/circle_icon_button.dart';
 import '../widgets/home_header.dart';
 import '../widgets/recent_product_data.dart';
 import '../widgets/recent_products_section.dart';
@@ -44,8 +41,10 @@ class _HomeContentState extends State<_HomeContent> {
     context.read<ProductsCubit>().loadIfNeeded();
   }
 
-  String _resolveDisplayName() {
+  String _resolveDisplayName(BuildContext context) {
+
     final user = getIt<GetUserUseCase>()();
+    final l10n = AppLocalizations.of(context)!;
 
     final name = user?.name;
     if (name != null && name.trim().isNotEmpty) {
@@ -57,7 +56,7 @@ class _HomeContentState extends State<_HomeContent> {
       return email.split('@').first;
     }
 
-    return 'there';
+    return l10n.guestFallbackName;
   }
 
   void _openNotifications(BuildContext context) {
@@ -69,8 +68,8 @@ class _HomeContentState extends State<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
@@ -82,14 +81,13 @@ class _HomeContentState extends State<_HomeContent> {
             return RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
               color: AppColors.primary,
-              backgroundColor: AppColors.white,
-              child: SingleChildScrollView(
+                      child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HomeHeader(
-                      userName: _resolveDisplayName(),
+                      userName: _resolveDisplayName(context),
                       hasUnreadNotifications: true,
                       expiringSoonCount: state.expiring,
                       onSearchTap: () {
@@ -126,7 +124,7 @@ class _HomeContentState extends State<_HomeContent> {
                             SizedBox(height: 12.h),
                             OutlinedButton(
                               onPressed: () => context.read<ProductsCubit>().refresh(),
-                              child: const Text('Retry'),
+                              child:  Text(l10n.retry),
                             ),
                           ],
                         ),
@@ -145,7 +143,7 @@ class _HomeContentState extends State<_HomeContent> {
                               _card(
                                 StatCard(
                                   value: '${state.total}',
-                                  label: 'Total Products',
+                                  label:  l10n.totalProducts,
                                   icon: Icons.inventory_2_outlined,
                                   iconColor: AppColors.primary,
                                   iconBackgroundColor: AppColors.primary.withOpacity(0.1),
@@ -154,7 +152,7 @@ class _HomeContentState extends State<_HomeContent> {
                               _card(
                                 StatCard(
                                   value: '${state.active}',
-                                  label: 'Active Warranties',
+                                  label: l10n.activeWarranties,
                                   icon: Icons.shield_outlined,
                                   iconColor: AppColors.success,
                                   iconBackgroundColor: AppColors.success.withOpacity(0.1),
@@ -163,7 +161,7 @@ class _HomeContentState extends State<_HomeContent> {
                               _card(
                                 StatCard(
                                   value: '${state.expiring}',
-                                  label: 'Expiring Soon',
+                                  label: l10n.expiringSoon,
                                   icon: Icons.warning_amber_rounded,
                                   iconColor: const Color(0xFFF59E0B),
                                   iconBackgroundColor: const Color(0xFFFEF3C7),
@@ -172,7 +170,7 @@ class _HomeContentState extends State<_HomeContent> {
                               _card(
                                 StatCard(
                                   value: '${state.expired}',
-                                  label: 'Expired',
+                                  label: l10n.expired,
                                   icon: Icons.error_outline_rounded,
                                   iconColor: AppColors.error,
                                   iconBackgroundColor: AppColors.error.withOpacity(0.1),
@@ -204,13 +202,15 @@ class _HomeContentState extends State<_HomeContent> {
   }
 
   Widget _card(Widget child) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
+    decoration: BoxDecoration(
+        color: colorScheme.surface.withOpacity(1),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.03),
+            color: Colors.black.withOpacity(.09),
             blurRadius: 12,
             offset: const Offset(0, 5),
           ),

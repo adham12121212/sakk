@@ -11,12 +11,16 @@ class SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppColors.black),
-      ),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+       children: [
+         Text(
+           text,
+           style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color:
+           colorScheme.onSurface),
+         ),
+       ],
     );
   }
 }

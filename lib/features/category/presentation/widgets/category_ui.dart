@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/product_category.dart';
 
 
@@ -40,20 +41,23 @@ class CategoryUi {
     }
   }
 
-  static String label(ProductCategory category) {
+  static String label(BuildContext  context, ProductCategory category) {
+    final l10n = AppLocalizations.of(context)!;
     switch (category) {
       case ProductCategory.electronics:
-        return 'Electronics';
+        return l10n.electronics;
       case ProductCategory.appliances:
-        return 'Appliances';
+        return l10n.appliances;
       case ProductCategory.furniture:
-        return 'Furniture';
+        return l10n.furniture;
       case ProductCategory.vehicles:
-        return 'Vehicles';
+        return l10n.vehicles;
       case ProductCategory.accessories:
-        return 'Accessories';
+        return l10n.accessories;
       case ProductCategory.other:
-        return 'Other';
+        return l10n.other;
     }
   }
+
+
 }

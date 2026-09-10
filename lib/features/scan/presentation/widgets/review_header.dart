@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../l10n/app_localizations.dart';
 
-/// Top bar for the review screen: a back button plus a title/subtitle.
 class ReviewHeader extends StatelessWidget {
   const ReviewHeader({super.key, required this.onBack});
 
@@ -9,9 +9,13 @@ class ReviewHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: colorScheme.surface,
       padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
       child: Row(
         children: [
@@ -22,10 +26,10 @@ class ReviewHeader extends StatelessWidget {
               width: 40.w,
               height: 40.w,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.12),
+                color: colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.arrow_back_rounded, size: 20),
+              child:  Icon(Icons.arrow_back_rounded, size: 20 , color: colorScheme.onSurface),
             ),
           ),
           SizedBox(width: 14.w),
@@ -33,15 +37,9 @@ class ReviewHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Verify Details',
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                ),
+                Text(l10n.verifyDetails, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface)),
                 SizedBox(height: 2.h),
-                Text(
-                  'Review and edit extracted data',
-                  style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
-                ),
+                Text(l10n.reviewAndEditExtractedData, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
               ],
             ),
           ),

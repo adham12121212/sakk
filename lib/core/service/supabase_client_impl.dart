@@ -1,6 +1,8 @@
 import 'package:sakk/core/service/supabase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../error/Exceptions.dart';
+
 class SupabaseServiceImpl implements SupabaseService {
   final SupabaseClient _client;
   SupabaseServiceImpl(this._client);
@@ -29,7 +31,7 @@ class SupabaseServiceImpl implements SupabaseService {
 
   @override
   Future<void> add(String tableName, Map<String, dynamic> data) {
-     return _client.from(tableName).insert(data);
+    return _client.from(tableName).insert(data);
   }
 
 
@@ -66,7 +68,38 @@ class SupabaseServiceImpl implements SupabaseService {
 
   @override
   Future<void> signOut() {
-   return _client.auth.signOut();
+    return _client.auth.signOut();
+  }
+
+  @override
+  Future<void> resetPasswordForEmail(String email) {
+    return _client.auth.resetPasswordForEmail(email);
+  }
+
+  @override
+  Future<void> verifyRecoveryOtp({required String email, required String token}) async {
+    await _client.auth.verifyOTP(
+      type: OtpType.recovery,
+      email: email,
+      token: token,
+    );
+  }
+
+  @override
+  Future<void> updatePassword(String newPassword) async {
+    await _client.auth.updateUser(UserAttributes(password: newPassword));
+    
+    await _client.auth.signOut();
+  }
+
+  @override
+  Future<User> updateUserMetadata(Map<String, dynamic> data) async {
+    final response = await _client.auth.updateUser(UserAttributes(data: data));
+    final user = response.user;
+    if (user == null) {
+      throw ServerException('Failed to update user metadata');
+    }
+    return user;
   }
 
 }

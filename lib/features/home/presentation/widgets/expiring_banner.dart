@@ -3,8 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
-
-
+import '../../../../l10n/app_localizations.dart';
 
 class ExpiringBanner extends StatelessWidget {
   const ExpiringBanner({required this.count, this.onTap});
@@ -17,9 +16,7 @@ class ExpiringBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = count == 1
-        ? '1 warranty is expiring soon'
-        : '$count warranties are expiring soon';
+    final label = AppLocalizations.of(context)!.warrantiesExpiringSoon(count);
 
     return InkWell(
       onTap: onTap,
@@ -39,11 +36,7 @@ class ExpiringBanner extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF92400E),
-                ),
+                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: const Color(0xFF92400E)),
               ),
             ),
           ],

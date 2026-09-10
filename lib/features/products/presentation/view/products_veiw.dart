@@ -6,6 +6,7 @@ import 'package:sakk/features/products/presentation/view/product_search_view.dar
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/views/category_view.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
@@ -17,8 +18,6 @@ import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
 
 enum _ProductFilter { all, active, expiring, expired }
-
-
 
 class ProductsView extends StatefulWidget {
   const ProductsView({super.key});
@@ -74,8 +73,9 @@ class _ProductsViewState extends State<ProductsView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
@@ -85,8 +85,7 @@ class _ProductsViewState extends State<ProductsView> {
             return RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
               color: AppColors.primary,
-              backgroundColor: AppColors.white,
-              child: Column(
+                      child: Column(
                 children: [
                   Padding(
                     padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
@@ -94,7 +93,7 @@ class _ProductsViewState extends State<ProductsView> {
                       children: [
                         Expanded(
                           child: Text(
-                            'My Products',
+                            l10n.myProducts,
                             style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -127,25 +126,25 @@ class _ProductsViewState extends State<ProductsView> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       children: [
                         _FilterChip(
-                          label: 'All',
+                          label: l10n.all,
                           selected: _filter == _ProductFilter.all,
                           onTap: () => setState(() => _filter = _ProductFilter.all),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
-                          label: 'Active',
+                          label: l10n.active,
                           selected: _filter == _ProductFilter.active,
                           onTap: () => setState(() => _filter = _ProductFilter.active),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
-                          label: 'Expiring',
+                          label: l10n.expiring,
                           selected: _filter == _ProductFilter.expiring,
                           onTap: () => setState(() => _filter = _ProductFilter.expiring),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
-                          label: 'Expired',
+                          label: l10n.expired,
                           selected: _filter == _ProductFilter.expired,
                           onTap: () => setState(() => _filter = _ProductFilter.expired),
                         ),
@@ -167,7 +166,7 @@ class _ProductsViewState extends State<ProductsView> {
                   ],
                   SizedBox(height: 12.h),
                   Divider(height: 1, color: Colors.grey.shade200),
-                  Expanded(child: _buildBody(state, filtered)),
+                  Expanded(child: _buildBody(context, state, filtered)),
                 ],
               ),
             );
@@ -177,7 +176,9 @@ class _ProductsViewState extends State<ProductsView> {
     );
   }
 
-  Widget _buildBody(ProductsState state, List<ProductEntity> filtered) {
+  Widget _buildBody(BuildContext context, ProductsState state, List<ProductEntity> filtered) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (state.isLoading && state.products.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -197,7 +198,7 @@ class _ProductsViewState extends State<ProductsView> {
               SizedBox(height: 12.h),
               OutlinedButton(
                 onPressed: () => context.read<ProductsCubit>().refresh(),
-                child: const Text('Retry'),
+                child: Text(l10n.retry),
               ),
             ],
           ),
@@ -208,7 +209,7 @@ class _ProductsViewState extends State<ProductsView> {
     if (filtered.isEmpty) {
       return Center(
         child: Text(
-          state.products.isEmpty ? 'No products yet' : 'Nothing in this filter',
+          state.products.isEmpty ? l10n.noProductsYet : l10n.nothingInThisFilter,
           style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
         ),
       );
@@ -227,7 +228,6 @@ class _ProductsViewState extends State<ProductsView> {
       },
     );
   }
-
 }
 
 class _FilterChip extends StatelessWidget {
@@ -243,6 +243,8 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20.r),
@@ -250,7 +252,7 @@ class _FilterChip extends StatelessWidget {
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.grey.withOpacity(0.12),
+          color: selected ? AppColors.primary : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Text(
@@ -258,7 +260,7 @@ class _FilterChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
-            color: selected ? AppColors.white : AppColors.black.withOpacity(0.7),
+            color: selected ? AppColors.white : colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
       ),
@@ -288,7 +290,7 @@ class _ActiveCategoryChip extends StatelessWidget {
           Icon(CategoryUi.icon(category), size: 14.sp, color: color),
           SizedBox(width: 6.w),
           Text(
-            CategoryUi.label(category),
+            CategoryUi.label(context, category),
             style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: color),
           ),
           SizedBox(width: 6.w),
