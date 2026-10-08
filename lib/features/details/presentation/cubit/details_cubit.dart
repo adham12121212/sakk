@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -80,6 +81,64 @@ class DetailsCubit extends Cubit<DetailsState> {
       await file.writeAsBytes(response.bodyBytes);
       emit(DetailsDownloadReady(file.path, product.name));
     } catch (e) {
+      emit(DetailsActionError(e));
+    }
+  }
+
+  Future<void> downloadImageToGallery(ProductEntity product) async {
+    final url = product.receiptUrl ?? product.imageUrl;
+    if (url == null) {
+      emit(const DetailsActionError('no_invoice_url'));
+      return;
+    }
+
+    emit(const DetailsActionInProgress());
+    try {
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess) {
+        final granted = await Gal.requestAccess();
+        if (!granted) {
+          emit(const DetailsActionError('gallery_permission_denied'));
+          return;
+        }
+      }
+
+      print('[DEBUG] fetching url: $url');
+
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(const Duration(seconds: 30));
+
+      print('[DEBUG] status: ${response.statusCode}');
+      print('[DEBUG] content-type: ${response.headers['content-type']}');
+      print('[DEBUG] bytes length: ${response.bodyBytes.length}');
+
+      if (response.statusCode != 200) {
+        throw Exception('Server returned ${response.statusCode}');
+      }
+
+      final tempDir = await getTemporaryDirectory();
+      final safeName = product.name.replaceAll(RegExp(r'[^\w\s-]'), '_');
+      final tempFile = File('${tempDir.path}/$safeName.jpg');
+      await tempFile.writeAsBytes(response.bodyBytes);
+
+      print('[DEBUG] wrote file: ${tempFile.path}, '
+          'exists: ${await tempFile.exists()}, '
+          'size: ${await tempFile.length()}');
+
+      await Gal.putImage(tempFile.path, album: 'MyAppInvoices');
+
+      print('[DEBUG] Gal.putImage completed without throwing');
+
+      if (isClosed) return;
+      emit(DetailsGallerySaved(tempFile.path));
+    } on GalException catch (e) {
+      print('[DEBUG] GalException: ${e.type} - ${e.type.message}');
+      if (isClosed) return;
+      emit(DetailsActionError(e));
+    } catch (e) {
+      print('[DEBUG] generic exception: $e');
+      if (isClosed) return;
       emit(DetailsActionError(e));
     }
   }

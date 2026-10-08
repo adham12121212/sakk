@@ -407,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @priceEgp.
   ///
   /// In en, this message translates to:
-  /// **'Price (EGP)'**
+  /// **'Price(EGP)'**
   String get priceEgp;
 
   /// No description provided for @productSavedSuccessfully.
@@ -1196,12 +1196,6 @@ abstract class AppLocalizations {
   /// **'Invoice Preview'**
   String get invoicePreviewLabel;
 
-  /// No description provided for @priceSar.
-  ///
-  /// In en, this message translates to:
-  /// **'SAR {price}'**
-  String priceSar(Object price);
-
   /// No description provided for @warrantyDuration.
   ///
   /// In en, this message translates to:
@@ -1225,6 +1219,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Review and edit extracted data'**
   String get reviewAndEditExtractedData;
+
+  /// No description provided for @biometricLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Face ID / Fingerprint'**
+  String get biometricLogin;
+
+  /// No description provided for @biometricNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric authentication isn\'t available on this device.'**
+  String get biometricNotAvailable;
+
+  /// No description provided for @biometricConfirmEnableReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm to enable Face ID / Fingerprint login'**
+  String get biometricConfirmEnableReason;
+
+  /// No description provided for @biometricUnlockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Sakk to continue'**
+  String get biometricUnlockReason;
+
+  /// No description provided for @appLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk is locked'**
+  String get appLockedTitle;
+
+  /// No description provided for @appLockedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Face ID or your fingerprint to continue.'**
+  String get appLockedSubtitle;
+
+  /// No description provided for @unlockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get unlockButton;
+
+  /// No description provided for @usePasswordInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Use password instead'**
+  String get usePasswordInstead;
+
+  /// No description provided for @biometricRequiresActiveSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your password first to enable quick biometric access.'**
+  String get biometricRequiresActiveSession;
+
+  /// No description provided for @biometricNotEnabledYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric login isn\'t enabled yet. Turn it on from Profile settings.'**
+  String get biometricNotEnabledYet;
+
+  /// No description provided for @scannedPriceValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} EGP'**
+  String scannedPriceValue(Object price);
 }
 
 class _AppLocalizationsDelegate

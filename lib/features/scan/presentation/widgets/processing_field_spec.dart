@@ -34,7 +34,13 @@ List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
     ),
     ProcessingFieldSpec(
       label: l10n.price,
-      valueOf: (d) => d.price == null ? null : l10n.priceSar(d.price!.toStringAsFixed(0)),
+      // Was `l10n.priceEgp`, which is the static field *caption* used
+      // elsewhere ("Price (EGP)") — not a formatted value, so every scan
+      // showed that literal caption text instead of the actual scanned
+      // price during the reveal animation.
+      valueOf: (d) => d.price == null
+          ? null
+          : l10n.scannedPriceValue(d.price!.toStringAsFixed(2)),
       skeletonWidth: 110,
     ),
     ProcessingFieldSpec(

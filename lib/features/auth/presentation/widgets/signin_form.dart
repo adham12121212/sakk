@@ -13,10 +13,7 @@ import 'signin_button.dart';
 import 'social_login_buttons.dart';
 
 class SigninForm extends StatefulWidget {
-  const SigninForm({
-    super.key,
-    required this.isLoading,
-  });
+  const SigninForm({super.key, required this.isLoading});
 
   final bool isLoading;
 
@@ -45,7 +42,6 @@ class _SigninFormState extends State<SigninForm> {
     context.read<AuthCubit>().signin(
       email: _emailController.text.trim(),
       password: _passwordController.text,
-
     );
   }
 
@@ -60,26 +56,18 @@ class _SigninFormState extends State<SigninForm> {
         children: [
           Text(
             l10n.welcomeBack,
-            style: TextStyle(
-              fontSize: 23.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
           ),
 
           SizedBox(height: 8.h),
 
           Text(
             l10n.signIn,
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w400,
-            ),
+            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w400),
           ),
 
           SizedBox(height: 28.h),
-          EmailTextField(
-            controller: _emailController,
-          ),
+          EmailTextField(controller: _emailController),
 
           SizedBox(height: 20.h),
 
@@ -97,10 +85,7 @@ class _SigninFormState extends State<SigninForm> {
 
           SizedBox(height: 15.h),
 
-          SigninButton(
-            isLoading: widget.isLoading,
-            onPressed: _submit,
-          ),
+          SigninButton(isLoading: widget.isLoading, onPressed: _submit),
 
           SizedBox(height: 28.h),
 
@@ -112,7 +97,6 @@ class _SigninFormState extends State<SigninForm> {
             actionLabel: l10n.signUp,
             onTap: () => context.push('/signup'),
           ),
-
         ],
       ),
     );

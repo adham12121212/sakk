@@ -48,7 +48,7 @@ class _ProductDetailsBody extends StatefulWidget {
 
 class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   int _tabIndex = 0;
-  bool _isSharing = false; // share stays local — it's a single synchronous OS call, no cubit state needed
+  bool _isSharing = false;
 
   ProductEntity get product => widget.product;
 
@@ -154,15 +154,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     context.read<DetailsCubit>().delete(product.id);
   }
 
-  void _showMoreActions() {
-    MoreActionsSheet.show(
-      context,
-      onEdit: _editProduct,
-      onShare: _share,
-      onDownload: () => context.read<DetailsCubit>().downloadInvoice(product),
-      onDelete: _confirmDelete,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +191,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                 warrantyProgress: _warrantyProgress,
                 onBack: () => Navigator.of(context).pop(),
                 onShare: isBusy ? () {} : _share,
-                onDownload: isBusy ? () {} : () => context.read<DetailsCubit>().downloadInvoice(product),
-                onMore: _showMoreActions,
+                onDownload: isBusy ? () {} : () => context.read<DetailsCubit>().downloadImageToGallery(product),
               ),
             ),
             SliverToBoxAdapter(

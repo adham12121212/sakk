@@ -6,12 +6,15 @@ import 'package:sakk/features/auth/presentation/views/signup_view.dart';
 import 'package:sakk/features/home/presentation/views/home_view.dart';
 import '../../features/analytics/presentation/view/analytics_view.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/views/biometric_lock_view.dart';
 import '../../features/auth/presentation/views/profile_view.dart';
 import '../../features/chat/presentation/cubit/chat_cubit.dart';
 import '../../features/chat/presentation/views/chat_view.dart';
 import '../../features/details/presentation/cubit/details_cubit.dart';
 import '../../features/details/presentation/views/details_view.dart';
 import '../../features/forget_password/presentation/views/forgot_password_view.dart';
+import '../../features/legal/presentation/views/privacy_policy_view.dart';
+import '../../features/legal/presentation/views/terms_of_service_view.dart';
 import '../../features/nav_bar/nav_bar.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/notification/presentation/views/notifications_view.dart';
@@ -30,6 +33,9 @@ class AppRoutes {
   static const signin = '/signin';
   static const signup = '/signup';
   static const forgotPassword = '/forgot-password';
+  static const biometricLock = '/biometric-lock';
+  static const terms = '/terms';
+  static const privacy = '/privacy';
   static const home = '/home';
   static const details = '/details';
   static const products = '/products';
@@ -73,6 +79,19 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const ForgotPasswordView(),
     ),
 
+    GoRoute(
+      path: AppRoutes.biometricLock,
+      builder: (context, state) => const BiometricLockView(),
+    ),
+
+    GoRoute(
+      path: AppRoutes.terms,
+      builder: (context, state) => const TermsOfServiceView(),
+    ),
+    GoRoute(
+      path: AppRoutes.privacy,
+      builder: (context, state) => const PrivacyPolicyView(),
+    ),
 
     GoRoute(
       path: AppRoutes.scan,

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakk/core/constant/app_colors.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/di/get_it.dart';
+import '../../../../core/route/app_router.dart';
+import '../../../../core/service/biometric_auth_service.dart';
+import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../cubit/auth_cubit.dart';
 
 class SocialLoginButtons extends StatelessWidget {
   final bool showBiometric;
@@ -10,6 +18,30 @@ class SocialLoginButtons extends StatelessWidget {
   void _showComingSoon(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
+  }
+
+  Future<void> _handleBiometricSignIn(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final session = Supabase.instance.client.auth.currentSession;
+
+    if (session == null) {
+      AppSnackBar.error(context, l10n.biometricRequiresActiveSession);
+      return;
+    }
+
+    final biometricService = getIt<BiometricAuthService>();
+    if (!await biometricService.isEnabled) {
+      if (!context.mounted) return;
+      AppSnackBar.error(context, l10n.biometricNotEnabledYet);
+      return;
+    }
+
+    final success = await biometricService.authenticate(
+      reason: l10n.biometricUnlockReason,
+    );
+    if (success && context.mounted) {
+      context.go(AppRoutes.home);
+    }
   }
 
   @override
@@ -29,39 +61,37 @@ class SocialLoginButtons extends StatelessWidget {
           ],
         ),
         SizedBox(height: 24.h),
+
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _showComingSoon(context),
-                icon: Icon(Icons.apple, color: AppColors.primary),
-                label: Text(l10n.apple, style: TextStyle(color: AppColors.primary)),
-                style: OutlinedButton.styleFrom(side: const BorderSide(color: AppColors.primary)),
-              ),
+                child:GestureDetector(
+                  onTap: () => context.read<AuthCubit>().signInWithGoogle(),
+                  child: Container(
+                    height: 55,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: AppColors.primary,
+                      width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/icons/google.png', width: 25.w),
+                        SizedBox(width: 10.w),
+                        Text(l10n.google, style: TextStyle(color: AppColors.primary,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600)
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+            )
+              ],
             ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _showComingSoon(context),
-                icon: Icon(Icons.g_mobiledata, color: AppColors.primary, size: 25.w),
-                label: Text(l10n.google, style: TextStyle(color: AppColors.primary)),
-                style: OutlinedButton.styleFrom(side: const BorderSide(color: AppColors.primary)),
-              ),
-            ),
-          ],
-        ),
-        if (showBiometric) ...[
-          SizedBox(height: 18.h),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _showComingSoon(context),
-              icon: Icon(Icons.fingerprint, color: AppColors.primary),
-              label: Text(l10n.signInWithBiometrics, style: TextStyle(color: AppColors.primary)),
-              style: OutlinedButton.styleFrom(side: const BorderSide(color: AppColors.primary)),
-            ),
-          ),
-        ],
+
+
       ],
     );
   }

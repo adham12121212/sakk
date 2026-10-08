@@ -14,7 +14,8 @@ abstract class SupabaseService {
 
   Future<void> signOut();
 
-  Future<UserResponse> updatePhone(String phone);
+  Future<AuthResponse> signInWithGoogle();
+
   User? get currentUser;
 
   Future<void> add(String tableName, Map<String, dynamic> data);

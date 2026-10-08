@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sakk/core/constant/app_colors.dart';
 
 import '../../domain/entities/notification_enitiy.dart';
 import 'notification_type_icon.dart';
@@ -12,41 +13,47 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListTile(
-      onTap: onTap,
-      leading: NotificationTypeIcon(type: notification.type),
-      title: Text(
-        notification.title,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
-        ),
+    return Container(
+      margin: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withAlpha(49),
+        borderRadius: BorderRadius.circular(20)
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(notification.subtitle),
-          const SizedBox(height: 2),
-          Text(
-            _timeAgo(notification.createdAt),
-            style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+      child: ListTile(
+        onTap: onTap,
+        leading: NotificationTypeIcon(type: notification.type),
+        title: Text(
+          notification.title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
           ),
-        ],
-      ),
-      trailing: notification.isRead
-          ? null
-          : Container(
-        width: 8,
-        height: 8,
-        decoration: const BoxDecoration(
-          color: Colors.blue,
-          shape: BoxShape.circle,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(notification.subtitle),
+            const SizedBox(height: 2),
+            Text(
+              _timeAgo(notification.createdAt),
+              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            ),
+          ],
+        ),
+        trailing: notification.isRead
+            ? null
+            : Container(
+          width: 8,
+          height: 8,
+          decoration: const BoxDecoration(
+            color:  AppColors.primary,
+            shape: BoxShape.circle,
+          ),
         ),
       ),
     );
   }
 
-  /// Minimal relative-time formatter so this widget has no extra
-  /// dependency. Swap for your existing timeago/intl util if you have one.
+
   String _timeAgo(DateTime dateTime) {
     final diff = DateTime.now().difference(dateTime);
     if (diff.inMinutes < 1) return 'Just now';

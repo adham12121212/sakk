@@ -6,7 +6,6 @@ class UserModel extends UserEntity {
     required super.id,
     required super.email,
     required super.name,
-     super.phoneNumber,
     required super.avatarUrl,
   });
 
@@ -15,8 +14,7 @@ class UserModel extends UserEntity {
       id: user.id,
       email: user.email ?? '',
       name: user.userMetadata?['name'] ?? '',
-      phoneNumber: user.phone,
-      avatarUrl: user.userMetadata?['avatar_url'] ?? '',
+      avatarUrl: user.userMetadata?['avatar_url'] as String?,
     );
   }
 

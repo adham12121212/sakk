@@ -163,7 +163,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get warrantyRequired => 'Warranty length is required';
 
   @override
-  String get priceEgp => 'Price (EGP)';
+  String get priceEgp => 'Price(EGP)';
 
   @override
   String get productSavedSuccessfully => 'Product saved successfully';
@@ -618,11 +618,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invoicePreviewLabel => 'Invoice Preview';
 
   @override
-  String priceSar(Object price) {
-    return 'SAR $price';
-  }
-
-  @override
   String get warrantyDuration => 'Warranty Duration';
 
   @override
@@ -635,4 +630,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewAndEditExtractedData => 'Review and edit extracted data';
+
+  @override
+  String get biometricLogin => 'Login with Face ID / Fingerprint';
+
+  @override
+  String get biometricNotAvailable =>
+      'Biometric authentication isn\'t available on this device.';
+
+  @override
+  String get biometricConfirmEnableReason =>
+      'Confirm to enable Face ID / Fingerprint login';
+
+  @override
+  String get biometricUnlockReason => 'Unlock Sakk to continue';
+
+  @override
+  String get appLockedTitle => 'Sakk is locked';
+
+  @override
+  String get appLockedSubtitle =>
+      'Use Face ID or your fingerprint to continue.';
+
+  @override
+  String get unlockButton => 'Unlock';
+
+  @override
+  String get usePasswordInstead => 'Use password instead';
+
+  @override
+  String get biometricRequiresActiveSession =>
+      'Sign in with your password first to enable quick biometric access.';
+
+  @override
+  String get biometricNotEnabledYet =>
+      'Biometric login isn\'t enabled yet. Turn it on from Profile settings.';
+
+  @override
+  String scannedPriceValue(Object price) {
+    return '$price EGP';
+  }
 }

@@ -10,7 +10,7 @@
   "signIn": "تسجيل الدخول",
   "signInWithBiometrics": "تسجيل الدخول ببصمة الإصبع",
   "orContinueWith": "أو تابع بـ",
-  "google": "Google",
+  "google": "جوجل",
   "apple": "Apple",
   "noAccount": "ليس لديك حساب؟",
   "signUp": "إنشاء حساب",
@@ -167,12 +167,27 @@
   "doubleCheckFieldsBelow": "يرجى التحقق من الحقول أدناه.",
   "lowConfidenceWarning": "لم نكن واثقين تمامًا من قراءة هذا الإيصال — يرجى التحقق من كل حقل.",
   "invoicePreviewLabel": "معاينة الفاتورة",
-  "priceSar": "{price} ريال سعودي",
+  "priceEgp": "سعر (جنيه)",
   "warrantyDuration": "مدة الضمان",
   "warrantyMonthsValue": "{months} شهرًا",
   "verifyDetails": "تحقق من التفاصيل",
-  "reviewAndEditExtractedData": "راجع البيانات المستخرجة وعدّلها"
+  "reviewAndEditExtractedData": "راجع البيانات المستخرجة وعدّلها",
+  "purchaseDate" : "تاريخ الشراء",
+  "warrantyMonths" : "فترة الضمان (بالأشهر)",
+  "store" : "اسم المحل",
+  "notes" : "الملحوظات",
+  "brand" : "الماركة",
+  "productName" : "اسم المنتج",
 
-
-
+  "biometricLogin": "تسجيل الدخول ببصمة الإصبع / Face ID",
+  "biometricNotAvailable": "المصادقة البيومترية غير متاحة على هذا الجهاز.",
+  "biometricConfirmEnableReason": "أكّد لتفعيل تسجيل الدخول ببصمة الإصبع / Face ID",
+  "biometricUnlockReason": "افتح تطبيق صك للمتابعة",
+  "appLockedTitle": "صك مقفل",
+  "appLockedSubtitle": "استخدم بصمة إصبعك أو Face ID للمتابعة.",
+  "unlockButton": "فتح",
+  "usePasswordInstead": "استخدام كلمة المرور بدلاً من ذلك",
+  "biometricRequiresActiveSession": "سجّل الدخول بكلمة المرور أولاً لتفعيل الدخول البيومتري السريع.",
+  "biometricNotEnabledYet": "تسجيل الدخول البيومتري غير مفعّل بعد. فعّله من إعدادات الملف الشخصي.",
+  "scannedPriceValue": "{price} جنيه"
 }

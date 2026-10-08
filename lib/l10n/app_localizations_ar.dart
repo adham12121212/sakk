@@ -39,7 +39,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orContinueWith => 'أو تابع بـ';
 
   @override
-  String get google => 'Google';
+  String get google => 'جوجل';
 
   @override
   String get apple => 'Apple';
@@ -130,25 +130,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveProduct => 'Save Product';
 
   @override
-  String get productName => 'Product Name';
+  String get productName => 'اسم المنتج';
 
   @override
-  String get notes => 'Notes';
+  String get notes => 'الملحوظات';
 
   @override
-  String get brand => 'Brand';
+  String get brand => 'الماركة';
 
   @override
   String get price => 'Price';
 
   @override
-  String get warrantyMonths => 'Warranty (months)';
+  String get warrantyMonths => 'فترة الضمان (بالأشهر)';
 
   @override
-  String get store => 'Store';
+  String get store => 'اسم المحل';
 
   @override
-  String get purchaseDate => 'Purchase Date';
+  String get purchaseDate => 'تاريخ الشراء';
 
   @override
   String get productImage => 'Product Image';
@@ -163,7 +163,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get warrantyRequired => 'Warranty length is required';
 
   @override
-  String get priceEgp => 'Price (EGP)';
+  String get priceEgp => 'سعر (جنيه)';
 
   @override
   String get productSavedSuccessfully => 'Product saved successfully';
@@ -622,11 +622,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invoicePreviewLabel => 'معاينة الفاتورة';
 
   @override
-  String priceSar(Object price) {
-    return '$price ريال سعودي';
-  }
-
-  @override
   String get warrantyDuration => 'مدة الضمان';
 
   @override
@@ -639,4 +634,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reviewAndEditExtractedData => 'راجع البيانات المستخرجة وعدّلها';
+
+  @override
+  String get biometricLogin => 'تسجيل الدخول ببصمة الإصبع / Face ID';
+
+  @override
+  String get biometricNotAvailable =>
+      'المصادقة البيومترية غير متاحة على هذا الجهاز.';
+
+  @override
+  String get biometricConfirmEnableReason =>
+      'أكّد لتفعيل تسجيل الدخول ببصمة الإصبع / Face ID';
+
+  @override
+  String get biometricUnlockReason => 'افتح تطبيق صك للمتابعة';
+
+  @override
+  String get appLockedTitle => 'صك مقفل';
+
+  @override
+  String get appLockedSubtitle => 'استخدم بصمة إصبعك أو Face ID للمتابعة.';
+
+  @override
+  String get unlockButton => 'فتح';
+
+  @override
+  String get usePasswordInstead => 'استخدام كلمة المرور بدلاً من ذلك';
+
+  @override
+  String get biometricRequiresActiveSession =>
+      'سجّل الدخول بكلمة المرور أولاً لتفعيل الدخول البيومتري السريع.';
+
+  @override
+  String get biometricNotEnabledYet =>
+      'تسجيل الدخول البيومتري غير مفعّل بعد. فعّله من إعدادات الملف الشخصي.';
+
+  @override
+  String scannedPriceValue(Object price) {
+    return '$price جنيه';
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/features/products/presentation/view/product_search_view.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
@@ -71,6 +72,20 @@ class _ProductsViewState extends State<ProductsView> {
     context.push(AppRoutes.details, extra: product);
   }
 
+  // Same placeholder-shape idea as home_view.dart — this is never shown
+  // as real data, Skeletonizer paints shimmer bones over it.
+  List<ProductEntity> _placeholderProducts() {
+    final now = DateTime.now();
+    return List.generate(5, (i) => ProductEntity(
+      id: 'placeholder-$i',
+      name: 'Product name',
+      brand: 'Brand',
+      price: 100,
+      purchaseDate: now.subtract(const Duration(days: 60)),
+      warrantyMonths: 12,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -81,7 +96,6 @@ class _ProductsViewState extends State<ProductsView> {
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
             final filtered = _applyFilter(state.products);
-
             return RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
               color: AppColors.primary,
@@ -97,7 +111,9 @@ class _ProductsViewState extends State<ProductsView> {
                             style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        CircleIconButton(icon: Icons.search_rounded, onTap: () {
+                        CircleIconButton(
+                            icon: Icons.search_rounded,
+                            onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => BlocProvider.value(
@@ -106,15 +122,17 @@ class _ProductsViewState extends State<ProductsView> {
                               ),
                             ),
                           );
-                        }),
+                        },
+                          color: AppColors.primary,
+                        ),
                         SizedBox(width: 8.w),
                         CircleIconButton(
                           icon: Icons.filter_alt_rounded,
                           onTap: _openCategoryFilter,
                           showBadge: _categoryFilter != null,
+                          color: AppColors.primary,
+
                         ),
-                        SizedBox(width: 8.w),
-                        CircleIconButton(icon: Icons.grid_view_rounded, onTap: () {}),
                       ],
                     ),
                   ),
@@ -165,7 +183,6 @@ class _ProductsViewState extends State<ProductsView> {
                     ),
                   ],
                   SizedBox(height: 12.h),
-                  Divider(height: 1, color: Colors.grey.shade200),
                   Expanded(child: _buildBody(context, state, filtered)),
                 ],
               ),
@@ -179,8 +196,20 @@ class _ProductsViewState extends State<ProductsView> {
   Widget _buildBody(BuildContext context, ProductsState state, List<ProductEntity> filtered) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (state.isLoading && state.products.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    final isInitialLoading = state.isLoading && state.products.isEmpty;
+    if (isInitialLoading) {
+      final placeholders = _placeholderProducts()
+          .map(RecentProductData.fromEntity)
+          .toList();
+      return Skeletonizer(
+        enabled: true,
+        child: ListView.separated(
+          padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
+          itemCount: placeholders.length,
+          separatorBuilder: (_, __) => SizedBox(height: 12.h),
+          itemBuilder: (context, index) => RecentProductTile(data: placeholders[index]),
+        ),
+      );
     }
 
     if (state.error != null && state.products.isEmpty) {

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:meta/meta.dart';
 import 'package:sakk/features/auth/domain/usecase/signout_usecase.dart';
 import 'package:sakk/features/auth/domain/usecase/signup_usecase.dart';
@@ -9,6 +8,7 @@ import '../../../../core/error/Failure.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecase/signin_usecase.dart';
+import '../../domain/usecase/signin_with_google_usecase.dart';
 import '../../domain/usecase/update_avatar_usecase.dart';
 
 part 'auth_state.dart';
@@ -18,12 +18,14 @@ class AuthCubit extends Cubit<AuthState> {
   final SignInUseCase _signInUsecase;
   final SignOutUseCase _signOutUseCase;
   final UpdateAvatarUseCase _updateAvatarUseCase;
+  final SignInWithGoogleUseCase _signInWithGoogleUseCase;
 
   AuthCubit(
       this._signupUsecase,
       this._signInUsecase,
       this._signOutUseCase,
       this._updateAvatarUseCase,
+      this._signInWithGoogleUseCase,
       ) : super(AuthInitial());
 
 
@@ -45,10 +47,9 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
     required String fullName,
-    required String phone,
   }) async {
     emit(AuthLoading());
-    final result = await _signupUsecase.call(email: email, password: password, fullName: fullName, phone: phone);
+    final result = await _signupUsecase.call(email: email, password: password, fullName: fullName);
     result.fold(
           (failure) => emit(AuthError(failure.message)),
           (user) {
@@ -74,4 +75,17 @@ class AuthCubit extends Cubit<AuthState> {
           (user) => emit(AuthAvatarUpdated(user)),
     );
   }
+
+  Future<void> signInWithGoogle() async {
+    emit(AuthLoading());
+    final result = await _signInWithGoogleUseCase();
+    result.fold(
+          (failure) {
+        if (failure is CancelledFailure) { emit(AuthInitial()); return; }
+        emit(AuthError(failure.message));
+      },
+          (user) { getIt<ProductsCubit>().reset(); emit(AuthSuccess(user)); },
+    );
+  }
+
 }

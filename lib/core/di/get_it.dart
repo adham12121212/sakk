@@ -7,6 +7,7 @@ import '../../features/auth/domain/auth_repo/auth_repo.dart';
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/auth/domain/usecase/send_password_reset_otp_usecase.dart';
 import '../../features/auth/domain/usecase/signin_usecase.dart';
+import '../../features/auth/domain/usecase/signin_with_google_usecase.dart';
 import '../../features/auth/domain/usecase/signout_usecase.dart';
 import '../../features/auth/domain/usecase/signup_usecase.dart';
 import '../../features/auth/domain/usecase/update_avatar_usecase.dart';
@@ -41,6 +42,7 @@ import '../error/network_info.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
 import '../logger/console_logger.dart';
+import '../service/biometric_auth_service.dart';
 import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/storage_service.dart';
@@ -95,6 +97,7 @@ void setupLocator() {
       getIt<SignInUseCase>(),
       getIt<SignOutUseCase>(),
       getIt<UpdateAvatarUseCase>(),
+      getIt<SignInWithGoogleUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetUserUseCase>(
@@ -108,6 +111,13 @@ void setupLocator() {
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
   getIt.registerLazySingleton<LocaleController>(() => LocaleController());
+
+  // Device-level Face ID / Touch ID / fingerprint gate — see
+  // BiometricAuthService's doc comment for how this relates to (and does
+  // NOT replace) the Supabase session itself.
+  getIt.registerLazySingleton<BiometricAuthService>(
+        () => BiometricAuthServiceImpl(),
+  );
 
   // ---- Products ----
   getIt.registerLazySingleton<ProductDataSource>(
@@ -231,4 +241,9 @@ void setupLocator() {
 
 
   getIt.registerLazySingleton<OnboardingService>(() => OnboardingServiceImpl());
+
+  getIt.registerLazySingleton<SignInWithGoogleUseCase>(
+        () => SignInWithGoogleUseCaseImpl(getIt<AuthRepository>()),
+  );
 }
+

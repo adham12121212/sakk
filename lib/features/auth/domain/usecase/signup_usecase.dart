@@ -7,7 +7,7 @@ import '../entities/user_entity.dart';
 
 abstract class SignupUsecase {
   Future<Either<Failure, UserEntity>> call({
-   required String email, required String password, required String fullName, required String phone,});
+   required String email, required String password, required String fullName,});
  }
 
  class SignupUsecaseImpl implements SignupUsecase{
@@ -18,9 +18,8 @@ abstract class SignupUsecase {
    required String email,
    required String password,
    required String fullName,
-   required String phone,
   }) {
-   return _authRepository.signUp(email: email, password: password, fullName: fullName, phone: phone);
+   return _authRepository.signUp(email: email, password: password, fullName: fullName,);
   }
 
  }

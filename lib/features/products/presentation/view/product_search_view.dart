@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/di/get_it.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../details/presentation/cubit/details_cubit.dart';
 import '../../../details/presentation/views/details_view.dart';
 import '../../../home/presentation/widgets/recent_product_data.dart';
 import '../cubit/product_cubit.dart';
@@ -91,9 +93,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                   ),
                 ],
               ),
-            ),
-            const Divider(height: 1),
-            Expanded(
+            ), Expanded(
               child: BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   if (!state.hasSearched) {
@@ -125,8 +125,18 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                         data: RecentProductData.fromEntity(product),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<ProductsCubit>(),
+                            // Was only providing ProductsCubit here — DetailsView's
+                            // body reads/watches DetailsCubit directly, and unlike
+                            // the '/details' GoRoute (which wraps both in a
+                            // MultiBlocProvider), this Navigator.push path never
+                            // provided one. That's what threw "Could not find the
+                            // correct Provider<DetailsCubit>" when opening a
+                            // product straight from search results.
+                            builder: (_) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider.value(value: context.read<ProductsCubit>()),
+                                BlocProvider(create: (_) => getIt<DetailsCubit>()),
+                              ],
                               child: DetailsView(product: product),
                             ),
                           ),

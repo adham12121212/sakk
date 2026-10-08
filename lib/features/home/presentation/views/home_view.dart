@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
+import '../../../notification/domain/usecase/get_notification_use_case.dart';
+import '../../../products/domain/enties/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';
@@ -35,10 +38,31 @@ class _HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<_HomeContent> {
+  bool _hasUnreadNotifications = false;
+
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
+    _loadUnreadNotifications();
+  }
+
+  Future<void> _loadUnreadNotifications() async {
+    final userId = getIt<GetUserUseCase>()()?.id;
+    if (userId == null) return;
+
+    final result = await getIt<GetNotificationsUseCase>()(userId);
+    if (!mounted) return;
+
+    result.fold(
+      (_) {},
+      (notifications) {
+        final hasUnread = notifications.any((n) => !n.isRead);
+        if (hasUnread != _hasUnreadNotifications) {
+          setState(() => _hasUnreadNotifications = hasUnread);
+        }
+      },
+    );
   }
 
   String _resolveDisplayName(BuildContext context) {
@@ -66,6 +90,18 @@ class _HomeContentState extends State<_HomeContent> {
     context.push(AppRoutes.notifications, extra: userId);
   }
 
+  List<ProductEntity> _placeholderProducts() {
+    final now = DateTime.now();
+    return [
+      ProductEntity(id: 'p1', name: 'Product name', brand: 'Brand', price: 100,
+          purchaseDate: now.subtract(const Duration(days: 30)), warrantyMonths: 24),
+      ProductEntity(id: 'p2', name: 'Product name', brand: 'Brand', price: 100,
+          purchaseDate: now.subtract(const Duration(days: 300)), warrantyMonths: 12),
+      ProductEntity(id: 'p3', name: 'Product name', brand: 'Brand', price: 100,
+          purchaseDate: now.subtract(const Duration(days: 600)), warrantyMonths: 12),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -74,9 +110,12 @@ class _HomeContentState extends State<_HomeContent> {
         bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
-            final sourceProducts = state.products.take(5).toList();
-            final recentProducts =
-            sourceProducts.map(RecentProductData.fromEntity).toList();
+            final isInitialLoading = state.isLoading && state.products.isEmpty;
+            final displayProducts = isInitialLoading ? _placeholderProducts() : state.products;
+            final displayState = isInitialLoading ? ProductsState(products: displayProducts) : state;
+
+            final sourceProducts = displayProducts.take(5).toList();
+            final recentProducts = sourceProducts.map(RecentProductData.fromEntity).toList();
 
             return RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
@@ -88,7 +127,8 @@ class _HomeContentState extends State<_HomeContent> {
                   children: [
                     HomeHeader(
                       userName: _resolveDisplayName(context),
-                      hasUnreadNotifications: true,
+                      avatarUrl: getIt<GetUserUseCase>()()?.avatarUrl,
+                      hasUnreadNotifications: _hasUnreadNotifications,
                       expiringSoonCount: state.expiring,
                       onSearchTap: () {
                         Navigator.of(context).push(
@@ -106,12 +146,7 @@ class _HomeContentState extends State<_HomeContent> {
                     ),
                     SizedBox(height: 16.h),
 
-                    if (state.isLoading && state.products.isEmpty)
-                      SizedBox(
-                        height: 200.h,
-                        child: const Center(child: CircularProgressIndicator()),
-                      )
-                    else if (state.error != null && state.products.isEmpty)
+                    if (state.error != null && state.products.isEmpty)
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
                         child: Column(
@@ -129,68 +164,74 @@ class _HomeContentState extends State<_HomeContent> {
                           ],
                         ),
                       )
-                    else ...[
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16.w,
-                            mainAxisSpacing: 16.h,
-                            childAspectRatio: 1.25,
-                            children: [
-                              _card(
-                                StatCard(
-                                  value: '${state.total}',
-                                  label:  l10n.totalProducts,
-                                  icon: Icons.inventory_2_outlined,
-                                  iconColor: AppColors.primary,
-                                  iconBackgroundColor: AppColors.primary.withOpacity(0.1),
-                                ),
+                    else
+                      Skeletonizer(
+                        enabled: isInitialLoading,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: GridView.count(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16.w,
+                                mainAxisSpacing: 16.h,
+                                childAspectRatio: 1.25,
+                                children: [
+                                  _card(
+                                    StatCard(
+                                      value: '${displayState.total}',
+                                      label:  l10n.totalProducts,
+                                      icon: Icons.inventory_2_outlined,
+                                      iconColor: AppColors.primary,
+                                      iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+                                    ),
+                                  ),
+                                  _card(
+                                    StatCard(
+                                      value: '${displayState.active}',
+                                      label: l10n.activeWarranties,
+                                      icon: Icons.shield_outlined,
+                                      iconColor: AppColors.success,
+                                      iconBackgroundColor: AppColors.success.withOpacity(0.1),
+                                    ),
+                                  ),
+                                  _card(
+                                    StatCard(
+                                      value: '${displayState.expiring}',
+                                      label: l10n.expiringSoon,
+                                      icon: Icons.warning_amber_rounded,
+                                      iconColor: const Color(0xFFF59E0B),
+                                      iconBackgroundColor: const Color(0xFFFEF3C7),
+                                    ),
+                                  ),
+                                  _card(
+                                    StatCard(
+                                      value: '${displayState.expired}',
+                                      label: l10n.expired,
+                                      icon: Icons.error_outline_rounded,
+                                      iconColor: AppColors.error,
+                                      iconBackgroundColor: AppColors.error.withOpacity(0.1),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              _card(
-                                StatCard(
-                                  value: '${state.active}',
-                                  label: l10n.activeWarranties,
-                                  icon: Icons.shield_outlined,
-                                  iconColor: AppColors.success,
-                                  iconBackgroundColor: AppColors.success.withOpacity(0.1),
-                                ),
-                              ),
-                              _card(
-                                StatCard(
-                                  value: '${state.expiring}',
-                                  label: l10n.expiringSoon,
-                                  icon: Icons.warning_amber_rounded,
-                                  iconColor: const Color(0xFFF59E0B),
-                                  iconBackgroundColor: const Color(0xFFFEF3C7),
-                                ),
-                              ),
-                              _card(
-                                StatCard(
-                                  value: '${state.expired}',
-                                  label: l10n.expired,
-                                  icon: Icons.error_outline_rounded,
-                                  iconColor: AppColors.error,
-                                  iconBackgroundColor: AppColors.error.withOpacity(0.1),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 24.h),
+                            RecentProductsSection(
+                              items: recentProducts,
+                              onSeeAllTap: isInitialLoading ? null : () {
+                                context.go(AppRoutes.products);
+                              },
+                              onItemTap: isInitialLoading ? null : (index) {
+                                context.push(AppRoutes.details, extra: sourceProducts[index]);
+                              },
+                            ),
+                            SizedBox(height: 24.h),
+                          ],
                         ),
-                        SizedBox(height: 24.h),
-                        RecentProductsSection(
-                          items: recentProducts,
-                          onSeeAllTap: () {
-                            context.go(AppRoutes.products);
-                          },
-                          onItemTap: (index) {
-                            context.push(AppRoutes.details, extra: sourceProducts[index]);
-                          },
-                        ),
-                        SizedBox(height: 24.h),
-                      ],
+                      ),
                   ],
                 ),
               ),

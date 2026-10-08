@@ -15,7 +15,6 @@ class DetailsHeader extends StatelessWidget {
     required this.onBack,
     required this.onShare,
     required this.onDownload,
-    required this.onMore,
   });
 
   final ProductEntity product;
@@ -26,7 +25,6 @@ class DetailsHeader extends StatelessWidget {
   final VoidCallback onBack;
   final VoidCallback onShare;
   final VoidCallback onDownload;
-  final VoidCallback onMore;
 
   @override
   Widget build(BuildContext context) {

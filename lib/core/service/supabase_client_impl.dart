@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakk/core/service/supabase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -6,6 +8,18 @@ import '../error/Exceptions.dart';
 class SupabaseServiceImpl implements SupabaseService {
   final SupabaseClient _client;
   SupabaseServiceImpl(this._client);
+
+  bool _googleSignInInitialized = false;
+
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (_googleSignInInitialized) return;
+    await GoogleSignIn.instance.initialize(
+      clientId: dotenv.env['GOOGLE_IOS_CLIENT_ID'],
+      serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+    );
+    _googleSignInInitialized = true;
+  }
+
 
   @override
   Future<AuthResponse> signIn({required String email, required String password}) {
@@ -21,10 +35,7 @@ class SupabaseServiceImpl implements SupabaseService {
     return _client.auth.signUp(email: email, password: password, data: data);
   }
 
-  @override
-  Future<UserResponse> updatePhone(String phone) {
-    return _client.auth.updateUser(UserAttributes(phone: phone));
-  }
+
 
   @override
   User? get currentUser => _client.auth.currentUser;
@@ -100,6 +111,29 @@ class SupabaseServiceImpl implements SupabaseService {
       throw ServerException('Failed to update user metadata');
     }
     return user;
+  }
+
+  @override
+  Future<AuthResponse> signInWithGoogle() async {
+    await _ensureGoogleSignInInitialized();
+    final GoogleSignInAccount googleUser;
+    try {
+      googleUser = await GoogleSignIn.instance.authenticate();
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw GoogleSignInCancelledException();
+      }
+      throw ServerException('Google sign-in failed: ${e.description ?? e.code}');
+    }
+
+    final idToken = googleUser.authentication.idToken;
+    if (idToken == null) {
+      throw ServerException('Google sign-in did not return an ID token');
+    }
+    return _client.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+    );
   }
 
 }

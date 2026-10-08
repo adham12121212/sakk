@@ -32,6 +32,10 @@ dependencies:
   share_plus: ^13.3.0
   http: ^1.6.0
   path_provider: ^2.1.6
+  gal: ^2.3.0
+  local_auth: ^2.3.0
+  google_sign_in: ^7.2.0
+  skeletonizer:
 
 dev_dependencies:
   flutter_test:
@@ -46,3 +50,4 @@ flutter:
 
   assets:
     - .env
+    - assets/icons/

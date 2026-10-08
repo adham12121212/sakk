@@ -27,3 +27,7 @@ class CacheFailure extends Failure {
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message);
 }
+
+class CancelledFailure extends Failure {
+  const CancelledFailure() : super('');
+}

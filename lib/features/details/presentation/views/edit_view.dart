@@ -91,7 +91,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
         id: widget.product.id,
         name: _nameController.text.trim(),
         brand: _emptyToNull(_brandController.text),
-        price: double.parse(_priceController.text.trim()),
+        price: double.tryParse(_priceController.text.trim())??0,
         purchaseDate: _purchaseDate,
         warrantyMonths: int.parse(_warrantyController.text.trim()),
         imageUrl: widget.product.imageUrl,
@@ -124,14 +124,14 @@ class _EditProductBodyState extends State<_EditProductBody> {
         return Scaffold(
           appBar: AppBar(
             title: Text(l10n.editProduct,style: TextStyle(
-              fontSize: 20.sp
+                fontSize: 20.sp
             ),),
             surfaceTintColor: Colors.transparent,
             elevation: 0,
           ),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
+              padding: EdgeInsets.fromLTRB(20.w, 16.h, 25.w, 32.h),
               child: Form(
                 key: _formKey,
                 child: Column(

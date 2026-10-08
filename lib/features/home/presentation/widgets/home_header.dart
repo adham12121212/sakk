@@ -78,8 +78,8 @@ class HomeHeader extends StatelessWidget {
               ),
               AppSpacing.w12,
               CircleIconButton(
-                  icon: Icons.search_rounded,
-                  onTap: onSearchTap,
+                icon: Icons.search_rounded,
+                onTap: onSearchTap,
                 color: colorScheme.onSurface,
               ),
               AppSpacing.w8,
@@ -87,7 +87,6 @@ class HomeHeader extends StatelessWidget {
                 icon: Icons.notifications_none_rounded,
                 onTap: onNotificationTap,
                 color: colorScheme.onSurface,
-
               ),
               AppSpacing.w8,
               Avatar(name: userName, avatarUrl: avatarUrl, onTap: onAvatarTap),

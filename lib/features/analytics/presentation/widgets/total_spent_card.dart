@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_spacing.dart';
@@ -15,6 +16,7 @@ class TotalSpentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isInitialLoading = state.isLoading && state.products.isEmpty;
     final formatted = state.totalPrice.toStringAsFixed(0).replaceAllMapped(
       RegExp(r'\B(?=(\d{3})+(?!\d))'),
           (match) => ',',
@@ -53,12 +55,15 @@ class TotalSpentCard extends StatelessWidget {
               style: TextStyle(fontSize: 14.sp, color: AppColors.white),
             )
           else
-            Text(
-              state.isLoading ? '...' : 'EGP $formatted',
-              style: TextStyle(
-                fontSize: 26.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.white,
+            Skeletonizer(
+              enabled: isInitialLoading,
+              child: Text(
+                isInitialLoading ? 'EGP 1,234' : 'EGP $formatted',
+                style: TextStyle(
+                  fontSize: 26.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
               ),
             ),
         ],

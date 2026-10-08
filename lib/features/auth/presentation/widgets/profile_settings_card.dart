@@ -5,14 +5,67 @@ import 'package:sakk/features/auth/presentation/widgets/semented_toggle.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/locale_controller/locale_controller.dart';
+import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../core/theme/theme_controller.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
+import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 
 
-class ProfileSettingsCard extends StatelessWidget {
+class ProfileSettingsCard extends StatefulWidget {
   const ProfileSettingsCard({super.key});
+
+  @override
+  State<ProfileSettingsCard> createState() => _ProfileSettingsCardState();
+}
+
+class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
+  final _biometricService = getIt<BiometricAuthService>();
+
+  bool _biometricAvailable = false;
+  bool _biometricEnabled = false;
+  bool _loadingBiometricState = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBiometricState();
+  }
+
+  Future<void> _loadBiometricState() async {
+    final available = await _biometricService.isAvailable;
+    final enabled = await _biometricService.isEnabled;
+    if (!mounted) return;
+    setState(() {
+      _biometricAvailable = available;
+      _biometricEnabled = enabled;
+      _loadingBiometricState = false;
+    });
+  }
+
+  Future<void> _onBiometricToggle(bool value) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (!_biometricAvailable) {
+      AppSnackBar.error(context, l10n.biometricNotAvailable);
+      return;
+    }
+
+    if (value) {
+      // Require a successful scan before turning this on — otherwise a
+      // user with no biometrics actually enrolled could lock themselves
+      // out on next launch with no way back in except uninstalling.
+      final confirmed = await _biometricService.authenticate(
+        reason: l10n.biometricConfirmEnableReason,
+      );
+      if (!confirmed || !mounted) return;
+    }
+
+    await _biometricService.setEnabled(value);
+    if (!mounted) return;
+    setState(() => _biometricEnabled = value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +99,22 @@ class ProfileSettingsCard extends StatelessWidget {
                 selected: themeController.value,
                 onChanged: (mode) => themeController.setThemeMode(mode),
               ),
+            ),
+            _SettingsRow(
+              icon: Icons.fingerprint_rounded,
+              label: l10n.biometricLogin,
               isLast: true,
+              child: _loadingBiometricState
+                  ? SizedBox(
+                width: 20.w,
+                height: 20.w,
+                child: const CircularProgressIndicator(strokeWidth: 2),
+              )
+                  : Switch.adaptive(
+                value: _biometricEnabled,
+                activeColor: AppColors.primary,
+                onChanged: _onBiometricToggle,
+              ),
             ),
           ],
         );

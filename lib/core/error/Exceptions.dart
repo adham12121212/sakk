@@ -14,6 +14,11 @@ class AppAuthException implements Exception {
   String toString() => 'AppAuthException: $message';
 }
 
+class GoogleSignInCancelledException implements Exception {
+  @override
+  String toString() => 'GoogleSignInCancelledException';
+}
+
 class CacheException implements Exception {
   final String message;
   CacheException(this.message);

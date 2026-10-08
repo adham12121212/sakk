@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/notification_enitiy.dart';
 import '../cubit/notification_cubit.dart';
 import '../cubit/notification_state.dart';
 import '../widgets/notification_tile.dart';
@@ -21,6 +23,19 @@ class _NotificationsViewState extends State<NotificationsView> {
   void initState() {
     super.initState();
     context.read<NotificationCubit>().loadNotifications(widget.userId);
+  }
+
+
+  List<NotificationEntity> _placeholderNotifications() {
+    final now = DateTime.now();
+    return List.generate(5, (i) => NotificationEntity(
+      id: 'placeholder-$i',
+      userId: widget.userId,
+      title: 'Notification title',
+      subtitle: 'Notification subtitle text goes here',
+      type: NotificationType.info,
+      createdAt: now,
+    ));
   }
 
   @override
@@ -44,9 +59,19 @@ class _NotificationsViewState extends State<NotificationsView> {
       body: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoading || state is NotificationInitial) {
-            return const Center(child: CircularProgressIndicator());
+            final placeholders = _placeholderNotifications();
+            return Skeletonizer(
+              enabled: true,
+              child: ListView.separated(
+                itemCount: placeholders.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (context, index) =>
+                    NotificationTile(
+                        notification: placeholders[index],
+                    ),
+              ),
+            );
           }
-
           if (state is NotificationError) {
             return _ErrorView(
               message: state.message,
@@ -55,9 +80,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                   .loadNotifications(widget.userId),
             );
           }
-
           final notifications = (state as NotificationLoaded).notifications;
-
           if (notifications.isEmpty) {
             return  Center(child: Text(l10n.nonotificationsyet));
           }

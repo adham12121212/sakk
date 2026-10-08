@@ -11,7 +11,6 @@ abstract class AuthRepository {
     required String email,
     required String password,
     required String fullName,
-    required String phone,
   });
   Future<void> signOut();
   UserEntity?  getUser();
@@ -25,6 +24,6 @@ abstract class AuthRepository {
 
   Future<Either<Failure, void>> updatePassword({required String newPassword});
   Future<Either<Failure, UserEntity>> updateAvatar(File imageFile);
-
+  Future<Either<Failure, UserEntity>> signInWithGoogle();
 }
 

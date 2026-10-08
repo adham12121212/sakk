@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../core/service/onboarding_service.dart';
 
 
@@ -31,11 +32,16 @@ class _SplashViewState extends State<SplashView> {
     final session = Supabase.instance.client.auth.currentSession;
     final hasSeenOnboarding = await getIt<OnboardingService>().hasSeenOnboarding();
 
+    // Only relevant when a session already exists — no point checking the
+    // biometric preference at all if the user isn't signed in.
+    final biometricLockRequired = session != null &&
+        await getIt<BiometricAuthService>().isEnabled;
+
     await minDelay;
     if (!mounted) return;
 
     if (session != null) {
-      context.go(AppRoutes.home);
+      context.go(biometricLockRequired ? AppRoutes.biometricLock : AppRoutes.home);
     } else if (!hasSeenOnboarding) {
       context.go(AppRoutes.onboarding);
     } else {

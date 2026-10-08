@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sakk/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:sakk/features/auth/presentation/widgets/social_login_buttons.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/route/app_router.dart';
 import '../../../../core/util/app_sizes.dart';
 import '../../../../core/util/app_spacing.dart';
 import '../../../../core/util/validators.dart';
@@ -28,7 +29,6 @@ class _SignupFormState extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -41,7 +41,6 @@ class _SignupFormState extends State<SignupForm> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
-    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -58,7 +57,6 @@ class _SignupFormState extends State<SignupForm> {
       email: _emailController.text.trim(),
       password: _passwordController.text,
       fullName: _nameController.text.trim(),
-      phone: _phoneController.text.trim(),
     );
   }
 
@@ -87,18 +85,6 @@ class _SignupFormState extends State<SignupForm> {
             controller: _emailController,
             textInputAction: TextInputAction.next,
             enabled: !widget.isLoading,
-          ),
-          AppSpacing.h20,
-
-          AppTextField(
-            controller: _phoneController,
-            label: l10n.phoneNumber,
-            hint: l10n.phoneHint,
-            keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
-            textInputAction: TextInputAction.next,
-            enabled: !widget.isLoading,
-            validator: (v) => AppValidators.phone(context, v),
           ),
           AppSpacing.h20,
 
@@ -164,8 +150,10 @@ class _SignupFormState extends State<SignupForm> {
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),
+                          // Was a "coming soon" placeholder — now opens the
+                          // real Terms of Service screen.
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () => context.push('/terms'),
+                            ..onTap = () => context.push(AppRoutes.terms),
                         ),
                         TextSpan(text: l10n.and),
                         TextSpan(
@@ -174,8 +162,10 @@ class _SignupFormState extends State<SignupForm> {
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),
+                          // Was a "coming soon" placeholder — now opens the
+                          // real Privacy Policy screen.
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () => context.push('/privacy'),
+                            ..onTap = () => context.push(AppRoutes.privacy),
                         ),
                       ],
                     ),

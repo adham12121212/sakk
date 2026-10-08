@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/Exceptions.dart';
+import '../../../category/domain/entities/product_category.dart';
 import '../../domain/enties/scanned_receipt.dart';
 import '../models/product_model.dart';
 
@@ -67,6 +68,14 @@ class ProductDataSourceImpl implements ProductDataSource {
         receiptImageUrl: signedUrl,
         confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
         imageUrl: data['imageUrl'] as String?,
+        // The `extract-receipt` edge function already classifies the
+        // product into one of ProductCategory's values (see its
+        // ALLOWED_CATEGORIES list) — this was previously never read here,
+        // so every scanned product silently fell back to "Other"
+        // regardless of what the AI detected. `ProductCategoryX.fromName`
+        // already defaults unknown/null values to `other`, matching the
+        // edge function's own fallback behavior.
+        category: ProductCategoryX.fromName(data['category'] as String?),
       );
     } on ServerException {
       rethrow;
@@ -116,9 +125,6 @@ class ProductDataSourceImpl implements ProductDataSource {
   @override
   Future<ProductModel> updateProduct(String id, Map<String, dynamic> updateJson) async{
     try{
-      // NOTE: was querying 'product' (singular) — that table doesn't
-      // exist, every other method here correctly uses 'products'. This
-      // would have compiled fine but failed at runtime on every save.
       final row = await _client.from('products')
           .update(updateJson)
           .eq('id', id)

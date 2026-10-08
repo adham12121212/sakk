@@ -38,6 +38,11 @@ final class DetailsDownloadReady extends DetailsState {
   final String shareText;
 }
 
+final class DetailsGallerySaved extends DetailsState {
+  const DetailsGallerySaved(this.filePath);
+  final String filePath;
+}
+
 final class DetailsDeleted extends DetailsState {
   const DetailsDeleted();
 }

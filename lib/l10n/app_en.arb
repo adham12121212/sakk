@@ -58,7 +58,7 @@
   "invalidNumber": "Enter a valid number",
   "productNameRequired": "Product name is required",
   "warrantyRequired": "Warranty length is required",
-  "priceEgp": "Price (EGP)",
+  "priceEgp": "Price(EGP)",
   "productSavedSuccessfully": "Product saved successfully",
   "invalidWarrantyMonths": "Enter a valid number of months",
   "totalPrice": "Total Price",
@@ -196,9 +196,20 @@
   "doubleCheckFieldsBelow": "Please double-check the fields below.",
   "lowConfidenceWarning": "We weren't fully confident reading this receipt — please double-check every field.",
   "invoicePreviewLabel": "Invoice Preview",
-  "priceSar": "SAR {price}",
   "warrantyDuration": "Warranty Duration",
   "warrantyMonthsValue": "{months} months",
   "verifyDetails": "Verify Details",
-  "reviewAndEditExtractedData": "Review and edit extracted data"
- }
+  "reviewAndEditExtractedData": "Review and edit extracted data",
+
+  "biometricLogin": "Login with Face ID / Fingerprint",
+  "biometricNotAvailable": "Biometric authentication isn't available on this device.",
+  "biometricConfirmEnableReason": "Confirm to enable Face ID / Fingerprint login",
+  "biometricUnlockReason": "Unlock Sakk to continue",
+  "appLockedTitle": "Sakk is locked",
+  "appLockedSubtitle": "Use Face ID or your fingerprint to continue.",
+  "unlockButton": "Unlock",
+  "usePasswordInstead": "Use password instead",
+  "biometricRequiresActiveSession": "Sign in with your password first to enable quick biometric access.",
+  "biometricNotEnabledYet": "Biometric login isn't enabled yet. Turn it on from Profile settings.",
+  "scannedPriceValue": "{price} EGP"
+}

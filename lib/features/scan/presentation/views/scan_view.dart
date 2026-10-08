@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sakk/core/route/app_router.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
@@ -36,16 +38,40 @@ class ScanViewState extends State<ScanView> {
     );
   }
 
+  // Scan is reached via `context.push(AppRoutes.scan)` from whichever
+  // bottom-nav tab is currently active (Home, Products, Analytics, or
+  // AI) — hardcoding `go(home)` here used to drop the user back on Home
+  // even if they'd scanned from a different tab. Popping back onto the
+  // real stack when possible, and only falling back to Home if Scan was
+  // somehow reached with nothing to pop to (e.g. a deep link).
+  void _goBack(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.scanReceiptTitle),
-        backgroundColor: const Color(0xFFF8F9FB),
+        title: Text(l10n.scanReceiptTitle,
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.surface
+          ),),
+        backgroundColor: AppColors.primary,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          onPressed: () => _goBack(context),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.surface,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Center(

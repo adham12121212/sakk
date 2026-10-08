@@ -48,7 +48,6 @@ class CategoriesView extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(height: 1),
             Expanded(
               child: GridView.builder(
                 padding: EdgeInsets.all(20.w),

@@ -48,7 +48,6 @@ class AuthRepoImpl implements AuthRepository {
     required String email,
     required String password,
     required String fullName,
-    required String phone,
   }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
@@ -58,7 +57,6 @@ class AuthRepoImpl implements AuthRepository {
         email: email,
         password: password,
         fullName: fullName,
-        phone: phone,
       );
       return Right(response);
     } on ServerException catch (e, st) {
@@ -160,6 +158,25 @@ class AuthRepoImpl implements AuthRepository {
       return Left(ServerFailure(e.message));
     } catch (e, st) {
       _logger.error('Unexpected error during updateAvatar', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> signInWithGoogle() async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      final response = await _authDataSource.signInWithGoogle();
+      return Right(response);
+    } on GoogleSignInCancelledException {
+      return const Left(CancelledFailure());
+    } on ServerException catch (e, st) {
+      _logger.error('Server error during signInWithGoogle', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during signInWithGoogle', error: e, stackTrace: st);
       return Left(UnknownFailure(e.toString()));
     }
   }

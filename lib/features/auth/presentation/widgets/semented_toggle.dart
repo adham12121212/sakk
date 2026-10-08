@@ -42,7 +42,7 @@ class SegmentedToggle<T> extends StatelessWidget {
                 color: isSelected ? colorScheme.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.xl),
               ),
-              child: Text(
+              child:Text(
                 entry.value,
                 style: TextStyle(
                   fontSize: 12.sp,
