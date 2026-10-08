@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523214177513",
+    "project_id": "sakk-a6ae0",
+    "storage_bucket": "sakk-a6ae0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523214177513:android:c70cca8c873d91d8321c78",
+        "android_client_info": {
+          "package_name": "com.sakk.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlG_WworCMLNp77vySwgDklu1hk8OFydk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
