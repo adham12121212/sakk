@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
+import '../../../../core/util/warranty_progress_color.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
 
@@ -100,7 +101,13 @@ class RecentProductTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _StatusRingThumbnail(data: data, ringColor: _statusColor),
+            _StatusRingThumbnail(
+              data: data,
+              // Same bands as the Details ring: by share of warranty left.
+              ringColor: data.ringProgress == null
+                  ? _statusColor
+                  : warrantyProgressColor(data.ringProgress!),
+            ),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(

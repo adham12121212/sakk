@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/util/warranty_progress_color.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -127,7 +128,7 @@ class DetailsHeader extends StatelessWidget {
                               value: warrantyProgress,
                               strokeWidth: 4,
                               backgroundColor: Colors.white.withOpacity(0.25),
-                              valueColor: AlwaysStoppedAnimation(AppColors.success),
+                              valueColor: AlwaysStoppedAnimation(warrantyProgressColor(warrantyProgress)),
                             ),
                             Text(
                               '${(warrantyProgress * 100).round()}%',
