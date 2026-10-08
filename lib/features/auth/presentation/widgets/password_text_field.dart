@@ -46,7 +46,7 @@ class PasswordTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       enabled: enabled,
       suffixIcon: IconButton(
-        tooltip: obscureText ? 'Show password' : 'Hide password',
+        tooltip: obscureText ? l10n.showPassword : l10n.hidePassword,
         onPressed: onToggleVisibility,
         icon: Icon(
           obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,

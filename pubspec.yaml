@@ -39,6 +39,7 @@ dependencies:
   firebase_core: ^4.15.0
   sentry_flutter: ^8.14.2
   flutter_svg: ^2.3.0
+  google_fonts: ^8.2.1
 
 dev_dependencies:
   flutter_test:

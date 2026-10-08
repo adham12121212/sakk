@@ -68,6 +68,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
+                    tooltip: l10n.back,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   Expanded(

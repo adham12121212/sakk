@@ -38,6 +38,7 @@ class CategoriesView extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
+                    tooltip: l10n.back,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   SizedBox(width: 4.w),

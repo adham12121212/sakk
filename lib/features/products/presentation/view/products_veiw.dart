@@ -6,6 +6,7 @@ import 'package:sakk/features/products/presentation/view/product_search_view.dar
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
@@ -65,6 +66,9 @@ class _ProductsViewState extends State<ProductsView> {
       ),
     );
 
+    // Back/swipe-back pops with null: keep the current filter. Picking a
+    // category sets it; the chip's ✕ is how a filter gets cleared.
+    if (selected == null || !mounted) return;
     setState(() => _categoryFilter = selected);
   }
 
@@ -113,6 +117,7 @@ class _ProductsViewState extends State<ProductsView> {
                         ),
                         CircleIconButton(
                             icon: Icons.search_rounded,
+                            semanticLabel: l10n.search,
                             onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -128,6 +133,7 @@ class _ProductsViewState extends State<ProductsView> {
                         SizedBox(width: 8.w),
                         CircleIconButton(
                           icon: Icons.filter_alt_rounded,
+                          semanticLabel: l10n.filterByCategory,
                           onTap: _openCategoryFilter,
                           showBadge: _categoryFilter != null,
                           color: AppColors.primary,
@@ -220,9 +226,9 @@ class _ProductsViewState extends State<ProductsView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                state.error!,
+                userFacingError(l10n, state.error),
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               SizedBox(height: 12.h),
               OutlinedButton(
@@ -306,28 +312,44 @@ class _ActiveCategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = CategoryUi.color(category);
+    final label = CategoryUi.label(context, category);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(CategoryUi.icon(category), size: 14.sp, color: color),
-          SizedBox(width: 6.w),
-          Text(
-            CategoryUi.label(context, category),
-            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: color),
+    // The whole chip clears the filter. The pill keeps its compact look; the
+    // tap area around it is at least 48px tall.
+    return Semantics(
+      button: true,
+      label: '${AppLocalizations.of(context)!.clearCategoryFilter}: $label',
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onClear,
+        customBorder: const StadiumBorder(),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(CategoryUi.icon(category), size: 14.sp, color: color),
+                  SizedBox(width: 6.w),
+                  Text(
+                    label,
+                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: color),
+                  ),
+                  SizedBox(width: 6.w),
+                  Icon(Icons.close_rounded, size: 14.sp, color: color),
+                ],
+              ),
+            ),
           ),
-          SizedBox(width: 6.w),
-          InkWell(
-            onTap: onClear,
-            child: Icon(Icons.close_rounded, size: 14.sp, color: color),
-          ),
-        ],
+        ),
       ),
     );
   }

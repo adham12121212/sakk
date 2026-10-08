@@ -34,6 +34,7 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(AppSizes.s20, AppSizes.s16, AppSizes.s20, AppSizes.s16),
@@ -79,17 +80,25 @@ class HomeHeader extends StatelessWidget {
               AppSpacing.w12,
               CircleIconButton(
                 icon: Icons.search_rounded,
+                semanticLabel: l10n.search,
                 onTap: onSearchTap,
                 color: colorScheme.onSurface,
               ),
               AppSpacing.w8,
               CircleIconButton(
                 icon: Icons.notifications_none_rounded,
+                semanticLabel: l10n.notifications,
                 onTap: onNotificationTap,
+                showBadge: hasUnreadNotifications,
                 color: colorScheme.onSurface,
               ),
               AppSpacing.w8,
-              Avatar(name: userName, avatarUrl: avatarUrl, onTap: onAvatarTap),
+              Avatar(
+                name: userName,
+                avatarUrl: avatarUrl,
+                onTap: onAvatarTap,
+                semanticLabel: l10n.openProfile,
+              ),
             ],
           ),
           if (expiringSoonCount > 0) ...[

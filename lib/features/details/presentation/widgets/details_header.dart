@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
 
@@ -28,6 +29,7 @@ class DetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: 320.h,
       child: Stack(
@@ -59,12 +61,12 @@ class DetailsHeader extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _CircleIconButton(icon: Icons.arrow_back, onTap: onBack),
+                      _CircleIconButton(icon: Icons.arrow_back, label: l10n.back, onTap: onBack),
                       Row(
                         children: [
-                          _CircleIconButton(icon: Icons.ios_share_rounded, onTap: onShare),
+                          _CircleIconButton(icon: Icons.ios_share_rounded, label: l10n.share, onTap: onShare),
                           SizedBox(width: 8.w),
-                          _CircleIconButton(icon: Icons.download_rounded, onTap: onDownload),
+                          _CircleIconButton(icon: Icons.download_rounded, label: l10n.downloadInvoice, onTap: onDownload),
                         ],
                       ),
                     ],
@@ -165,22 +167,41 @@ class DetailsHeader extends StatelessWidget {
   }
 }
 
+/// Icon button over the photo: 40.w visible circle, 48×48 tap area,
+/// [label] for screen readers and the long-press tooltip.
 class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({required this.icon, required this.onTap});
+  const _CircleIconButton({required this.icon, required this.label, required this.onTap});
 
   final IconData icon;
+  final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Container(
-        width: 40.w,
-        height: 40.w,
-        decoration: BoxDecoration(color: Colors.black.withOpacity(0.35), shape: BoxShape.circle),
-        child: Icon(icon, color: Colors.white, size: 20.sp),
+    return Tooltip(
+      message: label,
+      excludeFromSemantics: true,
+      child: Semantics(
+        button: true,
+        label: label,
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+            child: Center(
+              widthFactor: 1,
+              heightFactor: 1,
+              child: Container(
+                width: 40.w,
+                height: 40.w,
+                decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.35), shape: BoxShape.circle),
+                child: Icon(icon, color: Colors.white, size: 20.sp),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

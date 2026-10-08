@@ -109,7 +109,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
       await Share.share(_shareText, subject: product.name);
     } catch (e) {
       if (mounted) {
-        _showSnack(AppLocalizations.of(context)!.couldNotOpenShareSheet(e.toString()), isError: true);
+        _showSnack(AppLocalizations.of(context)!.couldNotShare, isError: true);
       }
     } finally {
       if (mounted) setState(() => _isSharing = false);
@@ -172,7 +172,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             final message = switch (error) {
               'no_invoice_url' => l10n.noInvoiceImageToDownload,
               'delete_failed' => l10n.couldNotDeleteProduct,
-              _ => l10n.downloadFailed(error.toString()),
+              _ => l10n.couldNotDownloadInvoice,
             };
             _showSnack(message, isError: true);
           default:

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/notification_enitiy.dart';
@@ -45,6 +46,7 @@ class _NotificationsViewState extends State<NotificationsView> {
       appBar: AppBar(
              leading: IconButton(
             icon: const Icon(Icons.arrow_back),
+            tooltip: l10n.back,
             onPressed: () => Navigator.pop(context),
           ),
         title: Text(
@@ -136,7 +138,7 @@ class _ErrorView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(message, textAlign: TextAlign.center),
+          Text(userFacingError(l10n, message), textAlign: TextAlign.center),
           const SizedBox(height: 12),
           ElevatedButton(onPressed: onRetry, child:  Text(l10n.retry)),
         ],

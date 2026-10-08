@@ -52,7 +52,8 @@ class ScanSourceButton extends StatelessWidget {
         label:
         Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
         style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
+          // Transparent so it sits on the page background in both themes.
+          backgroundColor: Colors.transparent,
           foregroundColor: AppColors.primary,
           side: BorderSide(
             color: AppColors.primary.withOpacity(0.4),

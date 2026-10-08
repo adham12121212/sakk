@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
@@ -152,9 +153,9 @@ class _HomeContentState extends State<_HomeContent> {
                         child: Column(
                           children: [
                             Text(
-                              state.error!,
+                              userFacingError(l10n, state.error),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.red),
+                              style: TextStyle(color: Theme.of(context).colorScheme.error),
                             ),
                             SizedBox(height: 12.h),
                             OutlinedButton(

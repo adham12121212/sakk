@@ -32,7 +32,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
@@ -58,7 +58,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   onSubmitted: (_) => _submit(),
                   decoration:  InputDecoration(
                     border: InputBorder.none,
-                    hintText: l10n!.askaboutaproductorwarranty,
+                    hintText: l10n.askaboutaproductorwarranty,
                     isDense: true,
                   ),
                   style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface),
@@ -66,19 +66,37 @@ class _ChatInputBarState extends State<ChatInputBar> {
               ),
             ),
             SizedBox(width: 8.w),
-            InkWell(
-              onTap: widget.isSending ? null : _submit,
-              customBorder: const CircleBorder(),
-              child: Container(
-                width: 44.w,
-                height: 44.w,
-                decoration: BoxDecoration(
-                  color: widget.isSending
-                      ? AppColors.primary.withOpacity(0.5)
-                      : AppColors.primary,
-                  shape: BoxShape.circle,
+            // 44.w visible circle inside a 48×48 labelled tap area.
+            Tooltip(
+              message: l10n.sendMessage,
+              excludeFromSemantics: true,
+              child: Semantics(
+                button: true,
+                enabled: !widget.isSending,
+                label: l10n.sendMessage,
+                excludeSemantics: true,
+                child: InkWell(
+                  onTap: widget.isSending ? null : _submit,
+                  customBorder: const CircleBorder(),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                    child: Center(
+                      widthFactor: 1,
+                      heightFactor: 1,
+                      child: Container(
+                        width: 44.w,
+                        height: 44.w,
+                        decoration: BoxDecoration(
+                          color: widget.isSending
+                              ? AppColors.primary.withValues(alpha: 0.5)
+                              : AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.arrow_upward_rounded, color: AppColors.white, size: 20.sp),
+                      ),
+                    ),
+                  ),
                 ),
-                child: Icon(Icons.arrow_upward_rounded, color: AppColors.white, size: 20.sp),
               ),
             ),
           ],

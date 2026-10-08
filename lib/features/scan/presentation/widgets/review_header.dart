@@ -19,17 +19,34 @@ class ReviewHeader extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
       child: Row(
         children: [
-          InkWell(
-            onTap: onBack,
-            customBorder: const CircleBorder(),
-            child: Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
-                shape: BoxShape.circle,
+          // 40.w visible circle, 48×48 labelled tap area.
+          Tooltip(
+            message: l10n.back,
+            excludeFromSemantics: true,
+            child: Semantics(
+              button: true,
+              label: l10n.back,
+              excludeSemantics: true,
+              child: InkWell(
+                onTap: onBack,
+                customBorder: const CircleBorder(),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  child: Center(
+                    widthFactor: 1,
+                    heightFactor: 1,
+                    child: Container(
+                      width: 40.w,
+                      height: 40.w,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.arrow_back_rounded, size: 20, color: colorScheme.onSurface),
+                    ),
+                  ),
+                ),
               ),
-              child:  Icon(Icons.arrow_back_rounded, size: 20 , color: colorScheme.onSurface),
             ),
           ),
           SizedBox(width: 14.w),

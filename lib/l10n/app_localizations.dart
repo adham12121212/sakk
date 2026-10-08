@@ -1327,6 +1327,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your account has been deleted'**
   String get accountDeleted;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @filterByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by category'**
+  String get filterByCategory;
+
+  /// No description provided for @clearCategoryFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear category filter'**
+  String get clearCategoryFilter;
+
+  /// No description provided for @openProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open profile'**
+  String get openProfile;
+
+  /// No description provided for @changeProfilePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change profile photo'**
+  String get changeProfilePhoto;
+
+  /// No description provided for @sendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send message'**
+  String get sendMessage;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timeJustNow;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, one{1 minute ago} other{{minutes} minutes ago}}'**
+  String timeMinutesAgo(int minutes);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours, plural, one{1 hour ago} other{{hours} hours ago}}'**
+  String timeHoursAgo(int hours);
+
+  /// No description provided for @timeDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{1 day ago} other{{days} days ago}}'**
+  String timeDaysAgo(int days);
+
+  /// No description provided for @errorNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your connection and try again.'**
+  String get errorNoInternet;
+
+  /// No description provided for @errorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get errorGeneric;
+
+  /// No description provided for @couldNotShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the share sheet. Please try again.'**
+  String get couldNotShare;
+
+  /// No description provided for @couldNotDownloadInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the invoice. Please try again.'**
+  String get couldNotDownloadInvoice;
 }
 
 class _AppLocalizationsDelegate

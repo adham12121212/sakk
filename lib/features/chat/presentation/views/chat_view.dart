@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/chat_cubit.dart';
@@ -55,7 +56,7 @@ class _ChatViewState extends State<ChatView> {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(
-                content: Text(state.error!),
+                content: Text(userFacingError(l10n, state.error)),
                 backgroundColor: AppColors.error,
               ));
           }

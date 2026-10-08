@@ -697,4 +697,83 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'تم حذف حسابك';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get filterByCategory => 'تصفية حسب الفئة';
+
+  @override
+  String get clearCategoryFilter => 'إزالة تصفية الفئة';
+
+  @override
+  String get openProfile => 'فتح الملف الشخصي';
+
+  @override
+  String get changeProfilePhoto => 'تغيير الصورة الشخصية';
+
+  @override
+  String get sendMessage => 'إرسال الرسالة';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String get timeJustNow => 'الآن';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'منذ $minutes دقيقة',
+      few: 'منذ $minutes دقائق',
+      two: 'منذ دقيقتين',
+      one: 'منذ دقيقة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: 'منذ $hours ساعة',
+      few: 'منذ $hours ساعات',
+      two: 'منذ ساعتين',
+      one: 'منذ ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'منذ $days يومًا',
+      few: 'منذ $days أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get errorNoInternet =>
+      'لا يوجد اتصال بالإنترنت. تحقّق من الاتصال وحاول مرة أخرى.';
+
+  @override
+  String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get couldNotShare => 'تعذّر فتح المشاركة. حاول مرة أخرى.';
+
+  @override
+  String get couldNotDownloadInvoice => 'تعذّر حفظ الفاتورة. حاول مرة أخرى.';
 }

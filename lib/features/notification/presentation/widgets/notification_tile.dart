@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sakk/core/constant/app_colors.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 import '../../domain/entities/notification_enitiy.dart';
 import 'notification_type_icon.dart';
@@ -34,7 +37,7 @@ class NotificationTile extends StatelessWidget {
             Text(notification.subtitle),
             const SizedBox(height: 2),
             Text(
-              _timeAgo(notification.createdAt),
+              _timeAgo(context, notification.createdAt),
               style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
           ],
@@ -54,12 +57,14 @@ class NotificationTile extends StatelessWidget {
   }
 
 
-  String _timeAgo(DateTime dateTime) {
+  String _timeAgo(BuildContext context, DateTime dateTime) {
+    final l10n = AppLocalizations.of(context)!;
     final diff = DateTime.now().difference(dateTime);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    if (diff.inDays < 7) return '${diff.inDays}d ago';
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    if (diff.inMinutes < 1) return l10n.timeJustNow;
+    if (diff.inMinutes < 60) return l10n.timeMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.timeHoursAgo(diff.inHours);
+    if (diff.inDays < 7) return l10n.timeDaysAgo(diff.inDays);
+    // Older than a week: a short date in the app's locale.
+    return DateFormat.yMd(Localizations.localeOf(context).toLanguageTag()).format(dateTime);
   }
 }

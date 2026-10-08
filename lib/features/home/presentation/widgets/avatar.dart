@@ -3,11 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
 
-
 class Avatar extends StatelessWidget {
-  const Avatar({required this.name, this.avatarUrl, this.onTap});
+  const Avatar({
+    required this.name,
+    required this.semanticLabel,
+    this.avatarUrl,
+    this.onTap,
+  });
 
   final String name;
+  final String semanticLabel;
   final String? avatarUrl;
   final VoidCallback? onTap;
 
@@ -15,31 +20,47 @@ class Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final initial = name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '?';
 
-    return InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Container(
-        width: 40.w,
-        height: 40.w,
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          shape: BoxShape.circle,
-          image: avatarUrl != null
-              ? DecorationImage(image: NetworkImage(avatarUrl!), fit: BoxFit.cover)
-              : null,
-        ),
-        child: avatarUrl == null
-            ? Center(
-          child: Text(
-            initial,
-            style: TextStyle(
-              color: AppColors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        // Visible avatar stays 40.w; the tap area is at least 48×48.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                image: avatarUrl != null
+                    ? DecorationImage(
+                        image: NetworkImage(avatarUrl!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: avatarUrl == null
+                  ? Center(
+                      child: Text(
+                        initial,
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    )
+                  : null,
             ),
           ),
-        )
-            : null,
+        ),
       ),
     );
   }

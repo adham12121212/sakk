@@ -19,6 +19,7 @@ class SignupHeader extends StatelessWidget {
             backgroundColor: Colors.grey.shade100,
             child: IconButton(
               icon: const Icon(Icons.arrow_back,color: AppColors.primary,),
+              tooltip: l10n.back,
               onPressed: () => context.pop(),
             ),
           ),

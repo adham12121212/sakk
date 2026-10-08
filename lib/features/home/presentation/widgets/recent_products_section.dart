@@ -31,11 +31,17 @@ class RecentProductsSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.recentProducts, style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.bold)),
-              GestureDetector(
-                onTap: onSeeAllTap,
+              TextButton(
+                onPressed: onSeeAllTap,
+                // TextButton's default 48px minimum tap height; keep the
+                // visual padding tight so the header row doesn't grow.
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  padding: EdgeInsets.symmetric(horizontal: AppSizes.s8),
+                ),
                 child: Text(
                   l10n.seeAll,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.primary),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -65,17 +71,18 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 32.h),
-      decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(16.r)),
+      decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(16.r)),
       child: Column(
         children: [
-          Icon(Icons.inventory_2_outlined, size: 32.sp, color: Colors.grey.shade400),
+          Icon(Icons.inventory_2_outlined, size: 32.sp, color: colorScheme.onSurface.withValues(alpha: 0.4)),
           SizedBox(height: 8.h),
           Text(
             AppLocalizations.of(context)!.noProductsYet,
-            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withValues(alpha: 0.6)),
           ),
         ],
       ),

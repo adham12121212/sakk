@@ -694,4 +694,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Your account has been deleted';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get filterByCategory => 'Filter by category';
+
+  @override
+  String get clearCategoryFilter => 'Clear category filter';
+
+  @override
+  String get openProfile => 'Open profile';
+
+  @override
+  String get changeProfilePhoto => 'Change profile photo';
+
+  @override
+  String get sendMessage => 'Send message';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get errorNoInternet =>
+      'No internet connection. Check your connection and try again.';
+
+  @override
+  String get errorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get couldNotShare =>
+      'Couldn\'t open the share sheet. Please try again.';
+
+  @override
+  String get couldNotDownloadInvoice =>
+      'Couldn\'t save the invoice. Please try again.';
 }

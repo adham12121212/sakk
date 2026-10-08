@@ -16,11 +16,12 @@ class CategoryLegendChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = CategoryUi.color(category);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
@@ -34,12 +35,12 @@ class CategoryLegendChip extends StatelessWidget {
           SizedBox(width: 6.w),
           Text(
             CategoryUi.label(context,category),
-            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
+            style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withValues(alpha: 0.7)),
           ),
           SizedBox(width: 6.w),
           Text(
             '$percent%',
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
           ),
         ],
       ),

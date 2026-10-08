@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/app_colors.dart';
 
@@ -37,20 +38,24 @@ class AppTheme {
       onError: Colors.white,
       surface: isDark ? const Color(0xFF1C1C1E) : Colors.white,
       onSurface: isDark ? Colors.white : AppColors.black,
+      // Light values must be visibly different from the white surface: these
+      // back chips, fields and chat bubbles (fill) and card borders (outline).
       surfaceContainerHighest:
-      isDark ? const Color(0xFF2C2C2E) : const Color(0xFFFFFDFD),
-      outline: isDark ? const Color(0xFF3A3A3C) : const Color(0xFF2E2E2F),
+      isDark ? const Color(0xFF2C2C2E) : const Color(0xFFF3F4F6),
+      outline: isDark ? const Color(0xFF3A3A3C) : const Color(0xFFE5E7EB),
     );
 
     return ThemeData(
       brightness: brightness,
       useMaterial3: true,
-      fontFamily: 'Cairo',
+      // Cairo isn't bundled as an asset; google_fonts fetches it once and
+      // caches it on the device.
+      fontFamily: GoogleFonts.cairo().fontFamily,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
       dividerColor: colorScheme.outline,
       cardColor: colorScheme.surface,
-      textTheme: _textTheme(colorScheme),
+      textTheme: GoogleFonts.cairoTextTheme(_textTheme(colorScheme)),
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,

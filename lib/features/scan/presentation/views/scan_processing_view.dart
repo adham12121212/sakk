@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakk/features/scan/presentation/views/reviewproduct_view.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
@@ -146,7 +147,7 @@ class _ErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline_rounded, size: 56, color: Colors.redAccent),
             const SizedBox(height: 16),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+            Text(userFacingError(l10n, message), textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () {

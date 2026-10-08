@@ -11,6 +11,7 @@ class ProfileAvatar extends StatelessWidget {
     this.size = 140,
     this.onTap,
     this.isUploading = false,
+    this.semanticLabel,
   });
 
   final String name;
@@ -19,78 +20,96 @@ class ProfileAvatar extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isUploading;
 
+  /// What tapping does, for screen readers (e.g. "Change profile photo").
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
     final initial = name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '?';
     final hasPhoto = avatarUrl != null && avatarUrl!.isNotEmpty;
 
-    return GestureDetector(
-      onTap: isUploading ? null : onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: size.w,
-            height: size.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.white,
-              border: Border.all(color: AppColors.white, width: 2.r),
-              image: hasPhoto
-                  ? DecorationImage(
-                image: NetworkImage(avatarUrl!),
-                fit: BoxFit.cover,
-                  onError: (exception, stackTrace) {
-                    debugPrint('[ProfileAvatar] Failed to load $avatarUrl: $exception');
-                  },
-              )
-                  : null,
-            ),
-            child: hasPhoto
-                ? null
-                : Center(
-              child: Text(
-                initial,
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: (size * 0.35).sp,
-                ),
+    return Semantics(
+      button: onTap != null,
+      enabled: onTap != null && !isUploading,
+      label: semanticLabel,
+      image: true,
+      child: GestureDetector(
+        onTap: isUploading ? null : onTap,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: size.w,
+              height: size.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.white,
+                border: Border.all(color: AppColors.white, width: 2.r),
+                image: hasPhoto
+                    ? DecorationImage(
+                        image: NetworkImage(avatarUrl!),
+                        fit: BoxFit.cover,
+                        onError: (exception, stackTrace) {
+                          debugPrint(
+                            '[ProfileAvatar] Failed to load $avatarUrl: $exception',
+                          );
+                        },
+                      )
+                    : null,
               ),
+              child: hasPhoto
+                  ? null
+                  : Center(
+                      child: Text(
+                        initial,
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: (size * 0.35).sp,
+                        ),
+                      ),
+                    ),
             ),
-          ),
-          if (isUploading)
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.35),
-                ),
-                child: Center(
-                  child: SizedBox(
-                    width: 28.w,
-                    height: 28.w,
-                    child: const CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+            if (isUploading)
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withOpacity(0.35),
+                  ),
+                  child: Center(
+                    child: SizedBox(
+                      width: 28.w,
+                      height: 28.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (onTap != null && !isUploading)
-            PositionedDirectional(
-              bottom: 0,
-              end: 0,
-              child: Container(
-                width: 36.w,
-                height: 36.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary,
-                  border: Border.all(color: AppColors.white, width: 2.r),
+            if (onTap != null && !isUploading)
+              PositionedDirectional(
+                bottom: 0,
+                end: 0,
+                child: Container(
+                  width: 36.w,
+                  height: 36.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary,
+                    border: Border.all(color: AppColors.white, width: 2.r),
+                  ),
+                  child: Icon(
+                    Icons.camera_alt_rounded,
+                    size: 18.sp,
+                    color: AppColors.white,
+                  ),
                 ),
-                child: Icon(Icons.camera_alt_rounded, size: 18.sp, color: AppColors.white),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

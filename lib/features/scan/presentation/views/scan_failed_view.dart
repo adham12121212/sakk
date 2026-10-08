@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ScanFailedView extends StatelessWidget {
@@ -16,6 +17,7 @@ class ScanFailedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -45,9 +47,13 @@ class ScanFailedView extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  message,
+                  userFacingError(l10n, message),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14.sp, color: Colors.black54, height: 1.4),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    height: 1.4,
+                  ),
                 ),
                 SizedBox(height: 28.h),
                 SizedBox(

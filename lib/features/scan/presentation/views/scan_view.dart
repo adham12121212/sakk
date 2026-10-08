@@ -58,19 +58,17 @@ class ScanViewState extends State<ScanView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.scanReceiptTitle,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.surface
-          ),),
+        title: Text(l10n.scanReceiptTitle),
         backgroundColor: AppColors.primary,
+        // onPrimary (white) in both themes. This used colorScheme.surface,
+        // which turns dark gray on blue in dark mode.
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           onPressed: () => _goBack(context),
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).colorScheme.surface,
-          ),
+          tooltip: l10n.back,
+          icon: const Icon(Icons.arrow_back),
         ),
       ),
       body: SafeArea(

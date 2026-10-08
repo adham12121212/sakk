@@ -18,6 +18,11 @@ class AuthFailure extends Failure {
 
 class NetworkFailure extends Failure {
   const NetworkFailure(super.message);
+
+  /// The message every repository uses when the connectivity check fails.
+  /// UI code matches on it (see `userFacingError`) to show a localized
+  /// "no internet" message instead of this English text.
+  static const noConnectionMessage = 'No internet connection';
 }
 
 class CacheFailure extends Failure {
