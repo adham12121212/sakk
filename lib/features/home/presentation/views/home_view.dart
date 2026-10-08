@@ -9,7 +9,8 @@ import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
-import '../../../notification/domain/usecase/get_notification_use_case.dart';
+import '../../../notification/presentation/cubit/notification_cubit.dart';
+import '../../../notification/presentation/cubit/notification_state.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
@@ -39,35 +40,24 @@ class _HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<_HomeContent> {
-  bool _hasUnreadNotifications = false;
+  final _notificationCubit = getIt<NotificationCubit>();
 
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
-    _loadUnreadNotifications();
-  }
-
-  Future<void> _loadUnreadNotifications() async {
+    // The badge count comes from the shared NotificationCubit, which then
+    // stays current (reads/deletes on the Notifications screen, notifications
+    // added on this device, app returning to the foreground).
     final userId = getIt<GetUserUseCase>()()?.id;
-    if (userId == null) return;
-
-    final result = await getIt<GetNotificationsUseCase>()(userId);
-    if (!mounted) return;
-
-    result.fold(
-      (_) {},
-      (notifications) {
-        final hasUnread = notifications.any((n) => !n.isRead);
-        if (hasUnread != _hasUnreadNotifications) {
-          setState(() => _hasUnreadNotifications = hasUnread);
-        }
-      },
-    );
+    if (userId != null) {
+      _notificationCubit
+        ..watch(userId)
+        ..refresh();
+    }
   }
 
   String _resolveDisplayName(BuildContext context) {
-
     final user = getIt<GetUserUseCase>()();
     final l10n = AppLocalizations.of(context)!;
 
@@ -85,7 +75,6 @@ class _HomeContentState extends State<_HomeContent> {
   }
 
   void _openNotifications(BuildContext context) {
-
     final userId = getIt<GetUserUseCase>()()?.id;
     if (userId == null) return;
     context.push(AppRoutes.notifications, extra: userId);
@@ -94,12 +83,30 @@ class _HomeContentState extends State<_HomeContent> {
   List<ProductEntity> _placeholderProducts() {
     final now = DateTime.now();
     return [
-      ProductEntity(id: 'p1', name: 'Product name', brand: 'Brand', price: 100,
-          purchaseDate: now.subtract(const Duration(days: 30)), warrantyMonths: 24),
-      ProductEntity(id: 'p2', name: 'Product name', brand: 'Brand', price: 100,
-          purchaseDate: now.subtract(const Duration(days: 300)), warrantyMonths: 12),
-      ProductEntity(id: 'p3', name: 'Product name', brand: 'Brand', price: 100,
-          purchaseDate: now.subtract(const Duration(days: 600)), warrantyMonths: 12),
+      ProductEntity(
+        id: 'p1',
+        name: 'Product name',
+        brand: 'Brand',
+        price: 100,
+        purchaseDate: now.subtract(const Duration(days: 30)),
+        warrantyMonths: 24,
+      ),
+      ProductEntity(
+        id: 'p2',
+        name: 'Product name',
+        brand: 'Brand',
+        price: 100,
+        purchaseDate: now.subtract(const Duration(days: 300)),
+        warrantyMonths: 12,
+      ),
+      ProductEntity(
+        id: 'p3',
+        name: 'Product name',
+        brand: 'Brand',
+        price: 100,
+        purchaseDate: now.subtract(const Duration(days: 600)),
+        warrantyMonths: 12,
+      ),
     ];
   }
 
@@ -112,55 +119,70 @@ class _HomeContentState extends State<_HomeContent> {
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
             final isInitialLoading = state.isLoading && state.products.isEmpty;
-            final displayProducts = isInitialLoading ? _placeholderProducts() : state.products;
-            final displayState = isInitialLoading ? ProductsState(products: displayProducts) : state;
+            final displayProducts = isInitialLoading
+                ? _placeholderProducts()
+                : state.products;
+            final displayState = isInitialLoading
+                ? ProductsState(products: displayProducts)
+                : state;
 
             final sourceProducts = displayProducts.take(5).toList();
-            final recentProducts = sourceProducts.map(RecentProductData.fromEntity).toList();
+            final recentProducts = sourceProducts
+                .map(RecentProductData.fromEntity)
+                .toList();
 
             return RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
               color: AppColors.primary,
-                      child: SingleChildScrollView(
+              child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HomeHeader(
-                      userName: _resolveDisplayName(context),
-                      avatarUrl: getIt<GetUserUseCase>()()?.avatarUrl,
-                      hasUnreadNotifications: _hasUnreadNotifications,
-                      expiringSoonCount: state.expiring,
-                      onSearchTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<ProductsCubit>(),
-                              child: const ProductSearchView(),
+                    BlocBuilder<NotificationCubit, NotificationState>(
+                      bloc: _notificationCubit,
+                      builder: (context, _) => HomeHeader(
+                        userName: _resolveDisplayName(context),
+                        avatarUrl: getIt<GetUserUseCase>()()?.avatarUrl,
+                        unreadNotificationCount: _notificationCubit.unreadCount,
+                        expiringSoonCount: state.expiring,
+                        onSearchTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<ProductsCubit>(),
+                                child: const ProductSearchView(),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      onNotificationTap: () => _openNotifications(context),
-                    onAvatarTap: () => context.push(AppRoutes.profile),
-                      onExpiringBannerTap: () {},
+                          );
+                        },
+                        onNotificationTap: () => _openNotifications(context),
+                        onAvatarTap: () => context.push(AppRoutes.profile),
+                        onExpiringBannerTap: () {},
+                      ),
                     ),
                     SizedBox(height: 16.h),
 
                     if (state.error != null && state.products.isEmpty)
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 40.h,
+                        ),
                         child: Column(
                           children: [
                             Text(
                               userFacingError(l10n, state.error),
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Theme.of(context).colorScheme.error),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                             SizedBox(height: 12.h),
                             OutlinedButton(
-                              onPressed: () => context.read<ProductsCubit>().refresh(),
-                              child:  Text(l10n.retry),
+                              onPressed: () =>
+                                  context.read<ProductsCubit>().refresh(),
+                              child: Text(l10n.retry),
                             ),
                           ],
                         ),
@@ -183,10 +205,11 @@ class _HomeContentState extends State<_HomeContent> {
                                   _card(
                                     StatCard(
                                       value: '${displayState.total}',
-                                      label:  l10n.totalProducts,
+                                      label: l10n.totalProducts,
                                       icon: Icons.inventory_2_outlined,
                                       iconColor: AppColors.primary,
-                                      iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+                                      iconBackgroundColor: AppColors.primary
+                                          .withOpacity(0.1),
                                     ),
                                   ),
                                   _card(
@@ -195,7 +218,8 @@ class _HomeContentState extends State<_HomeContent> {
                                       label: l10n.activeWarranties,
                                       icon: Icons.shield_outlined,
                                       iconColor: AppColors.success,
-                                      iconBackgroundColor: AppColors.success.withOpacity(0.1),
+                                      iconBackgroundColor: AppColors.success
+                                          .withOpacity(0.1),
                                     ),
                                   ),
                                   _card(
@@ -204,7 +228,9 @@ class _HomeContentState extends State<_HomeContent> {
                                       label: l10n.expiringSoon,
                                       icon: Icons.warning_amber_rounded,
                                       iconColor: const Color(0xFFF59E0B),
-                                      iconBackgroundColor: const Color(0xFFFEF3C7),
+                                      iconBackgroundColor: const Color(
+                                        0xFFFEF3C7,
+                                      ),
                                     ),
                                   ),
                                   _card(
@@ -213,7 +239,8 @@ class _HomeContentState extends State<_HomeContent> {
                                       label: l10n.expired,
                                       icon: Icons.error_outline_rounded,
                                       iconColor: AppColors.error,
-                                      iconBackgroundColor: AppColors.error.withOpacity(0.1),
+                                      iconBackgroundColor: AppColors.error
+                                          .withOpacity(0.1),
                                     ),
                                   ),
                                 ],
@@ -222,12 +249,19 @@ class _HomeContentState extends State<_HomeContent> {
                             SizedBox(height: 24.h),
                             RecentProductsSection(
                               items: recentProducts,
-                              onSeeAllTap: isInitialLoading ? null : () {
-                                context.go(AppRoutes.products);
-                              },
-                              onItemTap: isInitialLoading ? null : (index) {
-                                context.push(AppRoutes.details, extra: sourceProducts[index]);
-                              },
+                              onSeeAllTap: isInitialLoading
+                                  ? null
+                                  : () {
+                                      context.go(AppRoutes.products);
+                                    },
+                              onItemTap: isInitialLoading
+                                  ? null
+                                  : (index) {
+                                      context.push(
+                                        AppRoutes.details,
+                                        extra: sourceProducts[index],
+                                      );
+                                    },
                             ),
                             SizedBox(height: 24.h),
                           ],
@@ -247,7 +281,7 @@ class _HomeContentState extends State<_HomeContent> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-    decoration: BoxDecoration(
+      decoration: BoxDecoration(
         color: colorScheme.surface.withOpacity(1),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [

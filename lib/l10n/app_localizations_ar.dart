@@ -776,4 +776,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get couldNotDownloadInvoice => 'تعذّر حفظ الفاتورة. حاول مرة أخرى.';
+
+  @override
+  String unreadNotificationsLabel(int count, String formattedCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$formattedCount إشعار غير مقروء',
+      many: '$formattedCount إشعارًا غير مقروء',
+      few: '$formattedCount إشعارات غير مقروءة',
+      two: 'إشعاران غير مقروءين',
+      one: 'إشعار واحد غير مقروء',
+    );
+    return '$_temp0';
+  }
 }

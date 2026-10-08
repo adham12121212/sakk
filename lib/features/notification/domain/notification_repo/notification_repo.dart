@@ -14,4 +14,8 @@ abstract class NotificationRepo {
     required NotificationType type,
     String? productId,
   });
+
+  /// Emits the user id each time [addNotification] succeeds on this device,
+  /// so listeners (the unread badge) can refresh without polling.
+  Stream<String> get onNotificationAdded;
 }

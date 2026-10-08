@@ -6,6 +6,7 @@ import 'package:sakk/features/auth/domain/usecase/signup_usecase.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/Failure.dart';
 import '../../../../core/service/biometric_auth_service.dart';
+import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecase/delete_account_usecase.dart';
@@ -68,6 +69,7 @@ class AuthCubit extends Cubit<AuthState> {
     await _signOutUseCase.call();
 
     getIt<ProductsCubit>().reset();
+    getIt<NotificationCubit>().reset();
     emit(AuthInitial());
   }
 
@@ -101,6 +103,7 @@ class AuthCubit extends Cubit<AuthState> {
         // The biometric flag is device-level; don't carry it over to the next account.
         await getIt<BiometricAuthService>().setEnabled(false);
         getIt<ProductsCubit>().reset();
+        getIt<NotificationCubit>().reset();
         emit(AuthInitial());
       },
     );

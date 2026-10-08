@@ -238,5 +238,10 @@
   "errorNoInternet": "No internet connection. Check your connection and try again.",
   "errorGeneric": "Something went wrong. Please try again.",
   "couldNotShare": "Couldn't open the share sheet. Please try again.",
-  "couldNotDownloadInvoice": "Couldn't save the invoice. Please try again."
+  "couldNotDownloadInvoice": "Couldn't save the invoice. Please try again.",
+  "unreadNotificationsLabel": "{count, plural, one{{formattedCount} unread notification} other{{formattedCount} unread notifications}}",
+  "@unreadNotificationsLabel": {
+    "description": "Screen-reader text for the unread badge on the notifications bell. count picks the plural form; formattedCount is the same number in the locale's digits.",
+    "placeholders": { "count": { "type": "int" }, "formattedCount": { "type": "String" } }
+  }
 }

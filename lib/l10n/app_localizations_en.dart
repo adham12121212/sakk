@@ -769,4 +769,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get couldNotDownloadInvoice =>
       'Couldn\'t save the invoice. Please try again.';
+
+  @override
+  String unreadNotificationsLabel(int count, String formattedCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$formattedCount unread notifications',
+      one: '$formattedCount unread notification',
+    );
+    return '$_temp0';
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:sakk/core/error/Exceptions.dart';
 import 'package:sakk/core/error/Failure.dart';
@@ -14,6 +16,11 @@ class NotificationRepoImpl implements NotificationRepo {
   final AppLogger _logger;
 
   NotificationRepoImpl(this._dataSource, this._networkInfo, this._logger);
+
+  final _addedController = StreamController<String>.broadcast();
+
+  @override
+  Stream<String> get onNotificationAdded => _addedController.stream;
 
   @override
   Future<Either<Failure, List<NotificationEntity>>> getNotifications(String userId) async {
@@ -86,6 +93,7 @@ class NotificationRepoImpl implements NotificationRepo {
         'is_read': false,
         if (productId != null) 'product_id': productId,
       });
+      _addedController.add(userId);
       return const Right(null);
     } on ServerException catch (e, st) {
       _logger.error('Server error during addNotification', error: e, stackTrace: st);

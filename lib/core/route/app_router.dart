@@ -100,8 +100,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.notifications,
       builder: (context, state) =>
-          BlocProvider(
-            create: (_) => getIt<NotificationCubit>(),
+          // .value: the cubit is app-wide (shared with the Home badge), so
+          // leaving this screen must not close it.
+          BlocProvider.value(
+            value: getIt<NotificationCubit>(),
             child: NotificationsView(userId: state.extra as String),
           ),
     ),

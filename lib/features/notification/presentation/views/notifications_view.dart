@@ -23,7 +23,9 @@ class _NotificationsViewState extends State<NotificationsView> {
   @override
   void initState() {
     super.initState();
-    context.read<NotificationCubit>().loadNotifications(widget.userId);
+    context.read<NotificationCubit>()
+      ..watch(widget.userId)
+      ..refresh();
   }
 
 

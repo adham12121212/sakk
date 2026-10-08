@@ -1423,6 +1423,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t save the invoice. Please try again.'**
   String get couldNotDownloadInvoice;
+
+  /// Screen-reader text for the unread badge on the notifications bell. count picks the plural form; formattedCount is the same number in the locale's digits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{formattedCount} unread notification} other{{formattedCount} unread notifications}}'**
+  String unreadNotificationsLabel(int count, String formattedCount);
 }
 
 class _AppLocalizationsDelegate

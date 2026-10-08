@@ -29,6 +29,7 @@ import '../../features/notification/domain/usecase/add_notification_use_case.dar
 import '../../features/notification/domain/usecase/delete_notification_use_case.dart';
 import '../../features/notification/domain/usecase/get_notification_use_case.dart';
 import '../../features/notification/domain/usecase/mark_notification_read_use_case.dart';
+import '../../features/notification/domain/usecase/watch_added_notifications_use_case.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/products/data/product_repo_impl/product_repo_impl.dart';
@@ -172,11 +173,16 @@ void setupLocator() {
   getIt.registerLazySingleton<AddNotificationUseCase>(
         () => AddNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
   );
-  getIt.registerFactory<NotificationCubit>(
+  getIt.registerLazySingleton<WatchAddedNotificationsUseCase>(
+        () => WatchAddedNotificationsUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+  );
+  // Singleton: the Home badge and the Notifications screen share its list.
+  getIt.registerLazySingleton<NotificationCubit>(
         () => NotificationCubit(
       getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
       markNotificationAsReadUseCase: getIt<MarkNotificationAsReadUseCase>(),
       deleteNotificationUseCase: getIt<DeleteNotificationUseCase>(),
+      watchAddedNotificationsUseCase: getIt<WatchAddedNotificationsUseCase>(),
     ),
   );
 
