@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import '../util/pii_masker.dart';
 import 'app_logger.dart';
+import 'crash_reporting.dart';
 
 class ConsoleLogger implements AppLogger {
   @override
@@ -24,7 +27,27 @@ class ConsoleLogger implements AppLogger {
       if (error != null) debugPrint('  ↳ error: $error');
       if (stackTrace != null) debugPrint('  ↳ stackTrace: $stackTrace');
     }
-    // TODO: forward to Sentry / Crashlytics here for release builds
+    _reportToSentry(message, error, stackTrace, data);
+  }
+
+  // No-op when Sentry isn't initialized (debug builds or no SENTRY_DSN).
+  void _reportToSentry(String message, Object? error, StackTrace? stackTrace, Map<String, dynamic>? data) {
+    void addLogContext(Scope scope) {
+      scope.setContexts('log', {
+        'message': PiiMasker.scrubEmails(message),
+        ...?CrashReporting.scrubData(data),
+      });
+    }
+
+    if (error != null) {
+      Sentry.captureException(error, stackTrace: stackTrace, withScope: addLogContext);
+    } else {
+      Sentry.captureMessage(
+        PiiMasker.scrubEmails(message),
+        level: SentryLevel.error,
+        withScope: addLogContext,
+      );
+    }
   }
 
   void _log(String level, String message, Map<String, dynamic>? data) {

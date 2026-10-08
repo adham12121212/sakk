@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/get_it.dart';
 import 'core/locale_controller/locale_controller.dart';
 import 'core/logger/app_logger.dart';
+import 'core/logger/crash_reporting.dart';
 import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
 import 'core/service/notification_service.dart';
@@ -21,6 +22,12 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Loaded first: CrashReporting reads SENTRY_DSN from it.
+  await dotenv.load(fileName: ".env");
+  await CrashReporting.init(appRunner: _bootstrap);
+}
+
+Future<void> _bootstrap() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -28,11 +35,11 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  await dotenv.load(fileName: ".env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     publishableKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+  CrashReporting.bindSupabaseUser(Supabase.instance.client.auth);
   setupLocator();
   Bloc.observer = AppBlocObserver(getIt<AppLogger>());
 
