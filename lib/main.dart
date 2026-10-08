@@ -16,6 +16,7 @@ import 'core/route/app_router.dart';
 import 'core/service/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'core/widgets/sakk_logo.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 
@@ -56,6 +57,13 @@ Future<void> _bootstrap() async {
       error: e,
       stackTrace: stackTrace,
     );
+  }
+
+  // So SplashView's first frame already shows the logo the native splash shows.
+  try {
+    await SakkLogo.precache();
+  } catch (e, stackTrace) {
+    getIt<AppLogger>().error('Splash logo precache failed', error: e, stackTrace: stackTrace);
   }
 
   runApp(const MyApp());

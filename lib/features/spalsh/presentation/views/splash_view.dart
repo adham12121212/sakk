@@ -50,113 +50,36 @@ class _SplashViewState extends State<SplashView> {
     }
   }
 
+  /// Logo canvas size in logical pixels. Must equal the native splash icon
+  /// (288dp/pt, see `flutter_native_splash` in pubspec.yaml) so the hand-off
+  /// from the native launch screen is seamless — deliberately not `.w`-scaled.
+  static const double _logoSize = 288;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary.withOpacity(0.85),
-              AppColors.primary,
-            ],
-          ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -60.w,
-              left: -40.w,
-              child: _Blob(size: 220.w),
-            ),
-            Positioned(
-              bottom: -80.w,
-              right: -60.w,
-              child: _Blob(size: 260.w),
-            ),
-
-            Positioned.fill(
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    const Spacer(flex: 3),
-
-                    Container(
-                      width: 110.w,
-                      height: 110.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(28.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.black.withOpacity(0.15),
-                            blurRadius: 24,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: SakkLogo(size: 110.w, color: AppColors.primary),
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    Text(
-                      'Sakk',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 44.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    ),
-
-                    SizedBox(height: 8.h),
-
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: Text(
-                        'Sakk — AI Warranty Manager',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.white.withOpacity(0.85),
-                        ),
-                      ),
-                    ),
-
-                    const Spacer(flex: 4),
-
-                    const _LoadingDots(),
-
-                    SizedBox(height: 48.h),
-                  ],
-                ),
+      backgroundColor: AppColors.splashBackground,
+      body: Stack(
+        children: [
+          const Center(child: SakkLogo(size: _logoSize)),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 48.h,
+            child: SafeArea(
+              top: false,
+              // Fades in so nothing pops over the native splash hand-off.
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeIn,
+                builder: (context, opacity, child) =>
+                    Opacity(opacity: opacity, child: child),
+                child: const Center(child: _LoadingDots()),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Blob extends StatelessWidget {
-  final double size;
-  const _Blob({required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.white.withOpacity(0.06),
+          ),
+        ],
       ),
     );
   }

@@ -46,6 +46,7 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.0
+  flutter_native_splash: ^2.4.7
 
 flutter:
   uses-material-design: true
@@ -67,3 +68,20 @@ flutter_launcher_icons:
   # Artwork is already inside the 66dp safe zone; the default 16% inset would shrink it again.
   adaptive_icon_foreground_inset: 0
 
+# Native launch screen. The logo is a 288dp/pt canvas on every platform
+# (Android 12+ splash icon size), matched exactly by SplashView in Flutter.
+# The generator treats the source as 4x on both platforms: 1152px = 288dp/pt.
+# Regenerate with: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#4A5CFA"
+  color_dark: "#4A5CFA"
+  image: assets/splash/splash_logo.png
+  image_dark: assets/splash/splash_logo.png
+  android: true
+  ios: true
+  web: false
+  android_12:
+    image: assets/splash/splash_logo.png
+    image_dark: assets/splash/splash_logo.png
+    color: "#4A5CFA"
+    color_dark: "#4A5CFA"

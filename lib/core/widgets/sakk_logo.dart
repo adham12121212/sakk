@@ -17,11 +17,32 @@ class SakkLogo extends StatelessWidget {
 
   static const _asset = 'assets/icons/android_adaptive_foreground.svg';
 
+  /// The white logo, decoded ahead of time by [precache].
+  static PictureInfo? _precachedWhite;
+
+  /// Decodes the white logo before `runApp`, so its first frame paints the
+  /// logo synchronously. [SvgPicture] loads asynchronously and would show an
+  /// empty frame right after the native splash, which reads as a flicker.
+  static Future<void> precache() async {
+    _precachedWhite ??= await vg.loadPicture(const SvgAssetLoader(_asset), null);
+  }
+
   final double size;
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final precached = _precachedWhite;
+    if (color == null && precached != null) {
+      return Semantics(
+        label: AppLocalizations.of(context)?.appName,
+        image: true,
+        child: CustomPaint(
+          size: Size.square(size),
+          painter: _PicturePainter(precached),
+        ),
+      );
+    }
     return SvgPicture.asset(
       _asset,
       width: size,
@@ -30,6 +51,21 @@ class SakkLogo extends StatelessWidget {
       semanticsLabel: AppLocalizations.of(context)?.appName,
     );
   }
+}
+
+class _PicturePainter extends CustomPainter {
+  _PicturePainter(this.info);
+
+  final PictureInfo info;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / info.size.width, size.height / info.size.height);
+    canvas.drawPicture(info.picture);
+  }
+
+  @override
+  bool shouldRepaint(_PicturePainter oldDelegate) => oldDelegate.info != info;
 }
 
 class _WhiteToColorMapper extends ColorMapper {
