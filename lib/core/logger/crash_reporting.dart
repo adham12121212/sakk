@@ -49,34 +49,43 @@ class CrashReporting {
     );
   }
 
+  // Sentry 9 data classes are mutable (copyWith is deprecated), so these
+  // scrub the event/breadcrumb in place before it leaves the device.
   static FutureOr<SentryEvent?> _beforeSend(SentryEvent event, Hint hint) {
+    // Never send anything but the id, even if an SDK integration adds more.
+    final user = event.user;
+    if (user != null) event.user = SentryUser(id: user.id);
+
     final message = event.message;
-    return event.copyWith(
-      // Never send anything but the id, even if an SDK integration adds more.
-      user: event.user == null ? null : SentryUser(id: event.user!.id),
-      message: message == null
-          ? null
-          : SentryMessage(
-              PiiMasker.scrubEmails(message.formatted),
-              template: message.template == null ? null : PiiMasker.scrubEmails(message.template!),
-              params: message.params,
-            ),
-      exceptions: event.exceptions
-          ?.map((e) => e.copyWith(value: e.value == null ? null : PiiMasker.scrubEmails(e.value!)))
-          .toList(),
-      // ignore: deprecated_member_use
-      extra: _scrubMap(event.extra),
-      breadcrumbs: event.breadcrumbs?.map(_scrubBreadcrumb).toList(),
-    );
+    if (message != null) {
+      event.message = SentryMessage(
+        PiiMasker.scrubEmails(message.formatted),
+        template: message.template == null ? null : PiiMasker.scrubEmails(message.template!),
+        params: message.params,
+      );
+    }
+
+    for (final exception in event.exceptions ?? const <SentryException>[]) {
+      final value = exception.value;
+      if (value != null) exception.value = PiiMasker.scrubEmails(value);
+    }
+
+    // ignore: deprecated_member_use
+    event.extra = _scrubMap(event.extra);
+    event.breadcrumbs?.forEach(_scrubBreadcrumb);
+    return event;
   }
 
-  static Breadcrumb? _beforeBreadcrumb(Breadcrumb? crumb, Hint hint) =>
-      crumb == null ? null : _scrubBreadcrumb(crumb);
+  static Breadcrumb? _beforeBreadcrumb(Breadcrumb? crumb, Hint hint) {
+    if (crumb != null) _scrubBreadcrumb(crumb);
+    return crumb;
+  }
 
-  static Breadcrumb _scrubBreadcrumb(Breadcrumb crumb) => crumb.copyWith(
-        message: crumb.message == null ? null : PiiMasker.scrubEmails(crumb.message!),
-        data: _scrubMap(crumb.data),
-      );
+  static void _scrubBreadcrumb(Breadcrumb crumb) {
+    final message = crumb.message;
+    if (message != null) crumb.message = PiiMasker.scrubEmails(message);
+    crumb.data = _scrubMap(crumb.data);
+  }
 
   /// Drops keys that name an email and scrubs email-like values from the rest.
   static Map<String, dynamic>? scrubData(Map<String, dynamic>? data) => _scrubMap(data);
