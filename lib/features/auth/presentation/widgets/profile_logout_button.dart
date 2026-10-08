@@ -8,8 +8,17 @@ import '../../../../core/util/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 
-class ProfileLogoutButton extends StatelessWidget {
+class ProfileLogoutButton extends StatefulWidget {
   const ProfileLogoutButton({super.key});
+
+  @override
+  State<ProfileLogoutButton> createState() => _ProfileLogoutButtonState();
+}
+
+class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
+  // AuthLoading is shared with delete account, so track which button started
+  // it: only this one shows a spinner while signing out.
+  bool _isLoggingOut = false;
 
   Future<void> _confirmLogout(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
@@ -35,7 +44,9 @@ class ProfileLogoutButton extends StatelessWidget {
     );
 
     if (confirmed != true) return;
+    setState(() => _isLoggingOut = true);
     await authCubit.signOut();
+    if (mounted) setState(() => _isLoggingOut = false);
   }
 
   @override
@@ -43,13 +54,13 @@ class ProfileLogoutButton extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        final isLoggingOut = state is AuthLoading;
+        final isBusy = state is AuthLoading;
         return SizedBox(
           width: double.infinity,
           height: AppSizes.buttonHeight,
           child: OutlinedButton.icon(
-            onPressed: isLoggingOut ? null : () => _confirmLogout(context),
-            icon: isLoggingOut
+            onPressed: isBusy ? null : () => _confirmLogout(context),
+            icon: _isLoggingOut
                 ? SizedBox(
               width: 18.w,
               height: 18.w,
