@@ -38,6 +38,7 @@ dependencies:
   skeletonizer:
   firebase_core: ^4.15.0
   sentry_flutter: ^8.14.2
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:

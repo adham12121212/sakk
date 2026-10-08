@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/sakk_logo.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class SigninHeader extends StatelessWidget {
@@ -23,16 +24,7 @@ class SigninHeader extends StatelessWidget {
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(22.r),
           ),
-          child: Center(
-            child: Text(
-              'ص',
-              style: TextStyle(
-                fontSize: 32.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.white,
-              ),
-            ),
-          ),
+          child: SakkLogo(size: 78.w),
         ),
 
       ],

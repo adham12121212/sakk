@@ -9,6 +9,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../core/service/onboarding_service.dart';
+import '../../../../core/widgets/sakk_logo.dart';
 
 
 class SplashView extends StatefulWidget {
@@ -98,16 +99,7 @@ class _SplashViewState extends State<SplashView> {
                           ),
                         ],
                       ),
-                      child: Center(
-                        child: Text(
-                          'ص',
-                          style: TextStyle(
-                            fontSize: 52.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
+                      child: SakkLogo(size: 110.w, color: AppColors.primary),
                     ),
 
                     SizedBox(height: 24.h),
