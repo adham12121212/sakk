@@ -189,5 +189,12 @@
   "usePasswordInstead": "استخدام كلمة المرور بدلاً من ذلك",
   "biometricRequiresActiveSession": "سجّل الدخول بكلمة المرور أولاً لتفعيل الدخول البيومتري السريع.",
   "biometricNotEnabledYet": "تسجيل الدخول البيومتري غير مفعّل بعد. فعّله من إعدادات الملف الشخصي.",
-  "scannedPriceValue": "{price} جنيه"
+  "scannedPriceValue": "{price} جنيه",
+  "deleteAccount": "حذف الحساب",
+  "deleteAccountTitle": "حذف حسابك؟",
+  "deleteAccountWarning": "سيتم حذف حسابك وكل منتجاتك وفواتيرك وإشعاراتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+  "deleteAccountKeyword": "حذف",
+  "deleteAccountTypeToConfirm": "اكتب {keyword} للتأكيد",
+  "deleteAccountConfirm": "احذف نهائيًا",
+  "accountDeleted": "تم حذف حسابك"
 }

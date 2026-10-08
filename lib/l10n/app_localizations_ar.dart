@@ -673,4 +673,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String scannedPriceValue(Object price) {
     return '$price جنيه';
   }
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountTitle => 'حذف حسابك؟';
+
+  @override
+  String get deleteAccountWarning =>
+      'سيتم حذف حسابك وكل منتجاتك وفواتيرك وإشعاراتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get deleteAccountKeyword => 'حذف';
+
+  @override
+  String deleteAccountTypeToConfirm(String keyword) {
+    return 'اكتب $keyword للتأكيد';
+  }
+
+  @override
+  String get deleteAccountConfirm => 'احذف نهائيًا';
+
+  @override
+  String get accountDeleted => 'تم حذف حسابك';
 }

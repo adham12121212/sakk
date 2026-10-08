@@ -670,4 +670,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String scannedPriceValue(Object price) {
     return '$price EGP';
   }
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountWarning =>
+      'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.';
+
+  @override
+  String get deleteAccountKeyword => 'DELETE';
+
+  @override
+  String deleteAccountTypeToConfirm(String keyword) {
+    return 'Type $keyword to confirm';
+  }
+
+  @override
+  String get deleteAccountConfirm => 'Delete forever';
+
+  @override
+  String get accountDeleted => 'Your account has been deleted';
 }

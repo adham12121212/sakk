@@ -43,6 +43,8 @@ abstract class SupabaseService {
 
   Future<User> updateUserMetadata(Map<String, dynamic> data);
 
+  Future<FunctionResponse> invokeFunction(String functionName, {Map<String, dynamic>? body});
+
 }
 
 

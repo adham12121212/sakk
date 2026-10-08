@@ -11,6 +11,7 @@ import '../../../../core/util/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/usecase/get_user_usecase.dart';
 import '../cubit/auth_cubit.dart';
+import '../widgets/profile_delete_account_button.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_logout_button.dart';
 import '../widgets/profile_settings_card.dart';
@@ -101,6 +102,8 @@ class ProfileView extends StatelessWidget {
                           const ProfileSettingsCard(),
                           AppSpacing.h24,
                           const ProfileLogoutButton(),
+                          AppSpacing.h12,
+                          const ProfileDeleteAccountButton(),
                           AppSpacing.h24,
                         ],
                       ),

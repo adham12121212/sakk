@@ -9,6 +9,8 @@ class SupabaseErrorMapper {
       throw ServerException(_mapPostgrestError(error));
     } else if (error is StorageException) {
       throw ServerException(error.message);
+    } else if (error is FunctionException) {
+      throw ServerException(_mapFunctionError(error));
     } else {
       throw ServerException('Unexpected error: $error');
     }
@@ -25,6 +27,16 @@ class SupabaseErrorMapper {
       default:
         return e.message;
     }
+  }
+
+  // Edge Functions return `{ "error": "..." }` on failure; supabase_flutter
+  // throws FunctionException for any non-2xx status.
+  static String _mapFunctionError(FunctionException e) {
+    final details = e.details;
+    if (details is Map && details['error'] != null) {
+      return details['error'].toString();
+    }
+    return e.reasonPhrase ?? 'Request failed (status ${e.status})';
   }
 
   static String _mapPostgrestError(PostgrestException e) {

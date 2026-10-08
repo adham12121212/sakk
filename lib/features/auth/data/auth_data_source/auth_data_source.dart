@@ -20,6 +20,7 @@ abstract class AuthDataSource {
   Future<void> updatePassword(String newPassword);
   Future<UserModel> updateAvatar(File imageFile);
   Future<UserModel> signInWithGoogle();
+  Future<void> deleteAccount();
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
@@ -161,6 +162,22 @@ class AuthDataSourceImpl implements AuthDataSource {
     } catch (e, s) {
       if (e is GoogleSignInCancelledException || e is ServerException) rethrow;
       return SupabaseErrorMapper.handle(e, s);
+    }
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    try {
+      final res = await _supabaseService.invokeFunction('delete-account');
+      if (res.status != 200) {
+        final msg = (res.data is Map ? res.data['error'] : null) ?? 'Could not delete account';
+        throw ServerException(msg.toString());
+      }
+      // The user no longer exists on the server; clear the local session too.
+      await _supabaseService.signOut();
+    } catch (e, s) {
+      if (e is ServerException) rethrow;
+      SupabaseErrorMapper.handle(e, s);
     }
   }
 }

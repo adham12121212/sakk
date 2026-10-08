@@ -5,8 +5,10 @@ import 'package:sakk/features/auth/domain/usecase/signout_usecase.dart';
 import 'package:sakk/features/auth/domain/usecase/signup_usecase.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/Failure.dart';
+import '../../../../core/service/biometric_auth_service.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
+import '../../domain/usecase/delete_account_usecase.dart';
 import '../../domain/usecase/signin_usecase.dart';
 import '../../domain/usecase/signin_with_google_usecase.dart';
 import '../../domain/usecase/update_avatar_usecase.dart';
@@ -19,6 +21,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SignOutUseCase _signOutUseCase;
   final UpdateAvatarUseCase _updateAvatarUseCase;
   final SignInWithGoogleUseCase _signInWithGoogleUseCase;
+  final DeleteAccountUseCase _deleteAccountUseCase;
 
   AuthCubit(
       this._signupUsecase,
@@ -26,6 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
       this._signOutUseCase,
       this._updateAvatarUseCase,
       this._signInWithGoogleUseCase,
+      this._deleteAccountUseCase,
       ) : super(AuthInitial());
 
 
@@ -85,6 +89,20 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthError(failure.message));
       },
           (user) { getIt<ProductsCubit>().reset(); emit(AuthSuccess(user)); },
+    );
+  }
+
+  Future<void> deleteAccount() async {
+    emit(AuthLoading());
+    final result = await _deleteAccountUseCase.call();
+    await result.fold(
+          (failure) async => emit(AuthError(failure.message)),
+          (_) async {
+        // The biometric flag is device-level; don't carry it over to the next account.
+        await getIt<BiometricAuthService>().setEnabled(false);
+        getIt<ProductsCubit>().reset();
+        emit(AuthInitial());
+      },
     );
   }
 

@@ -1285,6 +1285,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{price} EGP'**
   String scannedPriceValue(Object price);
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @deleteAccountKeyword.
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE'**
+  String get deleteAccountKeyword;
+
+  /// No description provided for @deleteAccountTypeToConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {keyword} to confirm'**
+  String deleteAccountTypeToConfirm(String keyword);
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted'**
+  String get accountDeleted;
 }
 
 class _AppLocalizationsDelegate

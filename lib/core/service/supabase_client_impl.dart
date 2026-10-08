@@ -114,6 +114,11 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   @override
+  Future<FunctionResponse> invokeFunction(String functionName, {Map<String, dynamic>? body}) {
+    return _client.functions.invoke(functionName, body: body);
+  }
+
+  @override
   Future<AuthResponse> signInWithGoogle() async {
     await _ensureGoogleSignInInitialized();
     final GoogleSignInAccount googleUser;

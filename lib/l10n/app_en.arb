@@ -211,5 +211,13 @@
   "usePasswordInstead": "Use password instead",
   "biometricRequiresActiveSession": "Sign in with your password first to enable quick biometric access.",
   "biometricNotEnabledYet": "Biometric login isn't enabled yet. Turn it on from Profile settings.",
-  "scannedPriceValue": "{price} EGP"
+  "scannedPriceValue": "{price} EGP",
+  "deleteAccount": "Delete account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountWarning": "This permanently deletes your account, all your products, receipts and notifications. This can't be undone.",
+  "deleteAccountKeyword": "DELETE",
+  "deleteAccountTypeToConfirm": "Type {keyword} to confirm",
+  "@deleteAccountTypeToConfirm": { "placeholders": { "keyword": { "type": "String" } } },
+  "deleteAccountConfirm": "Delete forever",
+  "accountDeleted": "Your account has been deleted"
 }

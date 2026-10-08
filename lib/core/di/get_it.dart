@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../features/auth/data/auth_data_source/auth_data_source.dart';
 import '../../features/auth/data/auth_repo_impl/auth_repo_impl.dart';
 import '../../features/auth/domain/auth_repo/auth_repo.dart';
+import '../../features/auth/domain/usecase/delete_account_usecase.dart';
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/auth/domain/usecase/send_password_reset_otp_usecase.dart';
 import '../../features/auth/domain/usecase/signin_usecase.dart';
@@ -98,6 +99,7 @@ void setupLocator() {
       getIt<SignOutUseCase>(),
       getIt<UpdateAvatarUseCase>(),
       getIt<SignInWithGoogleUseCase>(),
+      getIt<DeleteAccountUseCase>(),
     ),
   );
   getIt.registerLazySingleton<GetUserUseCase>(
@@ -244,6 +246,9 @@ void setupLocator() {
 
   getIt.registerLazySingleton<SignInWithGoogleUseCase>(
         () => SignInWithGoogleUseCaseImpl(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<DeleteAccountUseCase>(
+        () => DeleteAccountUseCaseImpl(getIt<AuthRepository>()),
   );
 }
 

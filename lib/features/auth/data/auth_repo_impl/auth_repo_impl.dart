@@ -180,4 +180,21 @@ class AuthRepoImpl implements AuthRepository {
       return Left(UnknownFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount() async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+    try {
+      await _authDataSource.deleteAccount();
+      return const Right(null);
+    } on ServerException catch (e, st) {
+      _logger.error('Server error during deleteAccount', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    } catch (e, st) {
+      _logger.error('Unexpected error during deleteAccount', error: e, stackTrace: st);
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
 }
