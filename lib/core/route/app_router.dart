@@ -99,6 +99,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.notifications,
+      // Opened with the user's id as `extra`; same fallback as details.
+      redirect: (context, state) => state.extra is String ? null : AppRoutes.home,
       builder: (context, state) =>
           // .value: the cubit is app-wide (shared with the Home badge), so
           // leaving this screen must not close it.
@@ -111,6 +113,10 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: AppRoutes.details,
+      // Opened with the product as `extra`. If the route is ever rebuilt
+      // without it (e.g. Android restoring the app after killing it), the
+      // product can't be recovered, so fall back to the list.
+      redirect: (context, state) => state.extra is ProductEntity ? null : AppRoutes.products,
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: getIt<ProductsCubit>()),

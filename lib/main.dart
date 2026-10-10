@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -118,14 +119,8 @@ class MyApp extends StatelessWidget {
               routerConfig: appRouter,
 
               // App-wide offline strip; reloads data when the connection returns.
-              builder: (context, child) => ListenableBuilder(
-                listenable: appRouter.routerDelegate,
-                builder: (context, _) => ConnectivityBanner(
-                  networkInfo: getIt<NetworkInfo>(),
-                  onReconnected: _reloadAfterReconnect,
-                  suppressed: appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
-                  child: child ?? const SizedBox.shrink(),
-                ),
+              builder: (context, child) => _RouteAwareConnectivityBanner(
+                child: child ?? const SizedBox.shrink(),
               ),
 
               onGenerateTitle: (context) =>
@@ -162,6 +157,58 @@ class MyApp extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+/// The offline strip, hidden on the splash screen. The router reports route
+/// changes while the app is still building (e.g. at launch), so rebuilding
+/// right then would throw "setState() called during build"; the rebuild waits
+/// for the end of that frame instead.
+class _RouteAwareConnectivityBanner extends StatefulWidget {
+  const _RouteAwareConnectivityBanner({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_RouteAwareConnectivityBanner> createState() => _RouteAwareConnectivityBannerState();
+}
+
+class _RouteAwareConnectivityBannerState extends State<_RouteAwareConnectivityBanner> {
+  bool get _onSplash => appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash;
+  late bool _suppressed = _onSplash;
+
+  @override
+  void initState() {
+    super.initState();
+    appRouter.routerDelegate.addListener(_onRouteChanged);
+  }
+
+  @override
+  void dispose() {
+    appRouter.routerDelegate.removeListener(_onRouteChanged);
+    super.dispose();
+  }
+
+  void _onRouteChanged() {
+    final suppressed = _onSplash;
+    if (suppressed == _suppressed) return;
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _suppressed = _onSplash);
+      });
+    } else {
+      setState(() => _suppressed = suppressed);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConnectivityBanner(
+      networkInfo: getIt<NetworkInfo>(),
+      onReconnected: _reloadAfterReconnect,
+      suppressed: _suppressed,
+      child: widget.child,
     );
   }
 }

@@ -89,10 +89,11 @@ class _ConnectivityBannerState extends State<ConnectivityBanner> {
               ? _Strip(offline: _state == _BannerState.offline, topInset: topInset)
               : const SizedBox(width: double.infinity),
         ),
+        // Same widget either way: swapping the wrapper in and out would
+        // rebuild the app's Router from scratch, losing the open screens
+        // (and the arguments they were opened with).
         Expanded(
-          child: visible
-              ? MediaQuery.removePadding(context: context, removeTop: true, child: widget.child)
-              : widget.child,
+          child: MediaQuery.removePadding(context: context, removeTop: visible, child: widget.child),
         ),
       ],
     );
