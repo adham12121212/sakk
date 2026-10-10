@@ -5,7 +5,12 @@ import 'package:sakk/core/widgets/app_snackbar.dart';
 import 'package:sakk/l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../details/presentation/widgets/category_selector.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/di/get_it.dart';
+import '../../../products/domain/duplicate_finder.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
+import '../../../products/presentation/cubit/product_cubit.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/capsule_field.dart';
 import '../widgets/confidence_banner.dart';
@@ -95,10 +100,16 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     if (picked != null) cubit.updatePurchaseDate(picked);
   }
 
-  void _save() {
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    final cubit = context.read<ScanCubit>();
+    final loaded = cubit.state;
+    if (loaded is! ScanLoaded) return;
 
-    context.read<ScanCubit>().save(
+    if (!await _confirmIfDuplicate(loaded.scanned.purchaseDate ?? DateTime.now())) return;
+    if (!mounted) return;
+
+    cubit.save(
       name: _nameController.text.trim(),
       brand: _emptyToNull(_brandController.text),
       price: double.tryParse(_priceController.text.trim()),
@@ -111,6 +122,46 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
       serialNumber: _emptyToNull(_serialController.text),
       invoiceNumber: _emptyToNull(_invoiceController.text),
     );
+  }
+
+  /// Warns when this looks like a receipt that's already saved (same invoice
+  /// or serial number, or same product bought the same day). Returns whether
+  /// to go ahead with saving.
+  Future<bool> _confirmIfDuplicate(DateTime purchaseDate) async {
+    final products = getIt<ProductsCubit>();
+    await products.loadIfNeeded();
+    final match = findDuplicate(
+      products.state.products,
+      name: _nameController.text.trim(),
+      purchaseDate: purchaseDate,
+      price: double.tryParse(_priceController.text.trim()),
+      serialNumber: _emptyToNull(_serialController.text),
+      invoiceNumber: _emptyToNull(_invoiceController.text),
+    );
+    if (match == null || !mounted) return true;
+
+    final l10n = AppLocalizations.of(context)!;
+    final appLocale = Localizations.localeOf(context);
+    final dateLocale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
+    final reason = switch (match.reason) {
+      DuplicateReason.sameInvoiceNumber => l10n.duplicateSameInvoice,
+      DuplicateReason.sameSerialNumber => l10n.duplicateSameSerial,
+      DuplicateReason.sameNameAndDate => l10n.duplicateSameNameAndDate,
+    };
+    final saveAnyway = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.duplicateTitle),
+        content: Text(
+          '$reason\n\n${l10n.duplicateExisting(match.product.name, DateFormat.yMMMd(dateLocale).format(match.product.purchaseDate))}',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.cancel)),
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.saveAnyway)),
+        ],
+      ),
+    );
+    return saveAnyway ?? false;
   }
 
   String? _emptyToNull(String value) {

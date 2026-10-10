@@ -1017,4 +1017,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get pdfUnreadable =>
       'تعذّر فتح ملف PDF. إذا كان محميًا بكلمة مرور، أزلها ثم حاول مرة أخرى.';
+
+  @override
+  String get duplicateTitle => 'هل أضفته من قبل؟';
+
+  @override
+  String get duplicateSameInvoice => 'لديك بالفعل منتج بنفس رقم الفاتورة.';
+
+  @override
+  String get duplicateSameSerial => 'لديك بالفعل منتج بنفس الرقم التسلسلي.';
+
+  @override
+  String get duplicateSameNameAndDate =>
+      'لديك بالفعل هذا المنتج، تم شراؤه في نفس اليوم.';
+
+  @override
+  String duplicateExisting(Object date, Object name) {
+    return 'المحفوظ: $name، تاريخ الشراء $date.';
+  }
+
+  @override
+  String get saveAnyway => 'حفظ على أي حال';
 }

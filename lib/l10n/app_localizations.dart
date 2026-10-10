@@ -1813,6 +1813,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t open that PDF. If it\'s password-protected, remove the password and try again.'**
   String get pdfUnreadable;
+
+  /// No description provided for @duplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Already added?'**
+  String get duplicateTitle;
+
+  /// No description provided for @duplicateSameInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a product with this invoice number.'**
+  String get duplicateSameInvoice;
+
+  /// No description provided for @duplicateSameSerial.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a product with this serial number.'**
+  String get duplicateSameSerial;
+
+  /// No description provided for @duplicateSameNameAndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have this product, bought on the same day.'**
+  String get duplicateSameNameAndDate;
+
+  /// No description provided for @duplicateExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {name}, bought {date}.'**
+  String duplicateExisting(Object date, Object name);
+
+  /// No description provided for @saveAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Save anyway'**
+  String get saveAnyway;
 }
 
 class _AppLocalizationsDelegate

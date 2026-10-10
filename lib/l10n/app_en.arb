@@ -307,5 +307,11 @@
   "scanUnreadable": "We couldn't read that photo. Try a clearer, well-lit photo of the receipt, or enter the details manually.",
   "scanBusy": "Too many scans right now. Please try again in a minute.",
   "uploadPdfInvoice": "Upload PDF Invoice",
-  "pdfUnreadable": "We couldn't open that PDF. If it's password-protected, remove the password and try again."
+  "pdfUnreadable": "We couldn't open that PDF. If it's password-protected, remove the password and try again.",
+  "duplicateTitle": "Already added?",
+  "duplicateSameInvoice": "You already have a product with this invoice number.",
+  "duplicateSameSerial": "You already have a product with this serial number.",
+  "duplicateSameNameAndDate": "You already have this product, bought on the same day.",
+  "duplicateExisting": "Saved: {name}, bought {date}.",
+  "saveAnyway": "Save anyway"
 }

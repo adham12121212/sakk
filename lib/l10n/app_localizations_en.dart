@@ -1006,4 +1006,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pdfUnreadable =>
       'We couldn\'t open that PDF. If it\'s password-protected, remove the password and try again.';
+
+  @override
+  String get duplicateTitle => 'Already added?';
+
+  @override
+  String get duplicateSameInvoice =>
+      'You already have a product with this invoice number.';
+
+  @override
+  String get duplicateSameSerial =>
+      'You already have a product with this serial number.';
+
+  @override
+  String get duplicateSameNameAndDate =>
+      'You already have this product, bought on the same day.';
+
+  @override
+  String duplicateExisting(Object date, Object name) {
+    return 'Saved: $name, bought $date.';
+  }
+
+  @override
+  String get saveAnyway => 'Save anyway';
 }
