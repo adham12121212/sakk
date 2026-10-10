@@ -34,7 +34,7 @@ class ConsoleLogger implements AppLogger {
   void _reportToSentry(String message, Object? error, StackTrace? stackTrace, Map<String, dynamic>? data) {
     void addLogContext(Scope scope) {
       scope.setContexts('log', {
-        'message': PiiMasker.scrubEmails(message),
+        'message': PiiMasker.scrub(message),
         ...?CrashReporting.scrubData(data),
       });
     }
@@ -43,7 +43,7 @@ class ConsoleLogger implements AppLogger {
       Sentry.captureException(error, stackTrace: stackTrace, withScope: addLogContext);
     } else {
       Sentry.captureMessage(
-        PiiMasker.scrubEmails(message),
+        PiiMasker.scrub(message),
         level: SentryLevel.error,
         withScope: addLogContext,
       );

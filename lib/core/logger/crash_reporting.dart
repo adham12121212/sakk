@@ -59,15 +59,15 @@ class CrashReporting {
     final message = event.message;
     if (message != null) {
       event.message = SentryMessage(
-        PiiMasker.scrubEmails(message.formatted),
-        template: message.template == null ? null : PiiMasker.scrubEmails(message.template!),
+        PiiMasker.scrub(message.formatted),
+        template: message.template == null ? null : PiiMasker.scrub(message.template!),
         params: message.params,
       );
     }
 
     for (final exception in event.exceptions ?? const <SentryException>[]) {
       final value = exception.value;
-      if (value != null) exception.value = PiiMasker.scrubEmails(value);
+      if (value != null) exception.value = PiiMasker.scrub(value);
     }
 
     // ignore: deprecated_member_use
@@ -83,7 +83,7 @@ class CrashReporting {
 
   static void _scrubBreadcrumb(Breadcrumb crumb) {
     final message = crumb.message;
-    if (message != null) crumb.message = PiiMasker.scrubEmails(message);
+    if (message != null) crumb.message = PiiMasker.scrub(message);
     crumb.data = _scrubMap(crumb.data);
   }
 
@@ -95,7 +95,7 @@ class CrashReporting {
     return {
       for (final entry in data.entries)
         if (!entry.key.toLowerCase().contains('email'))
-          entry.key: entry.value is String ? PiiMasker.scrubEmails(entry.value as String) : entry.value,
+          entry.key: entry.value is String ? PiiMasker.scrub(entry.value as String) : entry.value,
     };
   }
 }

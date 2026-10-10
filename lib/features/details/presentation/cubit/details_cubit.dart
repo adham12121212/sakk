@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/Failure.dart';
+import '../../../../core/logger/app_logger.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -131,41 +132,31 @@ class DetailsCubit extends Cubit<DetailsState> {
         }
       }
 
-      print('[DEBUG] fetching url: $url');
-
       final response = await http
           .get(Uri.parse(url))
           .timeout(const Duration(seconds: 30));
-
-      print('[DEBUG] status: ${response.statusCode}');
-      print('[DEBUG] content-type: ${response.headers['content-type']}');
-      print('[DEBUG] bytes length: ${response.bodyBytes.length}');
 
       if (response.statusCode != 200) {
         throw Exception('Server returned ${response.statusCode}');
       }
 
       final tempDir = await getTemporaryDirectory();
-      final safeName = product.name.replaceAll(RegExp(r'[^\w\s-]'), '_');
+      // Letters and digits in any language (e.g. Arabic) are kept.
+      final safeName = product.name.replaceAll(RegExp(r'[^\p{L}\p{N}\s-]', unicode: true), '_');
       final tempFile = File('${tempDir.path}/$safeName.jpg');
       await tempFile.writeAsBytes(response.bodyBytes);
 
-      print('[DEBUG] wrote file: ${tempFile.path}, '
-          'exists: ${await tempFile.exists()}, '
-          'size: ${await tempFile.length()}');
-
       await Gal.putImage(tempFile.path, album: 'Sakk');
-
-      print('[DEBUG] Gal.putImage completed without throwing');
 
       if (isClosed) return;
       emit(DetailsGallerySaved(tempFile.path));
-    } on GalException catch (e) {
-      print('[DEBUG] GalException: ${e.type} - ${e.type.message}');
+    } on GalException catch (e, st) {
+      // Never log the URL: it's a signed link that opens the receipt.
+      getIt<AppLogger>().error('Saving invoice to gallery failed: ${e.type}', error: e, stackTrace: st);
       if (isClosed) return;
       emit(DetailsActionError(e));
-    } catch (e) {
-      print('[DEBUG] generic exception: $e');
+    } catch (e, st) {
+      getIt<AppLogger>().error('Saving invoice to gallery failed', error: e, stackTrace: st);
       if (isClosed) return;
       emit(DetailsActionError(e));
     }

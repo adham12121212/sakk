@@ -14,4 +14,15 @@ class PiiMasker {
   /// Replaces every email-like substring with `[email]`. Used before anything
   /// leaves the device (e.g. Sentry), where even masked emails aren't allowed.
   static String scrubEmails(String text) => text.replaceAll(_emailPattern, '[email]');
+
+  // Signed storage links (`?token=...`) and bare JWTs open private files or
+  // act as credentials, so they never leave the device either.
+  static final _tokenParam = RegExp(r'([?&]token=)[^&\s"]+');
+  static final _jwt = RegExp(r'eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+');
+
+  /// Everything that must be removed before text leaves the device: emails,
+  /// signed-link tokens and JWTs.
+  static String scrub(String text) => scrubEmails(text)
+      .replaceAllMapped(_tokenParam, (m) => '${m[1]}[token]')
+      .replaceAll(_jwt, '[token]');
 }
