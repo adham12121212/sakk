@@ -11,6 +11,7 @@ abstract class ProductRepo {
 
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
+    String? pdfText,
   });
 
   /// Deletes a scanned receipt photo the user didn't save. Best effort.

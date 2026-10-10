@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +35,29 @@ class ScanViewState extends State<ScanView> {
 
     final cubit = ScanCubit()..processReceipt(picked.path);
 
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: cubit,
+          child: const ScanProcessingView(),
+        ),
+      ),
+    );
+  }
+
+  /// PDF invoices, e.g. the ones online stores email.
+  Future<void> pickPdf() async {
+    final List<PlatformFile> files;
+    try {
+      files = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    } catch (_) {
+      return; // picker unavailable or cancelled by the system
+    }
+    if (files.isEmpty || !mounted) return;
+    final bytes = await files.first.xFile.readAsBytes();
+    if (!mounted) return;
+
+    final cubit = ScanCubit()..processPdf(bytes);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
@@ -134,6 +158,12 @@ class ScanViewState extends State<ScanView> {
                   icon: AppIcons.gallery,
                   label: l10n.chooseFromGallery,
                   onPressed: () => pickAndScan(ImageSource.gallery),
+                ),
+                const SizedBox(height: 12),
+                ScanSourceButton.outlined(
+                  icon: AppIcons.pdf,
+                  label: l10n.uploadPdfInvoice,
+                  onPressed: pickPdf,
                 ),
                 const SizedBox(height: 8),
                 TextButton.icon(

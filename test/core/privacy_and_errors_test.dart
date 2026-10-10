@@ -44,6 +44,7 @@ void main() {
       expect(userFacingError(l10n, NetworkFailure.noConnectionMessage), l10n.errorNoInternet);
       expect(userFacingError(l10n, ProductDataSourceImpl.unreadableReceipt), l10n.scanUnreadable);
       expect(userFacingError(l10n, ProductDataSourceImpl.aiBusy), l10n.scanBusy);
+      expect(userFacingError(l10n, ProductDataSourceImpl.pdfUnreadable), l10n.pdfUnreadable);
       expect(userFacingError(l10n, 'FunctionsHttpException(status: 500)'), l10n.errorGeneric);
     });
   });

@@ -9,7 +9,7 @@ import '../models/product_model.dart';
 
 abstract class ProductDataSource {
 
-  Future<ScannedReceiptData> scanReceipt({required String imagePath});
+  Future<ScannedReceiptData> scanReceipt({required String imagePath, String? pdfText});
 
   /// Deletes an uploaded receipt photo that ended up not being saved.
   Future<void> deleteReceiptImage(String path);
@@ -51,16 +51,20 @@ class ProductDataSourceImpl implements ProductDataSource {
   /// failure message so the UI can explain them (see userFacingError).
   static const unreadableReceipt = 'unreadable_receipt';
   static const aiBusy = 'ai_busy';
+  static const pdfUnreadable = 'pdf_unreadable';
 
   @override
-  Future<ScannedReceiptData> scanReceipt({required String imagePath}) async {
+  Future<ScannedReceiptData> scanReceipt({required String imagePath, String? pdfText}) async {
     try {
       final userId = _client.auth.currentUser?.id;
       if (userId == null) {
         throw ServerException('You must be signed in to scan a receipt');
       }
 
-      final fileName = '$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      // .png for rendered PDF pages, .jpg for photos; the upload's content
+      // type follows the extension.
+      final extension = imagePath.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
+      final fileName = '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
       await _client.storage.from(_receiptsBucket).upload(fileName, File(imagePath));
 
       final Map<String, dynamic> data;
@@ -72,7 +76,7 @@ class ProductDataSourceImpl implements ProductDataSource {
 
         final response = await _client.functions.invoke(
           _extractFunctionName,
-          body: {'imageUrl': signedUrl},
+          body: {'imageUrl': signedUrl, if (pdfText != null) 'pdfText': pdfText},
         );
         data = response.data as Map<String, dynamic>;
       } catch (e) {

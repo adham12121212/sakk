@@ -61,12 +61,13 @@ class ProductRepoImpl implements ProductRepo {
   @override
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
+    String? pdfText,
   }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
-      final result = await _dataSource.scanReceipt(imagePath: imagePath);
+      final result = await _dataSource.scanReceipt(imagePath: imagePath, pdfText: pdfText);
       return Right(result);
     } on ServerException catch (e, st) {
       _logger.error(

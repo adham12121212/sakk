@@ -1801,6 +1801,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Too many scans right now. Please try again in a minute.'**
   String get scanBusy;
+
+  /// No description provided for @uploadPdfInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload PDF Invoice'**
+  String get uploadPdfInvoice;
+
+  /// No description provided for @pdfUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open that PDF. If it\'s password-protected, remove the password and try again.'**
+  String get pdfUnreadable;
 }
 
 class _AppLocalizationsDelegate

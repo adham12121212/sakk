@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/get_it.dart';
+import '../../../../core/service/pdf_invoice_reader.dart';
+import '../../../products/data/product_data_source/product_data_source.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -18,7 +20,9 @@ class ScanCubit extends Cubit<ScanState> {
     AddProductUseCase? addProductUseCase,
     ProductsCubit? productsCubit,
     WarrantyNotificationService? warrantyNotificationService,
-  })  : _scanReceiptUseCase = scanReceiptUseCase ?? getIt<ScanReceiptUseCase>(),
+    PdfInvoiceReader? pdfInvoiceReader,
+  })  : _pdfInvoiceReader = pdfInvoiceReader ?? PdfInvoiceReader(),
+        _scanReceiptUseCase = scanReceiptUseCase ?? getIt<ScanReceiptUseCase>(),
         _addProductUseCase = addProductUseCase ?? getIt<AddProductUseCase>(),
         _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
         _warrantyNotificationService =
@@ -29,6 +33,7 @@ class ScanCubit extends Cubit<ScanState> {
   final AddProductUseCase _addProductUseCase;
   final ProductsCubit _productsCubit;
   final WarrantyNotificationService _warrantyNotificationService;
+  final PdfInvoiceReader _pdfInvoiceReader;
 
   /// True when the user chose to type the details in instead of scanning, so
   /// there's no receipt image or confidence score to show.
@@ -57,13 +62,36 @@ class ScanCubit extends Cubit<ScanState> {
     emit(ScanEditing(scanned: ScannedReceiptData(purchaseDate: DateTime.now(), confidence: 1)));
   }
 
-  Future<void> processReceipt(String imagePath) async {
-    final result = await _scanReceiptUseCase(imagePath: imagePath);
+  Future<void> processReceipt(String imagePath, {String? pdfText}) async {
+    final result = await _scanReceiptUseCase(imagePath: imagePath, pdfText: pdfText);
+    if (isClosed) {
+      // The user left while the scan was running: emitting now would throw,
+      // and close() couldn't delete a photo it didn't know about yet.
+      result.fold((_) {}, (scanned) {
+        final path = scanned.receiptPath;
+        if (path != null) unawaited(_scanReceiptUseCase.discard(path));
+      });
+      return;
+    }
 
     result.fold(
           (failure) => emit(ScanProcessingFailed(failure.message)),
           (scanned) => emit(ScanEditing(scanned: scanned)),
     );
+  }
+
+  /// A PDF invoice (e.g. emailed by an online store): its first page becomes
+  /// the invoice photo and its text goes to the scanner with it.
+  Future<void> processPdf(Uint8List pdfBytes) async {
+    final PdfInvoice invoice;
+    try {
+      invoice = await _pdfInvoiceReader.read(pdfBytes);
+    } on PdfInvoiceException {
+      if (!isClosed) emit(const ScanProcessingFailed(ProductDataSourceImpl.pdfUnreadable));
+      return;
+    }
+    if (isClosed) return;
+    await processReceipt(invoice.imagePath, pdfText: invoice.text);
   }
 
   void updatePurchaseDate(DateTime date) {

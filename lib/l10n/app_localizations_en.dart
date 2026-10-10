@@ -999,4 +999,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scanBusy =>
       'Too many scans right now. Please try again in a minute.';
+
+  @override
+  String get uploadPdfInvoice => 'Upload PDF Invoice';
+
+  @override
+  String get pdfUnreadable =>
+      'We couldn\'t open that PDF. If it\'s password-protected, remove the password and try again.';
 }

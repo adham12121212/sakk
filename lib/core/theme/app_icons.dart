@@ -227,6 +227,11 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // arrowClockwise
+  static const pdf = IconData(
+    0xe702,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // filePdf
   static const gallery = IconData(
     0xe836,
     fontFamily: 'PhosphorRegular',

@@ -1010,4 +1010,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get scanBusy =>
       'عدد كبير من عمليات المسح الآن. حاول مرة أخرى بعد دقيقة.';
+
+  @override
+  String get uploadPdfInvoice => 'رفع فاتورة PDF';
+
+  @override
+  String get pdfUnreadable =>
+      'تعذّر فتح ملف PDF. إذا كان محميًا بكلمة مرور، أزلها ثم حاول مرة أخرى.';
 }

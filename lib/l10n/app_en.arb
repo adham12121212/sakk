@@ -305,5 +305,7 @@
   "invoiceNumber": "Invoice number",
   "foreignPriceHint": "The receipt shows {amount}. Enter the price in EGP.",
   "scanUnreadable": "We couldn't read that photo. Try a clearer, well-lit photo of the receipt, or enter the details manually.",
-  "scanBusy": "Too many scans right now. Please try again in a minute."
+  "scanBusy": "Too many scans right now. Please try again in a minute.",
+  "uploadPdfInvoice": "Upload PDF Invoice",
+  "pdfUnreadable": "We couldn't open that PDF. If it's password-protected, remove the password and try again."
 }

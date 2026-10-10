@@ -12,5 +12,6 @@ String userFacingError(AppLocalizations l10n, String? message) {
   if (message == NetworkFailure.noConnectionMessage) return l10n.errorNoInternet;
   if (message == ProductDataSourceImpl.unreadableReceipt) return l10n.scanUnreadable;
   if (message == ProductDataSourceImpl.aiBusy) return l10n.scanBusy;
+  if (message == ProductDataSourceImpl.pdfUnreadable) return l10n.pdfUnreadable;
   return l10n.errorGeneric;
 }

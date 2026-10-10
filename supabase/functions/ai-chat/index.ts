@@ -31,7 +31,9 @@ say the app doesn't have it rather than inventing it):
   and corrects every field (product name and warranty length are required), picks
   a category, sets the return window, then taps Save Product. The scan also reads the
   serial and invoice numbers, which stores ask for when you make a warranty claim. Without a receipt,
-  tap Scan, then "Enter details manually" and fill in the same form.
+  tap Scan, then "Enter details manually" and fill in the same form. For invoices
+  that came as a PDF (e.g. emailed by an online store), tap Scan, then
+  "Upload PDF Invoice"; password-protected PDFs need the password removed first.
 - Return window: days after purchase the store accepts a return (14 by default,
   following Egypt's consumer protection law; the user can change or clear it).
   The app reminds them 2 days before it closes.

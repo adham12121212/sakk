@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/service/pdf_invoice_reader.dart';
 import 'package:sakk/core/service/warranty_notification_service.dart';
+import 'package:sakk/features/products/data/product_data_source/product_data_source.dart';
 import 'package:sakk/features/category/domain/entities/product_category.dart';
 import 'package:sakk/features/products/domain/enties/product_entity.dart';
 import 'package:sakk/features/products/domain/enties/scanned_receipt.dart';
@@ -12,11 +16,17 @@ import 'package:sakk/features/scan/presentation/cubit/scan_cubit.dart';
 
 class _Scan implements ScanReceiptUseCase {
   final discarded = <String>[];
+  String? lastImagePath;
+  String? lastPdfText;
 
   @override
-  Future<Either<Failure, ScannedReceiptData>> call({required String imagePath}) async => const Right(
+  Future<Either<Failure, ScannedReceiptData>> call({required String imagePath, String? pdfText}) async {
+    lastImagePath = imagePath;
+    lastPdfText = pdfText;
+    return const Right(
         ScannedReceiptData(productName: 'TV', receiptPath: 'u1/1.jpg', serialNumber: 'SN1', invoiceNumber: 'INV9'),
       );
+  }
 
   @override
   Future<void> discard(String receiptPath) async => discarded.add(receiptPath);
@@ -49,11 +59,21 @@ class _Notifications implements WarrantyNotificationService {
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
 
-ScanCubit cubit(_Scan scan, _Add add) => ScanCubit(
+/// Returns [result] or throws [PdfInvoiceException] when it's null.
+class _PdfReader implements PdfInvoiceReader {
+  _PdfReader(this.result);
+  final PdfInvoice? result;
+
+  @override
+  Future<PdfInvoice> read(Uint8List pdfBytes) async => result ?? (throw const PdfInvoiceException());
+}
+
+ScanCubit cubit(_Scan scan, _Add add, {PdfInvoiceReader? pdf}) => ScanCubit(
       scanReceiptUseCase: scan,
       addProductUseCase: add,
       productsCubit: _Products(),
       warrantyNotificationService: _Notifications(),
+      pdfInvoiceReader: pdf,
     );
 
 void main() {
@@ -96,5 +116,20 @@ void main() {
     expect(scanned.purchaseDate!.day, today.day);
     await c.close();
     expect(scan.discarded, isEmpty);
+  });
+
+  test('a PDF invoice is scanned as its first-page image plus its text', () async {
+    final scan = _Scan();
+    final c = cubit(scan, _Add(), pdf: _PdfReader(const PdfInvoice(imagePath: '/tmp/page.png', text: 'Invoice No: 1')));
+    await c.processPdf(Uint8List(0));
+    expect(scan.lastImagePath, '/tmp/page.png');
+    expect(scan.lastPdfText, 'Invoice No: 1');
+    expect(c.state, isA<ScanEditing>());
+  });
+
+  test('a PDF that cannot be opened shows the PDF error', () async {
+    final c = cubit(_Scan(), _Add(), pdf: _PdfReader(null));
+    await c.processPdf(Uint8List(0));
+    expect((c.state as ScanProcessingFailed).message, ProductDataSourceImpl.pdfUnreadable);
   });
 }
