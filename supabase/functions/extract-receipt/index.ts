@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface ExtractRequest {
   imageUrl: string;
@@ -43,10 +44,26 @@ Always return one of these six exact lowercase values for category — never inv
 
 serve(async (req) => {
   try {
+    // Only signed-in users may scan. The anon key ships inside the app, so a
+    // valid JWT alone isn't enough; it has to belong to a real user.
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) return jsonResponse({ error: "Not authenticated" }, 401);
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabase = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return jsonResponse({ error: "Not authenticated" }, 401);
+
     const { imageUrl }: ExtractRequest = await req.json();
 
     if (!imageUrl) {
       return jsonResponse({ error: "imageUrl is required" }, 400);
+    }
+    // Only the user's own uploads (the app stores them under receipts/<user id>/
+    // and sends a signed URL), so this can't be used to analyse arbitrary images.
+    if (!isOwnReceiptUrl(imageUrl, supabaseUrl, user.id)) {
+      return jsonResponse({ error: "imageUrl must be one of your uploaded receipts" }, 400);
     }
 
     const extracted = await runExtraction(imageUrl);
@@ -64,10 +81,23 @@ serve(async (req) => {
   }
 });
 
+// True for a signed storage URL of a file under receipts/<userId>/ in this project.
+function isOwnReceiptUrl(imageUrl: string, supabaseUrl: string, userId: string): boolean {
+  try {
+    const url = new URL(imageUrl);
+    return url.protocol === "https:" &&
+      url.host === new URL(supabaseUrl).host &&
+      url.pathname.startsWith(`/storage/v1/object/sign/receipts/${userId}/`) &&
+      !url.pathname.includes("..");
+  } catch {
+    return false;
+  }
+}
+
 async function runExtraction(imageUrl: string): Promise<ExtractResponse> {
-  const apiKey = Deno.env.get("AI_API_KEY");
+  const apiKey = Deno.env.get("GROQ_API_KEY");
   if (!apiKey) {
-    throw new Error("AI_API_KEY secret is not configured");
+    throw new Error("GROQ_API_KEY secret is not configured");
   }
 
 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -77,7 +107,9 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
     Authorization: `Bearer ${apiKey}`,
   },
   body: JSON.stringify({
-    model: "qwen/qwen3.6-27b",
+    // Needs a model that reads images. Groq retires models without notice;
+    // check GET /openai/v1/models for one with vision before changing it.
+    model: "qwen/qwen3.8-27b",
     reasoning_effort: "none",     // 1. turn off thinking mode — this is the fix
     response_format: { type: "json_object" },
     max_tokens: 1500,             // 2. headroom in case thinking still leaks through
