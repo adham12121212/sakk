@@ -2,6 +2,10 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 
 abstract class NetworkInfo {
   Future<bool> get isConnected;
+
+  /// Emits the current connectivity once known, then every change
+  /// (true = internet reachable).
+  Stream<bool> get onConnectivityChanged;
 }
 
 class NetworkInfoImpl implements NetworkInfo {
@@ -10,4 +14,9 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected => _connectionChecker.hasInternetAccess;
+
+  @override
+  Stream<bool> get onConnectivityChanged => _connectionChecker.onStatusChange
+      .map((status) => status == InternetStatus.connected)
+      .distinct();
 }

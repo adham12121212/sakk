@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakk/core/widgets/app_snackbar.dart';
 import 'package:sakk/l10n/app_localizations.dart';
-import '../../../../core/constant/app_colors.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../details/presentation/widgets/category_selector.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
@@ -17,7 +16,6 @@ import '../widgets/invoice_preview_dialog.dart';
 import '../widgets/review_header.dart';
 import 'scan_failed_view.dart';
 import '../widgets/scan_skeleton_loader.dart';
-
 
 class ReviewProductView extends StatelessWidget {
   const ReviewProductView({super.key});
@@ -45,11 +43,13 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
   final _storeController = TextEditingController();
   final _notesController = TextEditingController();
 
+  // Egypt's consumer protection law gives 14 days to return or exchange, so
+  // that's the default; the user can change it or clear it.
+  final _returnDaysController = TextEditingController(text: '14');
+
   bool _controllersSeeded = false;
 
-
   ProductCategory _selectedCategory = ProductCategory.other;
-
 
   void _seedControllersIfNeeded(ScannedReceiptData scanned) {
     if (_controllersSeeded) return;
@@ -70,6 +70,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     _warrantyController.dispose();
     _storeController.dispose();
     _notesController.dispose();
+    _returnDaysController.dispose();
     super.dispose();
   }
 
@@ -86,7 +87,6 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
       lastDate: DateTime.now(),
     );
     if (picked != null) cubit.updatePurchaseDate(picked);
-
   }
 
   void _save() {
@@ -101,6 +101,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
       notes: _emptyToNull(_notesController.text),
       category: _selectedCategory,
       currency: 'EGP',
+      returnDays: int.tryParse(_returnDaysController.text.trim()),
     );
   }
 
@@ -149,16 +150,21 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
         final scanned = state.scanned;
         final isSaving = state is ScanSaving;
         final l10n = AppLocalizations.of(context)!;
+        final isManual = context.read<ScanCubit>().isManualEntry;
         _seedControllersIfNeeded(scanned);
 
         return Scaffold(
           body: SafeArea(
             child: Column(
               children: [
-                ReviewHeader(onBack: () {
-                  context.read<ScanCubit>().close();
-                  Navigator.of(context).maybePop();
-                }),
+                ReviewHeader(
+                  title: isManual ? l10n.addProductManuallyTitle : null,
+                  subtitle: isManual ? l10n.addProductManuallySubtitle : null,
+                  onBack: () {
+                    context.read<ScanCubit>().close();
+                    Navigator.of(context).maybePop();
+                  },
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
@@ -167,20 +173,23 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ConfidenceBanner(confidence: scanned.confidence),
-                          SizedBox(height: 20.h),
+                          if (!isManual) ...[
+                            ConfidenceBanner(confidence: scanned.confidence),
+                            SizedBox(height: 20.h),
 
-                          InvoicePreview(
-                            imageUrl: scanned.receiptImageUrl,
-                            onTap: () => showInvoicePreviewDialog(
-                              context,
-                              scanned.receiptImageUrl,
+                            InvoicePreview(
+                              imageUrl: scanned.receiptImageUrl,
+                              onTap: () => showInvoicePreviewDialog(
+                                context,
+                                scanned.receiptImageUrl,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 24.h),
+                            SizedBox(height: 24.h),
+                          ],
 
                           FieldLabel(l10n.productName),
                           CapsuleField(
+                            semanticLabel: l10n.productName,
                             controller: _nameController,
                             validator: (v) => (v == null || v.trim().isEmpty)
                                 ? l10n.productNameRequired
@@ -189,10 +198,13 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                           SizedBox(height: 20.h),
 
                           FieldLabel(l10n.brand),
-                          CapsuleField(controller: _brandController),
+                          CapsuleField(
+                            semanticLabel: l10n.brand,
+                            controller: _brandController,
+                          ),
                           SizedBox(height: 20.h),
 
-                           FieldLabel(l10n.category),
+                          FieldLabel(l10n.category),
                           CategorySelector(
                             selected: _selectedCategory,
                             onChanged: (category) =>
@@ -202,9 +214,11 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
 
                           FieldLabel(l10n.priceEgp),
                           CapsuleField(
+                            semanticLabel: l10n.priceEgp,
                             controller: _priceController,
-                            keyboardType:
-                            const TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) return null;
                               return double.tryParse(v.trim()) == null
@@ -217,7 +231,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                           FieldLabel(l10n.purchaseDate),
                           InkWell(
                             onTap: isSaving ? null : _pickPurchaseDate,
-                            borderRadius: BorderRadius.circular(28.r),
+                            borderRadius: BorderRadius.circular(16),
                             child: CapsuleShell(
                               child: Text(
                                 (scanned.purchaseDate ?? DateTime.now())
@@ -233,6 +247,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
 
                           FieldLabel(l10n.warrantyMonths),
                           CapsuleField(
+                            semanticLabel: l10n.warrantyMonths,
                             controller: _warrantyController,
                             keyboardType: TextInputType.number,
                             validator: (v) {
@@ -248,12 +263,30 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                           ),
                           SizedBox(height: 20.h),
 
+                          FieldLabel(l10n.returnWindowDays),
+                          CapsuleField(
+                            semanticLabel: l10n.returnWindowDays,
+                            controller: _returnDaysController,
+                            keyboardType: TextInputType.number,
+                            validator: (v) {
+                              // Optional: empty means no return window to track.
+                              if (v == null || v.trim().isEmpty) return null;
+                              final n = int.tryParse(v.trim());
+                              return n == null || n < 1 || n > 365 ? l10n.invalidReturnDays : null;
+                            },
+                          ),
+                          SizedBox(height: 20.h),
+
                           FieldLabel(l10n.store),
-                          CapsuleField(controller: _storeController),
+                          CapsuleField(
+                            semanticLabel: l10n.store,
+                            controller: _storeController,
+                          ),
                           SizedBox(height: 20.h),
 
                           FieldLabel(l10n.notes),
                           CapsuleField(
+                            semanticLabel: l10n.notes,
                             controller: _notesController,
                             maxLines: 3,
                             minLines: 3,
@@ -262,25 +295,18 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
 
                           SizedBox(
                             width: double.infinity,
-                            height: 52.h,
+                            height: 54,
                             child: FilledButton(
-                              onPressed: isSaving
-                                  ? null : _save,
-                              style: FilledButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(28.r),
-                                ),
-                                backgroundColor: AppColors.primary,
-                              ),
+                              onPressed: isSaving ? null : _save,
                               child: isSaving
                                   ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: Colors.white,
-                                ),
-                              )
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        color: Colors.white,
+                                      ),
+                                    )
                                   : Text(l10n.saveProduct),
                             ),
                           ),

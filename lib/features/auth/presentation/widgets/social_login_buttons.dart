@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/core/constant/app_colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
@@ -52,46 +52,37 @@ class SocialLoginButtons extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Divider(thickness: 1, color: AppColors.grey)),
+            Expanded(child: Divider(color: Theme.of(context).colorScheme.outline)),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: Text(l10n.orContinueWith, style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(l10n.orContinueWith, style: Theme.of(context).textTheme.bodySmall),
             ),
-            Expanded(child: Divider(thickness: 1, color: AppColors.grey)),
+            Expanded(child: Divider(color: Theme.of(context).colorScheme.outline)),
           ],
         ),
         SizedBox(height: 24.h),
 
-        Row(
-          children: [
-            Expanded(
-                child:GestureDetector(
-                  onTap: () => context.read<AuthCubit>().signInWithGoogle(),
-                  child: Container(
-                    height: 55,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: AppColors.primary,
-                      width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/icons/google.png', width: 25.w),
-                        SizedBox(width: 10.w),
-                        Text(l10n.google, style: TextStyle(color: AppColors.primary,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600)
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-            )
-              ],
-            ),
-
-
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final busy = state is AuthLoading;
+            final colorScheme = Theme.of(context).colorScheme;
+            return SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: OutlinedButton.icon(
+                // Disabled while any sign-in is running, so it can't fire twice.
+                onPressed: busy ? null : () => context.read<AuthCubit>().signInWithGoogle(),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: colorScheme.surface,
+                  foregroundColor: colorScheme.onSurface,
+                  side: BorderSide(color: colorScheme.outline, width: 1.2),
+                ),
+                icon: Image.asset('assets/icons/google.png', width: 22, height: 22),
+                label: Text(l10n.google, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

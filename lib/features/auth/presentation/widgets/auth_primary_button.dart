@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
-
+/// Full-width primary action (theme FilledButton) with an inline spinner.
 class AuthPrimaryButton extends StatelessWidget {
   final String label;
   final bool isLoading;
@@ -19,17 +17,15 @@ class AuthPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 54.h,
+      height: 54,
       child: FilledButton(
         onPressed: isLoading ? null : onPressed,
-        style: FilledButton.styleFrom(backgroundColor: AppColors.primary),
         child: isLoading
-            ? SizedBox(
-          width: 22.w,
-          height: 22.w,
-          child: const CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
-        )
-            : Text(label, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+            ? const SizedBox.square(
+                dimension: 22,
+                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+              )
+            : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
       ),
     );
   }

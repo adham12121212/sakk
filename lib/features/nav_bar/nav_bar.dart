@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constant/app_colors.dart';
 import '../../core/route/app_router.dart';
@@ -26,6 +25,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
   }
 }
 
+/// White bar with a soft top shadow: the active tab's icon sits in a tinted
+/// pill, and Scan (the app's main action) is a raised round button.
 class _BottomBar extends StatelessWidget {
   const _BottomBar({required this.currentIndex, required this.onTap});
 
@@ -36,45 +37,56 @@ class _BottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    return BottomAppBar(
-      color: colorScheme.surface,
-      elevation: 8,
-      child: SizedBox(
-        height: 60.h,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _NavItem(
-              icon: Icons.home_rounded,
-              label: l10n.home,
-              isActive: currentIndex == 0,
-              onTap: () => onTap(0),
-            ),
-            _NavItem(
-              icon: Icons.grid_view_rounded,
-              label: l10n.products,
-              isActive: currentIndex == 1,
-              onTap: () => onTap(1),
-            ),
-            _NavItem(
-              icon: Icons.document_scanner_rounded,
-              label: l10n.scan,
-              isActive: false,
-              onTap: () => context.push(AppRoutes.scan),
-            ),
-            _NavItem(
-              icon: Icons.bar_chart_rounded,
-              label: l10n.analytics,
-              isActive: currentIndex == 2,
-              onTap: () => onTap(2),
-            ),
-            _NavItem(
-              icon: Icons.auto_awesome_rounded,
-              label: l10n.ai,
-              isActive: currentIndex == 3,
-              onTap: () => onTap(3),
-            ),
-          ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: isDark ? Border(top: BorderSide(color: colorScheme.outline)) : null,
+        boxShadow: isDark
+            ? null
+            : const [BoxShadow(color: Color(0x140F172A), blurRadius: 24, offset: Offset(0, -6))],
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 72,
+          child: Row(
+            children: [
+              _NavItem(
+                icon: Icons.home_outlined,
+                activeIcon: Icons.home_rounded,
+                label: l10n.home,
+                isActive: currentIndex == 0,
+                onTap: () => onTap(0),
+              ),
+              _NavItem(
+                icon: Icons.grid_view_outlined,
+                activeIcon: Icons.grid_view_rounded,
+                label: l10n.products,
+                isActive: currentIndex == 1,
+                onTap: () => onTap(1),
+              ),
+              _ScanItem(
+                label: l10n.scan,
+                onTap: () => context.push(AppRoutes.scan),
+              ),
+              _NavItem(
+                icon: Icons.bar_chart_outlined,
+                activeIcon: Icons.bar_chart_rounded,
+                label: l10n.analytics,
+                isActive: currentIndex == 2,
+                onTap: () => onTap(2),
+              ),
+              _NavItem(
+                icon: Icons.auto_awesome_outlined,
+                activeIcon: Icons.auto_awesome_rounded,
+                label: l10n.ai,
+                isActive: currentIndex == 3,
+                onTap: () => onTap(3),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -84,40 +96,138 @@ class _BottomBar extends StatelessWidget {
 class _NavItem extends StatelessWidget {
   const _NavItem({
     required this.icon,
+    required this.activeIcon,
     required this.label,
     required this.isActive,
     required this.onTap,
   });
 
   final IconData icon;
+  final IconData activeIcon;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primary : AppColors.grey;
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = isActive ? AppColors.primary : colorScheme.onSurfaceVariant;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 24.sp),
-            SizedBox(height: 2.h),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                color: color,
+    return Expanded(
+      child: Semantics(
+        button: true,
+        selected: isActive,
+        label: label,
+        excludeSemantics: true,
+        child: InkResponse(
+          onTap: onTap,
+          radius: 32,
+          child: Column(
+            // Bottom-aligned so every label shares one baseline (the Scan
+            // circle is taller and rises above the others).
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                width: 52,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: isActive ? AppColors.primary.withValues(alpha: 0.12) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Icon(isActive ? activeIcon : icon, color: color, size: 22),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              _Label(
+                label,
+                TextStyle(
+                  fontSize: 11,
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _ScanItem extends StatelessWidget {
+  const _ScanItem({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Expanded(
+      child: Semantics(
+        button: true,
+        label: label,
+        excludeSemantics: true,
+        child: InkResponse(
+          onTap: onTap,
+          radius: 34,
+          child: Column(
+            // Bottom-aligned so every label shares one baseline (the Scan
+            // circle is taller and rises above the others).
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                  ),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 14,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.document_scanner_rounded, color: Colors.white, size: 22),
+              ),
+              const SizedBox(height: 4),
+              _Label(
+                label,
+                TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: colorScheme.onSurfaceVariant),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One-line tab label that shrinks to fit instead of being cut off
+/// (e.g. Arabic «الذكاء الاصطناعي»).
+class _Label extends StatelessWidget {
+  const _Label(this.text, this.style);
+
+  final String text;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(text, maxLines: 1, style: style.copyWith(height: 1.2)),
       ),
     );
   }

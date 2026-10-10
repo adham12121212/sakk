@@ -1,9 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/product_category.dart';
 import 'category_ui.dart';
@@ -28,49 +27,58 @@ class CategoryCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
+    final textTheme = Theme.of(context).textTheme;
+    final shape = BorderRadius.circular(20);
+
+    return Semantics(
+      selected: isSelected,
+      button: true,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: shape,
           border: Border.all(
-            color: isSelected ? color : colorScheme.outline,
-            width: isSelected ? 2 : 1,
+            color: isSelected ? colorScheme.primary : Colors.transparent,
+            width: 2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.03),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
-            ),
-          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(14.r),
+        child: AppCard(
+          onTap: onTap,
+          radius: 18,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(CategoryUi.icon(category), color: color, size: 22),
+                  ),
+                  const Spacer(),
+                  if (isSelected) Icon(Icons.check_circle_rounded, color: colorScheme.primary, size: 22),
+                ],
               ),
-              child: Icon(CategoryUi.icon(category), color: color, size: 22.sp),
-            ),
-            const Spacer(),
-            Text(
-              CategoryUi.label(context,category),
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 2.h),
-            Text(
-              '$count ${count == 1 ? l10n.product: l10n.products}',
-              style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6)),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                CategoryUi.label(context, category),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.titleMedium,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '$count ${count == 1 ? l10n.product : l10n.products}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodySmall?.copyWith(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -15,7 +15,7 @@ class InvoicePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: imageUrl == null ? null : onTap,
         child: AspectRatio(
@@ -45,13 +45,13 @@ class _PreviewBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 12.w,
+    return PositionedDirectional(
+      start: 12.w,
       bottom: 12.h,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.55),
+          color: Colors.black.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Row(
@@ -80,7 +80,7 @@ class _Placeholder extends StatelessWidget {
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Center(
-        child: Icon(Icons.receipt_long_outlined, size: 40.sp, color: Colors.grey.shade400),
+        child: Icon(Icons.receipt_long_outlined, size: 40.sp, color: colorScheme.onSurfaceVariant),
       ),
     );
   }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_radius.dart';
-import '../../../../core/util/app_sizes.dart';
 import '../../../../core/util/warranty_progress_color.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
 
@@ -32,8 +30,9 @@ class RecentProductData {
   }
 
   static double _remainingFraction(ProductEntity product) {
-    final totalDays =
-        product.warrantyEndDate.difference(product.purchaseDate).inDays;
+    final totalDays = product.warrantyEndDate
+        .difference(product.purchaseDate)
+        .inDays;
     if (totalDays <= 0) return 0;
     return (product.daysRemaining / totalDays).clamp(0.0, 1.0);
   }
@@ -46,114 +45,69 @@ class RecentProductData {
   final double? ringProgress;
 }
 
+/// Product row card: warranty ring around the photo, name, "brand · days
+/// left", status pill and a chevron. Used on Home, Products and Search.
 class RecentProductTile extends StatelessWidget {
   const RecentProductTile({super.key, required this.data, this.onTap});
 
   final RecentProductData data;
   final VoidCallback? onTap;
 
-  Color get _statusColor {
-    switch (data.status) {
-      case WarrantyStatus.active:
-        return AppColors.success;
-      case WarrantyStatus.expiring:
-        return const Color(0xFFF59E0B);
-      case WarrantyStatus.expired:
-        return AppColors.error;
-    }
-  }
-
-  Color get _statusBgColor {
-    switch (data.status) {
-      case WarrantyStatus.active:
-        return AppColors.success.withOpacity(0.12);
-      case WarrantyStatus.expiring:
-        return const Color(0xFFFEF3C7);
-      case WarrantyStatus.expired:
-        return AppColors.error.withOpacity(0.12);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    final statusLabel = switch (data.status) {
-      WarrantyStatus.active => l10n.active,
-      WarrantyStatus.expiring => l10n.expiring,
-      WarrantyStatus.expired => l10n.expired,
-    };
-    final subtitle = data.status == WarrantyStatus.expired
+    final statusColors = WarrantyStatusColors.of(context, data.status);
+    final timeLeft = data.status == WarrantyStatus.expired
         ? l10n.warrantyExpired
         : l10n.daysLeft(data.daysRemaining);
+    final subtitle = data.brand.trim().isEmpty
+        ? timeLeft
+        : '${data.brand} · $timeLeft';
 
-    return InkWell(
+    return AppCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.card),
-      child: Container(
-        padding: EdgeInsets.all(AppSizes.s12),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(.03), blurRadius: 12, offset: const Offset(0, 5)),
-          ],
-        ),
-        child: Row(
-          children: [
-            _StatusRingThumbnail(
-              data: data,
-              // Same bands as the Details ring: by share of warranty left.
-              ringColor: data.ringProgress == null
-                  ? _statusColor
-                  : warrantyProgressColor(data.ringProgress!),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600,color:  colorScheme.onSurface),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(data.brand, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
-                  SizedBox(height: 4.h),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time_rounded, size: 14.sp, color: colorScheme.onSurface.withOpacity(0.5)),
-                      SizedBox(width: 4.w),
-                      Text(subtitle, style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withOpacity(0.6))),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          _StatusRingThumbnail(
+            data: data,
+            // Same bands as the Details ring: by share of warranty left.
+            ringColor: data.ringProgress == null
+                ? statusColors.foreground
+                : warrantyProgressColor(context, data.ringProgress!),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: AppSizes.s10, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: _statusBgColor,
-                    borderRadius: BorderRadius.circular(AppRadius.xl),
-                  ),
-                  child: Text(
-                    statusLabel,
-                    style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: _statusColor),
-                  ),
+                Text(
+                  data.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.titleMedium,
                 ),
-                SizedBox(height: 10.h),
-                Icon(Icons.chevron_left_rounded, size: 20.sp, color: colorScheme.onSurface.withOpacity(0.4), textDirection: TextDirection.rtl),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodySmall?.copyWith(fontSize: 13),
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          StatusChip(status: data.status),
+          const SizedBox(width: 2),
+          Icon(
+            Icons.chevron_right_rounded,
+            size: 20,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+          ),
+        ],
       ),
     );
   }
@@ -166,7 +120,7 @@ class _StatusRingThumbnail extends StatelessWidget {
   final Color ringColor;
 
   static const double size = 52.0;
-  static const double imageSize = 44.0;
+  static const double imageSize = 42.0;
 
   @override
   Widget build(BuildContext context) {
@@ -177,40 +131,28 @@ class _StatusRingThumbnail extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          if (data.ringProgress != null)
-            SizedBox(
-              width: size,
-              height: size,
-              child: CircularProgressIndicator(
-                value: data.ringProgress,
-                strokeWidth: 3,
-                backgroundColor: colorScheme.outline,
-                valueColor: AlwaysStoppedAnimation(ringColor),
-              ),
-            )
-          else
-            Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: colorScheme.outline, width: 3),
+          SizedBox.square(
+            dimension: size,
+            child: CircularProgressIndicator(
+              value: data.ringProgress ?? 1,
+              strokeWidth: 3,
+              strokeCap: StrokeCap.round,
+              backgroundColor: colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation(
+                data.ringProgress == null ? colorScheme.outline : ringColor,
               ),
             ),
+          ),
           ClipOval(
             child: data.imageUrl != null
                 ? Image.network(
-              data.imageUrl!,
-              width: imageSize,
-              height: imageSize,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                debugPrint('[RecentProductTile] Image.network failed for ${data.imageUrl}: $error');
-                return _fallbackIcon(
-                  context
-                );
-              },
-            )
+                    data.imageUrl!,
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _fallbackIcon(context),
+                  )
                 : _fallbackIcon(context),
           ),
         ],
@@ -224,8 +166,11 @@ class _StatusRingThumbnail extends StatelessWidget {
       width: imageSize,
       height: imageSize,
       color: colorScheme.surfaceContainerHighest,
-      child: Icon(Icons.devices_other_rounded, color: colorScheme.onSurface.withOpacity(0.4), size: 20.sp),
+      child: Icon(
+        Icons.devices_other_rounded,
+        color: colorScheme.onSurfaceVariant,
+        size: 20,
+      ),
     );
   }
-
 }

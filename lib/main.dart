@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/get_it.dart';
+import 'core/error/network_info.dart';
 import 'core/locale_controller/locale_controller.dart';
 import 'core/logger/app_logger.dart';
 import 'core/logger/crash_reporting.dart';
@@ -16,7 +17,10 @@ import 'core/route/app_router.dart';
 import 'core/service/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'core/widgets/connectivity_banner.dart';
 import 'core/widgets/sakk_logo.dart';
+import 'features/notification/presentation/cubit/notification_cubit.dart';
+import 'features/products/presentation/cubit/product_cubit.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 
@@ -59,7 +63,6 @@ Future<void> _bootstrap() async {
     );
   }
 
-  // So SplashView's first frame already shows the logo the native splash shows.
   try {
     await SakkLogo.precache();
   } catch (e, stackTrace) {
@@ -74,6 +77,15 @@ Future<void> _bootstrap() async {
       _openNotifications(launchPayload);
     });
   }
+}
+
+
+void _reloadAfterReconnect() {
+  final products = getIt<ProductsCubit>();
+  if (products.state.hasLoadedOnce || products.state.error != null) {
+    products.refresh();
+  }
+  getIt<NotificationCubit>().refresh();
 }
 
 void _handleNotificationTap(NotificationResponse response) {
@@ -104,6 +116,17 @@ class MyApp extends StatelessWidget {
           builder: (_, child) {
             return MaterialApp.router(
               routerConfig: appRouter,
+
+              // App-wide offline strip; reloads data when the connection returns.
+              builder: (context, child) => ListenableBuilder(
+                listenable: appRouter.routerDelegate,
+                builder: (context, _) => ConnectivityBanner(
+                  networkInfo: getIt<NetworkInfo>(),
+                  onReconnected: _reloadAfterReconnect,
+                  suppressed: appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              ),
 
               onGenerateTitle: (context) =>
               AppLocalizations.of(context)!.appName,

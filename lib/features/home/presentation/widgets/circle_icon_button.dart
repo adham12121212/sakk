@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/util/localized_number.dart';
-
 
 /// Round icon-only button. The visible circle stays 40.w, but the tap area is
 /// at least 48×48 and [semanticLabel] is announced by screen readers (and
@@ -43,14 +43,20 @@ class CircleIconButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         shape: BoxShape.circle,
+        boxShadow: context.palette.cardShadow,
+        border: Theme.of(context).brightness == Brightness.dark
+            ? Border.all(color: colorScheme.outline)
+            : null,
       ),
-      child: Icon(icon, size: 28.h, color: color),
+      child: Icon(icon, size: 22, color: color),
     );
 
     final Widget badged;
     if (badgeCount > 0) {
       badged = Badge(
-        label: Text(formatBadgeCount(Localizations.localeOf(context), badgeCount)),
+        label: Text(
+          formatBadgeCount(Localizations.localeOf(context), badgeCount),
+        ),
         backgroundColor: AppColors.error,
         textColor: Colors.white,
         child: circle,
@@ -81,11 +87,7 @@ class CircleIconButton extends StatelessWidget {
               minWidth: _minTapTarget,
               minHeight: _minTapTarget,
             ),
-            child: Center(
-              widthFactor: 1,
-              heightFactor: 1,
-              child: badged,
-            ),
+            child: Center(widthFactor: 1, heightFactor: 1, child: badged),
           ),
         ),
       ),

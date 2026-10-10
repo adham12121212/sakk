@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../core/util/pii_masker.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -99,34 +99,37 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey.shade100,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: AppColors.primary),
-                      tooltip: l10n.back,
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
+                  CircleIconButton(
+                        icon: Icons.arrow_back,
+                        semanticLabel: l10n.back,
+                        onTap: () => Navigator.of(context).pop(),
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                   SizedBox(height: 28.h),
                   Text(
                     l10n.enterCode,
-                    style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   SizedBox(height: 8.h),
                   Text(
                     l10n.weSentCodeTo(_length, PiiMasker.maskEmail(widget.email)),
-                    style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600, height: 1.4),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   SizedBox(height: 32.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      _length,
-                          (i) => OtpBox(
-                        controller: _controllers[i],
-                        focusNode: _focusNodes[i],
-                        onChanged: (v) => _onChanged(i, v),
-                        enabled: !isLoading,
+                  // Codes are read left to right in every language, so the
+                  // boxes don't follow the Arabic layout direction.
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        _length,
+                        (i) => OtpBox(
+                          controller: _controllers[i],
+                          focusNode: _focusNodes[i],
+                          onChanged: (v) => _onChanged(i, v),
+                          enabled: !isLoading,
+                        ),
                       ),
                     ),
                   ),

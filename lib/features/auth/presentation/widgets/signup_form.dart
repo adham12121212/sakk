@@ -97,10 +97,10 @@ class _SignupFormState extends State<SignupForm> {
           ),
           SizedBox(height: 6.h),
           Padding(
-            padding: EdgeInsets.only(left: AppSizes.s4),
+            padding: EdgeInsetsDirectional.only(start: AppSizes.s4),
             child: Text(
               l10n.atleast8characters,
-              style: TextStyle(fontSize: 11.sp, color: AppColors.grey),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           AppSpacing.h20,
@@ -139,9 +139,10 @@ class _SignupFormState extends State<SignupForm> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: 12.h),
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), fontSize: 13.sp),
+                  // Text.rich (not RichText) so it inherits the app font.
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13.sp),
                       children: [
                         TextSpan(text: l10n.agreeToTermsPrefix),
                         TextSpan(
@@ -178,7 +179,7 @@ class _SignupFormState extends State<SignupForm> {
           if (_showTermsError) ...[
             SizedBox(height: 4.h),
             Padding(
-              padding: EdgeInsets.only(left: AppSizes.s12),
+              padding: EdgeInsetsDirectional.only(start: AppSizes.s12),
               child: Text(
                 l10n.pleaseAgreeToTerms,
                 style: TextStyle(fontSize: 12.sp, color: AppColors.error),

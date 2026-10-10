@@ -19,6 +19,7 @@ abstract class AddProductUseCase {
     required WarrantyStatus status,
     required ProductCategory category,
     required String currency,
+    int? returnDays,
   });
 }
 
@@ -39,8 +40,8 @@ class AddProductUseCaseImpl implements AddProductUseCase {
     String? notes,
     required WarrantyStatus status,
     required ProductCategory category,
-    required String currency
-
+    required String currency,
+    int? returnDays,
   }) {
     return _repository.addProduct(
       name: name,
@@ -55,6 +56,7 @@ class AddProductUseCaseImpl implements AddProductUseCase {
       status: status,
       category: category,
       currency: currency,
+      returnDays: returnDays,
     );
   }
 }

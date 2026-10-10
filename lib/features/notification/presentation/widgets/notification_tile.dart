@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sakk/core/constant/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
@@ -15,47 +15,74 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withAlpha(49),
-        borderRadius: BorderRadius.circular(20)
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: NotificationTypeIcon(type: notification.type),
-        title: Text(
-          notification.title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final unread = !notification.isRead;
+
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          NotificationTypeIcon(type: notification.type),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        notification.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.titleSmall?.copyWith(
+                          fontSize: 15,
+                          fontWeight: unread
+                              ? FontWeight.w700
+                              : FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _timeAgo(context, notification.createdAt),
+                      style: textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  notification.subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(notification.subtitle),
-            const SizedBox(height: 2),
-            Text(
-              _timeAgo(context, notification.createdAt),
-              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+          if (unread) ...[
+            const SizedBox(width: 10),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+              ),
             ),
           ],
-        ),
-        trailing: notification.isRead
-            ? null
-            : Container(
-          width: 8,
-          height: 8,
-          decoration: const BoxDecoration(
-            color:  AppColors.primary,
-            shape: BoxShape.circle,
-          ),
-        ),
+        ],
       ),
     );
   }
-
 
   String _timeAgo(BuildContext context, DateTime dateTime) {
     final l10n = AppLocalizations.of(context)!;
@@ -65,6 +92,8 @@ class NotificationTile extends StatelessWidget {
     if (diff.inHours < 24) return l10n.timeHoursAgo(diff.inHours);
     if (diff.inDays < 7) return l10n.timeDaysAgo(diff.inDays);
     // Older than a week: a short date in the app's locale.
-    return DateFormat.yMd(Localizations.localeOf(context).toLanguageTag()).format(dateTime);
+    return DateFormat.yMd(
+      Localizations.localeOf(context).toLanguageTag(),
+    ).format(dateTime);
   }
 }

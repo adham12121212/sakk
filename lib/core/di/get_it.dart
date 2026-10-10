@@ -32,11 +32,14 @@ import '../../features/notification/domain/usecase/mark_notification_read_use_ca
 import '../../features/notification/domain/usecase/watch_added_notifications_use_case.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
+import '../../features/products/data/product_data_source/product_local_data_source.dart';
 import '../../features/products/data/product_repo_impl/product_repo_impl.dart';
 import '../../features/products/domain/product_repo/product_repo.dart';
 import '../../features/products/domain/usecase/add_product_usecase.dart';
+import '../../features/products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../features/products/domain/usecase/delete_product_usecase.dart';
 import '../../features/products/domain/usecase/get_products_usecase.dart';
+import '../../features/products/domain/usecase/product_extras_usecases.dart';
 import '../../features/products/domain/usecase/scan_receipt_usecase.dart';
 import '../../features/products/domain/usecase/update_product_usecase.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
@@ -45,8 +48,10 @@ import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
 import '../logger/console_logger.dart';
 import '../service/biometric_auth_service.dart';
+import '../service/home_widget_sync.dart';
 import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
+import '../service/reminder_controller.dart';
 import '../service/storage_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
@@ -113,6 +118,10 @@ void setupLocator() {
 
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
+  getIt.registerLazySingleton<ReminderController>(() => ReminderController());
+  getIt.registerLazySingleton<HomeWidgetSync>(
+        () => HomeWidgetSync(getIt<LocaleController>(), getIt<AppLogger>()),
+  );
   getIt.registerLazySingleton<LocaleController>(() => LocaleController());
 
   // Device-level Face ID / Touch ID / fingerprint gate — see
@@ -126,8 +135,11 @@ void setupLocator() {
   getIt.registerLazySingleton<ProductDataSource>(
         () => ProductDataSourceImpl(Supabase.instance.client),
   );
+  getIt.registerLazySingleton<ProductLocalDataSource>(
+        () => ProductLocalDataSourceImpl(getIt<SupabaseService>()),
+  );
   getIt.registerLazySingleton<ProductRepo>(
-        () => ProductRepoImpl(getIt<ProductDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+        () => ProductRepoImpl(getIt<ProductDataSource>(), getIt<ProductLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
   );
   getIt.registerLazySingleton<ScanReceiptUseCase>(
         () => ScanReceiptUseCaseImpl(getIt<ProductRepo>()),
@@ -140,6 +152,12 @@ void setupLocator() {
   );
   getIt.registerLazySingleton<DeleteProductUseCase>(
         () => DeleteProductUsecaseImpl(getIt<ProductRepo>()),
+  );
+  getIt.registerLazySingleton<ClearCachedProductsUseCase>(
+        () => ClearCachedProductsUseCaseImpl(getIt<ProductRepo>()),
+  );
+  getIt.registerLazySingleton<ProductExtrasUseCase>(
+        () => ProductExtrasUseCaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<GetProductsUseCase>(
         () => GetProductsUseCaseImpl(getIt<ProductRepo>()),
@@ -192,6 +210,7 @@ void setupLocator() {
       addNotificationUseCase: getIt<AddNotificationUseCase>(),
       tracker: getIt<NotifiedWarrantiesTracker>(),
       localNotifications: getIt<NotificationService>(),
+      reminders: getIt<ReminderController>(),
       logger: getIt<AppLogger>(),
     ),
   );
@@ -202,6 +221,7 @@ void setupLocator() {
       getIt<DeleteProductUseCase>(),
       getIt<SearchHistoryService>(),
       getIt<WarrantyNotificationService>(),
+      getIt<HomeWidgetSync>(),
     ),
   );
 

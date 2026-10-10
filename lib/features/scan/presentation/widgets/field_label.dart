@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Visible label above a form field. Excluded from semantics: the field
+/// itself carries the same text as its screen-reader label.
 class FieldLabel extends StatelessWidget {
   const FieldLabel(this.text, {super.key});
 
@@ -8,15 +9,10 @@ class FieldLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h, left: 4.w),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 13.sp,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-          fontWeight: FontWeight.w500,
-        ),
+    return ExcludeSemantics(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(bottom: 8, start: 2),
+        child: Text(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 13.5)),
       ),
     );
   }

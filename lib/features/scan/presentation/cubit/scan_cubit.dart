@@ -28,6 +28,18 @@ class ScanCubit extends Cubit<ScanState> {
   final ProductsCubit _productsCubit;
   final WarrantyNotificationService _warrantyNotificationService;
 
+  /// True when the user chose to type the details in instead of scanning, so
+  /// there's no receipt image or confidence score to show.
+  bool get isManualEntry => _isManualEntry;
+  bool _isManualEntry = false;
+
+  /// Opens the review form empty (purchase date defaults to today) for a
+  /// product added without a receipt.
+  void startManualEntry() {
+    _isManualEntry = true;
+    emit(ScanEditing(scanned: ScannedReceiptData(purchaseDate: DateTime.now(), confidence: 1)));
+  }
+
   Future<void> processReceipt(String imagePath) async {
     final result = await _scanReceiptUseCase(imagePath: imagePath);
 
@@ -52,6 +64,7 @@ class ScanCubit extends Cubit<ScanState> {
     String? notes,
     required ProductCategory category,
     required String currency,
+    int? returnDays,
   }) async {
     final current = state;
     if (current is! ScanLoaded) return;
@@ -72,6 +85,7 @@ class ScanCubit extends Cubit<ScanState> {
       status: WarrantyStatus.active,
       currency: currency,
       category: category,
+      returnDays: returnDays,
     );
 
     result.fold(

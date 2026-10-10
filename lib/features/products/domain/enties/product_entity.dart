@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../category/domain/entities/product_category.dart';
+import 'extra_warranty.dart';
+import 'warranty_claim.dart';
 
 enum WarrantyStatus { active, expiring, expired }
 
@@ -22,6 +24,14 @@ class ProductEntity extends Equatable {
 
   final ProductCategory category;
 
+  /// Days after purchase the store accepts a return; null when not tracked.
+  final int? returnDays;
+
+  /// Warranties on top of the manufacturer's (e.g. extended from the store).
+  final List<ExtraWarranty> extraWarranties;
+
+  final List<WarrantyClaim> claims;
+
   const ProductEntity({
     required this.id,
     required this.name,
@@ -35,15 +45,42 @@ class ProductEntity extends Equatable {
     this.store,
     this.notes,
     this.category = ProductCategory.other,
+    this.returnDays,
+    this.extraWarranties = const [],
+    this.claims = const [],
   });
 
   static const int expiringSoonMonths = 3;
 
-  DateTime get warrantyEndDate => DateTime(
+  DateTime get manufacturerWarrantyEndDate => DateTime(
     purchaseDate.year,
     purchaseDate.month + warrantyMonths,
     purchaseDate.day,
   );
+
+  /// When the product stops being covered: the latest end date across the
+  /// manufacturer's warranty and any extra ones. Status, days left, the
+  /// ring and reminders all follow this date.
+  DateTime get warrantyEndDate {
+    var end = manufacturerWarrantyEndDate;
+    for (final extra in extraWarranties) {
+      if (extra.endDate.isAfter(end)) end = extra.endDate;
+    }
+    return end;
+  }
+
+  /// Last day the store takes the product back, or null when not tracked.
+  DateTime? get returnByDate => returnDays == null
+      ? null
+      : DateTime(purchaseDate.year, purchaseDate.month, purchaseDate.day + returnDays!);
+
+  /// Days until [returnByDate] (0 on the last day, negative once it passed),
+  /// or null when no return window is tracked.
+  int? get daysToReturn {
+    final returnBy = returnByDate;
+    if (returnBy == null) return null;
+    return _dateOnly(returnBy).difference(_dateOnly(DateTime.now())).inDays;
+  }
 
   static DateTime _dateOnly(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
@@ -90,5 +127,8 @@ class ProductEntity extends Equatable {
     notes,
     status,
     category,
+    returnDays,
+    extraWarranties,
+    claims,
   ];
 }

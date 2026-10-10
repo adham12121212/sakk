@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Legend line: coloured dot, label, value (already locale-formatted).
 class LegendRow extends StatelessWidget {
-  const LegendRow({
-    required this.color,
-    required this.label,
-    required this.value,
-  });
+  const LegendRow({super.key, required this.color, required this.label, required this.value});
 
   final Color color;
   final String label;
-  final int value;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Row(
       children: [
         Container(
           width: 10,
           height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
         ),
-        SizedBox(width: 8.w),
-        Expanded(child: Text(label, style: TextStyle(fontSize: 14.sp))),
-        Text(
-          '$value',
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            style: textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
         ),
+        Text(value, style: textTheme.titleSmall),
       ],
     );
   }

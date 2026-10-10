@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -78,23 +78,21 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade100,
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
-                          tooltip: l10n.back,
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
+                      CircleIconButton(
+                        icon: Icons.arrow_back,
+                        semanticLabel: l10n.back,
+                        onTap: () => Navigator.of(context).pop(),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       SizedBox(height: 28.h),
                       Text(
                         l10n.forgotPassword,
-                        style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         l10n.enteryouremailandwellsendyouacodetoresetyourpassword,
-                        style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600, height: 1.4),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                       SizedBox(height: 32.h),
                       EmailTextField(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// One labelled value inside the details card: tinted icon tile, small muted
+/// label, value; hairline divider below unless [isLast].
 class DetailRow extends StatelessWidget {
   const DetailRow({
     super.key,
@@ -18,36 +19,39 @@ class DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        border: isLast ? null : Border(bottom: BorderSide(color: colorScheme.outline.withOpacity(0.4))),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40.w,
-            height: 40.w,
-            decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, shape: BoxShape.circle),
-            child: Icon(icon, size: 18.sp, color: colorScheme.onSurface.withOpacity(0.6)),
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, size: 19, color: colorScheme.primary),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label, style: textTheme.bodySmall),
+                    const SizedBox(height: 2),
+                    Text(value, style: textTheme.titleSmall?.copyWith(fontSize: 15)),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: TextStyle(
-                    fontSize: 12.sp, color: colorScheme.onSurface.withOpacity(0.6))),
-                SizedBox(height: 2.h),
-                Text(value, style: TextStyle(
-                  fontSize: 15.sp, fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface
-                )),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+        if (!isLast) Divider(height: 1, indent: 68, endIndent: 16, color: colorScheme.outlineVariant),
+      ],
     );
   }
 }

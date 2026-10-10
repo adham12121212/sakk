@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/error/user_facing_error.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/widgets/app_empty_view.dart';
+import '../../../../core/widgets/app_error_view.dart';
+import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/notification_enitiy.dart';
 import '../cubit/notification_cubit.dart';
@@ -51,14 +52,7 @@ class _NotificationsViewState extends State<NotificationsView> {
             tooltip: l10n.back,
             onPressed: () => Navigator.pop(context),
           ),
-        title: Text(
-          l10n.notifications,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text(l10n.notifications),
       ),
       body: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
@@ -67,8 +61,9 @@ class _NotificationsViewState extends State<NotificationsView> {
             return Skeletonizer(
               enabled: true,
               child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 itemCount: placeholders.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) =>
                     NotificationTile(
                         notification: placeholders[index],
@@ -77,73 +72,56 @@ class _NotificationsViewState extends State<NotificationsView> {
             );
           }
           if (state is NotificationError) {
-            return _ErrorView(
+            return AppErrorView(
               message: state.message,
               onRetry: () => context
                   .read<NotificationCubit>()
                   .loadNotifications(widget.userId),
+              fillRemaining: true,
             );
           }
           final notifications = (state as NotificationLoaded).notifications;
-          if (notifications.isEmpty) {
-            return  Center(child: Text(l10n.nonotificationsyet));
-          }
-
-          return RefreshIndicator(
-            color: AppColors.primary,
-                  onRefresh: () =>
-                context.read<NotificationCubit>().loadNotifications(widget.userId),
-            child: ListView.separated(
-              itemCount: notifications.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return Dismissible(
-                  key: ValueKey(notification.id),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    color: AppColors.error,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
+          final cubit = context.read<NotificationCubit>();
+          return AppRefreshIndicator(
+            onRefresh: () => cubit.loadNotifications(widget.userId),
+            child: notifications.isEmpty
+                ? AppEmptyView(
+                    icon: Icons.notifications_none_rounded,
+                    title: l10n.nonotificationsyet,
+                    fillRemaining: true,
+                  )
+                : ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                    itemCount: notifications.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final notification = notifications[index];
+                      return Dismissible(
+                        key: ValueKey(notification.id),
+                        direction: DismissDirection.endToStart,
+                        // Rounded red panel on the trailing side (mirrors in RTL).
+                        background: Container(
+                          alignment: AlignmentDirectional.centerEnd,
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          decoration: BoxDecoration(
+                            color: context.palette.danger,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+                        ),
+                        onDismissed: (_) => cubit.deleteNotification(widget.userId, notification.id),
+                        child: NotificationTile(
+                          notification: notification,
+                          onTap: notification.isRead
+                              ? null
+                              : () => cubit.markAsRead(widget.userId, notification.id),
+                        ),
+                      );
+                    },
                   ),
-                  onDismissed: (_) => context
-                      .read<NotificationCubit>()
-                      .deleteNotification(widget.userId, notification.id),
-                  child: NotificationTile(
-                    notification: notification,
-                    onTap: notification.isRead
-                        ? null
-                        : () => context
-                        .read<NotificationCubit>()
-                        .markAsRead(widget.userId, notification.id),
-                  ),
-                );
-              },
-            ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  const _ErrorView({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(userFacingError(l10n, message), textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          ElevatedButton(onPressed: onRetry, child:  Text(l10n.retry)),
-        ],
       ),
     );
   }

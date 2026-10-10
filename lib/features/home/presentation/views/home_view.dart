@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/di/get_it.dart';
-import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/util/localized_number.dart';
+import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
@@ -46,9 +48,6 @@ class _HomeContentState extends State<_HomeContent> {
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
-    // The badge count comes from the shared NotificationCubit, which then
-    // stays current (reads/deletes on the Notifications screen, notifications
-    // added on this device, app returning to the foreground).
     final userId = getIt<GetUserUseCase>()()?.id;
     if (userId != null) {
       _notificationCubit
@@ -113,6 +112,9 @@ class _HomeContentState extends State<_HomeContent> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final palette = context.palette;
+    final locale = Localizations.localeOf(context);
     return Scaffold(
       body: SafeArea(
         bottom: false,
@@ -131,9 +133,11 @@ class _HomeContentState extends State<_HomeContent> {
                 .map(RecentProductData.fromEntity)
                 .toList();
 
-            return RefreshIndicator(
-              onRefresh: () => context.read<ProductsCubit>().refresh(),
-              color: AppColors.primary,
+            return AppRefreshIndicator(
+              onRefresh: () => Future.wait([
+                context.read<ProductsCubit>().refresh(),
+                _notificationCubit.refresh(),
+              ]),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
@@ -158,34 +162,16 @@ class _HomeContentState extends State<_HomeContent> {
                         },
                         onNotificationTap: () => _openNotifications(context),
                         onAvatarTap: () => context.push(AppRoutes.profile),
-                        onExpiringBannerTap: () {},
+                        onExpiringBannerTap: () =>
+                            context.go(AppRoutes.products),
                       ),
                     ),
                     SizedBox(height: 16.h),
 
                     if (state.error != null && state.products.isEmpty)
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 40.h,
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              userFacingError(l10n, state.error),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                            ),
-                            SizedBox(height: 12.h),
-                            OutlinedButton(
-                              onPressed: () =>
-                                  context.read<ProductsCubit>().refresh(),
-                              child: Text(l10n.retry),
-                            ),
-                          ],
-                        ),
+                      AppErrorView(
+                        message: state.error,
+                        onRetry: () => context.read<ProductsCubit>().refresh(),
                       )
                     else
                       Skeletonizer(
@@ -193,60 +179,56 @@ class _HomeContentState extends State<_HomeContent> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: GridView.count(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 16.w,
-                                mainAxisSpacing: 16.h,
-                                childAspectRatio: 1.25,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: Column(
                                 children: [
-                                  _card(
+                                  _statRow(
                                     StatCard(
-                                      value: '${displayState.total}',
+                                      value: formatLocalizedInt(locale, displayState.total),
                                       label: l10n.totalProducts,
                                       icon: Icons.inventory_2_outlined,
-                                      iconColor: AppColors.primary,
-                                      iconBackgroundColor: AppColors.primary
-                                          .withOpacity(0.1),
+                                      iconColor: colorScheme.primary,
+                                      iconBackgroundColor:
+                                          colorScheme.primaryContainer,
+                                      onTap: isInitialLoading
+                                          ? null
+                                          : () =>
+                                                context.go(AppRoutes.products),
                                     ),
-                                  ),
-                                  _card(
                                     StatCard(
-                                      value: '${displayState.active}',
+                                      value: formatLocalizedInt(locale, displayState.active),
                                       label: l10n.activeWarranties,
-                                      icon: Icons.shield_outlined,
-                                      iconColor: AppColors.success,
-                                      iconBackgroundColor: AppColors.success
-                                          .withOpacity(0.1),
+                                      icon: Icons.verified_user_outlined,
+                                      iconColor: palette.success,
+                                      iconBackgroundColor:
+                                          palette.successContainer,
                                     ),
                                   ),
-                                  _card(
+                                  const SizedBox(height: 12),
+                                  _statRow(
                                     StatCard(
-                                      value: '${displayState.expiring}',
+                                      value: formatLocalizedInt(locale, displayState.expiring),
                                       label: l10n.expiringSoon,
-                                      icon: Icons.warning_amber_rounded,
-                                      iconColor: const Color(0xFFF59E0B),
-                                      iconBackgroundColor: const Color(
-                                        0xFFFEF3C7,
-                                      ),
+                                      icon: Icons.schedule_rounded,
+                                      iconColor: palette.warning,
+                                      iconBackgroundColor:
+                                          palette.warningContainer,
                                     ),
-                                  ),
-                                  _card(
                                     StatCard(
-                                      value: '${displayState.expired}',
+                                      value: formatLocalizedInt(locale, displayState.expired),
                                       label: l10n.expired,
                                       icon: Icons.error_outline_rounded,
-                                      iconColor: AppColors.error,
-                                      iconBackgroundColor: AppColors.error
-                                          .withOpacity(0.1),
+                                      iconColor: palette.danger,
+                                      iconBackgroundColor:
+                                          palette.dangerContainer,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 24.h),
+                            const SizedBox(height: 28),
                             RecentProductsSection(
                               items: recentProducts,
                               onSeeAllTap: isInitialLoading
@@ -277,22 +259,16 @@ class _HomeContentState extends State<_HomeContent> {
     );
   }
 
-  Widget _card(Widget child) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface.withOpacity(1),
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.09),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
+  Widget _statRow(Widget start, Widget end) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: start),
+          const SizedBox(width: 12),
+          Expanded(child: end),
         ],
       ),
-      child: child,
     );
   }
 }

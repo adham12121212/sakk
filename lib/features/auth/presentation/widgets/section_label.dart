@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/constant/app_colors.dart';
-
 
 class SectionLabel extends StatelessWidget {
   const SectionLabel(this.text, {super.key});
@@ -11,16 +7,9 @@ class SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-       children: [
-         Text(
-           text,
-           style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color:
-           colorScheme.onSurface),
-         ),
-       ],
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

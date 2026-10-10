@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
@@ -77,30 +76,37 @@ class _BiometricLockViewState extends State<BiometricLockView>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 96.w,
-                  height: 96.w,
+                  width: 104.w,
+                  height: 104.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                    ),
+                    borderRadius: BorderRadius.circular(32.r),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                    ],
                   ),
-                  child: Icon(Icons.fingerprint_rounded, size: 48.sp, color: AppColors.primary),
+                  child: Icon(Icons.fingerprint_rounded, size: 52.sp, color: Colors.white),
                 ),
                 SizedBox(height: 24.h),
                 Text(
                   l10n.appLockedTitle,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   l10n.appLockedSubtitle,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface.withOpacity(0.6), height: 1.4),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
                 SizedBox(height: 32.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 52.h,
+                  height: 54,
                   child: FilledButton.icon(
                     onPressed: _authenticating ? null : _unlock,
                     icon: _authenticating
@@ -111,10 +117,6 @@ class _BiometricLockViewState extends State<BiometricLockView>
                     )
                         : const Icon(Icons.fingerprint_rounded),
                     label: Text(l10n.unlockButton),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-                    ),
                   ),
                 ),
                 SizedBox(height: 12.h),

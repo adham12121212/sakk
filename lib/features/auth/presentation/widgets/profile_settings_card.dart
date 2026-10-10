@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakk/features/auth/presentation/widgets/semented_toggle.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/locale_controller/locale_controller.dart';
 import '../../../../core/service/biometric_auth_service.dart';
+import '../../../../core/service/reminder_controller.dart';
+import '../../../../core/service/warranty_notification_service.dart';
+import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../../core/theme/theme_controller.dart';
-import '../../../../core/util/app_radius.dart';
-import '../../../../core/util/app_sizes.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -67,16 +68,26 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
     setState(() => _biometricEnabled = value);
   }
 
+  /// Saves the new reminder lead time and moves every pending reminder to it.
+  Future<void> _onReminderChanged(int days) async {
+    await getIt<ReminderController>().setDays(days);
+    await getIt<WarrantyNotificationService>().rescheduleAll(getIt<ProductsCubit>().state.products);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final localeController = getIt<LocaleController>();
     final themeController = getIt<ThemeController>();
+    final reminderController = getIt<ReminderController>();
 
     return ListenableBuilder(
-      listenable: Listenable.merge([localeController, themeController]),
+      listenable: Listenable.merge([localeController, themeController, reminderController]),
       builder: (context, _) {
-        return Column(
+        // One white card, rows separated by hairlines (iOS-settings style).
+        return AppCard(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Column(
           children: [
             _SettingsRow(
               icon: Icons.language_rounded,
@@ -90,6 +101,9 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
             _SettingsRow(
               icon: Icons.brightness_6_rounded,
               label: l10n.theme,
+              // Three options: full width under the label so the label is
+              // never squeezed on narrow screens.
+              stacked: true,
               child: SegmentedToggle<ThemeMode>(
                 options: {
                   ThemeMode.light: l10n.themeLight,
@@ -98,6 +112,21 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
                 },
                 selected: themeController.value,
                 onChanged: (mode) => themeController.setThemeMode(mode),
+              ),
+            ),
+            _SettingsRow(
+              icon: Icons.notifications_active_outlined,
+              label: l10n.warrantyReminder,
+              stacked: true,
+              child: SegmentedToggle<int>(
+                options: {
+                  90: l10n.reminder3Months,
+                  30: l10n.reminder1Month,
+                  7: l10n.reminder1Week,
+                  1: l10n.reminder1Day,
+                },
+                selected: reminderController.value,
+                onChanged: _onReminderChanged,
               ),
             ),
             _SettingsRow(
@@ -112,11 +141,11 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
               )
                   : Switch.adaptive(
                 value: _biometricEnabled,
-                activeColor: AppColors.primary,
                 onChanged: _onBiometricToggle,
               ),
             ),
           ],
+          ),
         );
       },
     );
@@ -129,6 +158,7 @@ class _SettingsRow extends StatelessWidget {
     required this.label,
     required this.child,
     this.isLast = false,
+    this.stacked = false,
   });
 
   final IconData icon;
@@ -136,34 +166,47 @@ class _SettingsRow extends StatelessWidget {
   final Widget child;
   final bool isLast;
 
+  /// Puts [child] full width under the label instead of at the row's end.
+  final bool stacked;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: EdgeInsets.all(AppSizes.s16),
-      child: Row(
-        children: [
-          Container(
-            width: 36.w,
-            height: 36.w,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: AppSizes.icon18, color: AppColors.primary),
+    final header = Row(
+      children: [
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(12),
           ),
-          SizedBox(width: AppSizes.s12),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 14.sp,
-                  fontWeight: FontWeight.w600, color: colorScheme.onSurface),
-            ),
-          ),
-          child,
-        ],
-      ),
+          child: Icon(icon, size: 19, color: colorScheme.primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: Text(label, style: textTheme.titleSmall?.copyWith(fontSize: 15))),
+        if (!stacked) child,
+      ],
+    );
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: stacked
+              ? Column(
+                  children: [
+                    header,
+                    const SizedBox(height: 12),
+                    SizedBox(width: double.infinity, child: child),
+                  ],
+                )
+              : header,
+        ),
+        if (!isLast) Divider(height: 1, indent: 66, endIndent: 16, color: colorScheme.outlineVariant),
+      ],
     );
   }
 }

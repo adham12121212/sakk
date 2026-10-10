@@ -31,8 +31,8 @@ class ProfileHeader extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final bottomRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(20.r),
-      bottomRight: Radius.circular(20.r),
+      bottomLeft: Radius.circular(32.r),
+      bottomRight: Radius.circular(32.r),
     );
 
     // Height follows the content rather than a fixed 350.h with children at
@@ -44,13 +44,10 @@ class ProfileHeader extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: bottomRadius,
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary.withValues(alpha: 0.85),
-              AppColors.primary,
-            ],
+            colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
           ),
         ),
         child: Stack(

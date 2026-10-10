@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/warranty_progress_color.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -31,123 +32,133 @@ class DetailsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SizedBox(
-      height: 320.h,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (imageUrl != null)
-            Image.network(
-              imageUrl!,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => _fallbackBackground(),
-            )
-          else
-            _fallbackBackground(),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.black.withOpacity(0.15), Colors.black.withOpacity(0.65)],
+    // Rounded bottom so the page's cards read as a sheet below the photo.
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
+      child: SizedBox(
+        height: 320.h,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (imageUrl != null)
+              Image.network(
+                imageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _fallbackBackground(),
+              )
+            else
+              _fallbackBackground(),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.15),
+                    Colors.black.withOpacity(0.65),
+                  ],
+                ),
               ),
             ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _CircleIconButton(icon: Icons.arrow_back, label: l10n.back, onTap: onBack),
-                      Row(
-                        children: [
-                          _CircleIconButton(icon: Icons.ios_share_rounded, label: l10n.share, onTap: onShare),
-                          SizedBox(width: 8.w),
-                          _CircleIconButton(icon: Icons.download_rounded, label: l10n.downloadInvoice, onTap: onDownload),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _CircleIconButton(
+                          icon: Icons.arrow_back,
+                          label: l10n.back,
+                          onTap: onBack,
+                        ),
+                        Row(
                           children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                              decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(20.r),
+                            _CircleIconButton(
+                              icon: Icons.ios_share_rounded,
+                              label: l10n.share,
+                              onTap: onShare,
+                            ),
+                            SizedBox(width: 8.w),
+                            _CircleIconButton(
+                              icon: Icons.download_rounded,
+                              label: l10n.downloadInvoice,
+                              onTap: onDownload,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              StatusChip(status: product.status),
+                              SizedBox(height: 8.h),
+                              Text(
+                                product.name,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              child: Text(
-                                statusLabel,
+                              if (product.brand != null)
+                                Text(
+                                  product.brand!,
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.85),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 56.w,
+                          height: 56.w,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                strokeAlign: 2,
+                                value: warrantyProgress,
+                                strokeWidth: 4,
+                                backgroundColor: Colors.white.withOpacity(0.25),
+                                valueColor: AlwaysStoppedAnimation(
+                                  warrantyProgressColor(
+                                    context,
+                                    warrantyProgress,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '${(warrantyProgress * 100).round()}%',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              product.name,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            if (product.brand != null)
-                              Text(
-                                product.brand!,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.85),
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 56.w,
-                        height: 56.w,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              strokeAlign: 2,
-                              value: warrantyProgress,
-                              strokeWidth: 4,
-                              backgroundColor: Colors.white.withOpacity(0.25),
-                              valueColor: AlwaysStoppedAnimation(warrantyProgressColor(warrantyProgress)),
-                            ),
-                            Text(
-                              '${(warrantyProgress * 100).round()}%',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -162,7 +173,11 @@ class DetailsHeader extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Icon(CategoryUi.icon(product.category), size: 64.sp, color: Colors.white.withOpacity(0.5)),
+        child: Icon(
+          CategoryUi.icon(product.category),
+          size: 64.sp,
+          color: Colors.white.withOpacity(0.5),
+        ),
       ),
     );
   }
@@ -171,7 +186,11 @@ class DetailsHeader extends StatelessWidget {
 /// Icon button over the photo: 40.w visible circle, 48×48 tap area,
 /// [label] for screen readers and the long-press tooltip.
 class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({required this.icon, required this.label, required this.onTap});
+  const _CircleIconButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
@@ -197,7 +216,10 @@ class _CircleIconButton extends StatelessWidget {
               child: Container(
                 width: 40.w,
                 height: 40.w,
-                decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.35), shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.35),
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(icon, color: Colors.white, size: 20.sp),
               ),
             ),

@@ -4,20 +4,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/features/products/presentation/view/product_search_view.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../core/widgets/app_empty_view.dart';
+import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/constant/app_colors.dart';
-import '../../../../core/di/get_it.dart';
-import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../core/widgets/app_refresh_indicator.dart';
+import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/views/category_view.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
-import '../../../details/presentation/views/details_view.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../home/presentation/widgets/recent_product_data.dart';
 import '../../domain/enties/product_entity.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
+import '../util/products_csv_export.dart';
 
 enum _ProductFilter { all, active, expiring, expired }
 
@@ -72,6 +74,20 @@ class _ProductsViewState extends State<ProductsView> {
     setState(() => _categoryFilter = selected);
   }
 
+  /// Shares every product as a CSV file, not just the current filter.
+  Future<void> _export(List<ProductEntity> products) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (products.isEmpty) {
+      AppSnackBar.error(context, l10n.noProductsYet);
+      return;
+    }
+    try {
+      await shareProductsCsv(context, products);
+    } catch (_) {
+      if (mounted) AppSnackBar.error(context, l10n.couldNotShare);
+    }
+  }
+
   void _openProductDetails(ProductEntity product) {
     context.push(AppRoutes.details, extra: product);
   }
@@ -100,19 +116,18 @@ class _ProductsViewState extends State<ProductsView> {
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
             final filtered = _applyFilter(state.products);
-            return RefreshIndicator(
+            return AppRefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().refresh(),
-              color: AppColors.primary,
-                      child: Column(
+              child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
                     child: Row(
                       children: [
                         Expanded(
                           child: Text(
                             l10n.myProducts,
-                            style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),
                         CircleIconButton(
@@ -128,23 +143,29 @@ class _ProductsViewState extends State<ProductsView> {
                             ),
                           );
                         },
-                          color: AppColors.primary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
-                        SizedBox(width: 8.w),
+                        const SizedBox(width: 4),
                         CircleIconButton(
                           icon: Icons.filter_alt_rounded,
                           semanticLabel: l10n.filterByCategory,
                           onTap: _openCategoryFilter,
                           showBadge: _categoryFilter != null,
-                          color: AppColors.primary,
-
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        const SizedBox(width: 4),
+                        CircleIconButton(
+                          icon: Icons.ios_share_rounded,
+                          semanticLabel: l10n.exportProducts,
+                          onTap: () => _export(state.products),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 16.h),
                   SizedBox(
-                    height: 40.h,
+                    height: 40,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -219,34 +240,22 @@ class _ProductsViewState extends State<ProductsView> {
     }
 
     if (state.error != null && state.products.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                userFacingError(l10n, state.error),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              SizedBox(height: 12.h),
-              OutlinedButton(
-                onPressed: () => context.read<ProductsCubit>().refresh(),
-                child: Text(l10n.retry),
-              ),
-            ],
-          ),
-        ),
+      return AppErrorView(
+        message: state.error,
+        onRetry: () => context.read<ProductsCubit>().refresh(),
+        fillRemaining: true,
       );
     }
 
     if (filtered.isEmpty) {
-      return Center(
-        child: Text(
-          state.products.isEmpty ? l10n.noProductsYet : l10n.nothingInThisFilter,
-          style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
-        ),
+      final noProducts = state.products.isEmpty;
+      return AppEmptyView(
+        icon: noProducts ? Icons.inventory_2_outlined : Icons.filter_alt_off_outlined,
+        title: noProducts ? l10n.noProductsYet : l10n.nothingInThisFilter,
+        actionLabel: noProducts ? l10n.scanReceiptTitle : null,
+        actionIcon: Icons.document_scanner_rounded,
+        onAction: noProducts ? () => context.push(AppRoutes.scan) : null,
+        fillRemaining: true,
       );
     }
 
@@ -280,22 +289,29 @@ class _FilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary : colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(20.r),
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected ? AppColors.primary : colorScheme.surface,
+        shape: StadiumBorder(
+          side: BorderSide(color: selected ? AppColors.primary : colorScheme.outline),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: selected ? AppColors.white : colorScheme.onSurface.withOpacity(0.7),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: selected ? Colors.white : colorScheme.onSurfaceVariant,
+              ),
+            ),
           ),
         ),
       ),

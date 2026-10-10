@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/util/app_sizes.dart';
+import '../../../../core/widgets/app_card.dart';
 
-
+/// Home summary tile: tinted icon square, large number, muted label.
 class StatCard extends StatelessWidget {
   const StatCard({
     super.key,
@@ -24,50 +23,32 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
 
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return InkWell(
+    return AppCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 40.w,
-                  height: 40.w,
-                  decoration: BoxDecoration(
-                    color: iconBackgroundColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: iconColor, size: 20.sp),
-                ),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 26.sp,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: iconBackgroundColor,
+              borderRadius: BorderRadius.circular(12),
             ),
-            SizedBox(height: 12.h),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
+            child: Icon(icon, color: iconColor, size: 21),
+          ),
+          const SizedBox(height: 14),
+          Text(value, style: textTheme.headlineMedium),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme.bodySmall?.copyWith(fontSize: 13),
+          ),
+        ],
       ),
     );
   }

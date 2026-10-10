@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -28,22 +28,19 @@ class ScanFailedView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 72.w,
-                  height: 72.w,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFDECEC),
+                  width: 88.w,
+                  height: 88.w,
+                  decoration: BoxDecoration(
+                    color: context.palette.dangerContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.receipt_long_rounded,
-                    color: const Color(0xFFE05757),
-                    size: 34.sp,
-                  ),
+                  child: Icon(Icons.receipt_long_rounded, color: context.palette.danger, size: 40.sp),
                 ),
                 SizedBox(height: 20.h),
                 Text(
                   l10n.couldNotReadReceipt,
-                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -58,13 +55,9 @@ class ScanFailedView extends StatelessWidget {
                 SizedBox(height: 28.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 52.h,
+                  height: 54,
                   child: FilledButton(
                     onPressed: onBack,
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.r)),
-                      backgroundColor: AppColors.primary,
-                    ),
                     child: Text(l10n.tryAnotherPhoto),
                   ),
                 ),

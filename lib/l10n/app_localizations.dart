@@ -1430,11 +1430,323 @@ abstract class AppLocalizations {
   /// **'{count, plural, one{{formattedCount} unread notification} other{{formattedCount} unread notifications}}'**
   String unreadNotificationsLabel(int count, String formattedCount);
 
+  /// No description provided for @offlineBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Showing saved data.'**
+  String get offlineBanner;
+
+  /// No description provided for @backOnlineBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online'**
+  String get backOnlineBanner;
+
+  /// No description provided for @errorOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get errorOfflineTitle;
+
+  /// No description provided for @errorOfflineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your internet connection, then try again.'**
+  String get errorOfflineBody;
+
+  /// No description provided for @errorGenericTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get errorGenericTitle;
+
+  /// No description provided for @errorGenericBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load this right now. Please try again in a moment.'**
+  String get errorGenericBody;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
   /// No description provided for @messageNotSent.
   ///
   /// In en, this message translates to:
   /// **'Not sent. Tap to retry'**
   String get messageNotSent;
+
+  /// No description provided for @enterDetailsManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter details manually'**
+  String get enterDetailsManually;
+
+  /// No description provided for @addProductManuallyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get addProductManuallyTitle;
+
+  /// No description provided for @addProductManuallySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in your product\'s details'**
+  String get addProductManuallySubtitle;
+
+  /// No description provided for @warrantyReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me before warranty ends'**
+  String get warrantyReminder;
+
+  /// No description provided for @reminder3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'3 mo'**
+  String get reminder3Months;
+
+  /// No description provided for @reminder1Month.
+  ///
+  /// In en, this message translates to:
+  /// **'1 mo'**
+  String get reminder1Month;
+
+  /// No description provided for @reminder1Week.
+  ///
+  /// In en, this message translates to:
+  /// **'1 wk'**
+  String get reminder1Week;
+
+  /// No description provided for @reminder1Day.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day'**
+  String get reminder1Day;
+
+  /// No description provided for @warrantyEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty ends'**
+  String get warrantyEnds;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @exportProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Export products'**
+  String get exportProducts;
+
+  /// No description provided for @returnWindowDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Return window (days, optional)'**
+  String get returnWindowDays;
+
+  /// No description provided for @invalidReturnDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number from 1 to 365, or leave it empty'**
+  String get invalidReturnDays;
+
+  /// No description provided for @returnBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Return by'**
+  String get returnBy;
+
+  /// No description provided for @returnByValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} ({days, plural, =0{last day} one{1 day left} other{{days} days left}})'**
+  String returnByValue(Object date, num days);
+
+  /// No description provided for @returnWindowClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed on {date}'**
+  String returnWindowClosed(Object date);
+
+  /// No description provided for @coveredUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Covered until'**
+  String get coveredUntil;
+
+  /// No description provided for @extraWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra warranties'**
+  String get extraWarranties;
+
+  /// No description provided for @extraWarrantiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought an extended warranty? Add it so reminders use the right date.'**
+  String get extraWarrantiesHint;
+
+  /// No description provided for @addWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add warranty'**
+  String get addWarranty;
+
+  /// No description provided for @warrantyProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get warrantyProvider;
+
+  /// No description provided for @warrantyProviderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. B.TECH extended warranty'**
+  String get warrantyProviderHint;
+
+  /// No description provided for @warrantyProviderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter who gives this warranty'**
+  String get warrantyProviderRequired;
+
+  /// No description provided for @warrantyStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get warrantyStartDate;
+
+  /// No description provided for @warrantyClaims.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty claims'**
+  String get warrantyClaims;
+
+  /// No description provided for @warrantyClaimsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Something broke? Start a claim to get a ready-to-send message and track its status.'**
+  String get warrantyClaimsHint;
+
+  /// No description provided for @startClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a claim'**
+  String get startClaim;
+
+  /// No description provided for @startClaimExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the problem. We\'ll save the claim and prepare a message with the product and invoice details that you can send by WhatsApp or email.'**
+  String get startClaimExplanation;
+
+  /// No description provided for @claimIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s wrong?'**
+  String get claimIssue;
+
+  /// No description provided for @claimIssueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. The screen stopped turning on'**
+  String get claimIssueHint;
+
+  /// No description provided for @claimIssueRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the problem'**
+  String get claimIssueRequired;
+
+  /// No description provided for @saveAndSendClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and send'**
+  String get saveAndSendClaim;
+
+  /// No description provided for @claimSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty claim: {product}'**
+  String claimSubject(Object product);
+
+  /// No description provided for @claimMessageIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, I\'d like to make a warranty claim for my {product}, bought on {purchaseDate}. It is under warranty until {endDate}.'**
+  String claimMessageIntro(Object endDate, Object product, Object purchaseDate);
+
+  /// No description provided for @claimMessageIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Problem: {issue}'**
+  String claimMessageIssue(Object issue);
+
+  /// No description provided for @claimStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim status'**
+  String get claimStatus;
+
+  /// No description provided for @claimSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get claimSubmitted;
+
+  /// No description provided for @claimInRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'In repair'**
+  String get claimInRepair;
+
+  /// No description provided for @claimResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get claimResolved;
+
+  /// No description provided for @claimRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get claimRejected;
+
+  /// No description provided for @deleteClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete claim'**
+  String get deleteClaim;
+
+  /// No description provided for @widgetNextToEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Next warranty to end'**
+  String get widgetNextToEnd;
+
+  /// No description provided for @widgetEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends {date}'**
+  String widgetEndsOn(Object date);
+
+  /// No description provided for @widgetNoWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'No active warranties'**
+  String get widgetNoWarranties;
+
+  /// No description provided for @widgetSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Sakk to see your warranties'**
+  String get widgetSignedOut;
 }
 
 class _AppLocalizationsDelegate

@@ -56,14 +56,16 @@ class _SigninFormState extends State<SigninForm> {
         children: [
           Text(
             l10n.welcomeBack,
-            style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
 
           SizedBox(height: 8.h),
 
           Text(
             l10n.signIn,
-            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w400),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
 
           SizedBox(height: 28.h),

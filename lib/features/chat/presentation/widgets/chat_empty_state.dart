@@ -1,74 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constant/app_colors.dart';
-import '../../../../l10n/app_localizations.dart';
 
+import '../../../../core/widgets/app_card.dart';
+import '../../../../l10n/app_localizations.dart';
+import 'ai_avatar.dart';
+
+/// First-open state: gradient AI avatar, short intro and tappable suggestions.
 class ChatEmptyState extends StatelessWidget {
   const ChatEmptyState({super.key, required this.onSuggestionTap, required this.l10n});
 
   final ValueChanged<String> onSuggestionTap;
-  final  AppLocalizations l10n;
-
+  final AppLocalizations l10n;
 
   List<String> get _suggestions => [
-    l10n.howdoIaddanewproduct,
-    l10n.whatshouldIdoifaproductbreaks,
-  ];
+        l10n.howdoIaddanewproduct,
+        l10n.whatshouldIdoifaproductbreaks,
+      ];
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 72.w,
-              height: 72.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.auto_awesome_rounded, size: 32.sp, color: AppColors.primary),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              l10n.askmeanything,
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold,color: colorScheme.onSurface)
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              l10n.icanhelpwithyourproductswarrantiesandpurchases,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6), height: 1.4),
-            ),
-            SizedBox(height: 24.h),
-            ..._suggestions.map(
-                  (s) => Padding(
-                padding: EdgeInsets.only(bottom: 10.h),
-                child: InkWell(
-                  onTap: () => onSuggestionTap(s),
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: colorScheme.outline),
-                    ),
-                    child: Text(
-                      s,
-                      style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.8)),
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AiAvatar(size: 76),
+                  const SizedBox(height: 20),
+                  Text(l10n.askmeanything, textAlign: TextAlign.center, style: textTheme.headlineSmall),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.icanhelpwithyourproductswarrantiesandpurchases,
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
-                ),
+                  const SizedBox(height: 28),
+                  for (final s in _suggestions) ...[
+                    AppCard(
+                      onTap: () => onSuggestionTap(s),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      child: Row(
+                        children: [
+                          Icon(Icons.chat_bubble_outline_rounded, size: 18, color: colorScheme.primary),
+                          const SizedBox(width: 12),
+                          Expanded(child: Text(s, style: textTheme.bodyMedium)),
+                          Icon(Icons.arrow_forward_rounded, size: 18, color: colorScheme.onSurfaceVariant),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

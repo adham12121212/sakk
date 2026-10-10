@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakk/features/scan/presentation/views/reviewproduct_view.dart';
-import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/util/localized_number.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_error_view.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
@@ -114,7 +117,16 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
           },
           builder: (context, state) {
             if (state is ScanProcessingFailed) {
-              return _ErrorView(message: state.message);
+              return AppErrorView(
+                message: state.message,
+                actionLabel: AppLocalizations.of(context)!.back,
+                actionIcon: Icons.arrow_back_rounded,
+                fillRemaining: true,
+                onRetry: () async {
+                  context.read<ScanCubit>().close();
+                  Navigator.of(context).pop();
+                },
+              );
             }
             return _ProcessingBody(
               progress: _progress,
@@ -124,39 +136,6 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
               shimmerController: _shimmerController,
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline_rounded, size: 56, color: Colors.redAccent),
-            const SizedBox(height: 16),
-            Text(userFacingError(l10n, message), textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () {
-                context.read<ScanCubit>().close();
-                Navigator.of(context).pop();
-              },
-              child: Text(l10n.back),
-            ),
-          ],
         ),
       ),
     );
@@ -185,76 +164,83 @@ class _ProcessingBody extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final fields = buildScanProcessingFields(context);
 
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final palette = context.palette;
+
     return ListView(
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+      padding: const EdgeInsets.fromLTRB(20, 32, 20, 32),
       children: [
         Center(
           child: ScaleTransition(
             scale: Tween(begin: 0.94, end: 1.06).animate(
               CurvedAnimation(parent: pulseController, curve: Curves.easeInOut),
             ),
+            // Brand-gradient tile with a soft glow, pulsing while it works.
             child: Container(
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFF3B82F6).withOpacity(0.16),
-                    const Color(0xFF3B82F6).withOpacity(0.04),
-                  ],
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
                 ),
-                border: Border.all(
-                  color: const Color(0xFF3B82F6).withOpacity(0.3),
-                  width: 1.5,
-                ),
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                ],
               ),
-              child: const Icon(Icons.psychology, size: 42, color: Color(0xFF3B82F6)),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          l10n.aiIsProcessing,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: -0.3),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          _completed ? l10n.extractionComplete : l10n.extractingData,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: _completed ? const Color(0xFF22C55E) : Colors.grey.shade500,
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 28),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(l10n.progressLabel, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-            Text(
-              '${(progress * 100).round()}%',
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0, end: progress),
-            duration: const Duration(milliseconds: 200),
-            builder: (context, value, _) => LinearProgressIndicator(
-              value: value,
-              minHeight: 8,
-              backgroundColor: const Color(0xFFE5E7EB),
-              valueColor: const AlwaysStoppedAnimation(Color(0xFF3B82F6)),
+              child: Icon(
+                _completed ? Icons.check_rounded : Icons.auto_awesome_rounded,
+                size: 44,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 24),
+        Text(l10n.aiIsProcessing, textAlign: TextAlign.center, style: textTheme.headlineSmall),
+        const SizedBox(height: 6),
+        Text(
+          _completed ? l10n.extractionComplete : l10n.extractingData,
+          textAlign: TextAlign.center,
+          style: textTheme.bodyMedium?.copyWith(
+            color: _completed ? palette.success : colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 28),
+        AppCard(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text(l10n.progressLabel, style: textTheme.labelLarge)),
+                  Text(
+                    '${formatLocalizedInt(Localizations.localeOf(context), (progress * 100).round())}%',
+                    style: textTheme.labelLarge?.copyWith(color: colorScheme.primary),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: progress),
+                  duration: const Duration(milliseconds: 200),
+                  builder: (context, value, _) => LinearProgressIndicator(
+                    value: value,
+                    minHeight: 8,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
         for (var i = 0; i < fields.length; i++)
           ProcessingFieldTile(
             key: ValueKey('field-$i'),

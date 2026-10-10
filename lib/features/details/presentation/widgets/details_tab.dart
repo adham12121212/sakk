@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/util/app_radius.dart';
+import 'package:intl/intl.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -15,31 +15,50 @@ class DetailsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    // Arabic gets Arabic-Indic digits, like the rest of the app.
+    final appLocale = Localizations.localeOf(context);
+    final locale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: colorScheme.outline),
-      ),
+    return AppCard(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
         children: [
           DetailRow(icon: Icons.location_on_outlined, label: l10n.store, value: product.store ?? '—'),
           DetailRow(
             icon: Icons.credit_card_outlined,
             label: l10n.price,
-            value: product.price != null ? '${product.currency} ${product.price!.toStringAsFixed(0)}' : '—',
+            value: product.price != null
+                ? '${product.currency} ${NumberFormat.decimalPattern(locale).format(product.price!.round())}'
+                : '—',
           ),
           DetailRow(
             icon: Icons.calendar_today_outlined,
             label: l10n.purchaseDate,
-            value: '${product.purchaseDate.year}-${product.purchaseDate.month.toString().padLeft(2, '0')}-${product.purchaseDate.day.toString().padLeft(2, '0')}',
+            value: DateFormat.yMMMd(locale).format(product.purchaseDate),
           ),
           DetailRow(
             icon: Icons.shield_outlined,
             label: l10n.warrantyPeriod,
             value: '${product.warrantyMonths} ${l10n.months}',
           ),
+          // An extra warranty can push coverage past the manufacturer's date.
+          if (product.extraWarranties.isNotEmpty)
+            DetailRow(
+              icon: Icons.verified_user_outlined,
+              label: l10n.coveredUntil,
+              value: DateFormat.yMMMd(locale).format(product.warrantyEndDate),
+            ),
+          if (product.returnByDate != null)
+            DetailRow(
+              icon: Icons.assignment_return_outlined,
+              label: l10n.returnBy,
+              value: product.daysToReturn! < 0
+                  ? l10n.returnWindowClosed(DateFormat.yMMMd(locale).format(product.returnByDate!))
+                  : l10n.returnByValue(
+                      DateFormat.yMMMd(locale).format(product.returnByDate!),
+                      product.daysToReturn!,
+                    ),
+            ),
           DetailRow(
             icon: Icons.layers_outlined,
             label: l10n.category,
@@ -48,10 +67,14 @@ class DetailsTab extends StatelessWidget {
           ),
           if (product.notes != null && product.notes!.trim().isNotEmpty)
             Padding(
-              padding: EdgeInsets.all(16.w),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
               child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(product.notes!, style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade700)),
+                // Directional so Arabic notes start on the right.
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  product.notes!,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                ),
               ),
             ),
         ],

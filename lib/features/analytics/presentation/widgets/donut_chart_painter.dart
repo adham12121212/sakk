@@ -1,46 +1,50 @@
-
-
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:sakk/features/analytics/presentation/widgets/segment.dart';
 
+/// Donut with rounded, slightly separated segments over a faint track.
 class DonutChartPainter extends CustomPainter {
-  DonutChartPainter({required this.segments});
+  DonutChartPainter({required this.segments, required this.trackColor});
 
   final List<Segment> segments;
+  final Color trackColor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final total = segments.fold<double>(0, (sum, s) => sum + s.value);
+    final strokeWidth = size.width * 0.13;
+    final rect = (Offset.zero & size).deflate(strokeWidth / 2);
+    canvas.drawArc(rect, 0, 2 * math.pi, false, Paint()
+      ..color = trackColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth);
+
+    final visible = segments.where((s) => s.value > 0).toList();
+    final total = visible.fold<double>(0, (sum, s) => sum + s.value);
     if (total <= 0) return;
 
-    final rect = Offset.zero & size;
-    final strokeWidth = size.width * 0.19;
+    // Round caps overlap the next segment, so leave a small gap when there's
+    // more than one segment.
+    final gap = visible.length > 1 ? 0.22 : 0.0;
     var startAngle = -math.pi / 2;
-
-    for (final segment in segments) {
-      if (segment.value <= 0) continue;
-      final sweepAngle = (segment.value / total) * 2 * math.pi;
-      final paint = Paint()
-        ..color = segment.color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth
-        ..strokeCap = StrokeCap.butt;
-
+    for (final segment in visible) {
+      final sweep = (segment.value / total) * 2 * math.pi;
       canvas.drawArc(
-        rect.deflate(strokeWidth / 2),
-        startAngle,
-        sweepAngle,
+        rect,
+        startAngle + gap / 2,
+        math.max(0.0001, sweep - gap),
         false,
-        paint,
+        Paint()
+          ..color = segment.color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round,
       );
-      startAngle += sweepAngle;
+      startAngle += sweep;
     }
   }
 
   @override
-  bool shouldRepaint(covariant DonutChartPainter oldDelegate) {
-    return oldDelegate.segments != segments;
-  }
+  bool shouldRepaint(covariant DonutChartPainter oldDelegate) =>
+      oldDelegate.segments != segments || oldDelegate.trackColor != trackColor;
 }

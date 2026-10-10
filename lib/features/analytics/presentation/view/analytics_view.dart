@@ -1,8 +1,8 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/util/app_spacing.dart';
+
+import '../../../../core/widgets/app_error_view.dart';
+import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
@@ -29,23 +29,40 @@ class _AnalyticsViewState extends State<AnalyticsView> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.0.w),
+            final refresh = context.read<ProductsCubit>().refresh;
+            return AppRefreshIndicator(
+              onRefresh: refresh,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.analytics,
-                    style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                    child: SizedBox(
+                      height: 48,
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(l10n.analytics, style: Theme.of(context).textTheme.headlineMedium),
+                      ),
+                    ),
                   ),
-                  AppSpacing.h20,
-                  TotalSpentCard(state: state, l10n: l10n),
-                  AppSpacing.h20,
-                  WarrantyStatusCard(state: state, l10n: l10n),
-                  AppSpacing.h20,
-                  CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
+                  Expanded(
+                    child: state.error != null && state.products.isEmpty && !state.isLoading
+                        ? AppErrorView(message: state.error, onRetry: refresh, fillRemaining: true)
+                        : ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                            children: [
+                              TotalSpentCard(state: state, l10n: l10n),
+                              const SizedBox(height: 16),
+                              WarrantyStatusCard(state: state, l10n: l10n),
+                              const SizedBox(height: 16),
+                              CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
+                            ],
+                          ),
+                  ),
                 ],
               ),
             );
@@ -55,10 +72,3 @@ class _AnalyticsViewState extends State<AnalyticsView> {
     );
   }
 }
-
-
-
-
-
-
-

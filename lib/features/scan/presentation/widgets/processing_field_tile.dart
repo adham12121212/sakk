@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_palette.dart';
 import 'package:sakk/features/scan/presentation/widgets/processing_field_spec.dart';
 
 import 'shimmer_shape.dart';
@@ -22,22 +24,20 @@ class ProcessingFieldTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+    final palette = context.palette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 280),
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color:  revealed ? const Color(0xFFDCFCE7) : colorScheme.outline,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: palette.cardShadow,
+        // Revealed fields get a soft green edge.
+        border: revealed
+            ? Border.all(color: palette.success.withValues(alpha: 0.35))
+            : (isDark ? Border.all(color: colorScheme.outline) : null),
       ),
       child: Row(
         children: [
@@ -47,7 +47,7 @@ class ProcessingFieldTile extends StatelessWidget {
               children: [
                 Text(
                   spec.label,
-                  style:  TextStyle(fontSize: 12, color: colorScheme.onSurface.withOpacity(0.6)),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 6),
                 AnimatedSwitcher(
@@ -87,10 +87,10 @@ class ProcessingFieldTile extends StatelessWidget {
             transitionBuilder: (child, animation) =>
                 ScaleTransition(scale: animation, child: child),
             child: revealed
-                ? const Icon(
+                ? Icon(
               Icons.check_circle,
               key: ValueKey('check'),
-              color: Color(0xFF22C55E),
+              color: palette.success,
               size: 22,
             )
                 : ShimmerCircle(

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_view.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../details/presentation/cubit/details_cubit.dart';
@@ -72,22 +73,30 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.grey.withOpacity(.1),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: TextField(
+                    // Theme field (white with hairline in light mode) plus a
+                    // clear button once there's text.
+                    child: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _controller,
+                      builder: (context, value, _) => TextField(
                         controller: _controller,
                         focusNode: _focusNode,
                         onChanged: _runSearch,
                         onSubmitted: _submit,
                         textInputAction: TextInputAction.search,
                         decoration: InputDecoration(
-                          border: InputBorder.none,
                           hintText: l10n.searchProductsHint,
                           prefixIcon: const Icon(Icons.search_rounded),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                          suffixIcon: value.text.isEmpty
+                              ? null
+                              : IconButton(
+                                  tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                                  icon: const Icon(Icons.close_rounded, size: 20),
+                                  onPressed: () {
+                                    _controller.clear();
+                                    _runSearch('');
+                                  },
+                                ),
                         ),
                       ),
                     ),
@@ -108,11 +117,10 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                   }
 
                   if (state.results.isEmpty) {
-                    return Center(
-                      child: Text(
-                        l10n.noProductsMatchQuery(state.query),
-                        style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
-                      ),
+                    return AppEmptyView(
+                      icon: Icons.search_off_rounded,
+                      title: l10n.noProductsMatchQuery(state.query),
+                      fillRemaining: true,
                     );
                   }
 
@@ -165,37 +173,37 @@ class _RecentSearches extends StatelessWidget {
   Widget build(BuildContext context) {
     if (recentSearches.isEmpty) return const SizedBox.shrink();
 
+    final colorScheme = Theme.of(context).colorScheme;
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       children: [
         Text(
           AppLocalizations.of(context)!.recentSearches,
-          style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
-        SizedBox(height: 12.h),
-        ...recentSearches.map(
-              (query) => Padding(
-            padding: EdgeInsets.only(bottom: 12.h),
-            child: InkWell(
-              onTap: () => onTap(query),
-              borderRadius: BorderRadius.circular(16.r),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                decoration: BoxDecoration(
-                  color: AppColors.grey.withOpacity(.08),
-                  borderRadius: BorderRadius.circular(16.r),
+        const SizedBox(height: 12),
+        for (final query in recentSearches) ...[
+          AppCard(
+            onTap: () => onTap(query),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(Icons.history_rounded, size: 20, color: colorScheme.onSurfaceVariant),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    query,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.access_time_rounded, size: 18.sp, color: Colors.grey.shade600),
-                    SizedBox(width: 12.w),
-                    Text(query, style: TextStyle(fontSize: 14.sp)),
-                  ],
-                ),
-              ),
+                Icon(Icons.north_west_rounded, size: 18, color: colorScheme.onSurfaceVariant),
+              ],
             ),
           ),
-        ),
+          const SizedBox(height: 10),
+        ],
       ],
     );
   }

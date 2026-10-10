@@ -1,43 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_sizes.dart';
+
+import '../../../../core/theme/app_palette.dart';
+import 'ai_avatar.dart';
 import 'dots.dart';
 
+/// "Assistant is typing": AI avatar plus a small white bubble of pulsing dots.
 class ChatTypingIndicator extends StatelessWidget {
   const ChatTypingIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        const AiAvatar(),
+        const SizedBox(width: 8),
         Container(
-          width: 28.w,
-          height: 28.w,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            shape: BoxShape.circle,
+            color: colorScheme.surface,
+            borderRadius: const BorderRadiusDirectional.only(
+              topStart: Radius.circular(20),
+              topEnd: Radius.circular(20),
+              bottomStart: Radius.circular(6),
+              bottomEnd: Radius.circular(20),
+            ),
+            boxShadow: context.palette.cardShadow,
+            border: isDark ? Border.all(color: colorScheme.outline) : null,
           ),
-          child: Icon(Icons.auto_awesome_rounded, size: 14.sp, color: AppColors.primary),
-        ),
-        SizedBox(width: 8.w),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.s16, vertical: AppSizes.s14),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          child: SizedBox(
-            width: 32.w,
-            height: 12.h,
-            child: const Dots(),
-          ),
+          child: const SizedBox(width: 32, height: 12, child: Dots()),
         ),
       ],
     );
   }
 }
-

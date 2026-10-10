@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_sizes.dart';
 import '../../../../core/util/app_spacing.dart';
 import '../../../../core/util/localized_number.dart';
@@ -59,30 +58,22 @@ class HomeHeader extends StatelessWidget {
                   children: [
                     Text(
                       _greeting(context),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withOpacity(0.6),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    SizedBox(height: 2.h),
+                    const SizedBox(height: 2),
                     Row(
                       children: [
                         Flexible(
                           child: Text(
                             userName,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ),
-                        SizedBox(width: 6.w),
-                        Text('👋', style: TextStyle(fontSize: 18.sp)),
+                        const SizedBox(width: 6),
+                        const Text('👋', style: TextStyle(fontSize: 20)),
                       ],
                     ),
                   ],

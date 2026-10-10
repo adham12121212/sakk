@@ -88,7 +88,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   onPressed: _finish,
                   child: Text(
                     l10n.skip,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14.sp, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -105,26 +105,45 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // Soft halo with a brand-gradient tile in the middle.
                         Container(
-                          width: 140.w,
-                          height: 140.w,
+                          width: 180.w,
+                          height: 180.w,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: Theme.of(context).colorScheme.primaryContainer,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(page.icon, size: 64.sp, color: AppColors.primary),
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: 104.w,
+                            height: 104.w,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                              ),
+                              borderRadius: BorderRadius.circular(30.r),
+                              boxShadow: const [
+                                BoxShadow(color: Color(0x404A5CFA), blurRadius: 24, offset: Offset(0, 10)),
+                              ],
+                            ),
+                            child: Icon(page.icon, size: 48.sp, color: Colors.white),
+                          ),
                         ),
                         SizedBox(height: 40.h),
                         Text(
                           page.title,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         SizedBox(height: 12.h),
                         Text(
                           page.description,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600, height: 1.5),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ],
                     ),
@@ -142,7 +161,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   width: i == _page ? 22.w : 8.w,
                   height: 8.w,
                   decoration: BoxDecoration(
-                    color: i == _page ? AppColors.primary : Colors.grey.shade300,
+                    color: i == _page ? AppColors.primary : Theme.of(context).colorScheme.outline,
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                 ),
@@ -156,10 +175,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                 height: 54.h,
                 child: FilledButton(
                   onPressed: isLast ? _finish : _next,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-                  ),
                   child: Text(
                     isLast ? l10n.getStarted : l10n.next,
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),

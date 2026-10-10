@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constant/app_colors.dart';
-
-/// A full-width, 52px action button for picking an image source (camera or
-/// gallery) on the scan screen. Use [ScanSourceButton.filled] for the
-/// primary action and [ScanSourceButton.outlined] for the secondary one.
+/// Full-width scan source action: filled (primary) or outlined (secondary),
+/// both from the app theme.
 class ScanSourceButton extends StatelessWidget {
   const ScanSourceButton.filled({
     super.key,
@@ -27,41 +24,21 @@ class ScanSourceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shape =
-    RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
-
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: 54,
       child: isFilled
-          ? FilledButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon),
-        label:
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        style: FilledButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: shape,
-        ),
-      )
+          ? FilledButton.icon(onPressed: onPressed, icon: Icon(icon), label: Text(label))
           : OutlinedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon),
-        label:
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        style: OutlinedButton.styleFrom(
-          // Transparent so it sits on the page background in both themes.
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.primary,
-          side: BorderSide(
-            color: AppColors.primary.withOpacity(0.4),
-            width: 1.5,
-          ),
-          shape: shape,
-        ),
-      ),
+              onPressed: onPressed,
+              icon: Icon(icon),
+              label: Text(label),
+              style: OutlinedButton.styleFrom(
+                backgroundColor: colorScheme.surface,
+                foregroundColor: colorScheme.onSurface,
+              ),
+            ),
     );
   }
 }

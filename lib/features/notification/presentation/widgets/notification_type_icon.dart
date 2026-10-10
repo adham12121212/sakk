@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/entities/notification_enitiy.dart';
 
+/// Rounded tinted tile with the notification type's icon (palette colours, so
+/// it adapts to dark mode).
 class NotificationTypeIcon extends StatelessWidget {
   final NotificationType type;
   const NotificationTypeIcon({super.key, required this.type});
 
-  static const Map<NotificationType, (IconData, Color)> _config = {
-    NotificationType.warning: (Icons.warning_amber_rounded, Colors.orange),
-    NotificationType.success: (Icons.check_circle_outline, Colors.green),
-    NotificationType.info: (Icons.auto_awesome, Colors.blue),
-    NotificationType.error: (Icons.error_outline, Colors.red),
-  };
-
   @override
   Widget build(BuildContext context) {
-    final (icon, color) = _config[type]!;
-    return CircleAvatar(
-      radius: 22,
-      backgroundColor: color.withValues(alpha: 0.13),
-      child: Center(child: Icon(icon, color: color, size: 22)),
+    final palette = context.palette;
+    final colorScheme = Theme.of(context).colorScheme;
+    final (icon, color, background) = switch (type) {
+      NotificationType.warning => (Icons.schedule_rounded, palette.warning, palette.warningContainer),
+      NotificationType.success => (Icons.check_circle_outline_rounded, palette.success, palette.successContainer),
+      NotificationType.info => (Icons.auto_awesome_rounded, colorScheme.primary, colorScheme.primaryContainer),
+      NotificationType.error => (Icons.error_outline_rounded, palette.danger, palette.dangerContainer),
+    };
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(14)),
+      child: Icon(icon, color: color, size: 22),
     );
   }
 }

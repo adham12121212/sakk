@@ -19,6 +19,7 @@ abstract class UpdateProductUseCase {
     String? store,
     String? notes,
     required ProductCategory category,
+    int? returnDays,
   });
 }
 
@@ -40,6 +41,7 @@ class UpdateProductUsecaseImpl implements UpdateProductUseCase {
     String? store,
     String? notes,
     required ProductCategory category,
+    int? returnDays,
   }) {
 
     return _repository.updateProduct(
@@ -54,6 +56,7 @@ class UpdateProductUsecaseImpl implements UpdateProductUseCase {
         receiptUrl: receiptUrl,
         store: store,
         notes: notes,
+        returnDays: returnDays,
     );
   }
 }

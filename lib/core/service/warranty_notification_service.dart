@@ -7,6 +7,7 @@ import '../../features/products/domain/enties/product_entity.dart';
 import '../logger/app_logger.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
+import 'reminder_controller.dart';
 
 /// Bridges product warranty status to both local push notifications and
 /// the in-app notification list.
@@ -16,20 +17,27 @@ class WarrantyNotificationService {
     required AddNotificationUseCase addNotificationUseCase,
     required NotifiedWarrantiesTracker tracker,
     required NotificationService localNotifications,
+    required ReminderController reminders,
     required AppLogger logger,
   })  : _getUserUseCase = getUserUseCase,
         _addNotificationUseCase = addNotificationUseCase,
         _tracker = tracker,
         _localNotifications = localNotifications,
+        _reminders = reminders,
         _logger = logger;
 
   final GetUserUseCase _getUserUseCase;
   final AddNotificationUseCase _addNotificationUseCase;
   final NotifiedWarrantiesTracker _tracker;
   final NotificationService _localNotifications;
+  final ReminderController _reminders;
   final AppLogger _logger;
 
-  static const _expiringSoonDays = ProductEntity.expiringSoonMonths * 30;
+  /// Days before the end date for the "expiring soon" reminder (Profile setting).
+  Future<int> _reminderDays() async {
+    await _reminders.ready;
+    return _reminders.value;
+  }
 
   /// Small buffer before an "immediate" warranty push actually fires.
   /// Using scheduleNotification() with a short delay instead of an
@@ -40,20 +48,21 @@ class WarrantyNotificationService {
 
   /// Call whenever the product list is (re)loaded — app open, pull to
   /// refresh, after saving a new product. Fires a near-immediate local
-  /// push + an in-app notification for any product that is currently
-  /// "expiring" or "expired" and hasn't been flagged yet. Safe to call
-  /// repeatedly.
+  /// push + an in-app notification for any product that has expired or is
+  /// within the user's reminder window and hasn't been flagged yet. Safe to
+  /// call repeatedly.
   Future<void> checkAndNotify(List<ProductEntity> products) async {
     final user = _getUserUseCase();
     if (user == null) return;
+    final reminderDays = await _reminderDays();
 
     for (final product in products) {
-      if (product.status == WarrantyStatus.active) continue;
+      final isExpired = product.status == WarrantyStatus.expired;
+      if (!isExpired && product.daysRemaining > reminderDays) continue;
 
-      final statusKey = product.status.name;
+      final statusKey = isExpired ? WarrantyStatus.expired.name : WarrantyStatus.expiring.name;
       if (await _tracker.hasNotified(product.id, statusKey)) continue;
 
-      final isExpired = product.status == WarrantyStatus.expired;
       final title = isExpired ? 'Warranty expired' : 'Warranty expiring soon';
       final subtitle = isExpired
           ? "${product.name}'s warranty has expired"
@@ -91,9 +100,9 @@ class WarrantyNotificationService {
   /// already in the past are silently skipped by [NotificationService].
   Future<void> scheduleFutureNotifications(ProductEntity product) async {
     final user = _getUserUseCase();
+    final reminderDays = await _reminderDays();
 
-    final expiringDate =
-    product.warrantyEndDate.subtract(const Duration(days: _expiringSoonDays));
+    final expiringDate = product.warrantyEndDate.subtract(Duration(days: reminderDays));
 
     await _localNotifications.scheduleNotification(
       id: _notificationIdFor(product.id, 0),
@@ -110,17 +119,45 @@ class WarrantyNotificationService {
       dateTime: product.warrantyEndDate,
       payload: user?.id,
     );
+
+    // Return window: a nudge two days before the last day to return it.
+    final returnBy = product.returnByDate;
+    if (returnBy == null) {
+      await _localNotifications.cancelNotification(_notificationIdFor(product.id, 2));
+    } else {
+      await _localNotifications.scheduleNotification(
+        id: _notificationIdFor(product.id, 2),
+        title: 'Return window closing',
+        body: "You have 2 days left to return ${product.name} if you need to",
+        dateTime: returnBy.subtract(const Duration(days: _returnReminderDaysBefore)),
+        payload: user?.id,
+      );
+    }
+  }
+
+  static const _returnReminderDaysBefore = 2;
+
+  /// Call after the reminder setting changes so every product's pending
+  /// "expiring soon" reminder moves to the new date. Reminders keep the same
+  /// ids, so each one replaces the old schedule.
+  Future<void> rescheduleAll(List<ProductEntity> products) async {
+    for (final product in products) {
+      if (product.isExpired) continue;
+      await _localNotifications.cancelNotification(_notificationIdFor(product.id, 0));
+      await scheduleFutureNotifications(product);
+    }
   }
 
   /// Call when a product is deleted, to cancel any pending reminders.
   Future<void> cancelScheduledNotifications(String productId) async {
     await _localNotifications.cancelNotification(_notificationIdFor(productId, 0));
     await _localNotifications.cancelNotification(_notificationIdFor(productId, 1));
+    await _localNotifications.cancelNotification(_notificationIdFor(productId, 2));
   }
 
   /// Deterministic 32-bit int id required by flutter_local_notifications,
-  /// derived from the product id plus a 0/1 suffix so the "expiring" and
-  /// "expired" reminders for the same product don't collide.
+  /// derived from the product id plus a suffix so a product's reminders don't
+  /// collide: 0 "expiring", 1 "expired", 2 "return window closing".
   int _notificationIdFor(String productId, int suffix) {
     return (productId.hashCode & 0x7FFFFFFF) ~/ 10 * 10 + suffix;
   }

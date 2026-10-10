@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -71,12 +70,12 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                       SizedBox(height: 12.h),
                       Text(
                         l10n.setNewPassword,
-                        style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         l10n.chooseNewPasswordSubtitle,
-                        style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                       SizedBox(height: 32.h),
                       PasswordTextField(
@@ -89,10 +88,10 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                       ),
                       SizedBox(height: 6.h),
                       Padding(
-                        padding: EdgeInsets.only(left: 4.w),
+                        padding: EdgeInsetsDirectional.only(start: 4.w),
                         child: Text(
                           l10n.atleast8characters,
-                          style: TextStyle(fontSize: 11.sp, color: AppColors.grey),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                       SizedBox(height: 20.h),

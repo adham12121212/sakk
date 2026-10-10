@@ -782,5 +782,190 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get offlineBanner => 'You\'re offline. Showing saved data.';
+
+  @override
+  String get backOnlineBanner => 'Back online';
+
+  @override
+  String get errorOfflineTitle => 'You\'re offline';
+
+  @override
+  String get errorOfflineBody =>
+      'Check your internet connection, then try again.';
+
+  @override
+  String get errorGenericTitle => 'Something went wrong';
+
+  @override
+  String get errorGenericBody =>
+      'We couldn\'t load this right now. Please try again in a moment.';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
   String get messageNotSent => 'Not sent. Tap to retry';
+
+  @override
+  String get enterDetailsManually => 'Enter details manually';
+
+  @override
+  String get addProductManuallyTitle => 'Add Product';
+
+  @override
+  String get addProductManuallySubtitle => 'Fill in your product\'s details';
+
+  @override
+  String get warrantyReminder => 'Remind me before warranty ends';
+
+  @override
+  String get reminder3Months => '3 mo';
+
+  @override
+  String get reminder1Month => '1 mo';
+
+  @override
+  String get reminder1Week => '1 wk';
+
+  @override
+  String get reminder1Day => '1 day';
+
+  @override
+  String get warrantyEnds => 'Warranty ends';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get exportProducts => 'Export products';
+
+  @override
+  String get returnWindowDays => 'Return window (days, optional)';
+
+  @override
+  String get invalidReturnDays =>
+      'Enter a number from 1 to 365, or leave it empty';
+
+  @override
+  String get returnBy => 'Return by';
+
+  @override
+  String returnByValue(Object date, num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left',
+      one: '1 day left',
+      zero: 'last day',
+    );
+    return '$date ($_temp0)';
+  }
+
+  @override
+  String returnWindowClosed(Object date) {
+    return 'Closed on $date';
+  }
+
+  @override
+  String get coveredUntil => 'Covered until';
+
+  @override
+  String get extraWarranties => 'Extra warranties';
+
+  @override
+  String get extraWarrantiesHint =>
+      'Bought an extended warranty? Add it so reminders use the right date.';
+
+  @override
+  String get addWarranty => 'Add warranty';
+
+  @override
+  String get warrantyProvider => 'Provider';
+
+  @override
+  String get warrantyProviderHint => 'e.g. B.TECH extended warranty';
+
+  @override
+  String get warrantyProviderRequired => 'Enter who gives this warranty';
+
+  @override
+  String get warrantyStartDate => 'Start date';
+
+  @override
+  String get warrantyClaims => 'Warranty claims';
+
+  @override
+  String get warrantyClaimsHint =>
+      'Something broke? Start a claim to get a ready-to-send message and track its status.';
+
+  @override
+  String get startClaim => 'Start a claim';
+
+  @override
+  String get startClaimExplanation =>
+      'Describe the problem. We\'ll save the claim and prepare a message with the product and invoice details that you can send by WhatsApp or email.';
+
+  @override
+  String get claimIssue => 'What\'s wrong?';
+
+  @override
+  String get claimIssueHint => 'e.g. The screen stopped turning on';
+
+  @override
+  String get claimIssueRequired => 'Describe the problem';
+
+  @override
+  String get saveAndSendClaim => 'Save and send';
+
+  @override
+  String claimSubject(Object product) {
+    return 'Warranty claim: $product';
+  }
+
+  @override
+  String claimMessageIntro(
+    Object endDate,
+    Object product,
+    Object purchaseDate,
+  ) {
+    return 'Hello, I\'d like to make a warranty claim for my $product, bought on $purchaseDate. It is under warranty until $endDate.';
+  }
+
+  @override
+  String claimMessageIssue(Object issue) {
+    return 'Problem: $issue';
+  }
+
+  @override
+  String get claimStatus => 'Claim status';
+
+  @override
+  String get claimSubmitted => 'Submitted';
+
+  @override
+  String get claimInRepair => 'In repair';
+
+  @override
+  String get claimResolved => 'Resolved';
+
+  @override
+  String get claimRejected => 'Rejected';
+
+  @override
+  String get deleteClaim => 'Delete claim';
+
+  @override
+  String get widgetNextToEnd => 'Next warranty to end';
+
+  @override
+  String widgetEndsOn(Object date) {
+    return 'Ends $date';
+  }
+
+  @override
+  String get widgetNoWarranties => 'No active warranties';
+
+  @override
+  String get widgetSignedOut => 'Open Sakk to see your warranties';
 }

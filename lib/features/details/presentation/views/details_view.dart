@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/error/Failure.dart';
+import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
@@ -12,8 +15,8 @@ import '../cubit/details_cubit.dart';
 import '../widgets/details_header.dart';
 import '../widgets/details_tab.dart';
 import '../widgets/invoice_tab.dart';
-import '../widgets/more_actions_sheet.dart';
 import '../widgets/segmented_tabs.dart';
+import '../widgets/warranty_extras_section.dart';
 import '../widgets/warrenty_banner.dart';
 import 'edit_view.dart';
 
@@ -172,6 +175,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             final message = switch (error) {
               'no_invoice_url' => l10n.noInvoiceImageToDownload,
               'delete_failed' => l10n.couldNotDeleteProduct,
+              Failure(:final message) => userFacingError(l10n, message),
               _ => l10n.couldNotDownloadInvoice,
             };
             _showSnack(message, isError: true);
@@ -197,7 +201,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
-                child: WarrantyBanner(product: product, statusColor: _statusColor),
+                child: WarrantyBanner(product: product, warrantyProgress: _warrantyProgress),
               ),
             ),
             SliverToBoxAdapter(
@@ -211,48 +215,54 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                 child: _tabIndex == 0
-                    ? DetailsTab(product: product)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          DetailsTab(product: product),
+                          WarrantyExtrasSection(product: product),
+                        ],
+                      )
                     : InvoiceTab(imageUrl: product.receiptUrl ?? product.imageUrl),
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 100.h)),
           ],
         ),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 52.h,
-                    child: OutlinedButton.icon(
+        bottomNavigationBar: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            boxShadow: context.palette.cardShadow.isEmpty
+                ? null
+                : const [BoxShadow(color: Color(0x140F172A), blurRadius: 24, offset: Offset(0, -6))],
+          ),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FilledButton.icon(
                       onPressed: isBusy ? null : _confirmDelete,
-                      icon: Icon(Icons.delete_outline_rounded, color: AppColors.error),
-                      label: Text(l10n.delete, style: TextStyle(color: AppColors.error)),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.error.withOpacity(0.4)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.r)),
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      label: Text(l10n.delete),
+                      // Soft red: destructive, but quieter than the main action.
+                      style: FilledButton.styleFrom(
+                        backgroundColor: context.palette.dangerContainer,
+                        foregroundColor: context.palette.danger,
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: SizedBox(
-                    height: 52.h,
+                  const SizedBox(width: 12),
+                  Expanded(
                     child: FilledButton.icon(
                       onPressed: isBusy ? null : _editProduct,
                       icon: const Icon(Icons.edit_outlined),
                       label: Text(l10n.edit),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28.r)),
-                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

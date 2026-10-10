@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/util/app_radius.dart';
-import '../../../../core/util/app_sizes.dart';
+import '../../../../core/theme/app_palette.dart';
 
 class SegmentedToggle<T> extends StatelessWidget {
   const SegmentedToggle({
@@ -19,43 +17,58 @@ class SegmentedToggle<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      padding: EdgeInsets.all(3.w),
-      decoration: BoxDecoration(
-        // Colors.grey.shade100 -> surfaceContainerHighest: a subtle fill
-        // that's light-grey in light mode and a lighter panel shade in
-        // dark mode, instead of staying hardcoded light in both.
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppRadius.xxl),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: options.entries.map((entry) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Inline in a row: hug the content. Given full width: share it.
+        final expand = constraints.hasBoundedWidth && constraints.maxWidth.isFinite && constraints.maxWidth > 220;
+        Widget segment(MapEntry<T, String> entry) {
           final isSelected = entry.key == selected;
-          return InkWell(
-            onTap: () => onChanged(entry.key),
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: AppSizes.s12, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: isSelected ? colorScheme.primary : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppRadius.xl),
-              ),
-              child:Text(
-                entry.value,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: isSelected
-                      ? colorScheme.onPrimary
-                      : colorScheme.onSurface.withOpacity(0.6),
+          final box = Semantics(
+            button: true,
+            selected: isSelected,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onChanged(entry.key),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: isSelected ? colorScheme.surface : Colors.transparent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: isSelected ? context.palette.cardShadow : null,
+                ),
+                child: Text(
+                  entry.value,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
           );
-        }).toList(),
-      ),
+          return expand ? Expanded(child: box) : box;
+        }
+
+        return Container(
+          height: 40,
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            color: isDark ? colorScheme.surfaceContainerHighest : const Color(0xFFE9EDF3),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Row(
+            mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
+            children: options.entries.map(segment).toList(),
+          ),
+        );
+      },
     );
   }
 }

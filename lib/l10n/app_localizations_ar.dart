@@ -127,7 +127,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordRequired => 'كلمة المرور مطلوبة';
 
   @override
-  String get saveProduct => 'Save Product';
+  String get saveProduct => 'حفظ المنتج';
 
   @override
   String get productName => 'اسم المنتج';
@@ -139,7 +139,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get brand => 'الماركة';
 
   @override
-  String get price => 'Price';
+  String get price => 'السعر';
 
   @override
   String get warrantyMonths => 'فترة الضمان (بالأشهر)';
@@ -151,28 +151,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get purchaseDate => 'تاريخ الشراء';
 
   @override
-  String get productImage => 'Product Image';
+  String get productImage => 'صورة المنتج';
 
   @override
-  String get invalidNumber => 'Enter a valid number';
+  String get invalidNumber => 'أدخل رقمًا صحيحًا';
 
   @override
-  String get productNameRequired => 'Product name is required';
+  String get productNameRequired => 'اسم المنتج مطلوب';
 
   @override
-  String get warrantyRequired => 'Warranty length is required';
+  String get warrantyRequired => 'مدة الضمان مطلوبة';
 
   @override
   String get priceEgp => 'سعر (جنيه)';
 
   @override
-  String get productSavedSuccessfully => 'Product saved successfully';
+  String get productSavedSuccessfully => 'تم حفظ المنتج بنجاح';
 
   @override
-  String get invalidWarrantyMonths => 'Enter a valid number of months';
+  String get invalidWarrantyMonths => 'أدخل عددًا صحيحًا من الأشهر';
 
   @override
-  String get totalPrice => 'Total Price';
+  String get totalPrice => 'السعر الإجمالي';
 
   @override
   String get analytics => 'التحليلات';
@@ -792,5 +792,191 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get offlineBanner => 'أنت غير متصل. يتم عرض البيانات المحفوظة.';
+
+  @override
+  String get backOnlineBanner => 'تمت استعادة الاتصال';
+
+  @override
+  String get errorOfflineTitle => 'أنت غير متصل';
+
+  @override
+  String get errorOfflineBody => 'تحقّق من اتصالك بالإنترنت، ثم حاول مرة أخرى.';
+
+  @override
+  String get errorGenericTitle => 'حدث خطأ ما';
+
+  @override
+  String get errorGenericBody =>
+      'تعذّر تحميل البيانات الآن. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get tryAgain => 'حاول مرة أخرى';
+
+  @override
   String get messageNotSent => 'لم يتم الإرسال. اضغط لإعادة المحاولة';
+
+  @override
+  String get enterDetailsManually => 'إدخال التفاصيل يدويًا';
+
+  @override
+  String get addProductManuallyTitle => 'إضافة منتج';
+
+  @override
+  String get addProductManuallySubtitle => 'أدخل تفاصيل منتجك';
+
+  @override
+  String get warrantyReminder => 'ذكّرني قبل انتهاء الضمان';
+
+  @override
+  String get reminder3Months => '٣ أشهر';
+
+  @override
+  String get reminder1Month => 'شهر';
+
+  @override
+  String get reminder1Week => 'أسبوع';
+
+  @override
+  String get reminder1Day => 'يوم';
+
+  @override
+  String get warrantyEnds => 'ينتهي الضمان';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get exportProducts => 'تصدير المنتجات';
+
+  @override
+  String get returnWindowDays => 'مدة الاسترجاع (بالأيام، اختياري)';
+
+  @override
+  String get invalidReturnDays => 'أدخل رقمًا من 1 إلى 365 أو اتركه فارغًا';
+
+  @override
+  String get returnBy => 'آخر موعد للاسترجاع';
+
+  @override
+  String returnByValue(Object date, num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'باقي $days يوم',
+      many: 'باقي $days يومًا',
+      few: 'باقي $days أيام',
+      two: 'باقي يومان',
+      one: 'باقي يوم',
+      zero: 'آخر يوم',
+    );
+    return '$date ($_temp0)';
+  }
+
+  @override
+  String returnWindowClosed(Object date) {
+    return 'انتهت في $date';
+  }
+
+  @override
+  String get coveredUntil => 'مغطى حتى';
+
+  @override
+  String get extraWarranties => 'ضمانات إضافية';
+
+  @override
+  String get extraWarrantiesHint =>
+      'اشتريت ضمانًا ممتدًا؟ أضفه لتصلك التذكيرات في موعدها الصحيح.';
+
+  @override
+  String get addWarranty => 'إضافة ضمان';
+
+  @override
+  String get warrantyProvider => 'الجهة المانحة';
+
+  @override
+  String get warrantyProviderHint => 'مثال: ضمان ممتد من بي تك';
+
+  @override
+  String get warrantyProviderRequired => 'أدخل الجهة المانحة للضمان';
+
+  @override
+  String get warrantyStartDate => 'تاريخ البدء';
+
+  @override
+  String get warrantyClaims => 'طلبات الضمان';
+
+  @override
+  String get warrantyClaimsHint =>
+      'تعطل شيء؟ ابدأ طلب ضمان لتحصل على رسالة جاهزة للإرسال وتتابع حالته.';
+
+  @override
+  String get startClaim => 'بدء طلب ضمان';
+
+  @override
+  String get startClaimExplanation =>
+      'اكتب المشكلة. سنحفظ الطلب ونجهّز رسالة بتفاصيل المنتج والفاتورة يمكنك إرسالها عبر واتساب أو البريد.';
+
+  @override
+  String get claimIssue => 'ما المشكلة؟';
+
+  @override
+  String get claimIssueHint => 'مثال: الشاشة لم تعد تعمل';
+
+  @override
+  String get claimIssueRequired => 'اكتب المشكلة';
+
+  @override
+  String get saveAndSendClaim => 'حفظ وإرسال';
+
+  @override
+  String claimSubject(Object product) {
+    return 'طلب ضمان: $product';
+  }
+
+  @override
+  String claimMessageIntro(
+    Object endDate,
+    Object product,
+    Object purchaseDate,
+  ) {
+    return 'مرحبًا، أود تقديم طلب ضمان لـ $product الذي اشتريته في $purchaseDate. الضمان سارٍ حتى $endDate.';
+  }
+
+  @override
+  String claimMessageIssue(Object issue) {
+    return 'المشكلة: $issue';
+  }
+
+  @override
+  String get claimStatus => 'حالة الطلب';
+
+  @override
+  String get claimSubmitted => 'تم الإرسال';
+
+  @override
+  String get claimInRepair => 'قيد الإصلاح';
+
+  @override
+  String get claimResolved => 'تم الحل';
+
+  @override
+  String get claimRejected => 'مرفوض';
+
+  @override
+  String get deleteClaim => 'حذف الطلب';
+
+  @override
+  String get widgetNextToEnd => 'أقرب ضمان ينتهي';
+
+  @override
+  String widgetEndsOn(Object date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String get widgetNoWarranties => 'لا توجد ضمانات سارية';
+
+  @override
+  String get widgetSignedOut => 'افتح سَكّ لرؤية ضماناتك';
 }

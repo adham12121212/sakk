@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ConfidenceBanner extends StatelessWidget {
@@ -13,22 +13,21 @@ class ConfidenceBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final level = _levelFor(l10n, confidence);
+    final level = _levelFor(context, l10n, confidence);
     final percent = (confidence * 100).round();
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(14.w),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: level.background,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: level.foreground.withOpacity(0.25)),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(level.icon, color: level.foreground, size: 22.sp),
-          SizedBox(width: 10.w),
+          Icon(level.icon, color: level.foreground, size: 22),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,25 +35,22 @@ class ConfidenceBanner extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      color: level.foreground,
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                     children: [
                       TextSpan(text: l10n.confidenceScoreLabel),
                       TextSpan(
                         text: '$percent%',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: level.foreground),
                       ),
                     ],
                   ),
                 ),
                 if (level.subtext != null) ...[
-                  SizedBox(height: 4.h),
-                  Text(
-                    level.subtext!,
-                    style: TextStyle(fontSize: 12.sp, color: level.foreground.withOpacity(0.85)),
-                  ),
+                  const SizedBox(height: 4),
+                  Text(level.subtext!, style: Theme.of(context).textTheme.bodySmall),
                 ],
               ],
             ),
@@ -64,25 +60,22 @@ class ConfidenceBanner extends StatelessWidget {
     );
   }
 
-  _ConfidenceLevel _levelFor(AppLocalizations l10n, double confidence) {
+  _ConfidenceLevel _levelFor(BuildContext context, AppLocalizations l10n, double confidence) {
+    final p = context.palette;
     if (confidence >= _highThreshold) {
-      return const _ConfidenceLevel(
-        foreground: Color(0xFF15803D),
-        background: Color(0xFFDCFCE7),
-        icon: Icons.check_circle_rounded,
-      );
+      return _ConfidenceLevel(foreground: p.success, background: p.successContainer, icon: Icons.check_circle_rounded);
     }
     if (confidence >= _mediumThreshold) {
       return _ConfidenceLevel(
-        foreground: const Color(0xFF92400E),
-        background: const Color(0xFFFEF3C7),
-        icon: Icons.warning_amber_rounded,
+        foreground: p.warning,
+        background: p.warningContainer,
+        icon: Icons.info_outline_rounded,
         subtext: l10n.doubleCheckFieldsBelow,
       );
     }
     return _ConfidenceLevel(
-      foreground: const Color(0xFF991B1B),
-      background: const Color(0xFFFEE2E2),
+      foreground: p.danger,
+      background: p.dangerContainer,
       icon: Icons.error_outline_rounded,
       subtext: l10n.lowConfidenceWarning,
     );

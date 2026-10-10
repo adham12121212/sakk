@@ -3,9 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ReviewHeader extends StatelessWidget {
-  const ReviewHeader({super.key, required this.onBack});
+  const ReviewHeader({super.key, required this.onBack, this.title, this.subtitle});
 
   final VoidCallback onBack;
+
+  /// Default to the scan wording ("Verify Details").
+  final String? title;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +58,9 @@ class ReviewHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.verifyDetails, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface)),
+                Text(title ?? l10n.verifyDetails, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface)),
                 SizedBox(height: 2.h),
-                Text(l10n.reviewAndEditExtractedData, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
+                Text(subtitle ?? l10n.reviewAndEditExtractedData, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
               ],
             ),
           ),

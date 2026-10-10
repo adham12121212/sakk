@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
@@ -42,10 +41,7 @@ class CategoriesView extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   SizedBox(width: 4.w),
-                  Text(
-                    l10n.categories,
-                    style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
-                  ),
+                  Text(l10n.categories, style: Theme.of(context).textTheme.headlineSmall),
                 ],
               ),
             ),
@@ -57,7 +53,9 @@ class CategoriesView extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16.w,
                   mainAxisSpacing: 16.h,
-                  childAspectRatio: 1.15,
+                  // Fixed height, not an aspect ratio: long Arabic names or
+                  // large text can't overflow the card.
+                  mainAxisExtent: 148,
                 ),
                 itemBuilder: (context, index) {
                   final category = ProductCategory.values[index];

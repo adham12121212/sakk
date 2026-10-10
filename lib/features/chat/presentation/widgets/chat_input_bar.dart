@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ChatInputBar extends StatefulWidget {
@@ -38,68 +37,83 @@ class _ChatInputBarState extends State<ChatInputBar> {
     return SafeArea(
       top: false,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Container(
-                constraints: BoxConstraints(maxHeight: 120.h),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(24.r),
-                ),
-                child: TextField(
-                  controller: _controller,
-                  minLines: 1,
-                  maxLines: 5,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => _submit(),
-                  decoration:  InputDecoration(
-                    border: InputBorder.none,
-                    hintText: l10n.askaboutaproductorwarranty,
-                    isDense: true,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        // Floating white pill: text field plus a round gradient send button.
+        child: Container(
+          padding: const EdgeInsetsDirectional.fromSTEB(18, 4, 4, 4),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: context.palette.cardShadow,
+            border: Theme.of(context).brightness == Brightness.dark
+                ? Border.all(color: colorScheme.outline)
+                : null,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 120),
+                  child: TextField(
+                    controller: _controller,
+                    minLines: 1,
+                    maxLines: 5,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _submit(),
+                    decoration: InputDecoration(
+                      filled: false,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: l10n.askaboutaproductorwarranty,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 13),
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface),
                 ),
               ),
-            ),
-            SizedBox(width: 8.w),
-            // 44.w visible circle inside a 48×48 labelled tap area.
-            Tooltip(
-              message: l10n.sendMessage,
-              excludeFromSemantics: true,
-              child: Semantics(
-                button: true,
-                enabled: !widget.isSending,
-                label: l10n.sendMessage,
-                excludeSemantics: true,
-                child: InkWell(
-                  onTap: widget.isSending ? null : _submit,
-                  customBorder: const CircleBorder(),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                    child: Center(
-                      widthFactor: 1,
-                      heightFactor: 1,
-                      child: Container(
-                        width: 44.w,
-                        height: 44.w,
-                        decoration: BoxDecoration(
-                          color: widget.isSending
-                              ? AppColors.primary.withValues(alpha: 0.5)
-                              : AppColors.primary,
-                          shape: BoxShape.circle,
+              const SizedBox(width: 8),
+              // 44px visible circle inside a 48×48 labelled tap area.
+              Tooltip(
+                message: l10n.sendMessage,
+                excludeFromSemantics: true,
+                child: Semantics(
+                  button: true,
+                  enabled: !widget.isSending,
+                  label: l10n.sendMessage,
+                  excludeSemantics: true,
+                  child: InkResponse(
+                    onTap: widget.isSending ? null : _submit,
+                    radius: 26,
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Center(
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 150),
+                          opacity: widget.isSending ? 0.5 : 1,
+                          child: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                              ),
+                            ),
+                            child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 22),
+                          ),
                         ),
-                        child: Icon(Icons.arrow_upward_rounded, color: AppColors.white, size: 20.sp),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

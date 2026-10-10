@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakk/features/details/presentation/cubit/details_cubit.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -13,7 +12,6 @@ import '../../../scan/presentation/widgets/capsule_field.dart';
 import '../../../scan/presentation/widgets/datex.dart';
 import '../../../scan/presentation/widgets/field_label.dart';
 import '../widgets/category_selector.dart';
-
 
 class EditView extends StatelessWidget {
   const EditView({super.key, required this.product});
@@ -41,19 +39,25 @@ class _EditProductBody extends StatefulWidget {
 class _EditProductBodyState extends State<_EditProductBody> {
   final _formKey = GlobalKey<FormState>();
 
-  late final _nameController =
-  TextEditingController(text: widget.product.name);
-  late final _brandController =
-  TextEditingController(text: widget.product.brand ?? '');
+  late final _nameController = TextEditingController(text: widget.product.name);
+  late final _brandController = TextEditingController(
+    text: widget.product.brand ?? '',
+  );
   late final _priceController = TextEditingController(
     text: widget.product.price?.toStringAsFixed(2) ?? '',
   );
-  late final _warrantyController =
-  TextEditingController(text: widget.product.warrantyMonths.toString());
-  late final _storeController =
-  TextEditingController(text: widget.product.store ?? '');
-  late final _notesController =
-  TextEditingController(text: widget.product.notes ?? '');
+  late final _warrantyController = TextEditingController(
+    text: widget.product.warrantyMonths.toString(),
+  );
+  late final _storeController = TextEditingController(
+    text: widget.product.store ?? '',
+  );
+  late final _notesController = TextEditingController(
+    text: widget.product.notes ?? '',
+  );
+  late final _returnDaysController = TextEditingController(
+    text: widget.product.returnDays?.toString() ?? '',
+  );
 
   late ProductCategory _selectedCategory = widget.product.category;
   late DateTime _purchaseDate = widget.product.purchaseDate;
@@ -66,6 +70,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
     _warrantyController.dispose();
     _storeController.dispose();
     _notesController.dispose();
+    _returnDaysController.dispose();
     super.dispose();
   }
 
@@ -88,18 +93,19 @@ class _EditProductBodyState extends State<_EditProductBody> {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<DetailsCubit>().save(
-        id: widget.product.id,
-        name: _nameController.text.trim(),
-        brand: _emptyToNull(_brandController.text),
-        price: double.tryParse(_priceController.text.trim())??0,
-        purchaseDate: _purchaseDate,
-        warrantyMonths: int.parse(_warrantyController.text.trim()),
-        imageUrl: widget.product.imageUrl,
-        receiptUrl: widget.product.receiptUrl,
-        store: _emptyToNull(_storeController.text),
-        notes: _emptyToNull(_notesController.text),
-        category: _selectedCategory,
-        currency: 'EGP'
+      id: widget.product.id,
+      name: _nameController.text.trim(),
+      brand: _emptyToNull(_brandController.text),
+      price: double.tryParse(_priceController.text.trim()) ?? 0,
+      purchaseDate: _purchaseDate,
+      warrantyMonths: int.parse(_warrantyController.text.trim()),
+      imageUrl: widget.product.imageUrl,
+      receiptUrl: widget.product.receiptUrl,
+      store: _emptyToNull(_storeController.text),
+      notes: _emptyToNull(_notesController.text),
+      category: _selectedCategory,
+      currency: 'EGP',
+      returnDays: int.tryParse(_returnDaysController.text.trim()),
     );
   }
 
@@ -123,9 +129,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
         final isSaving = state is DetailsSaving;
         return Scaffold(
           appBar: AppBar(
-            title: Text(l10n.editProduct,style: TextStyle(
-                fontSize: 20.sp
-            ),),
+            title: Text(l10n.editProduct, style: TextStyle(fontSize: 20.sp)),
             surfaceTintColor: Colors.transparent,
             elevation: 0,
           ),
@@ -139,6 +143,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
                   children: [
                     FieldLabel(l10n.productName),
                     CapsuleField(
+                      semanticLabel: l10n.productName,
                       controller: _nameController,
                       validator: (v) => (v == null || v.trim().isEmpty)
                           ? l10n.productNameRequired
@@ -147,7 +152,10 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     SizedBox(height: 20.h),
 
                     FieldLabel(l10n.brand),
-                    CapsuleField(controller: _brandController),
+                    CapsuleField(
+                      semanticLabel: l10n.brand,
+                      controller: _brandController,
+                    ),
                     SizedBox(height: 20.h),
 
                     FieldLabel(l10n.category),
@@ -160,9 +168,11 @@ class _EditProductBodyState extends State<_EditProductBody> {
 
                     FieldLabel(l10n.priceEgp),
                     CapsuleField(
+                      semanticLabel: l10n.priceEgp,
                       controller: _priceController,
-                      keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       validator: (v) {
                         if (v == null || v.trim().isEmpty) return null;
                         return double.tryParse(v.trim()) == null
@@ -175,7 +185,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     FieldLabel(l10n.purchaseDate),
                     InkWell(
                       onTap: isSaving ? null : _pickPurchaseDate,
-                      borderRadius: BorderRadius.circular(28.r),
+                      borderRadius: BorderRadius.circular(16),
                       child: CapsuleShell(
                         child: Text(
                           _purchaseDate.toIsoDate(),
@@ -190,6 +200,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
 
                     FieldLabel(l10n.warrantyMonths),
                     CapsuleField(
+                      semanticLabel: l10n.warrantyMonths,
                       controller: _warrantyController,
                       keyboardType: TextInputType.number,
                       validator: (v) {
@@ -205,12 +216,30 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     ),
                     SizedBox(height: 20.h),
 
+                    FieldLabel(l10n.returnWindowDays),
+                    CapsuleField(
+                      semanticLabel: l10n.returnWindowDays,
+                      controller: _returnDaysController,
+                      keyboardType: TextInputType.number,
+                      validator: (v) {
+                        // Optional: empty means no return window to track.
+                        if (v == null || v.trim().isEmpty) return null;
+                        final n = int.tryParse(v.trim());
+                        return n == null || n < 1 || n > 365 ? l10n.invalidReturnDays : null;
+                      },
+                    ),
+                    SizedBox(height: 20.h),
+
                     FieldLabel(l10n.store),
-                    CapsuleField(controller: _storeController),
+                    CapsuleField(
+                      semanticLabel: l10n.store,
+                      controller: _storeController,
+                    ),
                     SizedBox(height: 20.h),
 
                     FieldLabel(l10n.notes),
                     CapsuleField(
+                      semanticLabel: l10n.notes,
                       controller: _notesController,
                       maxLines: 3,
                       minLines: 3,
@@ -219,24 +248,18 @@ class _EditProductBodyState extends State<_EditProductBody> {
 
                     SizedBox(
                       width: double.infinity,
-                      height: 52.h,
+                      height: 54,
                       child: FilledButton(
                         onPressed: isSaving ? null : _save,
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28.r),
-                          ),
-                          backgroundColor: AppColors.primary,
-                        ),
                         child: isSaving
                             ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: Colors.white,
-                          ),
-                        )
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
                             : Text(l10n.saveChanges),
                       ),
                     ),

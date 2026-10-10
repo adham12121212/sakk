@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constant/app_colors.dart';
 
@@ -43,85 +42,40 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
-          ),
+        // Visible label; excluded from semantics because the field below
+        // carries the same text as its own label.
+        ExcludeSemantics(
+          child: Text(label, style: textTheme.labelLarge?.copyWith(fontSize: 13.5)),
         ),
-
-        SizedBox(height: 8.h),
-
-        TextFormField(
-          cursorHeight: 15.h,
-          cursorColor: AppColors.primary,
-          controller: controller,
-          validator: validator,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          textInputAction: textInputAction,
-          enabled: enabled,
-          readOnly: readOnly,
-          maxLines: obscureText ? 1 : maxLines,
-          onFieldSubmitted: onFieldSubmitted,
-          style: TextStyle(
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
-          ),
-          decoration: InputDecoration(
-            hintText: hint,
-
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-            prefixIconColor: AppColors.primary,
-            suffixIcon: suffixIcon,
-            suffixIconColor: AppColors.primary,
-
-            filled: true,
-
-            fillColor: AppColors.grey.withOpacity(.1),
-
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 18.w,
-              vertical: 16.h,
-            ),
-
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              borderSide: BorderSide.none,
-            ),
-
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              borderSide: BorderSide.none,
-            ),
-
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              borderSide: BorderSide(
-                color: AppColors.primary,
-                width: 1.5,
-              ),
-            ),
-
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              borderSide: BorderSide(
-                color: AppColors.error,
-              ),
-            ),
-
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              borderSide: BorderSide(
-                color: AppColors.error,
-                width: 1.5,
-              ),
+        const SizedBox(height: 8),
+        Semantics(
+          label: label,
+          textField: true,
+          child: TextFormField(
+            cursorColor: AppColors.primary,
+            controller: controller,
+            validator: validator,
+            keyboardType: keyboardType,
+            obscureText: obscureText,
+            textInputAction: textInputAction,
+            enabled: enabled,
+            readOnly: readOnly,
+            maxLines: obscureText ? 1 : maxLines,
+            onFieldSubmitted: onFieldSubmitted,
+            style: textTheme.bodyLarge?.copyWith(fontSize: 15),
+            // Fill, radius and focus/error borders come from the app theme.
+            decoration: InputDecoration(
+              hintText: hint,
+              prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 20) : null,
+              prefixIconColor: colorScheme.onSurfaceVariant,
+              suffixIcon: suffixIcon,
+              suffixIconColor: colorScheme.onSurfaceVariant,
             ),
           ),
         ),

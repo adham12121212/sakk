@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_radius.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/util/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
@@ -58,7 +58,7 @@ class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
         return SizedBox(
           width: double.infinity,
           height: AppSizes.buttonHeight,
-          child: OutlinedButton.icon(
+          child: FilledButton.icon(
             onPressed: isBusy ? null : () => _confirmLogout(context),
             icon: _isLoggingOut
                 ? SizedBox(
@@ -66,16 +66,16 @@ class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
               height: 18.w,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppColors.error,
+                color: context.palette.danger,
               ),
             )
-                : Icon(Icons.logout_rounded, color: AppColors.error),
-            label: Text(l10n.logOut, style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600)),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: AppColors.error.withOpacity(0.4)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.button),
-              ),
+                : Icon(Icons.logout_rounded, color: context.palette.danger),
+            label: Text(l10n.logOut, style: TextStyle(color: context.palette.danger, fontWeight: FontWeight.w600)),
+            // Soft red: clearly destructive without shouting.
+            style: FilledButton.styleFrom(
+              backgroundColor: context.palette.dangerContainer,
+              foregroundColor: context.palette.danger,
+              disabledBackgroundColor: context.palette.dangerContainer.withValues(alpha: 0.5),
             ),
           ),
         );

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakk/features/home/presentation/widgets/recent_product_data.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_sizes.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/section_header.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class RecentProductsSection extends StatelessWidget {
@@ -23,38 +22,25 @@ class RecentProductsSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSizes.s20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.recentProducts, style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.bold)),
-              TextButton(
-                onPressed: onSeeAllTap,
-                // TextButton's default 48px minimum tap height; keep the
-                // visual padding tight so the header row doesn't grow.
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  padding: EdgeInsets.symmetric(horizontal: AppSizes.s8),
-                ),
-                child: Text(
-                  l10n.seeAll,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
+          SectionHeader(
+            title: l10n.recentProducts,
+            actionLabel: items.isEmpty ? null : l10n.seeAll,
+            onAction: onSeeAllTap,
           ),
-          SizedBox(height: 12.h),
+          const SizedBox(height: 8),
           if (items.isEmpty)
             const _EmptyState()
           else
             ListView.separated(
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: items.length,
-              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
               itemBuilder: (context, index) => RecentProductTile(
                 data: items[index],
                 onTap: onItemTap == null ? null : () => onItemTap!(index),
@@ -72,19 +58,33 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 32.h),
-      decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(16.r)),
-      child: Column(
-        children: [
-          Icon(Icons.inventory_2_outlined, size: 32.sp, color: colorScheme.onSurface.withValues(alpha: 0.4)),
-          SizedBox(height: 8.h),
-          Text(
-            AppLocalizations.of(context)!.noProductsYet,
-            style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withValues(alpha: 0.6)),
-          ),
-        ],
+    return AppCard(
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      child: Center(
+        child: Column(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.inventory_2_outlined,
+                size: 26,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              AppLocalizations.of(context)!.noProductsYet,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

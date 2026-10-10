@@ -1,46 +1,68 @@
-
 // widgets/warranty_banner.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/util/app_radius.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/util/warranty_progress_color.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
 
+/// Warranty summary card: days left, expiry date, status shield and a slim
+/// bar showing the share of the warranty that's left.
 class WarrantyBanner extends StatelessWidget {
-  const WarrantyBanner({super.key, required this.product, required this.statusColor});
+  const WarrantyBanner({super.key, required this.product, required this.warrantyProgress});
 
   final ProductEntity product;
-  final Color statusColor;
+
+  /// Share of the warranty left (0.0–1.0).
+  final double warrantyProgress;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final status = WarrantyStatusColors.of(context, product.status);
     final days = product.daysRemaining;
     final label = days > 0 ? l10n.daysLeft(days) : l10n.warrantyExpired;
-    final expiresLabel = l10n.expiresOnLabel(
-      '${product.warrantyEndDate.year}-${product.warrantyEndDate.month.toString().padLeft(2, '0')}-${product.warrantyEndDate.day.toString().padLeft(2, '0')}',
-    );
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final expiresLabel = l10n.expiresOnLabel(DateFormat.yMMMd(locale).format(product.warrantyEndDate));
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Row(
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: statusColor)),
-                SizedBox(height: 2.h),
-                Text(expiresLabel, style: TextStyle(fontSize: 13.sp, color: statusColor.withOpacity(0.85))),
-              ],
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label, style: textTheme.titleLarge?.copyWith(color: status.foreground)),
+                    const SizedBox(height: 2),
+                    Text(expiresLabel, style: textTheme.bodySmall?.copyWith(fontSize: 13)),
+                  ],
+                ),
+              ),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: status.background, borderRadius: BorderRadius.circular(14)),
+                child: Icon(Icons.verified_user_outlined, color: status.foreground, size: 22),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(99),
+            child: LinearProgressIndicator(
+              value: warrantyProgress,
+              minHeight: 6,
+              backgroundColor: colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation(warrantyProgressColor(context, warrantyProgress)),
             ),
           ),
-          Icon(Icons.shield_outlined, color: statusColor, size: 26.sp),
         ],
       ),
     );

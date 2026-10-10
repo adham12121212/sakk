@@ -1,7 +1,4 @@
-
 import 'package:flutter/material.dart';
-
-import '../../../../core/constant/app_colors.dart';
 
 class AuthFooter extends StatelessWidget {
   final String question;
@@ -17,15 +14,16 @@ class AuthFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text(question),
+          Text(question, style: textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
           TextButton(
             onPressed: onTap,
-            child: Text(actionLabel, style: const TextStyle(color: AppColors.primary)),
+            child: Text(actionLabel, style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),

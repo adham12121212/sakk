@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/widgets/sakk_logo.dart';
-import '../../../../l10n/app_localizations.dart';
 
 class SigninHeader extends StatelessWidget {
   const SigninHeader({super.key});
@@ -21,8 +19,15 @@ class SigninHeader extends StatelessWidget {
           width: 78.w,
           height: 78.w,
           decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(22.r),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+            ),
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: const [
+              BoxShadow(color: Color(0x404A5CFA), blurRadius: 24, offset: Offset(0, 10)),
+            ],
           ),
           child: SakkLogo(size: 78.w),
         ),

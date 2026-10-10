@@ -4,12 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sakk/core/route/app_router.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/di/get_it.dart';
-import '../../../../core/service/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/sacn_source_button.dart';
+import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
 
 class ScanView extends StatefulWidget {
@@ -38,6 +36,20 @@ class ScanViewState extends State<ScanView> {
     );
   }
 
+  /// For products without a receipt (lost, or bought online): straight to
+  /// the review form with empty fields.
+  void enterManually() {
+    final cubit = ScanCubit()..startManualEntry();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: cubit,
+          child: const ReviewProductView(),
+        ),
+      ),
+    );
+  }
+
   // Scan is reached via `context.push(AppRoutes.scan)` from whichever
   // bottom-nav tab is currently active (Home, Products, Analytics, or
   // AI) — hardcoding `go(home)` here used to drop the user back on Home
@@ -56,15 +68,12 @@ class ScanViewState extends State<ScanView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.scanReceiptTitle),
-        backgroundColor: AppColors.primary,
-        // onPrimary (white) in both themes. This used colorScheme.surface,
-        // which turns dark gray on blue in dark mode.
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
         leading: IconButton(
           onPressed: () => _goBack(context),
           tooltip: l10n.back,
@@ -73,41 +82,40 @@ class ScanViewState extends State<ScanView> {
       ),
       body: SafeArea(
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 96,
-                  height: 96,
+                  width: 112,
+                  height: 112,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primary.withOpacity(0.08),
-                    border: Border.all(
-                      color: AppColors.primary.withOpacity(0.15),
-                      width: 1.5,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
                     ),
+                    borderRadius: BorderRadius.circular(32),
+                    boxShadow: const [
+                      BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                    ],
                   ),
-                  child: Icon(
-                    Icons.receipt_long_outlined,
-                    size: 42,
-                    color: AppColors.primary,
-                  ),
+                  child: const Icon(Icons.document_scanner_rounded, size: 52, color: Colors.white),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
                 Text(
                   l10n.scanYourWarrantyReceipt,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, letterSpacing: -0.3),
+                  style: textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.scanInstructions,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.4),
+                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 36),
                 ScanSourceButton.filled(
                   icon: Icons.camera_alt_outlined,
                   label: l10n.takePhoto,
@@ -118,6 +126,13 @@ class ScanViewState extends State<ScanView> {
                   icon: Icons.photo_library_outlined,
                   label: l10n.chooseFromGallery,
                   onPressed: () => pickAndScan(ImageSource.gallery),
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: enterManually,
+                  icon: const Icon(Icons.edit_outlined),
+                  label: Text(l10n.enterDetailsManually),
+                  style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
                 ),
               ],
             ),

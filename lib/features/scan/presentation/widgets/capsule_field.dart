@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
+/// Read-only "field" look for tappable values (e.g. a date picker): same
+/// shape and colours as a text field from the app theme.
 class CapsuleShell extends StatelessWidget {
   const CapsuleShell({super.key, required this.child});
 
@@ -10,24 +10,28 @@ class CapsuleShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(28.r),
-        border: Border.all(color: colorScheme.outline),
+        color: isDark ? colorScheme.surfaceContainerHighest : colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: isDark ? null : Border.all(color: colorScheme.outline, width: 1.2),
       ),
       child: child,
     );
   }
 }
 
+/// Form text field styled by the app theme. [semanticLabel] is what screen
+/// readers announce for the field (pair it with the visible [FieldLabel]).
 class CapsuleField extends StatelessWidget {
   const CapsuleField({
     super.key,
     required this.controller,
+    this.semanticLabel,
     this.keyboardType,
     this.validator,
     this.maxLines = 1,
@@ -35,6 +39,7 @@ class CapsuleField extends StatelessWidget {
   });
 
   final TextEditingController controller;
+  final String? semanticLabel;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final int maxLines;
@@ -42,34 +47,14 @@ class CapsuleField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return TextFormField(
+    final field = TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
       maxLines: maxLines,
       minLines: minLines,
-      style: TextStyle(fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-          color: colorScheme.onSurface),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: colorScheme.surfaceContainerHighest,
-        contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28.r),
-          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.4)),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28.r),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28.r),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5),
-        ),
-      ),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
     );
+    return semanticLabel == null ? field : Semantics(label: semanticLabel, textField: true, child: field);
   }
 }

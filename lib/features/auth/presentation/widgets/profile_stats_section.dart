@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/di/get_it.dart';
-import '../../../../core/util/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/widgets/stat_card.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
@@ -21,28 +20,34 @@ class ProfileStatsSection extends StatelessWidget {
     return BlocBuilder<ProductsCubit, ProductsState>(
       bloc: getIt<ProductsCubit>(),
       builder: (context, state) {
-        return Row(
-          children: [
-            Expanded(
-              child: StatCard(
-                value: '${state.total}',
-                label: l10n.products,
-                icon: Icons.inventory_2_outlined,
-                iconColor: AppColors.primary,
-                iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+        final palette = context.palette;
+        final colorScheme = Theme.of(context).colorScheme;
+        final locale = Localizations.localeOf(context);
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: StatCard(
+                  value: formatLocalizedInt(locale, state.total),
+                  label: l10n.products,
+                  icon: Icons.inventory_2_outlined,
+                  iconColor: colorScheme.primary,
+                  iconBackgroundColor: colorScheme.primaryContainer,
+                ),
               ),
-            ),
-            SizedBox(width: AppSizes.s12),
-            Expanded(
-              child: StatCard(
-                value: '${state.active}',
-                label: l10n.active,
-                icon: Icons.shield_outlined,
-                iconColor: AppColors.success,
-                iconBackgroundColor: AppColors.success.withOpacity(0.1),
+              const SizedBox(width: 12),
+              Expanded(
+                child: StatCard(
+                  value: formatLocalizedInt(locale, state.active),
+                  label: l10n.active,
+                  icon: Icons.verified_user_outlined,
+                  iconColor: palette.success,
+                  iconBackgroundColor: palette.successContainer,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

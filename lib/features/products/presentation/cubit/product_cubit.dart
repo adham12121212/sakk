@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakk/features/products/presentation/cubit/product_state.dart';
 
+import '../../../../core/service/home_widget_sync.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../../core/util/shared_preferences.dart';
 import '../../domain/enties/product_entity.dart';
@@ -15,12 +16,16 @@ class ProductsCubit extends Cubit<ProductsState> {
       this._deleteProductUseCase,
       this._historyService,
       this._warrantyNotificationService,
-      ) : super(const ProductsState());
+      this._homeWidget,
+      ) : super(const ProductsState()) {
+    _homeWidget.followLanguage(() => state.products);
+  }
 
   final GetProductsUseCase _getProductsUseCase;
   final DeleteProductUseCase _deleteProductUseCase;
   final SearchHistoryService _historyService;
   final WarrantyNotificationService _warrantyNotificationService;
+  final HomeWidgetSync _homeWidget;
 
 
   void _safeEmit(ProductsState newState) {
@@ -30,6 +35,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
    void reset() {
     _safeEmit(const ProductsState());
+    unawaited(_homeWidget.clear());
   }
 
   Future<void> loadIfNeeded() {
@@ -47,6 +53,7 @@ class ProductsCubit extends Cubit<ProductsState> {
           (products) {
         _safeEmit(state.copyWith(products: products, isLoading: false, hasLoadedOnce: true));
         unawaited(_warrantyNotificationService.checkAndNotify(products));
+        unawaited(_homeWidget.update(products));
       },
     );
   }
@@ -64,6 +71,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         final updated = state.products.where((p) => p.id != id).toList();
         _safeEmit(state.copyWith(products: updated, clearError: true));
         unawaited(_warrantyNotificationService.cancelScheduledNotifications(id));
+        unawaited(_homeWidget.update(updated));
         return true;
       },
     );

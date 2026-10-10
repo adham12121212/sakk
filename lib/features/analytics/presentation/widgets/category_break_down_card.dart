@@ -1,34 +1,28 @@
-
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sakk/features/analytics/presentation/widgets/segment.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_radius.dart';
-import '../../../../core/util/app_spacing.dart';
+import '../../../../core/util/localized_number.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
-import 'category_legend_chip.dart';
-import 'category_pie_painter.dart';
 
+/// Categories ranked by product count: tinted icon, name, count, percentage
+/// and a slim bar in the category colour.
 class CategoryBreakdownCard extends StatelessWidget {
-  const CategoryBreakdownCard({required this.products, required this.isLoading, required this.l10n});
+  const CategoryBreakdownCard({super.key, required this.products, required this.isLoading, required this.l10n});
 
   final List<ProductEntity> products;
   final bool isLoading;
   final AppLocalizations l10n;
 
-
-
   @override
   Widget build(BuildContext context) {
     final isInitialLoading = isLoading && products.isEmpty;
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final locale = Localizations.localeOf(context);
 
     final Map<ProductCategory, int> counts;
     final int total;
@@ -42,78 +36,92 @@ class CategoryBreakdownCard extends StatelessWidget {
       }
       total = products.length;
     }
+    final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-    final entries = counts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16.0.w),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.outline.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ]
-      ),
+    return AppCard(
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.categoryBreakdown,
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-          ),
-          AppSpacing.h20,
+          Text(l10n.categoryBreakdown, style: textTheme.titleMedium),
+          const SizedBox(height: 16),
           if (!isInitialLoading && total == 0)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.h),
-              child: Text(
-                l10n.noProductsYet,
-                style: TextStyle(color: colorScheme.onSurface.withOpacity(0.6), fontSize: 14.sp),
-              ),
-            )
+            Text(l10n.noProductsYet, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant))
           else
             Skeletonizer(
               enabled: isInitialLoading,
               child: Column(
                 children: [
-                  Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.h,
-                    children: [
-                      for (final entry in entries)
-                        CategoryLegendChip(
-                          category: entry.key,
-                          percent: (entry.value / total * 100).round(),
-                        ),
-                    ],
-                  ),
-                  AppSpacing.h24,
-                  Center(
-                    child: SizedBox(
-                      width: 160.w,
-                      height: 160.w,
-                      child: Skeleton.leaf(
-                        child: CustomPaint(
-                          painter: CategoryPiePainter(
-                            segments: [
-                              for (final entry in entries)
-                                Segment(entry.value.toDouble(), CategoryUi.color(entry.key)),
-                            ],
-                          ),
-                        ),
-                      ),
+                  for (final (i, entry) in entries.indexed) ...[
+                    if (i > 0) const SizedBox(height: 16),
+                    _CategoryRow(
+                      category: entry.key,
+                      count: formatLocalizedInt(locale, entry.value),
+                      share: entry.value / total,
+                      percent: '${formatLocalizedInt(locale, (entry.value / total * 100).round())}%',
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
         ],
       ),
+    );
+  }
+}
+
+class _CategoryRow extends StatelessWidget {
+  const _CategoryRow({required this.category, required this.count, required this.share, required this.percent});
+
+  final ProductCategory category;
+  final String count;
+  final double share;
+  final String percent;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = CategoryUi.color(category);
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+          child: Icon(CategoryUi.icon(category), color: color, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text(CategoryUi.label(context, category), style: textTheme.titleSmall)),
+                  Text(count, style: textTheme.titleSmall),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 44,
+                    child: Text(percent, textAlign: TextAlign.end, style: textTheme.bodySmall),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: LinearProgressIndicator(
+                  value: share,
+                  minHeight: 6,
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                  valueColor: AlwaysStoppedAnimation(color),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

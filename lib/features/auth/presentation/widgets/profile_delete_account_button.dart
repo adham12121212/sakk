@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_radius.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/util/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 import 'delete_account_dialog.dart';
 
-/// Styled like [ProfileLogoutButton]: full-width outlined error button.
+/// Styled like [ProfileLogoutButton]: full-width soft red button.
 class ProfileDeleteAccountButton extends StatefulWidget {
   const ProfileDeleteAccountButton({super.key});
 
@@ -51,7 +50,7 @@ class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton>
         return SizedBox(
           width: double.infinity,
           height: AppSizes.buttonHeight,
-          child: OutlinedButton.icon(
+          child: FilledButton.icon(
             onPressed: isBusy ? null : () => _confirmDelete(context),
             icon: _isDeleting
                 ? SizedBox(
@@ -59,16 +58,16 @@ class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton>
               height: 18.w,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppColors.error,
+                color: context.palette.danger,
               ),
             )
-                : Icon(Icons.delete_forever_outlined, color: AppColors.error),
-            label: Text(l10n.deleteAccount, style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600)),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: AppColors.error.withValues(alpha: 0.4)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.button),
-              ),
+                : Icon(Icons.delete_forever_outlined, color: context.palette.danger),
+            label: Text(l10n.deleteAccount, style: TextStyle(color: context.palette.danger, fontWeight: FontWeight.w600)),
+            // Soft red: clearly destructive without shouting.
+            style: FilledButton.styleFrom(
+              backgroundColor: context.palette.dangerContainer,
+              foregroundColor: context.palette.danger,
+              disabledBackgroundColor: context.palette.dangerContainer.withValues(alpha: 0.5),
             ),
           ),
         );

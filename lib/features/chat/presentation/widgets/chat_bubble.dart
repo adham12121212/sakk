@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' show Bidi;
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/util/app_radius.dart';
-import '../../../../core/util/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
 
+import '../../../../core/theme/app_palette.dart';
+import '../../../../l10n/app_localizations.dart';
+import 'ai_avatar.dart';
+
+/// User messages: brand-gradient bubble at the end. Assistant replies: white
+/// card at the start next to the AI avatar, selectable so it can be copied.
+/// Corners are directional, so the "tail" sits on the right side in RTL too.
 /// A user message that failed to send gets a "tap to retry" line under it.
 class ChatBubble extends StatelessWidget {
   const ChatBubble({super.key, required this.message, this.onRetry});
@@ -15,41 +18,59 @@ class ChatBubble extends StatelessWidget {
   /// Set only on the failed message; shows the retry line and runs on tap.
   final VoidCallback? onRetry;
 
+  static const _gradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+  );
+
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const r = Radius.circular(20);
+    const tail = Radius.circular(6);
+
+    // Each message keeps its own direction: an English reply inside the
+    // Arabic UI must not have its punctuation flipped, and vice versa.
+    final textDirection = Bidi.detectRtlDirectionality(message.content) ? TextDirection.rtl : TextDirection.ltr;
+
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          height: 1.5,
+          color: isUser ? Colors.white : colorScheme.onSurface,
+        );
 
     final bubble = Row(
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         if (!isUser) ...[
-          _AssistantAvatar(),
-          SizedBox(width: 8.w),
+          const AiAvatar(),
+          const SizedBox(width: 8),
         ],
         Flexible(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: AppSizes.s16, vertical: AppSizes.s12),
+            constraints: const BoxConstraints(maxWidth: 320),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isUser ? AppColors.primary : colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(AppRadius.lg),
-                topRight: Radius.circular(AppRadius.lg),
-                bottomLeft: Radius.circular(isUser ? AppRadius.lg : 4.r),
-                bottomRight: Radius.circular(isUser ? 4.r : AppRadius.lg),
+              gradient: isUser ? _gradient : null,
+              color: isUser ? null : colorScheme.surface,
+              borderRadius: BorderRadiusDirectional.only(
+                topStart: r,
+                topEnd: r,
+                bottomStart: isUser ? r : tail,
+                bottomEnd: isUser ? tail : r,
               ),
+              boxShadow: isUser ? null : context.palette.cardShadow,
+              border: !isUser && isDark ? Border.all(color: colorScheme.outline) : null,
             ),
-            child: Text(
-              message.content,
-              style: TextStyle(
-                fontSize: 14.sp,
-                height: 1.4,
-                color: isUser ? AppColors.white : colorScheme.onSurface,
-              ),
-            ),
+            child: isUser
+                ? Text(message.content, style: textStyle, textDirection: textDirection)
+                : SelectableText(message.content, style: textStyle, textDirection: textDirection),
           ),
         ),
+        if (isUser) const SizedBox(width: 4),
       ],
     );
 
@@ -80,21 +101,6 @@ class ChatBubble extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AssistantAvatar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 28.w,
-      height: 28.w,
-      decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.auto_awesome_rounded, size: 14.sp, color: AppColors.primary),
     );
   }
 }

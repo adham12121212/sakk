@@ -1,5 +1,7 @@
 import '../../../category/domain/entities/product_category.dart';
+import '../../domain/enties/extra_warranty.dart';
 import '../../domain/enties/product_entity.dart';
+import '../../domain/enties/warranty_claim.dart';
 
 class ProductModel extends ProductEntity {
   const ProductModel({
@@ -15,7 +17,14 @@ class ProductModel extends ProductEntity {
     super.store,
     super.notes,
     super.category,
+    super.returnDays,
+    super.extraWarranties,
+    super.claims,
   });
+
+  /// Columns to select so a product row arrives with its extra warranties
+  /// and claims embedded (PostgREST follows the product_id foreign keys).
+  static const selectColumns = '*, product_warranties(*), warranty_claims(*)';
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
@@ -31,6 +40,25 @@ class ProductModel extends ProductEntity {
       store: json['store_name'] as String?,
       notes: json['notes'] as String?,
       category: ProductCategoryX.fromName(json['category'] as String?),
+      returnDays: json['return_days'] as int?,
+      extraWarranties: [
+        for (final w in (json['product_warranties'] as List? ?? const []).cast<Map<String, dynamic>>())
+          ExtraWarranty(
+            id: w['id'] as String,
+            provider: w['provider'] as String,
+            startDate: DateTime.parse(w['start_date'] as String),
+            months: w['months'] as int,
+          ),
+      ]..sort((a, b) => a.startDate.compareTo(b.startDate)),
+      claims: [
+        for (final c in (json['warranty_claims'] as List? ?? const []).cast<Map<String, dynamic>>())
+          WarrantyClaim(
+            id: c['id'] as String,
+            issue: c['issue'] as String,
+            status: ClaimStatusX.fromDb(c['status'] as String?),
+            createdAt: DateTime.parse(c['created_at'] as String),
+          ),
+      ]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
     );
   }
 
@@ -52,8 +80,35 @@ class ProductModel extends ProductEntity {
       'notes': notes,
       'status': status.name,
       'category': category.name,
+      'return_days': returnDays,
     };
   }
+
+  /// Full row for the offline cache; round-trips through [ProductModel.fromJson].
+  Map<String, dynamic> toCacheJson() => {
+        'id': id,
+        ..._sharedFields(),
+        'product_warranties': [
+          for (final w in extraWarranties)
+            {
+              'id': w.id,
+              'provider': w.provider,
+              'start_date': _isoDate(w.startDate),
+              'months': w.months,
+            },
+        ],
+        'warranty_claims': [
+          for (final c in claims)
+            {
+              'id': c.id,
+              'issue': c.issue,
+              'status': c.status.dbValue,
+              'created_at': c.createdAt.toIso8601String(),
+            },
+        ],
+      };
+
+  static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
   Map<String, dynamic> toInsertJson({required String userId}) {
     return {
@@ -70,6 +125,7 @@ class ProductModel extends ProductEntity {
       'notes': notes,
       'status': status.name,
       'category': category.name,
+      'return_days': returnDays,
     };
   }
 }

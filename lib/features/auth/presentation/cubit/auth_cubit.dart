@@ -7,6 +7,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/error/Failure.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
+import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecase/delete_account_usecase.dart';
@@ -70,6 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     getIt<ProductsCubit>().reset();
     getIt<NotificationCubit>().reset();
+    await getIt<ClearCachedProductsUseCase>()();
     emit(AuthInitial());
   }
 
@@ -100,10 +102,10 @@ class AuthCubit extends Cubit<AuthState> {
     await result.fold(
           (failure) async => emit(AuthError(failure.message)),
           (_) async {
-        // The biometric flag is device-level; don't carry it over to the next account.
         await getIt<BiometricAuthService>().setEnabled(false);
         getIt<ProductsCubit>().reset();
         getIt<NotificationCubit>().reset();
+        await getIt<ClearCachedProductsUseCase>()();
         emit(AuthInitial());
       },
     );
