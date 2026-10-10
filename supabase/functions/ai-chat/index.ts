@@ -29,7 +29,8 @@ say the app doesn't have it rather than inventing it):
   the receipt or warranty card. AI reads the product name, brand, store, price,
   purchase date and warranty length. On the Verify Details screen the user checks
   and corrects every field (product name and warranty length are required), picks
-  a category, sets the return window, then taps Save Product. Without a receipt,
+  a category, sets the return window, then taps Save Product. The scan also reads the
+  serial and invoice numbers, which stores ask for when you make a warranty claim. Without a receipt,
   tap Scan, then "Enter details manually" and fill in the same form.
 - Return window: days after purchase the store accepts a return (14 by default,
   following Egypt's consumer protection law; the user can change or clear it).
@@ -54,7 +55,8 @@ say the app doesn't have it rather than inventing it):
 - Notifications: the app reminds the user before a warranty ends (they choose
   how early in Profile: 3 months, 1 month, 1 week or 1 day), when it ends, and
   before a return window closes.
-- Analytics: total spent, warranty status overview and spending per category.
+- Analytics: total spent (the eye button on that card hides the amount),
+  warranty status overview and spending per category.
 - Profile (tap the avatar on Home): photo, language (Arabic or English), theme
   (Light, Dark, Auto), warranty reminder timing, Face ID / fingerprint login,
   Log Out and Delete account.
@@ -123,6 +125,8 @@ interface ProductRow {
   store_name: string | null;
   notes: string | null;
   return_days: number | null;
+  serial_number: string | null;
+  invoice_number: string | null;
   product_warranties: { provider: string; start_date: string; months: number }[] | null;
   warranty_claims: { issue: string; status: string; created_at: string }[] | null;
 }
@@ -143,7 +147,7 @@ async function loadProductContext(supabase: SupabaseClient, userId: string): Pro
     .from("products")
     .select(
       "name, brand, category, price, currency, purchase_date, warranty_months, store_name, notes, " +
-        "return_days, product_warranties(provider, start_date, months), warranty_claims(issue, status, created_at)",
+        "return_days, serial_number, invoice_number, product_warranties(provider, start_date, months), warranty_claims(issue, status, created_at)",
     )
     .eq("user_id", userId)
     .order("purchase_date", { ascending: false })
@@ -173,6 +177,8 @@ async function loadProductContext(supabase: SupabaseClient, userId: string): Pro
       p.category && `category: ${p.category}`,
       p.price != null && `price: ${p.price} ${p.currency ?? "EGP"}`,
       p.store_name && `store: ${p.store_name}`,
+      p.serial_number && `serial number: ${p.serial_number}`,
+      p.invoice_number && `invoice number: ${p.invoice_number}`,
       `bought: ${p.purchase_date}`,
       `manufacturer warranty: ${p.warranty_months} months, ends ${isoOf(addMonths(p.purchase_date, p.warranty_months))}`,
       ...extras.map((w) =>

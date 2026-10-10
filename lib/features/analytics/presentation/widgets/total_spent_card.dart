@@ -1,12 +1,17 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/di/get_it.dart';
+import '../../../../core/service/amount_visibility_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/theme/app_icons.dart';
 
-/// Brand-gradient hero card with the total spent across all products.
+/// Brand-gradient hero card with the total spent across all products. The
+/// eye button hides the amount (remembered on this device).
 class TotalSpentCard extends StatelessWidget {
   const TotalSpentCard({super.key, required this.state, required this.l10n});
 
@@ -26,6 +31,7 @@ class TotalSpentCard extends StatelessWidget {
     // Arabic gets Arabic-Indic digits, like the rest of the app.
     final locale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
     final amount = NumberFormat.decimalPattern(locale).format(state.totalPrice.round());
+    final visibility = getIt<AmountVisibilityController>();
 
     return Container(
       width: double.infinity,
@@ -68,31 +74,69 @@ class TotalSpentCard extends StatelessWidget {
                         child: const Icon(AppIcons.wallet, color: Colors.white, size: 18),
                       ),
                       const SizedBox(width: 10),
-                      Text(
-                        l10n.totalSpant,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.85),
+                      Expanded(
+                        child: Text(
+                          l10n.totalSpant,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withValues(alpha: 0.85),
+                          ),
+                        ),
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: visibility,
+                        builder: (context, hidden, _) => IconButton(
+                          onPressed: visibility.toggle,
+                          tooltip: hidden ? l10n.showTotalSpent : l10n.hideTotalSpent,
+                          icon: Icon(hidden ? AppIcons.hide : AppIcons.show, color: Colors.white, size: 22),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 8),
                   Skeletonizer(
                     enabled: isInitialLoading,
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(
-                          text: isInitialLoading ? '1,234' : amount,
-                          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800, letterSpacing: -0.5),
-                        ),
-                        const TextSpan(
-                          text: '  EGP',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                        ),
-                      ]),
-                      style: const TextStyle(color: Colors.white),
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: visibility,
+                      builder: (context, hidden, _) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          // Hidden = the real number, blurred (fades in/out).
+                          // Tapping it toggles too, not just the eye button.
+                          Semantics(
+                            label: hidden ? l10n.totalSpentHidden : null,
+                            excludeSemantics: hidden,
+                            child: GestureDetector(
+                              onTap: isInitialLoading ? null : visibility.toggle,
+                              child: TweenAnimationBuilder<double>(
+                                tween: Tween(end: hidden && !isInitialLoading ? 12 : 0),
+                                duration: const Duration(milliseconds: 250),
+                                curve: Curves.easeOut,
+                                builder: (context, sigma, child) => ImageFiltered(
+                                  enabled: sigma > 0.1,
+                                  imageFilter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma, tileMode: TileMode.decal),
+                                  child: child,
+                                ),
+                                child: Text(
+                                  isInitialLoading ? '1,234' : amount,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            '  EGP',
+                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

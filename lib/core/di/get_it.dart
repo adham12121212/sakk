@@ -47,6 +47,7 @@ import '../error/network_info.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
 import '../logger/console_logger.dart';
+import '../service/amount_visibility_controller.dart';
 import '../service/biometric_auth_service.dart';
 import '../service/home_widget_sync.dart';
 import '../service/notification_service.dart';
@@ -119,6 +120,7 @@ void setupLocator() {
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
+  getIt.registerLazySingleton<AmountVisibilityController>(() => AmountVisibilityController());
   getIt.registerLazySingleton<HomeWidgetSync>(
         () => HomeWidgetSync(getIt<LocaleController>(), getIt<AppLogger>()),
   );

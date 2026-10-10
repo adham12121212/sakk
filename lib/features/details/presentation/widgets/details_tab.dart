@@ -60,6 +60,10 @@ class DetailsTab extends StatelessWidget {
                       product.daysToReturn!,
                     ),
             ),
+          if (product.serialNumber != null)
+            DetailRow(icon: AppIcons.receipt, label: l10n.serialNumber, value: product.serialNumber!),
+          if (product.invoiceNumber != null)
+            DetailRow(icon: AppIcons.receipt, label: l10n.invoiceNumber, value: product.invoiceNumber!),
           DetailRow(
             icon: AppIcons.category,
             label: l10n.category,

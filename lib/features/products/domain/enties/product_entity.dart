@@ -27,6 +27,10 @@ class ProductEntity extends Equatable {
   /// Days after purchase the store accepts a return; null when not tracked.
   final int? returnDays;
 
+  /// Stores ask for these when you make a warranty claim.
+  final String? serialNumber;
+  final String? invoiceNumber;
+
   /// Warranties on top of the manufacturer's (e.g. extended from the store).
   final List<ExtraWarranty> extraWarranties;
 
@@ -46,6 +50,8 @@ class ProductEntity extends Equatable {
     this.notes,
     this.category = ProductCategory.other,
     this.returnDays,
+    this.serialNumber,
+    this.invoiceNumber,
     this.extraWarranties = const [],
     this.claims = const [],
   });
@@ -128,6 +134,8 @@ class ProductEntity extends Equatable {
     status,
     category,
     returnDays,
+    serialNumber,
+    invoiceNumber,
     extraWarranties,
     claims,
   ];

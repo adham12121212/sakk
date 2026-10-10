@@ -11,6 +11,9 @@ abstract class ProductDataSource {
 
   Future<ScannedReceiptData> scanReceipt({required String imagePath});
 
+  /// Deletes an uploaded receipt photo that ended up not being saved.
+  Future<void> deleteReceiptImage(String path);
+
   Future<ProductModel> addProduct(Map<String, dynamic> insertJson);
 
   Future<List<ProductModel>> getProducts();
@@ -44,6 +47,11 @@ class ProductDataSourceImpl implements ProductDataSource {
 
   static const _signedUrlExpirySeconds = 60 * 60 * 24 * 365 * 5;
 
+  /// Error codes the extract-receipt function returns, passed up as the
+  /// failure message so the UI can explain them (see userFacingError).
+  static const unreadableReceipt = 'unreadable_receipt';
+  static const aiBusy = 'ai_busy';
+
   @override
   Future<ScannedReceiptData> scanReceipt({required String imagePath}) async {
     try {
@@ -55,20 +63,27 @@ class ProductDataSourceImpl implements ProductDataSource {
       final fileName = '$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
       await _client.storage.from(_receiptsBucket).upload(fileName, File(imagePath));
 
-      final signedUrl = await _client.storage
-          .from(_receiptsBucket)
-          .createSignedUrl(fileName, _signedUrlExpirySeconds);
+      final Map<String, dynamic> data;
+      final String signedUrl;
+      try {
+        signedUrl = await _client.storage
+            .from(_receiptsBucket)
+            .createSignedUrl(fileName, _signedUrlExpirySeconds);
 
-      final response = await _client.functions.invoke(
-        _extractFunctionName,
-        body: {'imageUrl': signedUrl},
-      );
-
-      if (response.status != 200) {
-        throw ServerException('Receipt scan failed (status ${response.status})');
+        final response = await _client.functions.invoke(
+          _extractFunctionName,
+          body: {'imageUrl': signedUrl},
+        );
+        data = response.data as Map<String, dynamic>;
+      } catch (e) {
+        // The scan failed, so nothing will reference the photo: don't keep it.
+        await deleteReceiptImage(fileName);
+        if (e is FunctionException) {
+          if (e.status == 422) throw ServerException(unreadableReceipt);
+          if (e.status == 503) throw ServerException(aiBusy);
+        }
+        rethrow;
       }
-
-      final data = response.data as Map<String, dynamic>;
 
       return ScannedReceiptData(
         productName: data['productName'] as String?,
@@ -79,6 +94,11 @@ class ProductDataSourceImpl implements ProductDataSource {
             ? DateTime.tryParse(data['purchaseDate'] as String)
             : null,
         warrantyMonths: data['warrantyMonths'] as int?,
+        serialNumber: data['serialNumber'] as String?,
+        invoiceNumber: data['invoiceNumber'] as String?,
+        foreignPrice: (data['foreignPrice'] as num?)?.toDouble(),
+        foreignCurrency: data['foreignCurrency'] as String?,
+        receiptPath: fileName,
         receiptImageUrl: signedUrl,
         confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
         imageUrl: data['imageUrl'] as String?,
@@ -95,6 +115,15 @@ class ProductDataSourceImpl implements ProductDataSource {
       rethrow;
     } catch (e) {
       throw ServerException('Receipt scan failed: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteReceiptImage(String path) async {
+    try {
+      await _client.storage.from(_receiptsBucket).remove([path]);
+    } catch (_) {
+      // Best effort: a leftover photo is harmless, so never fail the flow.
     }
   }
 

@@ -55,6 +55,8 @@ class _EditProductBodyState extends State<_EditProductBody> {
   late final _notesController = TextEditingController(
     text: widget.product.notes ?? '',
   );
+  late final _serialController = TextEditingController(text: widget.product.serialNumber ?? '');
+  late final _invoiceController = TextEditingController(text: widget.product.invoiceNumber ?? '');
   late final _returnDaysController = TextEditingController(
     text: widget.product.returnDays?.toString() ?? '',
   );
@@ -71,6 +73,8 @@ class _EditProductBodyState extends State<_EditProductBody> {
     _storeController.dispose();
     _notesController.dispose();
     _returnDaysController.dispose();
+    _serialController.dispose();
+    _invoiceController.dispose();
     super.dispose();
   }
 
@@ -106,6 +110,8 @@ class _EditProductBodyState extends State<_EditProductBody> {
       category: _selectedCategory,
       currency: 'EGP',
       returnDays: int.tryParse(_returnDaysController.text.trim()),
+      serialNumber: _emptyToNull(_serialController.text),
+      invoiceNumber: _emptyToNull(_invoiceController.text),
     );
   }
 
@@ -234,6 +240,20 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     CapsuleField(
                       semanticLabel: l10n.store,
                       controller: _storeController,
+                    ),
+                    SizedBox(height: 20.h),
+
+                    FieldLabel(l10n.serialNumber),
+                    CapsuleField(
+                      semanticLabel: l10n.serialNumber,
+                      controller: _serialController,
+                    ),
+                    SizedBox(height: 20.h),
+
+                    FieldLabel(l10n.invoiceNumber),
+                    CapsuleField(
+                      semanticLabel: l10n.invoiceNumber,
+                      controller: _invoiceController,
                     ),
                     SizedBox(height: 20.h),
 

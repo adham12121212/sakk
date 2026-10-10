@@ -23,6 +23,8 @@ Future<void> shareProductsCsv(BuildContext context, List<ProductEntity> products
       l10n.category,
       l10n.price,
       l10n.store,
+      l10n.serialNumber,
+      l10n.invoiceNumber,
       l10n.purchaseDate,
       l10n.warrantyMonths,
       l10n.warrantyEnds,
@@ -40,6 +42,8 @@ Future<void> shareProductsCsv(BuildContext context, List<ProductEntity> products
         CategoryUi.label(context, p.category),
         p.price == null ? null : '${p.price} ${p.currency}',
         p.store,
+        p.serialNumber,
+        p.invoiceNumber,
         p.purchaseDate.toIsoDate(),
         p.warrantyMonths,
         p.warrantyEndDate.toIsoDate(),
@@ -65,7 +69,9 @@ Future<void> shareProductsCsv(BuildContext context, List<ProductEntity> products
   // correctly instead of as garbled characters.
   await file.writeAsBytes([0xEF, 0xBB, 0xBF, ...utf8.encode(csv)]);
 
-  await Share.shareXFiles([XFile(file.path, mimeType: 'text/csv')], subject: l10n.exportProducts);
+  await SharePlus.instance.share(
+    ShareParams(files: [XFile(file.path, mimeType: 'text/csv')], subject: l10n.exportProducts),
+  );
 }
 
 /// Quotes a value when it contains a comma, quote or line break (RFC 4180).

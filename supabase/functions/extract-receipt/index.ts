@@ -9,9 +9,15 @@ interface ExtractResponse {
   productName: string | null;
   brand: string | null;
   store_name: string | null;
+  // Always in EGP (the app's only currency); null when the receipt is in
+  // another currency, which is then reported in foreignPrice/foreignCurrency.
   price: number | null;
+  foreignPrice: number | null;
+  foreignCurrency: string | null;
   purchaseDate: string | null;
   warrantyMonths: number | null;
+  serialNumber: string | null;
+  invoiceNumber: string | null;
   category: string | null;
   confidence: number;
 }
@@ -26,26 +32,47 @@ const ALLOWED_CATEGORIES = [
   "other",
 ];
 
-const SYSTEM_PROMPT = `You extract structured data from receipt or warranty card images, which may be in Arabic or English.
-Return ONLY a JSON object with these exact keys:
-productName, brand, store_name, price (number), purchaseDate (YYYY-MM-DD), warrantyMonths (integer), category (string), confidence (0-1 float).
-Use null for any field that is not present in the image or that you cannot read with confidence — do not guess or estimate.
-Warranty cards often have no price listed; in that case price must be null.
-Dates may be written in DD/MM/YYYY format — convert to YYYY-MM-DD.
-For "category", classify the product into EXACTLY ONE of these values: electronics, appliances, furniture, vehicles, accessories, other.
-Use "electronics" for phones, laptops, TVs, cameras, and similar devices.
-Use "appliances" for kitchen/home appliances like fridges, washing machines, microwaves.
-Use "furniture" for chairs, tables, sofas, beds.
-Use "vehicles" for cars, motorcycles, bicycles.
-Use "accessories" for watches, bags, jewelry, small personal items.
-Use "other" if the product doesn't clearly fit any of the above, or if you're unsure.
-Always return one of these six exact lowercase values for category — never invent a new category name, and never leave it null.`;
+const SYSTEM_PROMPT = `You read receipts, invoices and warranty cards (Arabic, English or both) for an Egyptian
+warranty-tracking app, and return the details of the ONE product the user is registering.
+
+Return ONLY a JSON object with exactly these keys:
+productName, brand, store_name, price, currency, purchaseDate, warrantyMonths, serialNumber,
+invoiceNumber, category, confidence.
+
+Which product: if the receipt lists several items, pick the main durable product that would
+have a warranty (e.g. the TV, not the HDMI cable, delivery fee, installation or service plan).
+If there is no clear main product, pick the most expensive item.
+
+Fields:
+- productName: the product's name as printed on the receipt, including the brand or product line
+  when it is part of the name (e.g. "Samsung 55\" Crystal UHD TV", "Kindle Paperwhite 16GB"),
+  without the price, quantity or item code. Keep Arabic names in Arabic.
+- brand: the manufacturer (Samsung, LG, Toshiba El Araby...), not the store.
+- store_name: the shop or seller that issued the receipt (e.g. B.TECH, Raya, 2B, Carrefour).
+- price: the price paid for THAT product only, as a plain number, including VAT if shown.
+  Not the receipt total when there are other items. Remove thousands separators.
+- currency: the 3-letter code of the price's currency: EGP for "EGP", "LE", "L.E.", "جنيه", "ج.م";
+  otherwise USD, EUR, SAR, AED, etc.
+- purchaseDate: YYYY-MM-DD. Egyptian receipts write dates day first (DD/MM/YYYY or DD-MM-YY).
+- warrantyMonths: an integer number of MONTHS. Convert years: 1 year / سنة / عام = 12,
+  2 years / سنتين / سنتان / عامين = 24, 3 years / ٣ سنوات = 36, 6 months / ٦ شهور = 6.
+  Only from the receipt or card; never assume a typical warranty.
+- serialNumber: the product's serial number (S/N, Serial, الرقم التسلسلي, IMEI), exactly as printed.
+- invoiceNumber: the receipt or invoice number (Invoice No., رقم الفاتورة), exactly as printed.
+- category: exactly one of electronics, appliances, furniture, vehicles, accessories, other.
+  electronics = phones, laptops, TVs, cameras and similar devices; appliances = fridges,
+  washing machines, microwaves, air conditioners and other home appliances; furniture = chairs,
+  tables, sofas, beds; vehicles = cars, motorcycles, bicycles; accessories = watches, bags,
+  jewelry and small personal items; other = anything else or unsure. Never null.
+- confidence: 0 to 1, how sure you are that the fields you filled are read correctly.
+
+Digits: read Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩) as 0123456789 in every number and date.
+Use null for anything that is not printed or that you cannot read clearly. Never guess.`;
 
 
 serve(async (req) => {
   try {
-    // Only signed-in users may scan. The anon key ships inside the app, so a
-    // valid JWT alone isn't enough; it has to belong to a real user.
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return jsonResponse({ error: "Not authenticated" }, 401);
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -68,9 +95,20 @@ serve(async (req) => {
 
     const extracted = await runExtraction(imageUrl);
     const validated = validate(extracted);
+    // Nothing a product could be made from (not a receipt, too blurry...).
+    if (!validated.productName && validated.price === null && validated.foreignPrice === null &&
+        !validated.purchaseDate && validated.warrantyMonths === null) {
+      throw new UnreadableReceiptError();
+    }
 
     return jsonResponse(validated, 200);
   } catch (error) {
+    if (error instanceof UnreadableReceiptError) {
+      return jsonResponse({ error: "unreadable_receipt" }, 422);
+    }
+    if (error instanceof AiBusyError) {
+      return jsonResponse({ error: "ai_busy" }, 503);
+    }
     console.error("extract-receipt error:", error);
     return jsonResponse(
       {
@@ -110,11 +148,11 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
     // Needs a model that reads images. Groq retires models without notice;
     // check GET /openai/v1/models for one with vision before changing it.
     model: "qwen/qwen3.8-27b",
-    reasoning_effort: "none",     // 1. turn off thinking mode — this is the fix
+    reasoning_effort: "none",
     response_format: { type: "json_object" },
-    max_tokens: 1500,             // 2. headroom in case thinking still leaks through
-    temperature: 0.7,             // Groq's documented non-thinking-mode setting
-    top_p: 0.8,
+    max_tokens: 1500,
+    // Reading data, not writing: keep answers the same for the same receipt.
+    temperature: 0.1,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       {
@@ -128,6 +166,7 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
   }),
 });
 
+  if (response.status === 429) throw new AiBusyError();
   if (!response.ok) {
     const errText = await response.text();
     throw new Error(`AI request failed (${response.status}): ${errText}`);
@@ -137,18 +176,69 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
   const content = completion.choices?.[0]?.message?.content;
   if (!content) throw new Error("AI returned no content");
 
-  const parsed = JSON.parse(content);
+  const parsed = parseJsonObject(content);
+  if (!parsed) throw new UnreadableReceiptError();
+
+  const price = toNumber(parsed.price);
+  const currency = typeof parsed.currency === "string" ? parsed.currency.trim().toUpperCase() : null;
+  const isForeign = price !== null && currency !== null && currency !== "EGP";
 
   return {
-    productName: parsed.productName ?? null,
-    brand: parsed.brand ?? null,
-    store_name: parsed.store_name ?? null,
-    price: typeof parsed.price === "number" ? parsed.price : null,
-    purchaseDate: parsed.purchaseDate ?? null,
-    warrantyMonths: typeof parsed.warrantyMonths === "number" ? parsed.warrantyMonths : null,
-    category: typeof parsed.category === "string" ? parsed.category : null,
-    confidence: typeof parsed.confidence === "number" ? parsed.confidence : 0.5,
+    productName: toText(parsed.productName),
+    brand: toText(parsed.brand),
+    store_name: toText(parsed.store_name),
+    price: isForeign ? null : price,
+    foreignPrice: isForeign ? price : null,
+    foreignCurrency: isForeign ? currency : null,
+    purchaseDate: toText(parsed.purchaseDate),
+    warrantyMonths: toNumber(parsed.warrantyMonths),
+    serialNumber: toText(parsed.serialNumber),
+    invoiceNumber: toText(parsed.invoiceNumber),
+    category: toText(parsed.category),
+    confidence: toNumber(parsed.confidence) ?? 0.5,
   };
+}
+
+/** Groq's per-minute limit was hit; the app asks the user to retry shortly. */
+class AiBusyError extends Error {
+  constructor() {
+    super("ai_busy");
+  }
+}
+
+/** The model couldn't produce usable JSON (blurry photo, not a receipt...). */
+class UnreadableReceiptError extends Error {
+  constructor() {
+    super("unreadable_receipt");
+  }
+}
+
+// The model sometimes wraps the JSON in ```json fences or a sentence.
+function parseJsonObject(content: string): Record<string, unknown> | null {
+  const start = content.indexOf("{");
+  const end = content.lastIndexOf("}");
+  if (start < 0 || end <= start) return null;
+  try {
+    const value = JSON.parse(content.slice(start, end + 1));
+    return value && typeof value === "object" && !Array.isArray(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+const ARABIC_DIGITS = /[٠-٩]/g;
+const toAsciiDigits = (s: string) => s.replace(ARABIC_DIGITS, (d) => String(d.charCodeAt(0) - 0x0660));
+
+function toText(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+// Numbers sometimes come back as strings like "18,500.00" or "١٨٥٠٠".
+function toNumber(value: unknown): number | null {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value !== "string" || !value.trim()) return null;
+  const n = Number(toAsciiDigits(value).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : null;
 }
 
 function validate(data: ExtractResponse): ExtractResponse {
@@ -159,17 +249,24 @@ function validate(data: ExtractResponse): ExtractResponse {
     ? normalizedCategory
     : null;
 
+  const purchaseDate = data.purchaseDate ? toAsciiDigits(data.purchaseDate) : null;
+
   return {
-    productName: data.productName?.trim() || null,
-    brand: data.brand?.trim() || null,
-    store_name: data.store_name?.trim() || null,
+    productName: data.productName,
+    brand: data.brand,
+    store_name: data.store_name,
     price: data.price !== null && data.price > 0 ? data.price : null,
+    foreignPrice: data.foreignPrice !== null && data.foreignPrice > 0 ? data.foreignPrice : null,
+    foreignCurrency: data.foreignCurrency && /^[A-Z]{3}$/.test(data.foreignCurrency) ? data.foreignCurrency : null,
     purchaseDate:
-      data.purchaseDate && data.purchaseDate <= today ? data.purchaseDate : null,
+      purchaseDate && /^\d{4}-\d{2}-\d{2}$/.test(purchaseDate) && purchaseDate <= today ? purchaseDate : null,
     warrantyMonths:
       data.warrantyMonths !== null && data.warrantyMonths >= 0 && data.warrantyMonths <= 120
-        ? data.warrantyMonths
+        ? Math.round(data.warrantyMonths)
         : null,
+    // Standard digits so the numbers are easy to search and to read out to a store.
+    serialNumber: data.serialNumber ? toAsciiDigits(data.serialNumber).slice(0, 100) : null,
+    invoiceNumber: data.invoiceNumber ? toAsciiDigits(data.invoiceNumber).slice(0, 100) : null,
     category,
     confidence: data.confidence,
   };

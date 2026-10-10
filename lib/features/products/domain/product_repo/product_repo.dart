@@ -13,6 +13,9 @@ abstract class ProductRepo {
     required String imagePath,
   });
 
+  /// Deletes a scanned receipt photo the user didn't save. Best effort.
+  Future<void> discardReceiptImage(String path);
+
   Future<Either<Failure, ProductEntity>> addProduct({
     required String name,
     String? brand,
@@ -27,6 +30,8 @@ abstract class ProductRepo {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   });
 
   Future<Either<Failure, List<ProductEntity>>> getProducts();
@@ -52,6 +57,8 @@ abstract class ProductRepo {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   });
 
   // Extra warranties and claims. Callers reload the product list afterwards;

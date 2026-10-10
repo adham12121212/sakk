@@ -1747,6 +1747,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Sakk to see your warranties'**
   String get widgetSignedOut;
+
+  /// No description provided for @hideTotalSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide total spent'**
+  String get hideTotalSpent;
+
+  /// No description provided for @showTotalSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Show total spent'**
+  String get showTotalSpent;
+
+  /// No description provided for @totalSpentHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Total spent hidden'**
+  String get totalSpentHidden;
+
+  /// No description provided for @invoiceSavedToPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice saved to your photos'**
+  String get invoiceSavedToPhotos;
+
+  /// No description provided for @serialNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Serial number'**
+  String get serialNumber;
+
+  /// No description provided for @invoiceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice number'**
+  String get invoiceNumber;
+
+  /// No description provided for @foreignPriceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt shows {amount}. Enter the price in EGP.'**
+  String foreignPriceHint(Object amount);
+
+  /// No description provided for @scanUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t read that photo. Try a clearer, well-lit photo of the receipt, or enter the details manually.'**
+  String get scanUnreadable;
+
+  /// No description provided for @scanBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many scans right now. Please try again in a minute.'**
+  String get scanBusy;
 }
 
 class _AppLocalizationsDelegate

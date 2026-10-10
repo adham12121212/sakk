@@ -968,4 +968,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetSignedOut => 'Open Sakk to see your warranties';
+
+  @override
+  String get hideTotalSpent => 'Hide total spent';
+
+  @override
+  String get showTotalSpent => 'Show total spent';
+
+  @override
+  String get totalSpentHidden => 'Total spent hidden';
+
+  @override
+  String get invoiceSavedToPhotos => 'Invoice saved to your photos';
+
+  @override
+  String get serialNumber => 'Serial number';
+
+  @override
+  String get invoiceNumber => 'Invoice number';
+
+  @override
+  String foreignPriceHint(Object amount) {
+    return 'The receipt shows $amount. Enter the price in EGP.';
+  }
+
+  @override
+  String get scanUnreadable =>
+      'We couldn\'t read that photo. Try a clearer, well-lit photo of the receipt, or enter the details manually.';
+
+  @override
+  String get scanBusy =>
+      'Too many scans right now. Please try again in a minute.';
 }

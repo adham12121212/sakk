@@ -42,6 +42,8 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
   final _warrantyController = TextEditingController();
   final _storeController = TextEditingController();
   final _notesController = TextEditingController();
+  final _serialController = TextEditingController();
+  final _invoiceController = TextEditingController();
 
   // Egypt's consumer protection law gives 14 days to return or exchange, so
   // that's the default; the user can change it or clear it.
@@ -59,6 +61,8 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     _priceController.text = scanned.price?.toStringAsFixed(2) ?? '';
     _warrantyController.text = scanned.warrantyMonths?.toString() ?? '';
     _storeController.text = scanned.store ?? '';
+    _serialController.text = scanned.serialNumber ?? '';
+    _invoiceController.text = scanned.invoiceNumber ?? '';
     _selectedCategory = scanned.category ?? ProductCategory.other;
   }
 
@@ -71,6 +75,8 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     _storeController.dispose();
     _notesController.dispose();
     _returnDaysController.dispose();
+    _serialController.dispose();
+    _invoiceController.dispose();
     super.dispose();
   }
 
@@ -102,6 +108,8 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
       category: _selectedCategory,
       currency: 'EGP',
       returnDays: int.tryParse(_returnDaysController.text.trim()),
+      serialNumber: _emptyToNull(_serialController.text),
+      invoiceNumber: _emptyToNull(_invoiceController.text),
     );
   }
 
@@ -153,169 +161,211 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
         final isManual = context.read<ScanCubit>().isManualEntry;
         _seedControllersIfNeeded(scanned);
 
-        return Scaffold(
-          body: SafeArea(
-            child: Column(
-              children: [
-                ReviewHeader(
-                  title: isManual ? l10n.addProductManuallyTitle : null,
-                  subtitle: isManual ? l10n.addProductManuallySubtitle : null,
-                  onBack: () {
-                    context.read<ScanCubit>().close();
-                    Navigator.of(context).maybePop();
-                  },
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (!isManual) ...[
-                            ConfidenceBanner(confidence: scanned.confidence),
+        // System back / swipe leaves without saving too: closing the cubit
+        // deletes the uploaded photo (see ScanCubit.close).
+        return PopScope(
+          onPopInvokedWithResult: (didPop, _) {
+            final cubit = context.read<ScanCubit>();
+            if (didPop && !cubit.isClosed) cubit.close();
+          },
+          child: Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  ReviewHeader(
+                    title: isManual ? l10n.addProductManuallyTitle : null,
+                    subtitle: isManual ? l10n.addProductManuallySubtitle : null,
+                    onBack: () {
+                      context.read<ScanCubit>().close();
+                      Navigator.of(context).maybePop();
+                    },
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (!isManual) ...[
+                              ConfidenceBanner(confidence: scanned.confidence),
+                              SizedBox(height: 20.h),
+
+                              InvoicePreview(
+                                imageUrl: scanned.receiptImageUrl,
+                                onTap: () => showInvoicePreviewDialog(
+                                  context,
+                                  scanned.receiptImageUrl,
+                                ),
+                              ),
+                              SizedBox(height: 24.h),
+                            ],
+
+                            FieldLabel(l10n.productName),
+                            CapsuleField(
+                              semanticLabel: l10n.productName,
+                              controller: _nameController,
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? l10n.productNameRequired
+                                  : null,
+                            ),
                             SizedBox(height: 20.h),
 
-                            InvoicePreview(
-                              imageUrl: scanned.receiptImageUrl,
-                              onTap: () => showInvoicePreviewDialog(
-                                context,
-                                scanned.receiptImageUrl,
+                            FieldLabel(l10n.brand),
+                            CapsuleField(
+                              semanticLabel: l10n.brand,
+                              controller: _brandController,
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.category),
+                            CategorySelector(
+                              selected: _selectedCategory,
+                              onChanged: (category) =>
+                                  setState(() => _selectedCategory = category),
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.priceEgp),
+                            CapsuleField(
+                              semanticLabel: l10n.priceEgp,
+                              controller: _priceController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) return null;
+                                return double.tryParse(v.trim()) == null
+                                    ? l10n.invalidNumber
+                                    : null;
+                              },
+                            ),
+                            // The app stores EGP only, so a foreign price is shown, not filled in.
+                            if (scanned.foreignPrice != null &&
+                                scanned.foreignCurrency != null)
+                              Padding(
+                                padding: EdgeInsets.only(top: 6.h),
+                                child: Text(
+                                  l10n.foreignPriceHint(
+                                    '${scanned.foreignPrice} ${scanned.foreignCurrency}',
+                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 24.h),
-                          ],
+                            SizedBox(height: 20.h),
 
-                          FieldLabel(l10n.productName),
-                          CapsuleField(
-                            semanticLabel: l10n.productName,
-                            controller: _nameController,
-                            validator: (v) => (v == null || v.trim().isEmpty)
-                                ? l10n.productNameRequired
-                                : null,
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.brand),
-                          CapsuleField(
-                            semanticLabel: l10n.brand,
-                            controller: _brandController,
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.category),
-                          CategorySelector(
-                            selected: _selectedCategory,
-                            onChanged: (category) =>
-                                setState(() => _selectedCategory = category),
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.priceEgp),
-                          CapsuleField(
-                            semanticLabel: l10n.priceEgp,
-                            controller: _priceController,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) return null;
-                              return double.tryParse(v.trim()) == null
-                                  ? l10n.invalidNumber
-                                  : null;
-                            },
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.purchaseDate),
-                          InkWell(
-                            onTap: isSaving ? null : _pickPurchaseDate,
-                            borderRadius: BorderRadius.circular(16),
-                            child: CapsuleShell(
-                              child: Text(
-                                (scanned.purchaseDate ?? DateTime.now())
-                                    .toIsoDate(),
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
+                            FieldLabel(l10n.purchaseDate),
+                            InkWell(
+                              onTap: isSaving ? null : _pickPurchaseDate,
+                              borderRadius: BorderRadius.circular(16),
+                              child: CapsuleShell(
+                                child: Text(
+                                  (scanned.purchaseDate ?? DateTime.now())
+                                      .toIsoDate(),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 20.h),
+                            SizedBox(height: 20.h),
 
-                          FieldLabel(l10n.warrantyMonths),
-                          CapsuleField(
-                            semanticLabel: l10n.warrantyMonths,
-                            controller: _warrantyController,
-                            keyboardType: TextInputType.number,
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return l10n.warrantyRequired;
-                              }
-                              final n = int.tryParse(v.trim());
-                              if (n == null || n < 0) {
-                                return l10n.invalidWarrantyMonths;
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.returnWindowDays),
-                          CapsuleField(
-                            semanticLabel: l10n.returnWindowDays,
-                            controller: _returnDaysController,
-                            keyboardType: TextInputType.number,
-                            validator: (v) {
-                              // Optional: empty means no return window to track.
-                              if (v == null || v.trim().isEmpty) return null;
-                              final n = int.tryParse(v.trim());
-                              return n == null || n < 1 || n > 365 ? l10n.invalidReturnDays : null;
-                            },
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.store),
-                          CapsuleField(
-                            semanticLabel: l10n.store,
-                            controller: _storeController,
-                          ),
-                          SizedBox(height: 20.h),
-
-                          FieldLabel(l10n.notes),
-                          CapsuleField(
-                            semanticLabel: l10n.notes,
-                            controller: _notesController,
-                            maxLines: 3,
-                            minLines: 3,
-                          ),
-                          SizedBox(height: 32.h),
-
-                          SizedBox(
-                            width: double.infinity,
-                            height: 54,
-                            child: FilledButton(
-                              onPressed: isSaving ? null : _save,
-                              child: isSaving
-                                  ? const SizedBox(
-                                      width: 22,
-                                      height: 22,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.5,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : Text(l10n.saveProduct),
+                            FieldLabel(l10n.warrantyMonths),
+                            CapsuleField(
+                              semanticLabel: l10n.warrantyMonths,
+                              controller: _warrantyController,
+                              keyboardType: TextInputType.number,
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) {
+                                  return l10n.warrantyRequired;
+                                }
+                                final n = int.tryParse(v.trim());
+                                if (n == null || n < 0) {
+                                  return l10n.invalidWarrantyMonths;
+                                }
+                                return null;
+                              },
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.returnWindowDays),
+                            CapsuleField(
+                              semanticLabel: l10n.returnWindowDays,
+                              controller: _returnDaysController,
+                              keyboardType: TextInputType.number,
+                              validator: (v) {
+                                // Optional: empty means no return window to track.
+                                if (v == null || v.trim().isEmpty) return null;
+                                final n = int.tryParse(v.trim());
+                                return n == null || n < 1 || n > 365
+                                    ? l10n.invalidReturnDays
+                                    : null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.store),
+                            CapsuleField(
+                              semanticLabel: l10n.store,
+                              controller: _storeController,
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.serialNumber),
+                            CapsuleField(
+                              semanticLabel: l10n.serialNumber,
+                              controller: _serialController,
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.invoiceNumber),
+                            CapsuleField(
+                              semanticLabel: l10n.invoiceNumber,
+                              controller: _invoiceController,
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.notes),
+                            CapsuleField(
+                              semanticLabel: l10n.notes,
+                              controller: _notesController,
+                              maxLines: 3,
+                              minLines: 3,
+                            ),
+                            SizedBox(height: 32.h),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 54,
+                              child: FilledButton(
+                                onPressed: isSaving ? null : _save,
+                                child: isSaving
+                                    ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Text(l10n.saveProduct),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

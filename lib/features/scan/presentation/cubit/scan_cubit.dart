@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/get_it.dart';
@@ -33,6 +35,21 @@ class ScanCubit extends Cubit<ScanState> {
   bool get isManualEntry => _isManualEntry;
   bool _isManualEntry = false;
 
+  bool _saved = false;
+
+  /// Leaving the flow without saving (back button, system back, failed scan)
+  /// closes the cubit; the uploaded photo would then belong to nothing, so
+  /// it's deleted rather than left in storage.
+  @override
+  Future<void> close() {
+    final path = switch (state) {
+      ScanLoaded(:final scanned) => scanned.receiptPath,
+      _ => null,
+    };
+    if (!_saved && path != null) unawaited(_scanReceiptUseCase.discard(path));
+    return super.close();
+  }
+
   /// Opens the review form empty (purchase date defaults to today) for a
   /// product added without a receipt.
   void startManualEntry() {
@@ -65,6 +82,8 @@ class ScanCubit extends Cubit<ScanState> {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   }) async {
     final current = state;
     if (current is! ScanLoaded) return;
@@ -86,11 +105,14 @@ class ScanCubit extends Cubit<ScanState> {
       currency: currency,
       category: category,
       returnDays: returnDays,
+      serialNumber: serialNumber,
+      invoiceNumber: invoiceNumber,
     );
 
     result.fold(
           (failure) => emit(ScanSaveFailure(scanned: scanned, message: failure.message)),
           (product) {
+        _saved = true;
         _productsCubit.refresh();
         _warrantyNotificationService.scheduleFutureNotifications(product);
         emit(ScanSaveSuccess(scanned: scanned));

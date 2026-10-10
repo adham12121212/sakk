@@ -49,6 +49,8 @@ class DetailsCubit extends Cubit<DetailsState> {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   }) async {
     emit(const DetailsSaving());
 
@@ -66,6 +68,8 @@ class DetailsCubit extends Cubit<DetailsState> {
       category: category,
       currency: currency,
       returnDays: returnDays,
+      serialNumber: serialNumber,
+      invoiceNumber: invoiceNumber,
     );
 
     result.fold(
@@ -81,7 +85,9 @@ class DetailsCubit extends Cubit<DetailsState> {
   }
 
 
-  Future<void> downloadInvoice(ProductEntity product) async {
+  /// Downloads the invoice photo to a temporary file so the share sheet can
+  /// attach it; [shareText] (the product details) goes along with it.
+  Future<void> downloadInvoice(ProductEntity product, {required String shareText}) async {
     final url = product.receiptUrl ?? product.imageUrl;
     if (url == null) {
       emit(const DetailsActionError('no_invoice_url'));
@@ -89,16 +95,21 @@ class DetailsCubit extends Cubit<DetailsState> {
     }
     emit(const DetailsActionInProgress());
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
       if (response.statusCode != 200) {
         throw Exception('Server returned ${response.statusCode}');
       }
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/${product.name}_invoice.jpg');
+      // Product names can contain "/" or quotes, which aren't valid in a path.
+      // Letters and digits in any language (e.g. Arabic) are kept.
+      final safeName = product.name.replaceAll(RegExp(r'[^\p{L}\p{N}\s-]', unicode: true), '_');
+      final file = File('${tempDir.path}/${safeName}_invoice.jpg');
       await file.writeAsBytes(response.bodyBytes);
-      emit(DetailsDownloadReady(file.path, product.name));
-    } catch (e) {
-      emit(DetailsActionError(e));
+      if (isClosed) return;
+      emit(DetailsDownloadReady(file.path, shareText));
+    } catch (_) {
+      if (isClosed) return;
+      emit(const DetailsActionError('share_failed'));
     }
   }
 
@@ -143,7 +154,7 @@ class DetailsCubit extends Cubit<DetailsState> {
           'exists: ${await tempFile.exists()}, '
           'size: ${await tempFile.length()}');
 
-      await Gal.putImage(tempFile.path, album: 'MyAppInvoices');
+      await Gal.putImage(tempFile.path, album: 'Sakk');
 
       print('[DEBUG] Gal.putImage completed without throwing');
 

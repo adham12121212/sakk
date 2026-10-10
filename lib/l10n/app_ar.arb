@@ -275,5 +275,14 @@
   "warrantyRequired": "مدة الضمان مطلوبة",
   "productSavedSuccessfully": "تم حفظ المنتج بنجاح",
   "invalidWarrantyMonths": "أدخل عددًا صحيحًا من الأشهر",
-  "totalPrice": "السعر الإجمالي"
+  "totalPrice": "السعر الإجمالي",
+  "hideTotalSpent": "إخفاء إجمالي الإنفاق",
+  "showTotalSpent": "إظهار إجمالي الإنفاق",
+  "totalSpentHidden": "إجمالي الإنفاق مخفي",
+  "invoiceSavedToPhotos": "تم حفظ الفاتورة في الصور",
+  "serialNumber": "الرقم التسلسلي",
+  "invoiceNumber": "رقم الفاتورة",
+  "foreignPriceHint": "الفاتورة بعملة أخرى ({amount}). أدخل السعر بالجنيه المصري.",
+  "scanUnreadable": "لم نتمكن من قراءة الصورة. جرّب صورة أوضح وفي إضاءة جيدة، أو أدخل التفاصيل يدويًا.",
+  "scanBusy": "عدد كبير من عمليات المسح الآن. حاول مرة أخرى بعد دقيقة."
 }

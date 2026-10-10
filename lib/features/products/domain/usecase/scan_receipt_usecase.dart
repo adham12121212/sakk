@@ -6,6 +6,9 @@ import '../product_repo/product_repo.dart';
 
 abstract class ScanReceiptUseCase {
   Future<Either<Failure, ScannedReceiptData>> call({required String imagePath});
+
+  /// Deletes the uploaded photo of a scan the user didn't save.
+  Future<void> discard(String receiptPath);
 }
 
 class ScanReceiptUseCaseImpl implements ScanReceiptUseCase {
@@ -16,4 +19,7 @@ class ScanReceiptUseCaseImpl implements ScanReceiptUseCase {
   Future<Either<Failure, ScannedReceiptData>> call({required String imagePath}) {
     return _repository.scanReceipt(imagePath: imagePath);
   }
+
+  @override
+  Future<void> discard(String receiptPath) => _repository.discardReceiptImage(receiptPath);
 }

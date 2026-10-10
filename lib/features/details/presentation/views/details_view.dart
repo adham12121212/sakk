@@ -106,11 +106,22 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   String _formatDate(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
+  /// Shares the product details with the invoice photo attached; the cubit
+  /// downloads the photo first and the listener opens the share sheet. With no
+  /// invoice, shares the details alone.
   Future<void> _share() async {
+    if (product.receiptUrl != null || product.imageUrl != null) {
+      context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
+      return;
+    }
+    await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
+  }
+
+  Future<void> _openShareSheet(ShareParams params) async {
     if (_isSharing) return;
     setState(() => _isSharing = true);
     try {
-      await Share.share(_shareText, subject: product.name);
+      await SharePlus.instance.share(params);
     } catch (e) {
       if (mounted) {
         _showSnack(AppLocalizations.of(context)!.couldNotShare, isError: true);
@@ -169,13 +180,20 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
       listener: (context, state) {
         switch (state) {
           case DetailsDownloadReady(:final filePath, :final shareText):
-            Share.shareXFiles([XFile(filePath)], text: l10n.invoiceShareText(shareText));
+            _openShareSheet(ShareParams(
+              files: [XFile(filePath, mimeType: 'image/jpeg')],
+              text: shareText,
+              subject: product.name,
+            ));
+          case DetailsGallerySaved():
+            _showSnack(l10n.invoiceSavedToPhotos);
           case DetailsDeleted():
             Navigator.of(context).pop();
           case DetailsActionError(:final error):
             final message = switch (error) {
               'no_invoice_url' => l10n.noInvoiceImageToDownload,
               'delete_failed' => l10n.couldNotDeleteProduct,
+              'share_failed' => l10n.couldNotShare,
               Failure(:final message) => userFacingError(l10n, message),
               _ => l10n.couldNotDownloadInvoice,
             };

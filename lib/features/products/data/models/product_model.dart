@@ -18,6 +18,8 @@ class ProductModel extends ProductEntity {
     super.notes,
     super.category,
     super.returnDays,
+    super.serialNumber,
+    super.invoiceNumber,
     super.extraWarranties,
     super.claims,
   });
@@ -41,6 +43,8 @@ class ProductModel extends ProductEntity {
       notes: json['notes'] as String?,
       category: ProductCategoryX.fromName(json['category'] as String?),
       returnDays: json['return_days'] as int?,
+      serialNumber: json['serial_number'] as String?,
+      invoiceNumber: json['invoice_number'] as String?,
       extraWarranties: [
         for (final w in (json['product_warranties'] as List? ?? const []).cast<Map<String, dynamic>>())
           ExtraWarranty(
@@ -81,6 +85,8 @@ class ProductModel extends ProductEntity {
       'status': status.name,
       'category': category.name,
       'return_days': returnDays,
+      'serial_number': serialNumber,
+      'invoice_number': invoiceNumber,
     };
   }
 
@@ -126,6 +132,8 @@ class ProductModel extends ProductEntity {
       'status': status.name,
       'category': category.name,
       'return_days': returnDays,
+      'serial_number': serialNumber,
+      'invoice_number': invoiceNumber,
     };
   }
 }

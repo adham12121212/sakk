@@ -315,6 +315,8 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
         dateFormat.format(p.warrantyEndDate),
       ));
     if (p.store != null) buffer.writeln(l10n.shareStore(p.store!));
+    if (p.serialNumber != null) buffer.writeln('${l10n.serialNumber}: ${p.serialNumber}');
+    if (p.invoiceNumber != null) buffer.writeln('${l10n.invoiceNumber}: ${p.invoiceNumber}');
     buffer.writeln(l10n.claimMessageIssue(issue));
     final invoice = p.receiptUrl ?? p.imageUrl;
     if (invoice != null) buffer.writeln(l10n.shareInvoiceUrl(invoice).trim());
@@ -337,7 +339,7 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
     final message = _claimMessage(l10n, issue);
     Navigator.of(context).pop();
     try {
-      await Share.share(message, subject: l10n.claimSubject(widget.product.name));
+      await SharePlus.instance.share(ShareParams(text: message, subject: l10n.claimSubject(widget.product.name)));
     } catch (_) {
       // Sharing is optional; the claim is already saved.
     }

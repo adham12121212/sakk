@@ -296,5 +296,14 @@
   "widgetNextToEnd": "Next warranty to end",
   "widgetEndsOn": "Ends {date}",
   "widgetNoWarranties": "No active warranties",
-  "widgetSignedOut": "Open Sakk to see your warranties"
+  "widgetSignedOut": "Open Sakk to see your warranties",
+  "hideTotalSpent": "Hide total spent",
+  "showTotalSpent": "Show total spent",
+  "totalSpentHidden": "Total spent hidden",
+  "invoiceSavedToPhotos": "Invoice saved to your photos",
+  "serialNumber": "Serial number",
+  "invoiceNumber": "Invoice number",
+  "foreignPriceHint": "The receipt shows {amount}. Enter the price in EGP.",
+  "scanUnreadable": "We couldn't read that photo. Try a clearer, well-lit photo of the receipt, or enter the details manually.",
+  "scanBusy": "Too many scans right now. Please try again in a minute."
 }

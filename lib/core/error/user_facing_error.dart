@@ -1,3 +1,4 @@
+import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../l10n/app_localizations.dart';
 import 'Failure.dart';
 
@@ -5,8 +6,11 @@ import 'Failure.dart';
 ///
 /// Repository messages are English and sometimes technical (exception text,
 /// status codes), and they're already logged where they happen, so the UI
-/// only distinguishes "no connection" from everything else.
+/// distinguishes "no connection" and the receipt scanner's own codes from
+/// everything else.
 String userFacingError(AppLocalizations l10n, String? message) {
   if (message == NetworkFailure.noConnectionMessage) return l10n.errorNoInternet;
+  if (message == ProductDataSourceImpl.unreadableReceipt) return l10n.scanUnreadable;
+  if (message == ProductDataSourceImpl.aiBusy) return l10n.scanBusy;
   return l10n.errorGeneric;
 }

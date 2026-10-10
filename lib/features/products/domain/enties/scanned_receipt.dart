@@ -13,6 +13,17 @@ class ScannedReceiptData extends Equatable {
   final String? receiptImageUrl;
   final String? imageUrl;
   final ProductCategory? category;
+  final String? serialNumber;
+  final String? invoiceNumber;
+
+  /// Set when the receipt's price is in another currency; [price] is then
+  /// null because the app stores EGP only.
+  final double? foreignPrice;
+  final String? foreignCurrency;
+
+  /// Storage path of the uploaded photo, so it can be deleted if the user
+  /// leaves without saving.
+  final String? receiptPath;
 
   final double confidence;
 
@@ -27,6 +38,11 @@ class ScannedReceiptData extends Equatable {
     this.confidence = 0.0,
     this.imageUrl,
     this.category,
+    this.serialNumber,
+    this.invoiceNumber,
+    this.foreignPrice,
+    this.foreignCurrency,
+    this.receiptPath,
   });
 
   ScannedReceiptData copyWith({
@@ -40,6 +56,11 @@ class ScannedReceiptData extends Equatable {
     String? imageUrl,
     double? confidence,
     ProductCategory? category,
+    String? serialNumber,
+    String? invoiceNumber,
+    double? foreignPrice,
+    String? foreignCurrency,
+    String? receiptPath,
   }) {
     return ScannedReceiptData(
       productName: productName ?? this.productName,
@@ -52,6 +73,11 @@ class ScannedReceiptData extends Equatable {
       imageUrl: imageUrl ?? this.imageUrl,
       confidence: confidence ?? this.confidence,
       category: category ?? this.category,
+      serialNumber: serialNumber ?? this.serialNumber,
+      invoiceNumber: invoiceNumber ?? this.invoiceNumber,
+      foreignPrice: foreignPrice ?? this.foreignPrice,
+      foreignCurrency: foreignCurrency ?? this.foreignCurrency,
+      receiptPath: receiptPath ?? this.receiptPath,
     );
   }
 
@@ -67,5 +93,10 @@ class ScannedReceiptData extends Equatable {
     confidence,
     imageUrl,
     category,
+    serialNumber,
+    invoiceNumber,
+    foreignPrice,
+    foreignCurrency,
+    receiptPath,
   ];
 }

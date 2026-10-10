@@ -979,4 +979,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get widgetSignedOut => 'افتح سَكّ لرؤية ضماناتك';
+
+  @override
+  String get hideTotalSpent => 'إخفاء إجمالي الإنفاق';
+
+  @override
+  String get showTotalSpent => 'إظهار إجمالي الإنفاق';
+
+  @override
+  String get totalSpentHidden => 'إجمالي الإنفاق مخفي';
+
+  @override
+  String get invoiceSavedToPhotos => 'تم حفظ الفاتورة في الصور';
+
+  @override
+  String get serialNumber => 'الرقم التسلسلي';
+
+  @override
+  String get invoiceNumber => 'رقم الفاتورة';
+
+  @override
+  String foreignPriceHint(Object amount) {
+    return 'الفاتورة بعملة أخرى ($amount). أدخل السعر بالجنيه المصري.';
+  }
+
+  @override
+  String get scanUnreadable =>
+      'لم نتمكن من قراءة الصورة. جرّب صورة أوضح وفي إضاءة جيدة، أو أدخل التفاصيل يدويًا.';
+
+  @override
+  String get scanBusy =>
+      'عدد كبير من عمليات المسح الآن. حاول مرة أخرى بعد دقيقة.';
 }

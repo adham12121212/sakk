@@ -22,7 +22,14 @@ class ScanViewState extends State<ScanView> {
   final picker = ImagePicker();
 
   Future<void> pickAndScan(ImageSource source) async {
-    final picked = await picker.pickImage(source: source, imageQuality: 85);
+    // ~2000px keeps receipt text sharp while cutting a 4-8 MB camera photo
+    // to a few hundred KB: faster uploads and scans on mobile data.
+    final picked = await picker.pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 2000,
+      maxHeight: 2000,
+    );
     if (picked == null || !mounted) return;
 
     final cubit = ScanCubit()..processReceipt(picked.path);

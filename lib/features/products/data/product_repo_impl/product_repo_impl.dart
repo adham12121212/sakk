@@ -56,6 +56,9 @@ class ProductRepoImpl implements ProductRepo {
   }
 
   @override
+  Future<void> discardReceiptImage(String path) => _dataSource.deleteReceiptImage(path);
+
+  @override
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
   }) async {
@@ -97,6 +100,8 @@ class ProductRepoImpl implements ProductRepo {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
@@ -123,6 +128,8 @@ class ProductRepoImpl implements ProductRepo {
         notes: notes,
         category: category,
         returnDays: returnDays,
+        serialNumber: serialNumber,
+        invoiceNumber: invoiceNumber,
       );
 
       final saved = await _dataSource.addProduct(
@@ -260,6 +267,8 @@ class ProductRepoImpl implements ProductRepo {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? serialNumber,
+    String? invoiceNumber,
   })  async{
     if(!await _networkInfo.isConnected){
       return const Left(NetworkFailure('No internet connection'));
@@ -279,6 +288,8 @@ class ProductRepoImpl implements ProductRepo {
           category: category,
           currency: currency,
           returnDays: returnDays,
+          serialNumber: serialNumber,
+          invoiceNumber: invoiceNumber,
       );
       final updated = await _dataSource.updateProduct(id, model.toUpdateJson());
       await _updateCache((current) => [for (final p in current) p.id == id ? updated : p]);
