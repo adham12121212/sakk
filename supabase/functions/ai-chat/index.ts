@@ -18,7 +18,9 @@ You do not have direct access to the user's product database in this conversatio
 if they ask about a SPECIFIC product's exact warranty date, tell them to check the
 product's detail page in the app rather than guessing a date.
 Respond in the same language the user writes in (Arabic or English).
-Keep answers concise, friendly, and practical.`;
+Keep answers concise, friendly, and practical.
+The app shows replies as plain text, so never use Markdown: no **bold**, # headings,
+or tables. Use simple numbered lines or "-" for lists.`;
 
 serve(async (req) => {
   try {
@@ -40,11 +42,10 @@ serve(async (req) => {
 });
 
 async function runChat(message: string, history: ChatMessageIn[]): Promise<string> {
-  const apiKey = Deno.env.get("AI_API_KEY");
+  const apiKey = Deno.env.get("GROQ_API_KEY");
   if (!apiKey) {
-    throw new Error("AI_API_KEY secret is not configured");
+    throw new Error("GROQ_API_KEY secret is not configured");
   }
-
 
   const recentHistory = history.slice(-10).map((m) => ({
     role: m.role === "assistant" ? "assistant" : "user",
@@ -57,7 +58,6 @@ async function runChat(message: string, history: ChatMessageIn[]): Promise<strin
     { role: "user", content: message },
   ];
 
-
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -65,11 +65,15 @@ async function runChat(message: string, history: ChatMessageIn[]): Promise<strin
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "qwen/qwen3.6-27b",
-      reasoning_effort: "none",
+      // Groq production model (free tier). Check GET /openai/v1/models before
+      // changing it: Groq retires models without notice.
+      model: "openai/gpt-oss-120b",
+      // Reasoning model: keep thinking short so chat stays fast. Reasoning tokens
+      // count toward max_tokens, hence the headroom.
+      reasoning_effort: "low",
       messages,
       temperature: 0.7,
-      max_tokens: 800,
+      max_tokens: 2000,
     }),
   });
 
@@ -79,10 +83,16 @@ async function runChat(message: string, history: ChatMessageIn[]): Promise<strin
   }
 
   const completion = await response.json();
-  const reply = completion.choices?.[0]?.message?.content;
+  const raw: string = completion.choices?.[0]?.message?.content ?? "";
+  // The model sometimes uses Markdown despite the prompt; the app renders plain text.
+  const reply = raw
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[ \t]+$/gm, "")
+    .trim();
   if (!reply) throw new Error("AI returned no content");
 
-  return reply as string;
+  return reply;
 }
 
 function jsonResponse(body: unknown, status: number): Response {

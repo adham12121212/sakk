@@ -1,4 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,10 +22,6 @@ class ChatDataSourceImpl implements ChatDataSource {
     required String content,
     required List<ChatMessageEntity> history,
   }) async {
-
-    print('>>> DEBUG dotenv SUPABASE_URL = [${dotenv.env['SUPABASE_URL']}]');
-    print('>>> DEBUG functions.invoke target = [$_functionName]');
-
     try {
       final response = await _client.functions.invoke(
         _functionName,
