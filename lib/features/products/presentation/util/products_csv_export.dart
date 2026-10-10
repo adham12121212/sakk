@@ -62,7 +62,7 @@ Future<void> shareProductsCsv(BuildContext context, List<ProductEntity> products
       ],
   ];
 
-  final csv = rows.map((row) => row.map(_csvCell).join(',')).join('\r\n');
+  final csv = rows.map((row) => row.map(csvCell).join(',')).join('\r\n');
   final dir = await getTemporaryDirectory();
   final file = File('${dir.path}/sakk-products-${DateTime.now().toIsoDate()}.csv');
   // The byte-order mark makes Excel read the file as UTF-8, so Arabic shows
@@ -77,7 +77,8 @@ Future<void> shareProductsCsv(BuildContext context, List<ProductEntity> products
 /// Quotes a value when it contains a comma, quote or line break (RFC 4180).
 /// A leading =, +, - or @ is prefixed with ' so a spreadsheet doesn't run
 /// it as a formula; product names and notes come from receipts and users.
-String _csvCell(Object? value) {
+@visibleForTesting
+String csvCell(Object? value) {
   if (value == null) return '';
   var text = value.toString();
   if (value is String && text.isNotEmpty && '=+-@'.contains(text[0])) text = "'$text";
