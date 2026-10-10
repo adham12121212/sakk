@@ -44,6 +44,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build/
 
 # Supabase CLI local state (linked project, versions, pooler URL)
 supabase/.temp/
