@@ -4,18 +4,23 @@ import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../core/util/app_sizes.dart';
+import '../../../../l10n/app_localizations.dart';
 
+/// A user message that failed to send gets a "tap to retry" line under it.
 class ChatBubble extends StatelessWidget {
-  const ChatBubble({super.key, required this.message});
+  const ChatBubble({super.key, required this.message, this.onRetry});
 
   final ChatMessageEntity message;
+
+  /// Set only on the failed message; shows the retry line and runs on tap.
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Row(
+    final bubble = Row(
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -41,6 +46,35 @@ class ChatBubble extends StatelessWidget {
                 fontSize: 14.sp,
                 height: 1.4,
                 color: isUser ? AppColors.white : colorScheme.onSurface,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    if (onRetry == null) return bubble;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        bubble,
+        InkWell(
+          onTap: onRetry,
+          borderRadius: BorderRadius.circular(8),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.error_outline_rounded, size: 16, color: colorScheme.error),
+                  const SizedBox(width: 6),
+                  Text(
+                    AppLocalizations.of(context)!.messageNotSent,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.error),
+                  ),
+                ],
               ),
             ),
           ),

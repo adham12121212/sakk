@@ -790,4 +790,7 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get messageNotSent => 'لم يتم الإرسال. اضغط لإعادة المحاولة';
 }

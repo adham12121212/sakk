@@ -213,5 +213,6 @@
   "errorGeneric": "حدث خطأ ما. حاول مرة أخرى.",
   "couldNotShare": "تعذّر فتح المشاركة. حاول مرة أخرى.",
   "couldNotDownloadInvoice": "تعذّر حفظ الفاتورة. حاول مرة أخرى.",
-  "unreadNotificationsLabel": "{count, plural, =1{إشعار واحد غير مقروء} =2{إشعاران غير مقروءين} few{{formattedCount} إشعارات غير مقروءة} many{{formattedCount} إشعارًا غير مقروء} other{{formattedCount} إشعار غير مقروء}}"
+  "unreadNotificationsLabel": "{count, plural, =1{إشعار واحد غير مقروء} =2{إشعاران غير مقروءين} few{{formattedCount} إشعارات غير مقروءة} many{{formattedCount} إشعارًا غير مقروء} other{{formattedCount} إشعار غير مقروء}}",
+  "messageNotSent": "لم يتم الإرسال. اضغط لإعادة المحاولة"
 }

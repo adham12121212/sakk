@@ -1429,6 +1429,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, one{{formattedCount} unread notification} other{{formattedCount} unread notifications}}'**
   String unreadNotificationsLabel(int count, String formattedCount);
+
+  /// No description provided for @messageNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. Tap to retry'**
+  String get messageNotSent;
 }
 
 class _AppLocalizationsDelegate

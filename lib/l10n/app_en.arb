@@ -243,5 +243,6 @@
   "@unreadNotificationsLabel": {
     "description": "Screen-reader text for the unread badge on the notifications bell. count picks the plural form; formattedCount is the same number in the locale's digits.",
     "placeholders": { "count": { "type": "int" }, "formattedCount": { "type": "String" } }
-  }
+  },
+  "messageNotSent": "Not sent. Tap to retry"
 }

@@ -225,7 +225,10 @@ void setupLocator() {
 
 
   getIt.registerLazySingleton<ChatCubit>(
-        () => ChatCubit(getIt<SendMessageUseCase>()),
+        () => ChatCubit(
+          getIt<SendMessageUseCase>(),
+          Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+        ),
   );
 
 

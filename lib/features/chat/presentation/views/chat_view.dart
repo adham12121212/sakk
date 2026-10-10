@@ -80,7 +80,13 @@ class _ChatViewState extends State<ChatView> {
                     if (index == state.messages.length) {
                       return const ChatTypingIndicator();
                     }
-                    return ChatBubble(message: state.messages[index]);
+                    final message = state.messages[index];
+                    return ChatBubble(
+                      message: message,
+                      onRetry: message.id == state.failedMessageId && !state.isSending
+                          ? context.read<ChatCubit>().retryFailedMessage
+                          : null,
+                    );
                   },
                 ),
               ),
