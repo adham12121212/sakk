@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../constant/app_colors.dart';
 import '../error/network_info.dart';
+import '../theme/app_icons.dart';
 
 /// App-wide connection strip, placed in `MaterialApp.builder` so it shows
 /// above every screen. Offline: a dark strip "You're offline. Showing saved
@@ -123,7 +124,7 @@ class _Strip extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  offline ? Icons.wifi_off_rounded : Icons.wifi_rounded,
+                  offline ? AppIcons.offline : AppIcons.online,
                   size: 16,
                   color: Colors.white,
                 ),

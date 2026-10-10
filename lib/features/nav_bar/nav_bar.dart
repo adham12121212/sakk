@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constant/app_colors.dart';
 import '../../core/route/app_router.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/theme/app_icons.dart';
 
 
 class ScaffoldWithNavBar extends StatelessWidget {
@@ -54,15 +55,15 @@ class _BottomBar extends StatelessWidget {
           child: Row(
             children: [
               _NavItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home_rounded,
+                icon: AppIcons.home,
+                activeIcon: AppIcons.homeFilled,
                 label: l10n.home,
                 isActive: currentIndex == 0,
                 onTap: () => onTap(0),
               ),
               _NavItem(
-                icon: Icons.grid_view_outlined,
-                activeIcon: Icons.grid_view_rounded,
+                icon: AppIcons.productsTab,
+                activeIcon: AppIcons.productsTabFilled,
                 label: l10n.products,
                 isActive: currentIndex == 1,
                 onTap: () => onTap(1),
@@ -72,15 +73,15 @@ class _BottomBar extends StatelessWidget {
                 onTap: () => context.push(AppRoutes.scan),
               ),
               _NavItem(
-                icon: Icons.bar_chart_outlined,
-                activeIcon: Icons.bar_chart_rounded,
+                icon: AppIcons.analytics,
+                activeIcon: AppIcons.analyticsFilled,
                 label: l10n.analytics,
                 isActive: currentIndex == 2,
                 onTap: () => onTap(2),
               ),
               _NavItem(
-                icon: Icons.auto_awesome_outlined,
-                activeIcon: Icons.auto_awesome_rounded,
+                icon: AppIcons.ai,
+                activeIcon: AppIcons.aiFilled,
                 label: l10n.ai,
                 isActive: currentIndex == 3,
                 onTap: () => onTap(3),
@@ -197,7 +198,7 @@ class _ScanItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.document_scanner_rounded, color: Colors.white, size: 22),
+                child: const Icon(AppIcons.scan, color: Colors.white, size: 22),
               ),
               const SizedBox(height: 4),
               _Label(

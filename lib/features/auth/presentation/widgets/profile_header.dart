@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../spalsh/presentation/widgets/blob.dart';
 import 'profile_avatar.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class ProfileHeader extends StatelessWidget {
@@ -71,7 +72,7 @@ class ProfileHeader extends StatelessWidget {
                     Align(
                       alignment: AlignmentDirectional.centerStart,
                       child: CircleIconButton(
-                        icon: Icons.arrow_back,
+                        icon: AppIcons.back,
                         semanticLabel: l10n.back,
                         onTap: onBack,
                         color: colorScheme.onSurface,

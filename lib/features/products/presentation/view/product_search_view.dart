@@ -11,6 +11,7 @@ import '../../../details/presentation/views/details_view.dart';
 import '../../../home/presentation/widgets/recent_product_data.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ProductSearchView extends StatelessWidget {
   const ProductSearchView({super.key});
@@ -68,7 +69,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: const Icon(AppIcons.back),
                     tooltip: l10n.back,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
@@ -85,13 +86,13 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                         textInputAction: TextInputAction.search,
                         decoration: InputDecoration(
                           hintText: l10n.searchProductsHint,
-                          prefixIcon: const Icon(Icons.search_rounded),
+                          prefixIcon: const Icon(AppIcons.search),
                           contentPadding: const EdgeInsets.symmetric(vertical: 14),
                           suffixIcon: value.text.isEmpty
                               ? null
                               : IconButton(
                                   tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
-                                  icon: const Icon(Icons.close_rounded, size: 20),
+                                  icon: const Icon(AppIcons.close, size: 20),
                                   onPressed: () {
                                     _controller.clear();
                                     _runSearch('');
@@ -118,7 +119,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
 
                   if (state.results.isEmpty) {
                     return AppEmptyView(
-                      icon: Icons.search_off_rounded,
+                      icon: AppIcons.searchEmpty,
                       title: l10n.noProductsMatchQuery(state.query),
                       fillRemaining: true,
                     );
@@ -188,7 +189,7 @@ class _RecentSearches extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
-                Icon(Icons.history_rounded, size: 20, color: colorScheme.onSurfaceVariant),
+                Icon(AppIcons.recentSearch, size: 20, color: colorScheme.onSurfaceVariant),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -198,7 +199,7 @@ class _RecentSearches extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                Icon(Icons.north_west_rounded, size: 18, color: colorScheme.onSurfaceVariant),
+                Icon(AppIcons.fillSuggestion, size: 18, color: colorScheme.onSurfaceVariant),
               ],
             ),
           ),

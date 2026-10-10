@@ -9,6 +9,7 @@ import '../cubit/scan_cubit.dart';
 import '../widgets/sacn_source_button.dart';
 import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key});
@@ -77,7 +78,7 @@ class ScanViewState extends State<ScanView> {
         leading: IconButton(
           onPressed: () => _goBack(context),
           tooltip: l10n.back,
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(AppIcons.back),
         ),
       ),
       body: SafeArea(
@@ -101,7 +102,7 @@ class ScanViewState extends State<ScanView> {
                       BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
                     ],
                   ),
-                  child: const Icon(Icons.document_scanner_rounded, size: 52, color: Colors.white),
+                  child: const Icon(AppIcons.scan, size: 52, color: Colors.white),
                 ),
                 const SizedBox(height: 28),
                 Text(
@@ -117,20 +118,20 @@ class ScanViewState extends State<ScanView> {
                 ),
                 const SizedBox(height: 36),
                 ScanSourceButton.filled(
-                  icon: Icons.camera_alt_outlined,
+                  icon: AppIcons.camera,
                   label: l10n.takePhoto,
                   onPressed: () => pickAndScan(ImageSource.camera),
                 ),
                 const SizedBox(height: 12),
                 ScanSourceButton.outlined(
-                  icon: Icons.photo_library_outlined,
+                  icon: AppIcons.gallery,
                   label: l10n.chooseFromGallery,
                   onPressed: () => pickAndScan(ImageSource.gallery),
                 ),
                 const SizedBox(height: 8),
                 TextButton.icon(
                   onPressed: enterManually,
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: const Icon(AppIcons.edit),
                   label: Text(l10n.enterDetailsManually),
                   style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
                 ),

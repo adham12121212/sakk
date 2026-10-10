@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/product_category.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class CategoryUi {
@@ -10,17 +11,17 @@ class CategoryUi {
   static IconData icon(ProductCategory category) {
     switch (category) {
       case ProductCategory.electronics:
-        return Icons.smartphone_rounded;
+        return AppIcons.electronics;
       case ProductCategory.appliances:
-        return Icons.kitchen_rounded;
+        return AppIcons.appliances;
       case ProductCategory.furniture:
-        return Icons.chair_rounded;
+        return AppIcons.furniture;
       case ProductCategory.vehicles:
-        return Icons.directions_car_rounded;
+        return AppIcons.vehicles;
       case ProductCategory.accessories:
-        return Icons.watch_rounded;
+        return AppIcons.accessories;
       case ProductCategory.other:
-        return Icons.category_rounded;
+        return AppIcons.otherCategory;
     }
   }
 

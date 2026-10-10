@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_state.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Brand-gradient hero card with the total spent across all products.
 class TotalSpentCard extends StatelessWidget {
@@ -64,7 +65,7 @@ class TotalSpentCard extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 18),
+                        child: const Icon(AppIcons.wallet, color: Colors.white, size: 18),
                       ),
                       const SizedBox(width: 10),
                       Text(

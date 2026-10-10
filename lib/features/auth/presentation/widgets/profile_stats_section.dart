@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/widgets/stat_card.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 
@@ -31,7 +32,7 @@ class ProfileStatsSection extends StatelessWidget {
                 child: StatCard(
                   value: formatLocalizedInt(locale, state.total),
                   label: l10n.products,
-                  icon: Icons.inventory_2_outlined,
+                  icon: AppIcons.products,
                   iconColor: colorScheme.primary,
                   iconBackgroundColor: colorScheme.primaryContainer,
                 ),
@@ -41,7 +42,7 @@ class ProfileStatsSection extends StatelessWidget {
                 child: StatCard(
                   value: formatLocalizedInt(locale, state.active),
                   label: l10n.active,
-                  icon: Icons.verified_user_outlined,
+                  icon: AppIcons.warranty,
                   iconColor: palette.success,
                   iconBackgroundColor: palette.successContainer,
                 ),

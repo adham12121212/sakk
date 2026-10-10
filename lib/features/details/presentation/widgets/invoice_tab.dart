@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/util/app_radius.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class InvoiceTab extends StatelessWidget {
   const InvoiceTab({super.key, required this.imageUrl});
@@ -21,7 +22,7 @@ class InvoiceTab extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Icon(Icons.receipt_long_outlined, size: 40.sp, color: colorScheme.onSurface.withOpacity(0.4)),
+              Icon(AppIcons.receipt, size: 40.sp, color: colorScheme.onSurface.withOpacity(0.4)),
               SizedBox(height: 8.h),
               Text(
                 AppLocalizations.of(context)!.noInvoiceAvailable,
@@ -43,7 +44,7 @@ class InvoiceTab extends StatelessWidget {
           errorBuilder: (_, __, ___) => Container(
             height: 240.h,
             color:  colorScheme.surfaceContainerHighest,
-            child: Center(child: Icon(Icons.broken_image_outlined,
+            child: Center(child: Icon(AppIcons.brokenImage,
                 size: 40.sp, color: colorScheme.onSurface.withOpacity(0.4))),
           ),
         ),

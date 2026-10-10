@@ -4,6 +4,7 @@ import 'package:sakk/features/home/presentation/widgets/recent_product_data.dart
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class RecentProductsSection extends StatelessWidget {
   const RecentProductsSection({
@@ -71,7 +72,7 @@ class _EmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.inventory_2_outlined,
+                AppIcons.products,
                 size: 26,
                 color: colorScheme.primary,
               ),

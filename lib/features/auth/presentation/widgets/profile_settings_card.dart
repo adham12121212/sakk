@@ -12,6 +12,7 @@ import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../../core/theme/theme_controller.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class ProfileSettingsCard extends StatefulWidget {
@@ -90,7 +91,7 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
           child: Column(
           children: [
             _SettingsRow(
-              icon: Icons.language_rounded,
+              icon: AppIcons.language,
               label: l10n.language,
               child: SegmentedToggle<String>(
                 options: const {'en': 'EN', 'ar': 'AR'},
@@ -99,7 +100,7 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
               ),
             ),
             _SettingsRow(
-              icon: Icons.brightness_6_rounded,
+              icon: AppIcons.theme,
               label: l10n.theme,
               // Three options: full width under the label so the label is
               // never squeezed on narrow screens.
@@ -115,7 +116,7 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
               ),
             ),
             _SettingsRow(
-              icon: Icons.notifications_active_outlined,
+              icon: AppIcons.reminder,
               label: l10n.warrantyReminder,
               stacked: true,
               child: SegmentedToggle<int>(
@@ -130,7 +131,7 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
               ),
             ),
             _SettingsRow(
-              icon: Icons.fingerprint_rounded,
+              icon: AppIcons.fingerprint,
               label: l10n.biometricLogin,
               isLast: true,
               child: _loadingBiometricState

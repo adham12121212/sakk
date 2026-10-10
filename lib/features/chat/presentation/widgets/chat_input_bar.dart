@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ChatInputBar extends StatefulWidget {
   const ChatInputBar({super.key, required this.onSend, required this.isSending});
@@ -104,7 +105,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                                 colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
                               ),
                             ),
-                            child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 22),
+                            child: const Icon(AppIcons.sendUp, color: Colors.white, size: 22),
                           ),
                         ),
                       ),

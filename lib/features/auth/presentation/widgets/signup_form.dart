@@ -16,6 +16,7 @@ import 'auth_footer.dart';
 import 'auth_primary_button.dart';
 import 'email_text_field.dart';
 import 'password_text_field.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class SignupForm extends StatefulWidget {
   final bool isLoading;
@@ -73,7 +74,7 @@ class _SignupFormState extends State<SignupForm> {
             controller: _nameController,
             label: l10n.fullName,
             hint: l10n.fullNameHint,
-            prefixIcon: Icons.person_outline,
+            prefixIcon: AppIcons.person,
             textInputAction: TextInputAction.next,
             enabled: !widget.isLoading,
             validator: (v) =>

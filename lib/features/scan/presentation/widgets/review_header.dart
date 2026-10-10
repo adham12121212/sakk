@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ReviewHeader extends StatelessWidget {
   const ReviewHeader({super.key, required this.onBack, this.title, this.subtitle});
@@ -46,7 +47,7 @@ class ReviewHeader extends StatelessWidget {
                         color: colorScheme.surfaceContainerHighest,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.arrow_back_rounded, size: 20, color: colorScheme.onSurface),
+                      child: Icon(AppIcons.back, size: 20, color: colorScheme.onSurface),
                     ),
                   ),
                 ),

@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/product_category.dart';
 import '../widgets/category_card.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class CategoriesView extends StatelessWidget {
@@ -36,7 +37,7 @@ class CategoriesView extends StatelessWidget {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: const Icon(AppIcons.back),
                     tooltip: l10n.back,
                     onPressed: () => Navigator.of(context).pop(),
                   ),

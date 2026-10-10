@@ -9,6 +9,7 @@ import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../cubit/password_reset_cubit.dart';
 import '../widgets/otp_box.dart';
 import 'new_password_view.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({super.key, required this.email});
@@ -100,7 +101,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleIconButton(
-                        icon: Icons.arrow_back,
+                        icon: AppIcons.back,
                         semanticLabel: l10n.back,
                         onTap: () => Navigator.of(context).pop(),
                         color: Theme.of(context).colorScheme.onSurface,

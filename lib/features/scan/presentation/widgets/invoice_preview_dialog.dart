@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 void showInvoicePreviewDialog(BuildContext context, String? imageUrl) {
@@ -23,7 +24,7 @@ void showInvoicePreviewDialog(BuildContext context, String? imageUrl) {
             right: 20.w,
             child: IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+              icon: const Icon(AppIcons.close, color: Colors.white, size: 28),
             ),
           ),
         ],

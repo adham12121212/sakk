@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Asks the user to type a confirmation word before deleting their account.
 /// Returns `true` only if they confirmed.
@@ -39,7 +40,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
     final keyword = l10n.deleteAccountKeyword;
 
     return AlertDialog(
-      icon: Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 36),
+      icon: Icon(AppIcons.warning, color: AppColors.error, size: 36),
       title: Text(l10n.deleteAccountTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,

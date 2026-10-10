@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/util/validators.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class EmailTextField extends StatelessWidget {
   const EmailTextField({
@@ -27,7 +28,7 @@ class EmailTextField extends StatelessWidget {
       label: l10n.emailAddress,
       hint: l10n.emailHint,
       keyboardType: TextInputType.emailAddress,
-      prefixIcon: Icons.alternate_email,
+      prefixIcon: AppIcons.email,
       validator: (value) => AppValidators.email(context, value),
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,

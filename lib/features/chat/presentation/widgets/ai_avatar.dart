@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Brand-gradient circle with the assistant's sparkle icon.
 class AiAvatar extends StatelessWidget {
@@ -19,7 +20,7 @@ class AiAvatar extends StatelessWidget {
           colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
         ),
       ),
-      child: Icon(Icons.auto_awesome_rounded, size: size * 0.5, color: Colors.white),
+      child: Icon(AppIcons.aiFilled, size: size * 0.5, color: Colors.white),
     );
   }
 }

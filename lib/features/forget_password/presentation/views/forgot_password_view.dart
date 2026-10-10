@@ -10,6 +10,7 @@ import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../auth/presentation/widgets/email_text_field.dart';
 import '../cubit/password_reset_cubit.dart';
 import 'otp_verification_view.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ForgotPasswordView extends StatelessWidget {
   const ForgotPasswordView({super.key});
@@ -79,7 +80,7 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleIconButton(
-                        icon: Icons.arrow_back,
+                        icon: AppIcons.back,
                         semanticLabel: l10n.back,
                         onTap: () => Navigator.of(context).pop(),
                         color: Theme.of(context).colorScheme.onSurface,

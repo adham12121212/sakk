@@ -7,6 +7,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Warranty summary card: days left, expiry date, status shield and a slim
 /// bar showing the share of the warranty that's left.
@@ -49,7 +50,7 @@ class WarrantyBanner extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(color: status.background, borderRadius: BorderRadius.circular(14)),
-                child: Icon(Icons.verified_user_outlined, color: status.foreground, size: 22),
+                child: Icon(AppIcons.warranty, color: status.foreground, size: 22),
               ),
             ],
           ),

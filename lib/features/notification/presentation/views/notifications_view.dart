@@ -11,6 +11,7 @@ import '../../domain/entities/notification_enitiy.dart';
 import '../cubit/notification_cubit.dart';
 import '../cubit/notification_state.dart';
 import '../widgets/notification_tile.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class NotificationsView extends StatefulWidget {
   final String userId;
@@ -48,7 +49,7 @@ class _NotificationsViewState extends State<NotificationsView> {
     return Scaffold(
       appBar: AppBar(
              leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(AppIcons.back),
             tooltip: l10n.back,
             onPressed: () => Navigator.pop(context),
           ),
@@ -86,7 +87,7 @@ class _NotificationsViewState extends State<NotificationsView> {
             onRefresh: () => cubit.loadNotifications(widget.userId),
             child: notifications.isEmpty
                 ? AppEmptyView(
-                    icon: Icons.notifications_none_rounded,
+                    icon: AppIcons.notifications,
                     title: l10n.nonotificationsyet,
                     fillRemaining: true,
                   )
@@ -108,7 +109,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                             color: context.palette.danger,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+                          child: const Icon(AppIcons.delete, color: Colors.white),
                         ),
                         onDismissed: (_) => cubit.deleteNotification(widget.userId, notification.id),
                         child: NotificationTile(

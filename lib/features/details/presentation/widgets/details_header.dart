@@ -6,6 +6,7 @@ import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class DetailsHeader extends StatelessWidget {
   const DetailsHeader({
@@ -70,20 +71,20 @@ class DetailsHeader extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _CircleIconButton(
-                          icon: Icons.arrow_back,
+                          icon: AppIcons.back,
                           label: l10n.back,
                           onTap: onBack,
                         ),
                         Row(
                           children: [
                             _CircleIconButton(
-                              icon: Icons.ios_share_rounded,
+                              icon: AppIcons.share,
                               label: l10n.share,
                               onTap: onShare,
                             ),
                             SizedBox(width: 8.w),
                             _CircleIconButton(
-                              icon: Icons.download_rounded,
+                              icon: AppIcons.download,
                               label: l10n.downloadInvoice,
                               onTap: onDownload,
                             ),

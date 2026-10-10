@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../l10n/app_localizations.dart';
 import '../constant/app_colors.dart';
 import '../error/Failure.dart';
+import '../theme/app_icons.dart';
 
 /// Shared error state: tinted icon, short title, one-line explanation and a
 /// "Try again" button. Picks the offline or the generic wording from the
@@ -88,7 +89,7 @@ class _AppErrorViewState extends State<AppErrorView> {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                _isOffline ? Icons.wifi_off_rounded : Icons.cloud_off_rounded,
+                _isOffline ? AppIcons.offline : AppIcons.cloudOff,
                 size: 40.sp,
                 color: accent,
               ),
@@ -130,7 +131,7 @@ class _AppErrorViewState extends State<AppErrorView> {
                           dimension: 18,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : Icon(widget.actionIcon ?? Icons.refresh_rounded, color: Colors.white),
+                      : Icon(widget.actionIcon ?? AppIcons.retry, color: Colors.white),
                   label: Text(
                     widget.actionLabel ?? l10n.tryAgain,
                     style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),

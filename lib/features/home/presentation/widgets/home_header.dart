@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'avatar.dart';
 import 'circle_icon_button.dart';
 import 'expiring_banner.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
@@ -81,14 +82,14 @@ class HomeHeader extends StatelessWidget {
               ),
               AppSpacing.w12,
               CircleIconButton(
-                icon: Icons.search_rounded,
+                icon: AppIcons.search,
                 semanticLabel: l10n.search,
                 onTap: onSearchTap,
                 color: colorScheme.onSurface,
               ),
               AppSpacing.w8,
               CircleIconButton(
-                icon: Icons.notifications_none_rounded,
+                icon: AppIcons.notifications,
                 semanticLabel: notificationsLabel,
                 onTap: onNotificationTap,
                 badgeCount: unreadNotificationCount,

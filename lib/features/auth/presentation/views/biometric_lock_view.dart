@@ -7,6 +7,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class BiometricLockView extends StatefulWidget {
   const BiometricLockView({super.key});
@@ -89,7 +90,7 @@ class _BiometricLockViewState extends State<BiometricLockView>
                       BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
                     ],
                   ),
-                  child: Icon(Icons.fingerprint_rounded, size: 52.sp, color: Colors.white),
+                  child: Icon(AppIcons.fingerprint, size: 52.sp, color: Colors.white),
                 ),
                 SizedBox(height: 24.h),
                 Text(
@@ -115,7 +116,7 @@ class _BiometricLockViewState extends State<BiometricLockView>
                       height: 18.w,
                       child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                     )
-                        : const Icon(Icons.fingerprint_rounded),
+                        : const Icon(AppIcons.fingerprint),
                     label: Text(l10n.unlockButton),
                   ),
                 ),

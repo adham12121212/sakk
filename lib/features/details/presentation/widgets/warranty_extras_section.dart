@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import '../../../products/domain/enties/warranty_claim.dart';
 import '../cubit/details_cubit.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Extra warranties and warranty claims, shown under the Details tab.
 class WarrantyExtrasSection extends StatelessWidget {
@@ -42,14 +43,14 @@ class WarrantyExtrasSection extends StatelessWidget {
               children: [
                 for (final w in product.extraWarranties)
                   ListTile(
-                    leading: Icon(Icons.verified_user_outlined, color: colorScheme.primary),
+                    leading: Icon(AppIcons.warranty, color: colorScheme.primary),
                     title: Text(w.provider),
                     subtitle: Text(
                       '${dateFormat.format(w.startDate)} – ${dateFormat.format(w.endDate)}',
                     ),
                     trailing: IconButton(
                       tooltip: l10n.delete,
-                      icon: const Icon(Icons.delete_outline_rounded),
+                      icon: const Icon(AppIcons.delete),
                       onPressed: busy
                           ? null
                           : () => context.read<DetailsCubit>().deleteExtraWarranty(product.id, w.id),
@@ -114,7 +115,7 @@ class _SectionHeader extends StatelessWidget {
         Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
         TextButton.icon(
           onPressed: onAction,
-          icon: const Icon(Icons.add_rounded, size: 18),
+          icon: const Icon(AppIcons.add, size: 18),
           label: Text(actionLabel),
           style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
         ),
@@ -370,7 +371,7 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: _saving ? null : _sendAndSave,
-              icon: _saving ? const _ButtonSpinner() : const Icon(Icons.send_rounded),
+              icon: _saving ? const _ButtonSpinner() : const Icon(AppIcons.send),
               label: Text(l10n.saveAndSendClaim),
             ),
           ],
@@ -414,7 +415,7 @@ Future<void> _showClaimStatusSheet(BuildContext context, WarrantyClaim claim) {
               Navigator.of(sheetContext).pop();
               cubit.deleteClaim(claim.id);
             },
-            icon: const Icon(Icons.delete_outline_rounded),
+            icon: const Icon(AppIcons.delete),
             label: Text(l10n.deleteClaim),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(sheetContext).colorScheme.error,

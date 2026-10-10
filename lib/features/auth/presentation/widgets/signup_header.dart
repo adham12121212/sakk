@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class SignupHeader extends StatelessWidget {
   const SignupHeader({super.key});
@@ -16,7 +17,7 @@ class SignupHeader extends StatelessWidget {
       child: Row(
         children: [
           CircleIconButton(
-            icon: Icons.arrow_back,
+            icon: AppIcons.back,
             semanticLabel: l10n.back,
             onTap: () => context.pop(),
             color: Theme.of(context).colorScheme.onSurface,

@@ -7,6 +7,7 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/util/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ProfileLogoutButton extends StatefulWidget {
   const ProfileLogoutButton({super.key});
@@ -69,7 +70,7 @@ class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
                 color: context.palette.danger,
               ),
             )
-                : Icon(Icons.logout_rounded, color: context.palette.danger),
+                : Icon(AppIcons.logOut, color: context.palette.danger),
             label: Text(l10n.logOut, style: TextStyle(color: context.palette.danger, fontWeight: FontWeight.w600)),
             // Soft red: clearly destructive without shouting.
             style: FilledButton.styleFrom(

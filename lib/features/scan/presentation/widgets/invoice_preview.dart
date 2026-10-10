@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class InvoicePreview extends StatelessWidget {
   const InvoicePreview({
@@ -57,7 +58,7 @@ class _PreviewBadge extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.visibility_outlined, color: Colors.white, size: 16),
+            const Icon(AppIcons.show, color: Colors.white, size: 16),
             SizedBox(width: 6.w),
             Text(
               AppLocalizations.of(context)!.invoicePreviewLabel,
@@ -80,7 +81,7 @@ class _Placeholder extends StatelessWidget {
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Center(
-        child: Icon(Icons.receipt_long_outlined, size: 40.sp, color: colorScheme.onSurfaceVariant),
+        child: Icon(AppIcons.receipt, size: 40.sp, color: colorScheme.onSurfaceVariant),
       ),
     );
   }

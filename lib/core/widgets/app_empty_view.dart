@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_icons.dart';
 
 /// Shared empty state, styled like [AppErrorView]: a soft tinted icon circle,
 /// a title, optional explanation and an optional call-to-action.
@@ -75,7 +76,7 @@ class AppEmptyView extends StatelessWidget {
                   shape: const StadiumBorder(),
                   padding: const EdgeInsets.symmetric(horizontal: 28),
                 ),
-                icon: Icon(actionIcon ?? Icons.add_rounded),
+                icon: Icon(actionIcon ?? AppIcons.add),
                 label: Text(actionLabel!),
               ),
             ],

@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/enties/product_entity.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class RecentProductData {
   const RecentProductData({
@@ -103,7 +104,7 @@ class RecentProductTile extends StatelessWidget {
           StatusChip(status: data.status),
           const SizedBox(width: 2),
           Icon(
-            Icons.chevron_right_rounded,
+            AppIcons.chevronForward,
             size: 20,
             color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
           ),
@@ -167,7 +168,7 @@ class _StatusRingThumbnail extends StatelessWidget {
       height: imageSize,
       color: colorScheme.surfaceContainerHighest,
       child: Icon(
-        Icons.devices_other_rounded,
+        AppIcons.productPlaceholder,
         color: colorScheme.onSurfaceVariant,
         size: 20,
       ),

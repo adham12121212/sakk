@@ -6,6 +6,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/product_category.dart';
 import 'category_ui.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
@@ -60,7 +61,7 @@ class CategoryCard extends StatelessWidget {
                     child: Icon(CategoryUi.icon(category), color: color, size: 22),
                   ),
                   const Spacer(),
-                  if (isSelected) Icon(Icons.check_circle_rounded, color: colorScheme.primary, size: 22),
+                  if (isSelected) Icon(AppIcons.successFilled, color: colorScheme.primary, size: 22),
                 ],
               ),
               const SizedBox(height: 16),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ScanFailedView extends StatelessWidget {
   const ScanFailedView({
@@ -34,7 +35,7 @@ class ScanFailedView extends StatelessWidget {
                     color: context.palette.dangerContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.receipt_long_rounded, color: context.palette.danger, size: 40.sp),
+                  child: Icon(AppIcons.receipt, color: context.palette.danger, size: 40.sp),
                 ),
                 SizedBox(height: 20.h),
                 Text(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Soft amber card: "N warranties expiring soon" with a chevron.
 class ExpiringBanner extends StatelessWidget {
@@ -31,7 +32,7 @@ class ExpiringBanner extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.schedule_rounded,
+              AppIcons.expiring,
               color: palette.warning,
               size: 20,
             ),
@@ -41,7 +42,7 @@ class ExpiringBanner extends StatelessWidget {
             child: Text(label, style: Theme.of(context).textTheme.titleSmall),
           ),
           if (onTap != null)
-            Icon(Icons.chevron_right_rounded, color: palette.warning),
+            Icon(AppIcons.chevronForward, color: palette.warning),
         ],
       ),
     );

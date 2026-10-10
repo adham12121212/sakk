@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/util/validators.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class PasswordTextField extends StatelessWidget {
   const PasswordTextField({
@@ -49,7 +50,7 @@ class PasswordTextField extends StatelessWidget {
         tooltip: obscureText ? l10n.showPassword : l10n.hidePassword,
         onPressed: onToggleVisibility,
         icon: Icon(
-          obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+          obscureText ? AppIcons.hide : AppIcons.show,
         ),
       ),
     );

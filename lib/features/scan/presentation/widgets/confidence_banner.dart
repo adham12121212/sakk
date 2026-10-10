@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ConfidenceBanner extends StatelessWidget {
   const ConfidenceBanner({super.key, required this.confidence});
@@ -63,20 +64,20 @@ class ConfidenceBanner extends StatelessWidget {
   _ConfidenceLevel _levelFor(BuildContext context, AppLocalizations l10n, double confidence) {
     final p = context.palette;
     if (confidence >= _highThreshold) {
-      return _ConfidenceLevel(foreground: p.success, background: p.successContainer, icon: Icons.check_circle_rounded);
+      return _ConfidenceLevel(foreground: p.success, background: p.successContainer, icon: AppIcons.successFilled);
     }
     if (confidence >= _mediumThreshold) {
       return _ConfidenceLevel(
         foreground: p.warning,
         background: p.warningContainer,
-        icon: Icons.info_outline_rounded,
+        icon: AppIcons.info,
         subtext: l10n.doubleCheckFieldsBelow,
       );
     }
     return _ConfidenceLevel(
       foreground: p.danger,
       background: p.dangerContainer,
-      icon: Icons.error_outline_rounded,
+      icon: AppIcons.error,
       subtext: l10n.lowConfidenceWarning,
     );
   }

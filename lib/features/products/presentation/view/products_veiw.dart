@@ -20,6 +20,7 @@ import '../../domain/enties/product_entity.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
 import '../util/products_csv_export.dart';
+import '../../../../core/theme/app_icons.dart';
 
 enum _ProductFilter { all, active, expiring, expired }
 
@@ -131,7 +132,7 @@ class _ProductsViewState extends State<ProductsView> {
                           ),
                         ),
                         CircleIconButton(
-                            icon: Icons.search_rounded,
+                            icon: AppIcons.search,
                             semanticLabel: l10n.search,
                             onTap: () {
                           Navigator.of(context).push(
@@ -147,7 +148,7 @@ class _ProductsViewState extends State<ProductsView> {
                         ),
                         const SizedBox(width: 4),
                         CircleIconButton(
-                          icon: Icons.filter_alt_rounded,
+                          icon: AppIcons.filter,
                           semanticLabel: l10n.filterByCategory,
                           onTap: _openCategoryFilter,
                           showBadge: _categoryFilter != null,
@@ -155,7 +156,7 @@ class _ProductsViewState extends State<ProductsView> {
                         ),
                         const SizedBox(width: 4),
                         CircleIconButton(
-                          icon: Icons.ios_share_rounded,
+                          icon: AppIcons.share,
                           semanticLabel: l10n.exportProducts,
                           onTap: () => _export(state.products),
                           color: Theme.of(context).colorScheme.onSurface,
@@ -250,10 +251,10 @@ class _ProductsViewState extends State<ProductsView> {
     if (filtered.isEmpty) {
       final noProducts = state.products.isEmpty;
       return AppEmptyView(
-        icon: noProducts ? Icons.inventory_2_outlined : Icons.filter_alt_off_outlined,
+        icon: noProducts ? AppIcons.products : AppIcons.filterEmpty,
         title: noProducts ? l10n.noProductsYet : l10n.nothingInThisFilter,
         actionLabel: noProducts ? l10n.scanReceiptTitle : null,
-        actionIcon: Icons.document_scanner_rounded,
+        actionIcon: AppIcons.scan,
         onAction: noProducts ? () => context.push(AppRoutes.scan) : null,
         fillRemaining: true,
       );
@@ -360,7 +361,7 @@ class _ActiveCategoryChip extends StatelessWidget {
                     style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: color),
                   ),
                   SizedBox(width: 6.w),
-                  Icon(Icons.close_rounded, size: 14.sp, color: color),
+                  Icon(AppIcons.close, size: 14.sp, color: color),
                 ],
               ),
             ),

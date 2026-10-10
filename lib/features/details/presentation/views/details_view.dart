@@ -19,6 +19,7 @@ import '../widgets/segmented_tabs.dart';
 import '../widgets/warranty_extras_section.dart';
 import '../widgets/warrenty_banner.dart';
 import 'edit_view.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class DetailsView extends StatelessWidget {
   const DetailsView({super.key, required this.product});
@@ -244,7 +245,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                   Expanded(
                     child: FilledButton.icon(
                       onPressed: isBusy ? null : _confirmDelete,
-                      icon: const Icon(Icons.delete_outline_rounded),
+                      icon: const Icon(AppIcons.delete),
                       label: Text(l10n.delete),
                       // Soft red: destructive, but quieter than the main action.
                       style: FilledButton.styleFrom(
@@ -257,7 +258,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                   Expanded(
                     child: FilledButton.icon(
                       onPressed: isBusy ? null : _editProduct,
-                      icon: const Icon(Icons.edit_outlined),
+                      icon: const Icon(AppIcons.edit),
                       label: Text(l10n.edit),
                     ),
                   ),

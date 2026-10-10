@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'ai_avatar.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// First-open state: gradient AI avatar, short intro and tappable suggestions.
 class ChatEmptyState extends StatelessWidget {
@@ -47,10 +48,10 @@ class ChatEmptyState extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       child: Row(
                         children: [
-                          Icon(Icons.chat_bubble_outline_rounded, size: 18, color: colorScheme.primary),
+                          Icon(AppIcons.chat, size: 18, color: colorScheme.primary),
                           const SizedBox(width: 12),
                           Expanded(child: Text(s, style: textTheme.bodyMedium)),
-                          Icon(Icons.arrow_forward_rounded, size: 18, color: colorScheme.onSurfaceVariant),
+                          Icon(AppIcons.forward, size: 18, color: colorScheme.onSurfaceVariant),
                         ],
                       ),
                     ),

@@ -21,6 +21,7 @@ import '../widgets/home_header.dart';
 import '../widgets/recent_product_data.dart';
 import '../widgets/recent_products_section.dart';
 import '../widgets/stat_card.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -188,7 +189,7 @@ class _HomeContentState extends State<_HomeContent> {
                                     StatCard(
                                       value: formatLocalizedInt(locale, displayState.total),
                                       label: l10n.totalProducts,
-                                      icon: Icons.inventory_2_outlined,
+                                      icon: AppIcons.products,
                                       iconColor: colorScheme.primary,
                                       iconBackgroundColor:
                                           colorScheme.primaryContainer,
@@ -200,7 +201,7 @@ class _HomeContentState extends State<_HomeContent> {
                                     StatCard(
                                       value: formatLocalizedInt(locale, displayState.active),
                                       label: l10n.activeWarranties,
-                                      icon: Icons.verified_user_outlined,
+                                      icon: AppIcons.warranty,
                                       iconColor: palette.success,
                                       iconBackgroundColor:
                                           palette.successContainer,
@@ -211,7 +212,7 @@ class _HomeContentState extends State<_HomeContent> {
                                     StatCard(
                                       value: formatLocalizedInt(locale, displayState.expiring),
                                       label: l10n.expiringSoon,
-                                      icon: Icons.schedule_rounded,
+                                      icon: AppIcons.expiring,
                                       iconColor: palette.warning,
                                       iconBackgroundColor:
                                           palette.warningContainer,
@@ -219,7 +220,7 @@ class _HomeContentState extends State<_HomeContent> {
                                     StatCard(
                                       value: formatLocalizedInt(locale, displayState.expired),
                                       label: l10n.expired,
-                                      icon: Icons.error_outline_rounded,
+                                      icon: AppIcons.error,
                                       iconColor: palette.danger,
                                       iconBackgroundColor:
                                           palette.dangerContainer,

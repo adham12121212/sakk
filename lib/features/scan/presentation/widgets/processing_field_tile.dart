@@ -4,6 +4,7 @@ import '../../../../core/theme/app_palette.dart';
 import 'package:sakk/features/scan/presentation/widgets/processing_field_spec.dart';
 
 import 'shimmer_shape.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class ProcessingFieldTile extends StatelessWidget {
@@ -88,7 +89,7 @@ class ProcessingFieldTile extends StatelessWidget {
                 ScaleTransition(scale: animation, child: child),
             child: revealed
                 ? Icon(
-              Icons.check_circle,
+              AppIcons.successFilled,
               key: ValueKey('check'),
               color: palette.success,
               size: 22,

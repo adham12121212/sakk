@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constant/app_colors.dart';
+import '../theme/app_icons.dart';
 
 enum SnackBarType {
   success,
@@ -35,8 +36,8 @@ class AppSnackBar {
                 ? AppColors.success
                 : AppColors.error,
             icon: isSuccess
-                ? Icons.check_circle_rounded
-                : Icons.error,
+                ? AppIcons.successFilled
+                : AppIcons.errorFilled,
             textStyle: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,

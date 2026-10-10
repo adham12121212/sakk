@@ -7,6 +7,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/onboarding_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class _OnboardingPageData {
   const _OnboardingPageData({
@@ -35,17 +36,17 @@ class _OnboardingViewState extends State<OnboardingView> {
     final l10n = AppLocalizations.of(context)!;
     return [
       _OnboardingPageData(
-        icon: Icons.document_scanner_outlined,
+        icon: AppIcons.scan,
         title: l10n.onboardingScanTitle,
         description: l10n.onboardingScanDescription,
       ),
       _OnboardingPageData(
-        icon: Icons.shield_outlined,
+        icon: AppIcons.shield,
         title: l10n.onboardingTrackTitle,
         description: l10n.onboardingTrackDescription,
       ),
       _OnboardingPageData(
-        icon: Icons.notifications_active_outlined,
+        icon: AppIcons.reminder,
         title: l10n.onboardingNotifyTitle,
         description: l10n.onboardingNotifyDescription,
       ),

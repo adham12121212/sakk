@@ -5,6 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import 'detail_row.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class DetailsTab extends StatelessWidget {
   const DetailsTab({super.key, required this.product});
@@ -23,34 +24,34 @@ class DetailsTab extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
         children: [
-          DetailRow(icon: Icons.location_on_outlined, label: l10n.store, value: product.store ?? '—'),
+          DetailRow(icon: AppIcons.store, label: l10n.store, value: product.store ?? '—'),
           DetailRow(
-            icon: Icons.credit_card_outlined,
+            icon: AppIcons.price,
             label: l10n.price,
             value: product.price != null
                 ? '${product.currency} ${NumberFormat.decimalPattern(locale).format(product.price!.round())}'
                 : '—',
           ),
           DetailRow(
-            icon: Icons.calendar_today_outlined,
+            icon: AppIcons.calendar,
             label: l10n.purchaseDate,
             value: DateFormat.yMMMd(locale).format(product.purchaseDate),
           ),
           DetailRow(
-            icon: Icons.shield_outlined,
+            icon: AppIcons.shield,
             label: l10n.warrantyPeriod,
             value: '${product.warrantyMonths} ${l10n.months}',
           ),
           // An extra warranty can push coverage past the manufacturer's date.
           if (product.extraWarranties.isNotEmpty)
             DetailRow(
-              icon: Icons.verified_user_outlined,
+              icon: AppIcons.warranty,
               label: l10n.coveredUntil,
               value: DateFormat.yMMMd(locale).format(product.warrantyEndDate),
             ),
           if (product.returnByDate != null)
             DetailRow(
-              icon: Icons.assignment_return_outlined,
+              icon: AppIcons.returnItem,
               label: l10n.returnBy,
               value: product.daysToReturn! < 0
                   ? l10n.returnWindowClosed(DateFormat.yMMMd(locale).format(product.returnByDate!))
@@ -60,7 +61,7 @@ class DetailsTab extends StatelessWidget {
                     ),
             ),
           DetailRow(
-            icon: Icons.layers_outlined,
+            icon: AppIcons.category,
             label: l10n.category,
             value: CategoryUi.label(context, product.category),
             isLast: true,

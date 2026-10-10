@@ -11,6 +11,7 @@ import '../../../products/domain/enties/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/processing_field_spec.dart';
 import '../widgets/processing_field_tile.dart';
+import '../../../../core/theme/app_icons.dart';
 
 
 class ScanProcessingView extends StatelessWidget {
@@ -120,7 +121,7 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
               return AppErrorView(
                 message: state.message,
                 actionLabel: AppLocalizations.of(context)!.back,
-                actionIcon: Icons.arrow_back_rounded,
+                actionIcon: AppIcons.back,
                 fillRemaining: true,
                 onRetry: () async {
                   context.read<ScanCubit>().close();
@@ -192,7 +193,7 @@ class _ProcessingBody extends StatelessWidget {
                 ],
               ),
               child: Icon(
-                _completed ? Icons.check_rounded : Icons.auto_awesome_rounded,
+                _completed ? AppIcons.check : AppIcons.aiFilled,
                 size: 44,
                 color: Colors.white,
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/theme/app_icons.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -102,7 +103,7 @@ class ProfileAvatar extends StatelessWidget {
                     border: Border.all(color: AppColors.white, width: 2.r),
                   ),
                   child: Icon(
-                    Icons.camera_alt_rounded,
+                    AppIcons.camera,
                     size: 18.sp,
                     color: AppColors.white,
                   ),

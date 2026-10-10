@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_palette.dart';
 import '../../domain/entities/notification_enitiy.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// Rounded tinted tile with the notification type's icon (palette colours, so
 /// it adapts to dark mode).
@@ -14,10 +15,10 @@ class NotificationTypeIcon extends StatelessWidget {
     final palette = context.palette;
     final colorScheme = Theme.of(context).colorScheme;
     final (icon, color, background) = switch (type) {
-      NotificationType.warning => (Icons.schedule_rounded, palette.warning, palette.warningContainer),
-      NotificationType.success => (Icons.check_circle_outline_rounded, palette.success, palette.successContainer),
-      NotificationType.info => (Icons.auto_awesome_rounded, colorScheme.primary, colorScheme.primaryContainer),
-      NotificationType.error => (Icons.error_outline_rounded, palette.danger, palette.dangerContainer),
+      NotificationType.warning => (AppIcons.expiring, palette.warning, palette.warningContainer),
+      NotificationType.success => (AppIcons.success, palette.success, palette.successContainer),
+      NotificationType.info => (AppIcons.aiFilled, colorScheme.primary, colorScheme.primaryContainer),
+      NotificationType.error => (AppIcons.error, palette.danger, palette.dangerContainer),
     };
     return Container(
       width: 44,

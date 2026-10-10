@@ -5,6 +5,7 @@ import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'ai_avatar.dart';
+import '../../../../core/theme/app_icons.dart';
 
 /// User messages: brand-gradient bubble at the end. Assistant replies: white
 /// card at the start next to the AI avatar, selectable so it can be copied.
@@ -89,7 +90,7 @@ class ChatBubble extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.error_outline_rounded, size: 16, color: colorScheme.error),
+                  Icon(AppIcons.error, size: 16, color: colorScheme.error),
                   const SizedBox(width: 6),
                   Text(
                     AppLocalizations.of(context)!.messageNotSent,
