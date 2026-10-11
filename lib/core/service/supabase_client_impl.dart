@@ -87,8 +87,19 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   @override
-  Future<void> signOut() {
-    return _client.auth.signOut();
+  Future<void> signOut() async {
+    try {
+      await _client.auth.signOut();
+    } catch (_) {
+      // The local session is cleared before Supabase revokes it on the
+      // server, so a failed revoke (e.g. offline) still leaves us signed out.
+    }
+    try {
+      await _ensureGoogleSignInInitialized();
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {
+      // Not signed in with Google, or nothing to clear.
+    }
   }
 
   @override
@@ -108,8 +119,7 @@ class SupabaseServiceImpl implements SupabaseService {
   @override
   Future<void> updatePassword(String newPassword) async {
     await _client.auth.updateUser(UserAttributes(password: newPassword));
-    
-    await _client.auth.signOut();
+    await signOut();
   }
 
   @override

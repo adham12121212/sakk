@@ -65,6 +65,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   }
 
   void _handleStateChange(BuildContext context, PasswordResetState state) {
+    // Screens further down the stack share this cubit; only the visible one
+    // should react (otherwise "resend code" pushes a second code screen).
+    if (ModalRoute.of(context)?.isCurrent != true) return;
     final l10n = AppLocalizations.of(context)!;
     if (state is PasswordResetError) {
       AppSnackBar.error(context, state.message);

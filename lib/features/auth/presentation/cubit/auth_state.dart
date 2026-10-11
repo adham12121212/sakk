@@ -12,6 +12,8 @@ final class AuthSuccess extends AuthState{
   AuthSuccess(this.user);
 }
 
+final class AuthEmailConfirmationRequired extends AuthState {}
+
 final class AuthError extends AuthState{
   final String message;
   AuthError(this.message);

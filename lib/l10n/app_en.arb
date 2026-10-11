@@ -373,5 +373,6 @@
   "notifExpiredTitle": "Warranty expired",
   "notifExpiredBody": "{product}'s warranty has expired",
   "notifReturnTitle": "Return window closing",
-  "notifReturnBody": "You have 2 days left to return {product} if you need to"
+  "notifReturnBody": "You have 2 days left to return {product} if you need to",
+  "confirmEmailToFinishSignup": "Check your email and open the confirmation link, then sign in"
 }

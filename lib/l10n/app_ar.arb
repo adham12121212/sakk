@@ -352,5 +352,6 @@
   "notifExpiredTitle": "انتهى الضمان",
   "notifExpiredBody": "انتهى ضمان {product}",
   "notifReturnTitle": "موعد الاسترجاع يقترب",
-  "notifReturnBody": "باقي يومان لاسترجاع {product} إذا احتجت لذلك"
+  "notifReturnBody": "باقي يومان لاسترجاع {product} إذا احتجت لذلك",
+  "confirmEmailToFinishSignup": "تحقق من بريدك الإلكتروني وافتح رابط التأكيد، ثم سجّل الدخول"
 }

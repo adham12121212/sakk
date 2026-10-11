@@ -59,6 +59,8 @@ class AuthRepoImpl implements AuthRepository {
         fullName: fullName,
       );
       return Right(response);
+    } on EmailConfirmationRequiredException {
+      return const Left(EmailConfirmationRequiredFailure());
     } on ServerException catch (e, st) {
       _logger.error('Server error during signUp', error: e, stackTrace: st,
           data: {'email': PiiMasker.maskEmail(email)});

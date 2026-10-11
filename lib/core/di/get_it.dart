@@ -55,6 +55,7 @@ import '../service/biometric_auth_service.dart';
 import '../service/home_widget_sync.dart';
 import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
+import '../service/password_recovery_service.dart';
 import '../service/reminder_controller.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
@@ -283,11 +284,14 @@ void setupLocator() {
       getIt<SendPasswordResetOtpUseCase>(),
       getIt<VerifyPasswordResetOtpUseCase>(),
       getIt<UpdatePasswordUseCase>(),
+      getIt<SignOutUseCase>(),
+      getIt<PasswordRecoveryService>(),
     ),
   );
 
 
   getIt.registerLazySingleton<OnboardingService>(() => OnboardingServiceImpl());
+  getIt.registerLazySingleton<PasswordRecoveryService>(() => PasswordRecoveryServiceImpl());
 
   getIt.registerLazySingleton<SignInWithGoogleUseCase>(
         () => SignInWithGoogleUseCaseImpl(getIt<AuthRepository>()),

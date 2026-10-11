@@ -2209,6 +2209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have 2 days left to return {product} if you need to'**
   String notifReturnBody(Object product);
+
+  /// No description provided for @confirmEmailToFinishSignup.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email and open the confirmation link, then sign in'**
+  String get confirmEmailToFinishSignup;
 }
 
 class _AppLocalizationsDelegate

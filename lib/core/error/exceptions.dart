@@ -19,6 +19,11 @@ class GoogleSignInCancelledException implements Exception {
   String toString() => 'GoogleSignInCancelledException';
 }
 
+class EmailConfirmationRequiredException implements Exception {
+  @override
+  String toString() => 'EmailConfirmationRequiredException';
+}
+
 class CacheException implements Exception {
   final String message;
   CacheException(this.message);

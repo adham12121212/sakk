@@ -9,6 +9,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../core/service/onboarding_service.dart';
+import '../../../../core/service/password_recovery_service.dart';
 import '../../../../core/widgets/sakk_logo.dart';
 
 
@@ -30,7 +31,23 @@ class _SplashViewState extends State<SplashView> {
 
     final minDelay = Future.delayed(const Duration(milliseconds: 1400));
 
-    final session = Supabase.instance.client.auth.currentSession;
+    var session = Supabase.instance.client.auth.currentSession;
+
+    // A password reset was left half-done: the session is only the recovery
+    // one, so don't let it into the app.
+    final recoveryService = getIt<PasswordRecoveryService>();
+    if (await recoveryService.isPending()) {
+      if (session != null) {
+        try {
+          await Supabase.instance.client.auth.signOut();
+        } catch (_) {
+          // Local session is already gone; only the server revoke failed.
+        }
+        session = null;
+      }
+      await recoveryService.clear();
+    }
+
     final hasSeenOnboarding = await getIt<OnboardingService>().hasSeenOnboarding();
 
     // Only relevant when a session already exists — no point checking the

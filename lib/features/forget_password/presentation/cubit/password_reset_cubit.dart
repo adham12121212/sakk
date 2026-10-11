@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/service/password_recovery_service.dart';
 import '../../../auth/domain/usecase/send_password_reset_otp_usecase.dart';
+import '../../../auth/domain/usecase/signout_usecase.dart';
 import '../../../auth/domain/usecase/update_password_usecase.dart';
 import '../../../auth/domain/usecase/verify_password_reset_otp_usecase.dart';
 part 'password_reset_state.dart';
@@ -11,11 +13,15 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
       this._sendOtpUseCase,
       this._verifyOtpUseCase,
       this._updatePasswordUseCase,
+      this._signOutUseCase,
+      this._recoveryService,
       ) : super(PasswordResetIdle());
 
   final SendPasswordResetOtpUseCase _sendOtpUseCase;
   final VerifyPasswordResetOtpUseCase _verifyOtpUseCase;
   final UpdatePasswordUseCase _updatePasswordUseCase;
+  final SignOutUseCase _signOutUseCase;
+  final PasswordRecoveryService _recoveryService;
 
   String? _email;
   String? get email => _email;
@@ -37,19 +43,34 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
       return;
     }
     emit(PasswordResetLoading());
+    // Marked before verifying: a correct code creates the session right away.
+    await _recoveryService.markPending();
     final result = await _verifyOtpUseCase(email: email, otp: otp);
-    result.fold(
-          (failure) => emit(PasswordResetError(failure.message)),
-          (_) => emit(PasswordResetOtpVerified()),
+    await result.fold(
+          (failure) async {
+        await _recoveryService.clear();
+        emit(PasswordResetError(failure.message));
+      },
+          (_) async => emit(PasswordResetOtpVerified()),
     );
   }
 
   Future<void> updatePassword(String newPassword) async {
     emit(PasswordResetLoading());
     final result = await _updatePasswordUseCase(newPassword: newPassword);
-    result.fold(
-          (failure) => emit(PasswordResetError(failure.message)),
-          (_) => emit(PasswordResetCompleted()),
+    await result.fold(
+          (failure) async => emit(PasswordResetError(failure.message)),
+          (_) async {
+        await _recoveryService.clear();
+        emit(PasswordResetCompleted());
+      },
     );
+  }
+
+  /// Leaving the new-password screen without saving: drop the recovery
+  /// session so the user isn't left signed in.
+  Future<void> abandon() async {
+    await _signOutUseCase();
+    await _recoveryService.clear();
   }
 }

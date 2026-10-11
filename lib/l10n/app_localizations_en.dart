@@ -1247,4 +1247,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String notifReturnBody(Object product) {
     return 'You have 2 days left to return $product if you need to';
   }
+
+  @override
+  String get confirmEmailToFinishSignup =>
+      'Check your email and open the confirmation link, then sign in';
 }

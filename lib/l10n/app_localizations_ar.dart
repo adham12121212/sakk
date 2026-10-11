@@ -1258,4 +1258,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String notifReturnBody(Object product) {
     return 'باقي يومان لاسترجاع $product إذا احتجت لذلك';
   }
+
+  @override
+  String get confirmEmailToFinishSignup =>
+      'تحقق من بريدك الإلكتروني وافتح رابط التأكيد، ثم سجّل الدخول';
 }

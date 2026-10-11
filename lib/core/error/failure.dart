@@ -36,3 +36,7 @@ class UnknownFailure extends Failure {
 class CancelledFailure extends Failure {
   const CancelledFailure() : super('');
 }
+
+class EmailConfirmationRequiredFailure extends Failure {
+  const EmailConfirmationRequiredFailure() : super('');
+}

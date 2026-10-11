@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../cubit/auth_cubit.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class BiometricLockView extends StatefulWidget {
@@ -59,7 +59,11 @@ class _BiometricLockViewState extends State<BiometricLockView>
   }
 
   Future<void> _usePasswordInstead() async {
-    await Supabase.instance.client.auth.signOut();
+    // Through AuthCubit so the previous session's cached data is cleared
+    // too; the lock stays on since the same person is signing back in.
+    final authCubit = getIt<AuthCubit>();
+    await authCubit.signOut(keepBiometricLock: true);
+    await authCubit.close();
     if (!mounted) return;
     context.go(AppRoutes.signin);
   }

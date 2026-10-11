@@ -68,10 +68,15 @@ class AuthDataSourceImpl implements AuthDataSource {
         throw ServerException('An account with this email already exists');
       }
 
+      // With "Confirm email" on, Supabase creates the user but no session
+      // until the link in the email is opened.
+      if (response.session == null) {
+        throw EmailConfirmationRequiredException();
+      }
 
       return UserModel.fromSupabaseUser(user);
     } catch (e, s) {
-      if (e is ServerException) rethrow;
+      if (e is ServerException || e is EmailConfirmationRequiredException) rethrow;
       return SupabaseErrorMapper.handle(e, s);
     }
   }

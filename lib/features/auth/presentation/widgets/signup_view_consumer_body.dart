@@ -27,6 +27,10 @@ class SignupViewConsumerBody extends StatelessWidget {
 
             context.go(AppRoutes.home);
             break;
+          case AuthEmailConfirmationRequired():
+            AppSnackBar.success(context, l10n.confirmEmailToFinishSignup);
+            context.go(AppRoutes.signin);
+            break;
           case AuthError():
             AppSnackBar.error(
               context,

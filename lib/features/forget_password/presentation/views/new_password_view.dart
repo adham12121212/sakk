@@ -43,16 +43,30 @@ class _NewPasswordViewState extends State<NewPasswordView> {
       AppSnackBar.error(context, state.message);
     } else if (state is PasswordResetCompleted) {
       AppSnackBar.success(context, l10n.passwordupdatedpleasesigninagain);
-      Navigator.of(context).popUntil((route) => route.isFirst);
       context.go(AppRoutes.signin);
     }
+  }
+
+  Future<void> _abandon() async {
+    await context.read<PasswordResetCubit>().abandon();
+    if (!mounted) return;
+    context.go(AppRoutes.signin);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return GestureDetector(
+    // The verified code already signed the user in, so going back has to
+    // sign them out rather than return to the code screen.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (context.read<PasswordResetCubit>().state is PasswordResetLoading) return;
+        _abandon();
+      },
+      child: GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
           body: BlocConsumer<PasswordResetCubit, PasswordResetState>(
@@ -124,6 +138,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
             );
           },
         ),
+      ),
       ),
     );
   }

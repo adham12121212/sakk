@@ -58,7 +58,13 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     final result = await _signupUsecase.call(email: email, password: password, fullName: fullName);
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
+          (failure) {
+        if (failure is EmailConfirmationRequiredFailure) {
+          emit(AuthEmailConfirmationRequired());
+          return;
+        }
+        emit(AuthError(failure.message));
+      },
           (user) {
         getIt<ProductsCubit>().reset();
         emit(AuthSuccess(user));
@@ -66,15 +72,25 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> signOut() async {
+  /// [keepBiometricLock] is for "use password instead" on the lock screen,
+  /// where the same person is signing straight back in.
+  Future<void> signOut({bool keepBiometricLock = false}) async {
     emit(AuthLoading());
-    await _signOutUseCase.call();
-
-    getIt<ProductsCubit>().reset();
-    getIt<NotificationCubit>().reset();
-    getIt<HouseholdCubit>().reset();
-    await getIt<ClearCachedProductsUseCase>()();
-    emit(AuthInitial());
+    try {
+      await _signOutUseCase.call();
+      if (!keepBiometricLock) {
+        await getIt<BiometricAuthService>().setEnabled(false);
+      }
+    } finally {
+      getIt<ProductsCubit>().reset();
+      getIt<NotificationCubit>().reset();
+      getIt<HouseholdCubit>().reset();
+      try {
+        await getIt<ClearCachedProductsUseCase>()();
+      } finally {
+        if (!isClosed) emit(AuthInitial());
+      }
+    }
   }
 
   Future<void> updateAvatar(File imageFile) async {
