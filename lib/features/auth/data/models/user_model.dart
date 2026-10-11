@@ -14,8 +14,15 @@ class UserModel extends UserEntity {
       id: user.id,
       email: user.email ?? '',
       name: user.userMetadata?['name'] ?? '',
-      avatarUrl: user.userMetadata?['avatar_url'] as String?,
+      avatarUrl: _fullSizeAvatar(user.userMetadata?['avatar_url'] as String?),
     );
+  }
+
+  /// Google profile photos come as 96px thumbnails (`…=s96-c`), which blur
+  /// at avatar size on high-density screens; ask Google for 512px instead.
+  static String? _fullSizeAvatar(String? url) {
+    if (url == null || !url.contains('googleusercontent.com')) return url;
+    return url.replaceFirst(RegExp(r'=s\d+-c$'), '=s512-c');
   }
 
 }
