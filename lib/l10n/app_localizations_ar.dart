@@ -1220,4 +1220,17 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get onboardingFamilyDescription =>
       'أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك.';
+
+  @override
+  String get shareImageWithDetails => 'صورة مع التفاصيل';
+
+  @override
+  String get shareImageWithDetailsHint =>
+      'صورة واحدة: الفاتورة وتحتها تفاصيل المنتج. الأفضل لماسنجر.';
+
+  @override
+  String get sharePhotoAndText => 'صورة ونص';
+
+  @override
+  String get sharePhotoAndTextHint => 'صورة الفاتورة، مع التفاصيل كرسالة.';
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +21,7 @@ import '../widgets/details_header.dart';
 import '../widgets/details_tab.dart';
 import '../widgets/invoice_tab.dart';
 import '../widgets/segmented_tabs.dart';
+import '../util/share_card_image.dart';
 import '../widgets/calendar_actions.dart';
 import '../widgets/product_documents_section.dart';
 import '../widgets/warranty_extras_section.dart';
@@ -92,23 +95,28 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return (product.daysRemaining / totalDays).clamp(0.0, 1.0);
   }
 
-  String get _shareText {
+  /// The product details, one per line, for the share text and the share
+  /// image. No receipt link: the photo itself is attached when there is one,
+  /// and the link would let anyone who sees the message open the receipt.
+  List<String> get _shareLines {
     final l10n = AppLocalizations.of(context)!;
-    final buffer = StringBuffer()
-      ..writeln(product.name)
-      ..writeln(CategoryUi.label(context, product.category));
-    if (product.brand != null) buffer.writeln(l10n.shareBrand(product.brand!));
-    if (product.store != null) buffer.writeln(l10n.shareStore(product.store!));
-    if (product.price != null) {
-      buffer.writeln(l10n.sharePrice(product.currency, product.price!.toStringAsFixed(2)));
-    }
-    buffer
-      ..writeln(l10n.sharePurchased(_formatDate(product.purchaseDate)))
-      ..writeln(l10n.shareWarranty(product.warrantyMonths))
-      ..writeln(l10n.shareExpires(_formatDate(product.warrantyEndDate)));
-    if (product.receiptUrl != null) buffer.writeln(l10n.shareInvoiceUrl(product.receiptUrl!));
-    return buffer.toString();
+    return [
+      CategoryUi.label(context, product.category),
+      if (product.brand != null) l10n.shareBrand(product.brand!),
+      if (product.store != null) l10n.shareStore(product.store!),
+      if (product.price != null) l10n.sharePrice(product.currency, product.price!.toStringAsFixed(2)),
+      l10n.sharePurchased(_formatDate(product.purchaseDate)),
+      l10n.shareWarranty(product.warrantyMonths),
+      l10n.shareExpires(_formatDate(product.warrantyEndDate)),
+      if (product.serialNumber != null) '${l10n.serialNumber}: ${product.serialNumber}',
+    ];
   }
+
+  String get _shareText => [product.name, ..._shareLines].join('\n');
+
+  /// Chosen in the share sheet: one image with the details drawn on it, or
+  /// the photo with the details as text.
+  bool _shareAsImageCard = false;
 
   String _formatDate(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
@@ -117,11 +125,57 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   /// downloads the photo first and the listener opens the share sheet. With no
   /// invoice, shares the details alone.
   Future<void> _share() async {
-    if (product.receiptUrl != null || product.imageUrl != null) {
-      context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
+    if (product.receiptUrl == null && product.imageUrl == null) {
+      await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
       return;
     }
-    await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
+    final l10n = AppLocalizations.of(context)!;
+    final asImageCard = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(AppIcons.receipt),
+              title: Text(l10n.shareImageWithDetails),
+              subtitle: Text(l10n.shareImageWithDetailsHint),
+              onTap: () => Navigator.of(sheetContext).pop(true),
+            ),
+            ListTile(
+              leading: const Icon(AppIcons.share),
+              title: Text(l10n.sharePhotoAndText),
+              subtitle: Text(l10n.sharePhotoAndTextHint),
+              onTap: () => Navigator.of(sheetContext).pop(false),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+    if (asImageCard == null || !mounted) return;
+    _shareAsImageCard = asImageCard;
+    context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
+  }
+
+  /// Draws the details under the downloaded receipt photo and shares that
+  /// single image.
+  Future<void> _shareImageCard(String photoPath) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final cardPath = await composeShareCard(
+        photoBytes: await File(photoPath).readAsBytes(),
+        title: product.name,
+        lines: _shareLines,
+        footer: l10n.appTagline,
+        textDirection: Directionality.of(context),
+      );
+      if (!mounted) return;
+      await _openShareSheet(ShareParams(files: [XFile(cardPath, mimeType: 'image/png')], subject: product.name));
+    } catch (_) {
+      if (mounted) _showSnack(l10n.couldNotShare, isError: true);
+    }
   }
 
   Future<void> _openShareSheet(ShareParams params) async {
@@ -187,11 +241,15 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
       listener: (context, state) {
         switch (state) {
           case DetailsDownloadReady(:final filePath, :final shareText):
-            _openShareSheet(ShareParams(
-              files: [XFile(filePath, mimeType: 'image/jpeg')],
-              text: shareText,
-              subject: product.name,
-            ));
+            if (_shareAsImageCard) {
+              _shareImageCard(filePath);
+            } else {
+              _openShareSheet(ShareParams(
+                files: [XFile(filePath, mimeType: 'image/jpeg')],
+                text: shareText,
+                subject: product.name,
+              ));
+            }
           case DetailsGallerySaved():
             _showSnack(l10n.invoiceSavedToPhotos);
           case DetailsDeleted():

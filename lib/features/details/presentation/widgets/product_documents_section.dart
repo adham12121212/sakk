@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/service/pdf_invoice_reader.dart';
 import '../../../../core/theme/app_icons.dart';
@@ -69,7 +74,7 @@ class ProductDocumentsSection extends StatelessWidget {
                   button: true,
                   label: documentKindLabel(l10n, document.kind),
                   child: InkWell(
-                    onTap: () => _openDocument(context, document, canEdit: canEdit && !busy),
+                    onTap: () => _openDocument(context, document, product: product, canEdit: canEdit && !busy),
                     borderRadius: BorderRadius.circular(14),
                     child: SizedBox(
                       width: 96,
@@ -110,7 +115,12 @@ class ProductDocumentsSection extends StatelessWidget {
   }
 }
 
-Future<void> _openDocument(BuildContext context, ProductDocument document, {required bool canEdit}) {
+Future<void> _openDocument(
+  BuildContext context,
+  ProductDocument document, {
+  required ProductEntity product,
+  required bool canEdit,
+}) {
   final cubit = context.read<DetailsCubit>();
   final l10n = AppLocalizations.of(context)!;
   return showDialog<void>(
@@ -139,6 +149,11 @@ Future<void> _openDocument(BuildContext context, ProductDocument document, {requ
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
+                IconButton(
+                  tooltip: l10n.share,
+                  icon: const Icon(AppIcons.share, color: Colors.white),
+                  onPressed: () => _shareDocument(dialogContext, document, product),
+                ),
                 if (canEdit)
                   IconButton(
                     tooltip: l10n.delete,
@@ -155,6 +170,27 @@ Future<void> _openDocument(BuildContext context, ProductDocument document, {requ
       ),
     ),
   );
+}
+
+/// Downloads the document and opens the share sheet with it (e.g. to send a
+/// warranty card on Messenger), captioned with its kind and the product.
+Future<void> _shareDocument(BuildContext context, ProductDocument document, ProductEntity product) async {
+  final l10n = AppLocalizations.of(context)!;
+  try {
+    final response = await http.get(Uri.parse(document.url)).timeout(const Duration(seconds: 30));
+    if (response.statusCode != 200) throw Exception('HTTP ${response.statusCode}');
+    final isPng = document.path.toLowerCase().endsWith('.png');
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/sakk_document_${DateTime.now().millisecondsSinceEpoch}.${isPng ? 'png' : 'jpg'}');
+    await file.writeAsBytes(response.bodyBytes);
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile(file.path, mimeType: isPng ? 'image/png' : 'image/jpeg')],
+      text: '${documentKindLabel(l10n, document.kind)}: ${product.name}',
+      subject: product.name,
+    ));
+  } catch (_) {
+    if (context.mounted) AppSnackBar.error(context, l10n.couldNotShare);
+  }
 }
 
 Future<void> _showAddDocumentSheet(BuildContext context, ProductEntity product) {
