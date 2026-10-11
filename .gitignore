@@ -48,3 +48,6 @@ app.*.map.json
 
 # Supabase CLI local state (linked project, versions, pooler URL)
 supabase/.temp/
+
+# Firebase deploy cache
+.firebase/
