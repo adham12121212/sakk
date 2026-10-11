@@ -366,12 +366,5 @@
   "calendarEventDescription": "Added from Sakk for {product}.",
   "couldNotOpenCalendar": "Couldn't open your calendar app.",
   "onboardingFamilyTitle": "Share with Your Family",
-  "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products.",
-  "shareImageWithDetails": "Image with details",
-  "shareImageWithDetailsHint": "One image: the receipt with the product details under it. Best for Messenger.",
-  "sharePhotoAndText": "Photo and text",
-  "sharePhotoAndTextHint": "The receipt photo, with the details as a message.",
-  "shareTextOnly": "Text",
-  "shareTextOnlyHint": "The product details as a message.",
-  "sharedFromSakk": "Shared from Sakk"
+  "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products."
 }

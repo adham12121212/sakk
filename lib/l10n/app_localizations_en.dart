@@ -1212,27 +1212,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingFamilyDescription =>
       'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.';
-
-  @override
-  String get shareImageWithDetails => 'Image with details';
-
-  @override
-  String get shareImageWithDetailsHint =>
-      'One image: the receipt with the product details under it. Best for Messenger.';
-
-  @override
-  String get sharePhotoAndText => 'Photo and text';
-
-  @override
-  String get sharePhotoAndTextHint =>
-      'The receipt photo, with the details as a message.';
-
-  @override
-  String get shareTextOnly => 'Text';
-
-  @override
-  String get shareTextOnlyHint => 'The product details as a message.';
-
-  @override
-  String get sharedFromSakk => 'Shared from Sakk';
 }

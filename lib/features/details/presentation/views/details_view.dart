@@ -137,60 +137,14 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return product.isExpired ? _statusLabel : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining)}';
   }
 
-  String get _shareText {
-    final l10n = AppLocalizations.of(context)!;
-    return [
-      product.name,
-      _shareSubtitle,
-      _shareStatus,
-      '',
-      for (final (label, value) in _shareRows) '$label: $value',
-      '',
-      l10n.sharedFromSakk,
-    ].join('\n');
-  }
-
-  /// Chosen in the share sheet: one image with everything on it, or plain
-  /// text (with the receipt photo attached when there is one).
-  bool _shareAsImageCard = false;
-
-  bool get _hasPhoto => product.receiptUrl != null || product.imageUrl != null;
-
+  /// Shares the product as one image: the details card, with the receipt
+  /// photo when there is one (downloaded first; the listener continues with
+  /// DetailsDownloadReady).
   Future<void> _share() async {
-    final l10n = AppLocalizations.of(context)!;
-    final asImageCard = await showModalBottomSheet<bool>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(AppIcons.receipt),
-              title: Text(l10n.shareImageWithDetails),
-              subtitle: Text(l10n.shareImageWithDetailsHint),
-              onTap: () => Navigator.of(sheetContext).pop(true),
-            ),
-            ListTile(
-              leading: const Icon(AppIcons.share),
-              title: Text(_hasPhoto ? l10n.sharePhotoAndText : l10n.shareTextOnly),
-              subtitle: Text(_hasPhoto ? l10n.sharePhotoAndTextHint : l10n.shareTextOnlyHint),
-              onTap: () => Navigator.of(sheetContext).pop(false),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-    if (asImageCard == null || !mounted) return;
-    _shareAsImageCard = asImageCard;
-    if (_hasPhoto) {
-      // Downloads the photo; the listener continues with DetailsDownloadReady.
-      context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
-    } else if (asImageCard) {
-      await _shareImageCard(null);
+    if (product.receiptUrl != null || product.imageUrl != null) {
+      context.read<DetailsCubit>().downloadInvoice(product);
     } else {
-      await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
+      await _shareImageCard(null);
     }
   }
 
@@ -281,16 +235,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return BlocListener<DetailsCubit, DetailsState>(
       listener: (context, state) {
         switch (state) {
-          case DetailsDownloadReady(:final filePath, :final shareText):
-            if (_shareAsImageCard) {
-              _shareImageCard(filePath);
-            } else {
-              _openShareSheet(ShareParams(
-                files: [XFile(filePath, mimeType: 'image/jpeg')],
-                text: shareText,
-                subject: product.name,
-              ));
-            }
+          case DetailsDownloadReady(:final filePath):
+            _shareImageCard(filePath);
           case DetailsGallerySaved():
             _showSnack(l10n.invoiceSavedToPhotos);
           case DetailsDeleted():

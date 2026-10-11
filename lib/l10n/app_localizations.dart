@@ -2167,48 +2167,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.'**
   String get onboardingFamilyDescription;
-
-  /// No description provided for @shareImageWithDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Image with details'**
-  String get shareImageWithDetails;
-
-  /// No description provided for @shareImageWithDetailsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'One image: the receipt with the product details under it. Best for Messenger.'**
-  String get shareImageWithDetailsHint;
-
-  /// No description provided for @sharePhotoAndText.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo and text'**
-  String get sharePhotoAndText;
-
-  /// No description provided for @sharePhotoAndTextHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The receipt photo, with the details as a message.'**
-  String get sharePhotoAndTextHint;
-
-  /// No description provided for @shareTextOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Text'**
-  String get shareTextOnly;
-
-  /// No description provided for @shareTextOnlyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The product details as a message.'**
-  String get shareTextOnlyHint;
-
-  /// No description provided for @sharedFromSakk.
-  ///
-  /// In en, this message translates to:
-  /// **'Shared from Sakk'**
-  String get sharedFromSakk;
 }
 
 class _AppLocalizationsDelegate

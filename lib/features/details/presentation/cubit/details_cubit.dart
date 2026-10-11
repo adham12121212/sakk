@@ -87,9 +87,8 @@ class DetailsCubit extends Cubit<DetailsState> {
   }
 
 
-  /// Downloads the invoice photo to a temporary file so the share sheet can
-  /// attach it; [shareText] (the product details) goes along with it.
-  Future<void> downloadInvoice(ProductEntity product, {required String shareText}) async {
+  /// Downloads the invoice photo to a temporary file for the share image.
+  Future<void> downloadInvoice(ProductEntity product) async {
     final url = product.receiptUrl ?? product.imageUrl;
     if (url == null) {
       emit(const DetailsActionError('no_invoice_url'));
@@ -108,7 +107,7 @@ class DetailsCubit extends Cubit<DetailsState> {
       final file = File('${tempDir.path}/${safeName}_invoice.jpg');
       await file.writeAsBytes(response.bodyBytes);
       if (isClosed) return;
-      emit(DetailsDownloadReady(file.path, shareText));
+      emit(DetailsDownloadReady(file.path, product.name));
     } catch (_) {
       if (isClosed) return;
       emit(const DetailsActionError('share_failed'));

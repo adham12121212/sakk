@@ -345,12 +345,5 @@
   "calendarEventDescription": "أضيف من تطبيق صك لـ {product}.",
   "couldNotOpenCalendar": "تعذّر فتح تطبيق التقويم.",
   "onboardingFamilyTitle": "شارك عائلتك",
-  "onboardingFamilyDescription": "أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك.",
-  "shareImageWithDetails": "صورة مع التفاصيل",
-  "shareImageWithDetailsHint": "صورة واحدة: الفاتورة وتحتها تفاصيل المنتج. الأفضل لماسنجر.",
-  "sharePhotoAndText": "صورة ونص",
-  "sharePhotoAndTextHint": "صورة الفاتورة، مع التفاصيل كرسالة.",
-  "shareTextOnly": "نص",
-  "shareTextOnlyHint": "تفاصيل المنتج كرسالة.",
-  "sharedFromSakk": "تمت المشاركة من تطبيق صك"
+  "onboardingFamilyDescription": "أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك."
 }
