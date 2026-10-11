@@ -81,16 +81,16 @@ Features use clean architecture layers, but only the ones they need:
 
 ### Requirements
 
-- Flutter with Dart `^3.11.5`
-- Java 17 or 21 for Android builds. Gradle 8.14 does not run on Java 25; if that is your default, use Android Studio's bundled JDK:
+- Flutter 3.41 (stable) or newer — the project needs Dart `^3.11.5`
+- **Android:** Android Studio and the Android SDK. Gradle needs Java 17 or 21; Gradle 8.14 does not run on Java 25. If that is your default, use Android Studio's bundled JDK:
   ```
   export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
   ```
-- Xcode and CocoaPods for iOS
+- **iOS:** Xcode and CocoaPods. The Podfile targets iOS 15.0.
 
 ### Environment
 
-Create a `.env` file in the project root (it is git-ignored and bundled as an asset):
+Create a `.env` file in the project root. It is git-ignored, but it is listed as an asset in `pubspec.yaml`, so **the app will not build without it**:
 
 ```
 SUPABASE_URL=
@@ -99,6 +99,10 @@ GOOGLE_WEB_CLIENT_ID=
 GOOGLE_IOS_CLIENT_ID=
 ```
 
+The Firebase config (`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`) is committed, so Crashlytics works without extra setup.
+
+If you use a different `GOOGLE_IOS_CLIENT_ID`, also update the reversed client ID in `CFBundleURLSchemes` in `ios/Runner/Info.plist`.
+
 ### Run
 
 ```
@@ -106,7 +110,27 @@ flutter pub get
 flutter run
 ```
 
-Translations are generated from `lib/l10n/*.arb` automatically on build.
+On iOS, `flutter run` installs the pods automatically. Translations are generated from `lib/l10n/*.arb` on build; after editing an ARB file, run `flutter gen-l10n` to update them without a full build.
+
+### Test and lint
+
+```
+flutter test
+flutter analyze
+```
+
+### iOS home screen widget
+
+The widget's Swift code is in `ios/SakkWarrantyWidget`, but its Xcode target and the `group.com.sakk.app` App Group have to be set up once in Xcode. Follow [`ios/SakkWarrantyWidget/README.md`](ios/SakkWarrantyWidget/README.md). The Android widget needs no setup.
+
+### Regenerating icons and splash
+
+After changing the artwork in `assets/`:
+
+```
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
 
 ## Google sign-in
 
