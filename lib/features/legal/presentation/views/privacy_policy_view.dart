@@ -111,10 +111,10 @@ const List<_LegalSection> _enSections = [
     'Supabase provides sign-in, our database, file storage and the server '
         'functions that talk to the AI provider. Groq (our current AI provider) '
         'processes scanned receipts and assistant messages as described above. '
-        'Sentry receives crash reports; before a report leaves your device we '
-        'remove email addresses and private links. Google processes Google '
-        'sign-in, and Firebase provides app services. Each provider handles '
-        'data under its own privacy policy.',
+        'Firebase Crashlytics (Google) receives crash reports; before a report '
+        'leaves your device we remove email addresses and private links. Google '
+        'processes Google sign-in, and Firebase provides app services. Each '
+        'provider handles data under its own privacy policy.',
   ),
   _LegalSection(
     'Device permissions',
@@ -233,7 +233,7 @@ const List<_LegalSection> _arSections = [
     'يوفّر Supabase تسجيل الدخول وقاعدة البيانات وتخزين الملفات ووظائف '
         'الخادم التي تتواصل مع مزوّد الذكاء الاصطناعي. تعالج Groq (مزوّد الذكاء '
         'الاصطناعي الحالي) الفواتير الممسوحة ورسائل المساعد كما هو موضّح أعلاه. '
-        'تستقبل Sentry تقارير الأعطال، ونزيل منها عناوين البريد والروابط الخاصة '
+        'تستقبل Firebase Crashlytics (من جوجل) تقارير الأعطال، ونزيل منها عناوين البريد والروابط الخاصة '
         'قبل أن تغادر جهازك. تعالج جوجل تسجيل الدخول بحساب جوجل، وتوفّر Firebase '
         'خدمات للتطبيق. يخضع كل مزوّد لسياسة الخصوصية الخاصة به.',
   ),

@@ -7,7 +7,7 @@ import 'package:sakk/features/products/presentation/util/products_csv_export.dar
 import 'package:sakk/l10n/app_localizations_en.dart';
 
 void main() {
-  group('PiiMasker.scrub (before anything is sent to Sentry)', () {
+  group('PiiMasker.scrub (before anything is sent to Crashlytics)', () {
     test('removes emails, signed-link tokens and JWTs', () {
       const url = 'https://x.supabase.co/storage/v1/object/sign/receipts/u1/1.jpg?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ4In0.sig-abc_123';
       final out = PiiMasker.scrub('failed for ahmed@mail.com at $url');

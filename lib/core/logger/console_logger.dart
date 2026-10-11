@@ -1,6 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-import '../util/pii_masker.dart';
 import 'app_logger.dart';
 import 'crash_reporting.dart';
 
@@ -27,27 +25,17 @@ class ConsoleLogger implements AppLogger {
       if (error != null) debugPrint('  ↳ error: $error');
       if (stackTrace != null) debugPrint('  ↳ stackTrace: $stackTrace');
     }
-    _reportToSentry(message, error, stackTrace, data);
+    _report(message, error, stackTrace, data);
   }
 
-  // No-op when Sentry isn't initialized (debug builds or no SENTRY_DSN).
-  void _reportToSentry(String message, Object? error, StackTrace? stackTrace, Map<String, dynamic>? data) {
-    void addLogContext(Scope scope) {
-      scope.setContexts('log', {
-        'message': PiiMasker.scrub(message),
-        ...?CrashReporting.scrubData(data),
-      });
-    }
-
-    if (error != null) {
-      Sentry.captureException(error, stackTrace: stackTrace, withScope: addLogContext);
-    } else {
-      Sentry.captureMessage(
-        PiiMasker.scrub(message),
-        level: SentryLevel.error,
-        withScope: addLogContext,
-      );
-    }
+  // Crashlytics drops these in debug builds (collection is off there).
+  void _report(String message, Object? error, StackTrace? stackTrace, Map<String, dynamic>? data) {
+    CrashReporting.recordError(
+      error ?? message,
+      stackTrace ?? StackTrace.current,
+      reason: message,
+      data: data,
+    );
   }
 
   void _log(String level, String message, Map<String, dynamic>? data) {

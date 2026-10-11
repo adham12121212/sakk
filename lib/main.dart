@@ -27,15 +27,15 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Loaded first: CrashReporting reads SENTRY_DSN from it.
   await dotenv.load(fileName: ".env");
-  await CrashReporting.init(appRunner: _bootstrap);
-}
-
-Future<void> _bootstrap() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await CrashReporting.init();
+  await _bootstrap();
+}
+
+Future<void> _bootstrap() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

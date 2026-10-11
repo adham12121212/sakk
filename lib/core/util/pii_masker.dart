@@ -12,7 +12,7 @@ class PiiMasker {
   static final _emailPattern = RegExp(r'''[^\s@'"<>(),;:]+@[^\s@'"<>(),;:]+\.[A-Za-z]{2,}''');
 
   /// Replaces every email-like substring with `[email]`. Used before anything
-  /// leaves the device (e.g. Sentry), where even masked emails aren't allowed.
+  /// leaves the device (e.g. Crashlytics), where even masked emails aren't allowed.
   static String scrubEmails(String text) => text.replaceAll(_emailPattern, '[email]');
 
   // Signed storage links (`?token=...`) and bare JWTs open private files or
