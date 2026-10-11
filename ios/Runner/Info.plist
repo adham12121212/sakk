@@ -22,6 +22,18 @@
 		<string>$(FLUTTER_BUILD_NAME)</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
+		<!-- Google Sign-In: reversed iOS client ID (GOOGLE_IOS_CLIENT_ID in .env). -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.285156184406-62qbmhokuj1gb2emm7k13s1hao9hi20r</string>
+				</array>
+			</dict>
+		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
@@ -74,5 +86,13 @@
 	<string>Sakk adds warranty end dates and return deadlines to your calendar when you ask it to.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>The calendar's new-event screen can suggest locations from your contacts.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Sakk uses Face ID to unlock the app when you turn on biometric lock.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Sakk uses the camera to scan receipts and take photos of your products.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Sakk lets you choose receipt and product photos from your library.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Sakk saves product images to your Photos when you ask it to.</string>
 </dict>
 </plist>
