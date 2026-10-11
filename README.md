@@ -4,14 +4,14 @@ A Flutter app for tracking purchases, warranties, returns and receipts. Availabl
 
 ## Features
 
-- **Products** — record purchases with their receipts, warranty and return windows; export to CSV.
-- **Receipt scanning** — extract purchase details from a photo or PDF of a receipt.
-- **AI chat** — ask questions about your purchases.
-- **Households** — share products with other people.
-- **Reminders** — local notifications and calendar events before warranties and return windows end.
-- **Home screen widget** — upcoming warranty expiries at a glance.
+- **Products** — record purchases with their warranty and return window. Each product can hold documents (receipt, warranty card, photos, manual), extra warranties from other providers, and warranty claims tracked from submitted to resolved or rejected. The app warns before you save a likely duplicate (same invoice number, serial number, or name and date). Search by name, brand, store, serial or invoice number, and share all products as a CSV file.
+- **Receipt scanning** — take a photo, pick an image, or choose a PDF of a receipt, invoice or warranty card (Arabic, English or both). AI fills in the product, brand, store, price, purchase date, warranty length, serial and invoice numbers and category for you to review before saving. Prices are in EGP; receipts in another currency show the original amount.
+- **AI chat** — an assistant that knows your products and their warranty dates. It helps with using the app, warranty rights, what to do when something breaks, and buying advice, and declines unrelated topics.
+- **Households** — create a household or join one with a 10-character invite code; members see each other's products. The owner can remove members and generate a new code.
+- **Reminders** — local notifications before a warranty ends (90, 30, 7 or 1 days ahead, your choice) and 2 days before a return window closes, plus an in-app notifications list. You can also add the warranty end or return deadline to your calendar.
+- **Home screen widget** — shows the next warranty to end and its end date, on Android and iOS.
 - **Analytics** — total spent (can be hidden), spending by year, top 5 stores, a category breakdown donut chart, and how many warranties are active, expiring or expired; switch between your own products and the household's.
-- **Sign-in** — email/password or Google, with optional biometric lock.
+- **Account** — sign in with email and password or Google, reset a forgotten password with an emailed code, and delete your account. An optional biometric lock asks for your fingerprint or face when the app opens.
 
 ## Tech stack
 
