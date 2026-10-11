@@ -68,5 +68,11 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
-	</dict>
+		<key>NSCalendarsUsageDescription</key>
+	<string>Sakk adds warranty end dates and return deadlines to your calendar when you ask it to.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Sakk adds warranty end dates and return deadlines to your calendar when you ask it to.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>The calendar's new-event screen can suggest locations from your contacts.</string>
+</dict>
 </plist>

@@ -44,7 +44,8 @@ say the app doesn't have it rather than inventing it):
   button exports all products as a spreadsheet (CSV) that opens in Excel.
 - Product details: warranty ring with days left and expiry date, Details and
   Invoice tabs, and Edit, Delete, Share and Download Invoice (saves the receipt
-  photo) actions. The Details tab also shows the return-by date and has:
+  photo) actions. The Details tab also shows the return-by date, buttons to add
+  the warranty end date or return deadline to the phone's calendar, and has:
   - Extra warranties: "Add warranty" records an extended or store warranty
     (provider, start date, months). The product counts as covered until the
     latest end date.
@@ -57,8 +58,10 @@ say the app doesn't have it rather than inventing it):
 - Notifications: the app reminds the user before a warranty ends (they choose
   how early in Profile: 3 months, 1 month, 1 week or 1 day), when it ends, and
   before a return window closes.
-- Analytics: total spent (the eye button on that card hides the amount),
-  warranty status overview and spending per category.
+- Analytics: total spent (hidden by default; the eye button or tapping the
+  amount shows it), warranty status overview, spending per category, spending
+  by year and top stores. In a household, a Mine / Household switch at the top
+  chooses whose products are counted (Mine by default).
 - Profile (tap the avatar on Home): photo, language (Arabic or English), theme
   (Light, Dark, Auto), warranty reminder timing, Face ID / fingerprint login,
   Log Out and Delete account.

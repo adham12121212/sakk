@@ -19,6 +19,7 @@ import '../widgets/details_header.dart';
 import '../widgets/details_tab.dart';
 import '../widgets/invoice_tab.dart';
 import '../widgets/segmented_tabs.dart';
+import '../widgets/calendar_actions.dart';
 import '../widgets/product_documents_section.dart';
 import '../widgets/warranty_extras_section.dart';
 import '../widgets/warrenty_banner.dart';
@@ -244,6 +245,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           DetailsTab(product: product),
+                          CalendarActions(product: product),
                           ProductDocumentsSection(product: product, canEdit: _isMine),
                           WarrantyExtrasSection(product: product, canEdit: _isMine),
                         ],

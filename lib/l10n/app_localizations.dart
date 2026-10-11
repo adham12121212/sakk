@@ -2095,6 +2095,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose PDF'**
   String get choosePdf;
+
+  /// No description provided for @analyticsMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get analyticsMine;
+
+  /// No description provided for @analyticsHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Household'**
+  String get analyticsHousehold;
+
+  /// No description provided for @spendingByYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by year'**
+  String get spendingByYear;
+
+  /// No description provided for @topStores.
+  ///
+  /// In en, this message translates to:
+  /// **'Top stores'**
+  String get topStores;
+
+  /// No description provided for @addWarrantyEndToCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Add warranty end to calendar'**
+  String get addWarrantyEndToCalendar;
+
+  /// No description provided for @addReturnDeadlineToCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Add return deadline to calendar'**
+  String get addReturnDeadlineToCalendar;
+
+  /// No description provided for @calendarWarrantyEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty ends: {product}'**
+  String calendarWarrantyEnds(Object product);
+
+  /// No description provided for @calendarReturnDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Last day to return: {product}'**
+  String calendarReturnDeadline(Object product);
+
+  /// No description provided for @calendarEventDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Added from Sakk for {product}.'**
+  String calendarEventDescription(Object product);
+
+  /// No description provided for @couldNotOpenCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open your calendar app.'**
+  String get couldNotOpenCalendar;
 }
 
 class _AppLocalizationsDelegate

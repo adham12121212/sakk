@@ -167,11 +167,42 @@ class ProductDataSourceImpl implements ProductDataSource {
 
   @override
   Future<void> deleteProduct(String id) async {
+    final List<String> files;
     try {
+      // Read the file paths first: deleting the product deletes its document
+      // rows too (cascade), but not the files in storage.
+      final row = await _client
+          .from('products')
+          .select('receipt_url, image_url, product_documents(file_path)')
+          .eq('id', id)
+          .maybeSingle();
+      files = row == null
+          ? const []
+          : {
+              for (final url in [row['receipt_url'], row['image_url']])
+                if (url is String) receiptPathFromUrl(url),
+              for (final d in (row['product_documents'] as List? ?? const []))
+                (d as Map<String, dynamic>)['file_path'] as String?,
+            }.whereType<String>().toList();
       await _client.from('products').delete().eq('id', id);
     } catch (e) {
       throw ServerException('Failed to delete product: $e');
     }
+    // After the row is gone, so a failed delete never leaves a product
+    // without its photos. Best effort: deleteReceiptImage never throws.
+    for (final path in files) {
+      await deleteReceiptImage(path);
+    }
+  }
+
+  /// Storage path of a signed receipts URL
+  /// (`.../storage/v1/object/sign/receipts/<path>?token=...`), or null for
+  /// any other URL.
+  static String? receiptPathFromUrl(String url) {
+    final segments = Uri.tryParse(url)?.pathSegments ?? const [];
+    final i = segments.indexOf('sign');
+    if (i < 0 || i + 2 >= segments.length || segments[i + 1] != _receiptsBucket) return null;
+    return segments.sublist(i + 2).join('/');
   }
 
   @override

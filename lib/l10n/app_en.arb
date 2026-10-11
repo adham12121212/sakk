@@ -354,5 +354,15 @@
   "documentProductPhoto": "Product photo",
   "documentManual": "Manual",
   "documentOther": "Other",
-  "choosePdf": "Choose PDF"
+  "choosePdf": "Choose PDF",
+  "analyticsMine": "Mine",
+  "analyticsHousehold": "Household",
+  "spendingByYear": "Spending by year",
+  "topStores": "Top stores",
+  "addWarrantyEndToCalendar": "Add warranty end to calendar",
+  "addReturnDeadlineToCalendar": "Add return deadline to calendar",
+  "calendarWarrantyEnds": "Warranty ends: {product}",
+  "calendarReturnDeadline": "Last day to return: {product}",
+  "calendarEventDescription": "Added from Sakk for {product}.",
+  "couldNotOpenCalendar": "Couldn't open your calendar app."
 }

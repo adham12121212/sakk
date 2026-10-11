@@ -1176,4 +1176,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get choosePdf => 'اختيار ملف PDF';
+
+  @override
+  String get analyticsMine => 'منتجاتي';
+
+  @override
+  String get analyticsHousehold => 'العائلة';
+
+  @override
+  String get spendingByYear => 'الإنفاق حسب السنة';
+
+  @override
+  String get topStores => 'أكثر المتاجر';
+
+  @override
+  String get addWarrantyEndToCalendar => 'أضف انتهاء الضمان إلى التقويم';
+
+  @override
+  String get addReturnDeadlineToCalendar =>
+      'أضف آخر موعد للاسترجاع إلى التقويم';
+
+  @override
+  String calendarWarrantyEnds(Object product) {
+    return 'انتهاء الضمان: $product';
+  }
+
+  @override
+  String calendarReturnDeadline(Object product) {
+    return 'آخر يوم للاسترجاع: $product';
+  }
+
+  @override
+  String calendarEventDescription(Object product) {
+    return 'أضيف من تطبيق صك لـ $product.';
+  }
+
+  @override
+  String get couldNotOpenCalendar => 'تعذّر فتح تطبيق التقويم.';
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../auth/domain/usecase/get_user_usecase.dart';
+import '../../../auth/presentation/widgets/semented_toggle.dart';
+import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../widgets/category_break_down_card.dart';
+import '../widgets/spending_insights_card.dart';
 import '../widgets/total_spent_card.dart';
 import '../widgets/warranty_status_card.dart';
 
@@ -18,6 +23,8 @@ class AnalyticsView extends StatefulWidget {
 }
 
 class _AnalyticsViewState extends State<AnalyticsView> {
+  /// In a household: only my products (default) or everyone's.
+  bool _householdScope = false;
   @override
   void initState() {
     super.initState();
@@ -31,8 +38,15 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       body: SafeArea(
         bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
-          builder: (context, state) {
+          builder: (context, allState) {
             final refresh = context.read<ProductsCubit>().refresh;
+            final myId = getIt<GetUserUseCase>()()?.id;
+            final inHousehold = getIt<HouseholdCubit>().state.members.length > 1;
+            // Family sharing shows members' products everywhere; totals here
+            // are your own unless you choose the whole household.
+            final state = inHousehold && _householdScope
+                ? allState
+                : allState.copyWith(products: allState.products.where((p) => p.isOwnedBy(myId)).toList());
             return AppRefreshIndicator(
               onRefresh: refresh,
               child: Column(
@@ -55,11 +69,21 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                             children: [
+                              if (inHousehold) ...[
+                                SegmentedToggle<bool>(
+                                  options: {false: l10n.analyticsMine, true: l10n.analyticsHousehold},
+                                  selected: _householdScope,
+                                  onChanged: (v) => setState(() => _householdScope = v),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
                               TotalSpentCard(state: state, l10n: l10n),
                               const SizedBox(height: 16),
                               WarrantyStatusCard(state: state, l10n: l10n),
                               const SizedBox(height: 16),
                               CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
+                              const SizedBox(height: 16),
+                              SpendingInsightsCard(products: state.products, l10n: l10n),
                             ],
                           ),
                   ),

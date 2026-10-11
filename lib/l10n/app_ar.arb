@@ -333,5 +333,15 @@
   "documentProductPhoto": "صورة المنتج",
   "documentManual": "دليل الاستخدام",
   "documentOther": "أخرى",
-  "choosePdf": "اختيار ملف PDF"
+  "choosePdf": "اختيار ملف PDF",
+  "analyticsMine": "منتجاتي",
+  "analyticsHousehold": "العائلة",
+  "spendingByYear": "الإنفاق حسب السنة",
+  "topStores": "أكثر المتاجر",
+  "addWarrantyEndToCalendar": "أضف انتهاء الضمان إلى التقويم",
+  "addReturnDeadlineToCalendar": "أضف آخر موعد للاسترجاع إلى التقويم",
+  "calendarWarrantyEnds": "انتهاء الضمان: {product}",
+  "calendarReturnDeadline": "آخر يوم للاسترجاع: {product}",
+  "calendarEventDescription": "أضيف من تطبيق صك لـ {product}.",
+  "couldNotOpenCalendar": "تعذّر فتح تطبيق التقويم."
 }

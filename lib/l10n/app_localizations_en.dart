@@ -1169,4 +1169,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choosePdf => 'Choose PDF';
+
+  @override
+  String get analyticsMine => 'Mine';
+
+  @override
+  String get analyticsHousehold => 'Household';
+
+  @override
+  String get spendingByYear => 'Spending by year';
+
+  @override
+  String get topStores => 'Top stores';
+
+  @override
+  String get addWarrantyEndToCalendar => 'Add warranty end to calendar';
+
+  @override
+  String get addReturnDeadlineToCalendar => 'Add return deadline to calendar';
+
+  @override
+  String calendarWarrantyEnds(Object product) {
+    return 'Warranty ends: $product';
+  }
+
+  @override
+  String calendarReturnDeadline(Object product) {
+    return 'Last day to return: $product';
+  }
+
+  @override
+  String calendarEventDescription(Object product) {
+    return 'Added from Sakk for $product.';
+  }
+
+  @override
+  String get couldNotOpenCalendar => 'Couldn\'t open your calendar app.';
 }

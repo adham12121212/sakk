@@ -1,4 +1,6 @@
 PODS:
+  - add_2_calendar (0.0.1):
+    - Flutter
   - app_links (7.0.0):
     - Flutter
   - AppAuth (2.1.0):
@@ -96,6 +98,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - app_links (from `.symlinks/plugins/app_links/ios`)
   - file_picker_darwin (from `.symlinks/plugins/file_picker_darwin/darwin`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -132,6 +135,8 @@ SPEC REPOS:
     - Sentry
 
 EXTERNAL SOURCES:
+  add_2_calendar:
+    :path: ".symlinks/plugins/add_2_calendar/ios"
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
   file_picker_darwin:
@@ -170,6 +175,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  add_2_calendar: a50f5fae640b878dfe08adc49bc844532e4b45e1
   app_links: a754cbec3c255bd4bbb4d236ecc06f28cd9a7ce8
   AppAuth: ef4da5a3fc2e10b90c09a0a94a9baeaedc0341d5
   AppCheckCore: be8fce5469f68d7f6a29aa94b25f097409ff7fdc
