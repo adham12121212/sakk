@@ -26,7 +26,7 @@ class PrivacyPolicyView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isArabic ? 'آخر تحديث: [أضف التاريخ هنا]' : 'Last updated: [add date here]',
+                isArabic ? 'آخر تحديث: 11 أكتوبر 2026' : 'Last updated: October 11, 2026',
                 style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
               ),
               SizedBox(height: 20.h),
@@ -56,11 +56,6 @@ class _LegalSection {
   final String body;
 }
 
-// NOTE: replace the bracketed placeholders ([support email],
-// [Your Country/State], the "last updated" date above) with your real
-// details before shipping. This covers the substance Google Play
-// expects, but it is not a substitute for your own legal review —
-// especially the governing-law and liability sections.
 const List<_LegalSection> _enSections = [
   _LegalSection(
     'Introduction',
@@ -161,7 +156,7 @@ const List<_LegalSection> _enSections = [
         'Products screen. To delete your account and all associated data, use '
         'Profile > Delete account; this removes your products, photos, '
         'documents, notifications and household membership. You can also '
-        'contact us at [support email].',
+        'contact us at dev.adhamelnagar7@gmail.com.',
   ),
   _LegalSection(
     'Children\'s privacy',
@@ -182,7 +177,7 @@ const List<_LegalSection> _enSections = [
   _LegalSection(
     'Contact us',
     'Questions about this policy or your data can be sent to '
-        '[support email].',
+        'dev.adhamelnagar7@gmail.com.',
   ),
 ];
 
@@ -275,7 +270,7 @@ const List<_LegalSection> _arSections = [
         'كجدول بيانات من شاشة المنتجات. لحذف حسابك وكل البيانات المرتبطة به، '
         'استخدم الملف الشخصي > حذف الحساب، فيُحذف معه منتجاتك وصورك ومستنداتك '
         'وإشعاراتك وعضويتك في العائلة. ويمكنك أيضًا التواصل معنا على '
-        '[البريد الإلكتروني للدعم].',
+        'dev.adhamelnagar7@gmail.com.',
   ),
   _LegalSection(
     'خصوصية الأطفال',
@@ -296,6 +291,6 @@ const List<_LegalSection> _arSections = [
   _LegalSection(
     'تواصل معنا',
     'يمكن إرسال أي أسئلة حول هذه السياسة أو بياناتك إلى '
-        '[البريد الإلكتروني للدعم].',
+        'dev.adhamelnagar7@gmail.com.',
   ),
 ];

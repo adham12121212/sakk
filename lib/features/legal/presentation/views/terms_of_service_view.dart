@@ -26,7 +26,7 @@ class TermsOfServiceView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isArabic ? 'آخر تحديث: [أضف التاريخ هنا]' : 'Last updated: [add date here]',
+                isArabic ? 'آخر تحديث: 11 أكتوبر 2026' : 'Last updated: October 11, 2026',
                 style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
               ),
               SizedBox(height: 20.h),
@@ -124,11 +124,11 @@ const List<_LegalSection> _enSections = [
   ),
   _LegalSection(
     'Governing law',
-    'These terms are governed by the laws of [Your Country/State].',
+    'These terms are governed by the laws of the Arab Republic of Egypt.',
   ),
   _LegalSection(
     'Contact us',
-    'Questions about these terms can be sent to [support email].',
+    'Questions about these terms can be sent to dev.adhamelnagar7@gmail.com.',
   ),
 ];
 
@@ -193,10 +193,10 @@ const List<_LegalSection> _arSections = [
   ),
   _LegalSection(
     'القانون الحاكم',
-    'تخضع هذه الشروط لقوانين [بلدك/ولايتك].',
+    'تخضع هذه الشروط لقوانين جمهورية مصر العربية.',
   ),
   _LegalSection(
     'تواصل معنا',
-    'يمكن إرسال أي أسئلة حول هذه الشروط إلى [البريد الإلكتروني للدعم].',
+    'يمكن إرسال أي أسئلة حول هذه الشروط إلى dev.adhamelnagar7@gmail.com.',
   ),
 ];

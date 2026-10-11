@@ -2,13 +2,11 @@
     <!-- Release builds: Supabase, Sentry, Google Fonts. (Debug/profile manifests already add this.) -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission
         android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
-        android:label="sakk"
+        android:label="Sakk"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -170,20 +170,7 @@ class NotificationService {
       developer.log('Android notification permission request failed: $e');
     }
 
-    // Android 12+ requires a separate exact-alarm permission for
-    // zonedSchedule with exactAllowWhileIdle. Without it, scheduling
-    // either throws or silently degrades to an inexact alarm.
-    try {
-      await _notifications
-          .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestExactAlarmsPermission();
-    } catch (e) {
-      developer.log('Exact alarm permission request failed: $e');
-    }
-
     _permissionGranted = (iosGranted ?? false) || (androidGranted ?? false);
-
 
     developer.log('>>> Notification permission granted: $_permissionGranted');
 
@@ -294,6 +281,9 @@ class NotificationService {
 
     final scheduledDate = tz.TZDateTime.from(dateTime, tz.local);
 
+    // Inexact on purpose: Play only allows the exact-alarm permission for
+    // alarm-clock and calendar apps, and a warranty reminder a few minutes
+    // late is fine.
     try {
       await _notifications.zonedSchedule(
         id: id,
@@ -301,33 +291,13 @@ class NotificationService {
         body: body,
         scheduledDate: scheduledDate,
         notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         payload: payload,
         matchDateTimeComponents: matchDateTimeComponents,
       );
       developer.log('>>> scheduleNotification CALLED OK: id=$id at $scheduledDate');
     } catch (e, stack) {
-      developer.log('>>> scheduleNotification THREW (exact): $e', stackTrace: stack);
-      // Fall back to an inexact schedule rather than losing the
-      // reminder entirely if exact-alarm permission was denied.
-      try {
-        await _notifications.zonedSchedule(
-          id: id,
-          title: title,
-          body: body,
-          scheduledDate: scheduledDate,
-          notificationDetails: details,
-          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          payload: payload,
-          matchDateTimeComponents: matchDateTimeComponents,
-        );
-        developer.log('>>> scheduleNotification CALLED OK (inexact fallback): id=$id');
-      } catch (e2, stack2) {
-        developer.log(
-          '>>> scheduleNotification THREW (inexact fallback too): $e2',
-          stackTrace: stack2,
-        );
-      }
+      developer.log('>>> scheduleNotification THREW: $e', stackTrace: stack);
     }
   }
 
