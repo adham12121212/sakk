@@ -1,5 +1,6 @@
 import '../../../category/domain/entities/product_category.dart';
 import '../../domain/enties/extra_warranty.dart';
+import '../../domain/enties/product_document.dart';
 import '../../domain/enties/product_entity.dart';
 import '../../domain/enties/warranty_claim.dart';
 
@@ -18,15 +19,17 @@ class ProductModel extends ProductEntity {
     super.notes,
     super.category,
     super.returnDays,
+    super.ownerId,
     super.serialNumber,
     super.invoiceNumber,
     super.extraWarranties,
     super.claims,
+    super.documents,
   });
 
   /// Columns to select so a product row arrives with its extra warranties
   /// and claims embedded (PostgREST follows the product_id foreign keys).
-  static const selectColumns = '*, product_warranties(*), warranty_claims(*)';
+  static const selectColumns = '*, product_warranties(*), warranty_claims(*), product_documents(*)';
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
@@ -43,6 +46,7 @@ class ProductModel extends ProductEntity {
       notes: json['notes'] as String?,
       category: ProductCategoryX.fromName(json['category'] as String?),
       returnDays: json['return_days'] as int?,
+      ownerId: json['user_id'] as String?,
       serialNumber: json['serial_number'] as String?,
       invoiceNumber: json['invoice_number'] as String?,
       extraWarranties: [
@@ -63,6 +67,16 @@ class ProductModel extends ProductEntity {
             createdAt: DateTime.parse(c['created_at'] as String),
           ),
       ]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+      documents: [
+        for (final d in (json['product_documents'] as List? ?? const []).cast<Map<String, dynamic>>())
+          ProductDocument(
+            id: d['id'] as String,
+            kind: DocumentKindX.fromDb(d['kind'] as String?),
+            url: d['file_url'] as String,
+            path: d['file_path'] as String,
+            createdAt: DateTime.parse(d['created_at'] as String),
+          ),
+      ]..sort((a, b) => a.createdAt.compareTo(b.createdAt)),
     );
   }
 
@@ -93,6 +107,7 @@ class ProductModel extends ProductEntity {
   /// Full row for the offline cache; round-trips through [ProductModel.fromJson].
   Map<String, dynamic> toCacheJson() => {
         'id': id,
+        'user_id': ownerId,
         ..._sharedFields(),
         'product_warranties': [
           for (final w in extraWarranties)
@@ -110,6 +125,16 @@ class ProductModel extends ProductEntity {
               'issue': c.issue,
               'status': c.status.dbValue,
               'created_at': c.createdAt.toIso8601String(),
+            },
+        ],
+        'product_documents': [
+          for (final d in documents)
+            {
+              'id': d.id,
+              'kind': d.kind.dbValue,
+              'file_url': d.url,
+              'file_path': d.path,
+              'created_at': d.createdAt.toIso8601String(),
             },
         ],
       };

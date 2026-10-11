@@ -232,6 +232,16 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // filePdf
+  static const household = IconData(
+    0xe68e,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // usersThree
+  static const copy = IconData(
+    0xe1ca,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // copy
   static const gallery = IconData(
     0xe836,
     fontFamily: 'PhosphorRegular',

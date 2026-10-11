@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../category/domain/entities/product_category.dart';
 import 'extra_warranty.dart';
+import 'product_document.dart';
 import 'warranty_claim.dart';
 
 enum WarrantyStatus { active, expiring, expired }
@@ -27,6 +28,11 @@ class ProductEntity extends Equatable {
   /// Days after purchase the store accepts a return; null when not tracked.
   final int? returnDays;
 
+  /// Who added the product. With family sharing, household members see each
+  /// other's products, but only the owner can change them. Null for products
+  /// cached before this field existed (always the user's own).
+  final String? ownerId;
+
   /// Stores ask for these when you make a warranty claim.
   final String? serialNumber;
   final String? invoiceNumber;
@@ -35,6 +41,9 @@ class ProductEntity extends Equatable {
   final List<ExtraWarranty> extraWarranties;
 
   final List<WarrantyClaim> claims;
+
+  /// Warranty card, product photo, manual... (the receipt is [receiptUrl]).
+  final List<ProductDocument> documents;
 
   const ProductEntity({
     required this.id,
@@ -50,10 +59,12 @@ class ProductEntity extends Equatable {
     this.notes,
     this.category = ProductCategory.other,
     this.returnDays,
+    this.ownerId,
     this.serialNumber,
     this.invoiceNumber,
     this.extraWarranties = const [],
     this.claims = const [],
+    this.documents = const [],
   });
 
   static const int expiringSoonMonths = 3;
@@ -113,6 +124,10 @@ class ProductEntity extends Equatable {
     return WarrantyStatus.active;
   }
 
+  /// Whether [userId] may edit or delete this product (household members
+  /// only view each other's).
+  bool isOwnedBy(String? userId) => ownerId == null || ownerId == userId;
+
   bool get isExpired => status == WarrantyStatus.expired;
   bool get isExpiring => status == WarrantyStatus.expiring;
   bool get isActive => status == WarrantyStatus.active;
@@ -134,9 +149,11 @@ class ProductEntity extends Equatable {
     status,
     category,
     returnDays,
+    ownerId,
     serialNumber,
     invoiceNumber,
     extraWarranties,
     claims,
+    documents,
   ];
 }

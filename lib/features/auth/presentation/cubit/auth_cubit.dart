@@ -6,6 +6,7 @@ import 'package:sakk/features/auth/domain/usecase/signup_usecase.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/Failure.dart';
 import '../../../../core/service/biometric_auth_service.dart';
+import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
@@ -71,6 +72,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     getIt<ProductsCubit>().reset();
     getIt<NotificationCubit>().reset();
+    getIt<HouseholdCubit>().reset();
     await getIt<ClearCachedProductsUseCase>()();
     emit(AuthInitial());
   }
@@ -105,6 +107,7 @@ class AuthCubit extends Cubit<AuthState> {
         await getIt<BiometricAuthService>().setEnabled(false);
         getIt<ProductsCubit>().reset();
         getIt<NotificationCubit>().reset();
+        getIt<HouseholdCubit>().reset();
         await getIt<ClearCachedProductsUseCase>()();
         emit(AuthInitial());
       },

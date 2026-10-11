@@ -11,11 +11,15 @@ import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
+import '../../../../core/di/get_it.dart';
+import '../../../auth/domain/usecase/get_user_usecase.dart';
+import '../../../household/presentation/cubit/household_cubit.dart';
 import '../cubit/details_cubit.dart';
 import '../widgets/details_header.dart';
 import '../widgets/details_tab.dart';
 import '../widgets/invoice_tab.dart';
 import '../widgets/segmented_tabs.dart';
+import '../widgets/product_documents_section.dart';
 import '../widgets/warranty_extras_section.dart';
 import '../widgets/warrenty_banner.dart';
 import 'edit_view.dart';
@@ -55,6 +59,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   bool _isSharing = false;
 
   ProductEntity get product => widget.product;
+
+  bool get _isMine => product.isOwnedBy(getIt<GetUserUseCase>()()?.id);
 
   Color get _statusColor {
     switch (product.status) {
@@ -238,7 +244,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           DetailsTab(product: product),
-                          WarrantyExtrasSection(product: product),
+                          ProductDocumentsSection(product: product, canEdit: _isMine),
+                          WarrantyExtrasSection(product: product, canEdit: _isMine),
                         ],
                       )
                     : InvoiceTab(imageUrl: product.receiptUrl ?? product.imageUrl),
@@ -247,7 +254,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             SliverToBoxAdapter(child: SizedBox(height: 100.h)),
           ],
         ),
-        bottomNavigationBar: DecoratedBox(
+        // Household members only view each other's products.
+        bottomNavigationBar: !_isMine
+            ? _AddedByBar(name: getIt<HouseholdCubit>().state.nameOf(product.ownerId))
+            : DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             boxShadow: context.palette.cardShadow.isEmpty
@@ -284,6 +294,38 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Shown instead of Edit/Delete on a household member's product.
+class _AddedByBar extends StatelessWidget {
+  const _AddedByBar({required this.name});
+
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(AppIcons.household, size: 18, color: colorScheme.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                name == null ? l10n.addedByHouseholdMember : l10n.addedBy(name!),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+              ),
+            ),
+          ],
         ),
       ),
     );

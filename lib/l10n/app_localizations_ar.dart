@@ -1038,4 +1038,142 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get saveAnyway => 'حفظ على أي حال';
+
+  @override
+  String get familySharing => 'المشاركة العائلية';
+
+  @override
+  String get familySharingHint =>
+      'أنشئ عائلة لمشاركة منتجاتك مع أسرتك، أو انضم إلى عائلة برمز دعوة.';
+
+  @override
+  String get createHousehold => 'إنشاء';
+
+  @override
+  String get joinHousehold => 'انضمام';
+
+  @override
+  String get householdName => 'اسم العائلة';
+
+  @override
+  String get householdNameHint => 'مثال: عائلة أحمد';
+
+  @override
+  String get inviteCode => 'رمز الدعوة';
+
+  @override
+  String get householdCreated => 'تم إنشاء العائلة. شارك رمز الدعوة مع أسرتك.';
+
+  @override
+  String get householdJoined => 'انضممت إلى العائلة.';
+
+  @override
+  String get householdSharedHint =>
+      'يرى الأعضاء منتجات بعضهم، ولا يعدّل المنتج إلا من أضافه.';
+
+  @override
+  String get copyInviteCode => 'نسخ رمز الدعوة';
+
+  @override
+  String get inviteCodeCopied => 'تم نسخ رمز الدعوة';
+
+  @override
+  String get shareInviteCode => 'مشاركة رمز الدعوة';
+
+  @override
+  String inviteMessage(Object code, Object name) {
+    return 'انضم إلى عائلتنا \"$name\" في تطبيق صك بهذا الرمز: $code';
+  }
+
+  @override
+  String get newInviteCode => 'إنشاء رمز جديد';
+
+  @override
+  String get newInviteCodeCreated =>
+      'تم إنشاء رمز جديد. الرمز القديم لم يعد يعمل.';
+
+  @override
+  String get householdMembers => 'الأعضاء';
+
+  @override
+  String memberYou(Object name) {
+    return '$name (أنت)';
+  }
+
+  @override
+  String get householdOwner => 'المالك';
+
+  @override
+  String get removeMember => 'إزالة';
+
+  @override
+  String removeMemberQuestion(Object name) {
+    return 'إزالة $name؟';
+  }
+
+  @override
+  String get removeMemberBody =>
+      'لن يرى منتجات العائلة بعد الآن، ولن ترى منتجاته.';
+
+  @override
+  String get leaveHousehold => 'مغادرة العائلة';
+
+  @override
+  String get leaveHouseholdQuestion => 'مغادرة العائلة؟';
+
+  @override
+  String get leaveHouseholdBody =>
+      'لن ترى منتجات الأعضاء الآخرين، ولن يروا منتجاتك.';
+
+  @override
+  String addedBy(Object name) {
+    return 'أضافه $name';
+  }
+
+  @override
+  String get addedByHouseholdMember => 'أضافه أحد أفراد العائلة';
+
+  @override
+  String get invalidInviteCode => 'رمز الدعوة لا يطابق أي عائلة.';
+
+  @override
+  String get alreadyInHousehold =>
+      'أنت بالفعل في عائلة. غادرها أولًا للانضمام إلى أخرى.';
+
+  @override
+  String get householdFull => 'هذه العائلة تضم 10 أعضاء بالفعل.';
+
+  @override
+  String get ok => 'حسنًا';
+
+  @override
+  String get documents => 'المستندات';
+
+  @override
+  String get addDocument => 'إضافة مستند';
+
+  @override
+  String get documentsHint =>
+      'احتفظ هنا ببطاقة الضمان أو صورة المنتج أو دليل الاستخدام بجانب الفاتورة.';
+
+  @override
+  String get noDocuments => 'لم تتم إضافة مستندات.';
+
+  @override
+  String get documentReceipt => 'إيصال';
+
+  @override
+  String get documentWarrantyCard => 'بطاقة الضمان';
+
+  @override
+  String get documentProductPhoto => 'صورة المنتج';
+
+  @override
+  String get documentManual => 'دليل الاستخدام';
+
+  @override
+  String get documentOther => 'أخرى';
+
+  @override
+  String get choosePdf => 'اختيار ملف PDF';
 }

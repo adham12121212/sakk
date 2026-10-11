@@ -1849,6 +1849,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save anyway'**
   String get saveAnyway;
+
+  /// No description provided for @familySharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Family sharing'**
+  String get familySharing;
+
+  /// No description provided for @familySharingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a household to share your products with your family, or join one with an invite code.'**
+  String get familySharingHint;
+
+  /// No description provided for @createHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createHousehold;
+
+  /// No description provided for @joinHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get joinHousehold;
+
+  /// No description provided for @householdName.
+  ///
+  /// In en, this message translates to:
+  /// **'Household name'**
+  String get householdName;
+
+  /// No description provided for @householdNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. The Ahmeds'**
+  String get householdNameHint;
+
+  /// No description provided for @inviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite code'**
+  String get inviteCode;
+
+  /// No description provided for @householdCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Household created. Share the invite code with your family.'**
+  String get householdCreated;
+
+  /// No description provided for @householdJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'You joined the household.'**
+  String get householdJoined;
+
+  /// No description provided for @householdSharedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Members see each other\'s products. Only the person who added a product can edit it.'**
+  String get householdSharedHint;
+
+  /// No description provided for @copyInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy invite code'**
+  String get copyInviteCode;
+
+  /// No description provided for @inviteCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite code copied'**
+  String get inviteCodeCopied;
+
+  /// No description provided for @shareInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Share invite code'**
+  String get shareInviteCode;
+
+  /// No description provided for @inviteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Join our household \"{name}\" in Sakk with this invite code: {code}'**
+  String inviteMessage(Object code, Object name);
+
+  /// No description provided for @newInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new code'**
+  String get newInviteCode;
+
+  /// No description provided for @newInviteCodeCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'New invite code created. The old one no longer works.'**
+  String get newInviteCodeCreated;
+
+  /// No description provided for @householdMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get householdMembers;
+
+  /// No description provided for @memberYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (you)'**
+  String memberYou(Object name);
+
+  /// No description provided for @householdOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get householdOwner;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeMember;
+
+  /// No description provided for @removeMemberQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String removeMemberQuestion(Object name);
+
+  /// No description provided for @removeMemberBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They will no longer see the household\'s products, and you won\'t see theirs.'**
+  String get removeMemberBody;
+
+  /// No description provided for @leaveHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave household'**
+  String get leaveHousehold;
+
+  /// No description provided for @leaveHouseholdQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the household?'**
+  String get leaveHouseholdQuestion;
+
+  /// No description provided for @leaveHouseholdBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll stop seeing the other members\' products, and they\'ll stop seeing yours.'**
+  String get leaveHouseholdBody;
+
+  /// No description provided for @addedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by {name}'**
+  String addedBy(Object name);
+
+  /// No description provided for @addedByHouseholdMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by a household member'**
+  String get addedByHouseholdMember;
+
+  /// No description provided for @invalidInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That invite code doesn\'t match any household.'**
+  String get invalidInviteCode;
+
+  /// No description provided for @alreadyInHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re already in a household. Leave it first to join another.'**
+  String get alreadyInHousehold;
+
+  /// No description provided for @householdFull.
+  ///
+  /// In en, this message translates to:
+  /// **'This household already has 10 members.'**
+  String get householdFull;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documents;
+
+  /// No description provided for @addDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Add document'**
+  String get addDocument;
+
+  /// No description provided for @documentsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the warranty card, a product photo or the manual here, next to the receipt.'**
+  String get documentsHint;
+
+  /// No description provided for @noDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents added.'**
+  String get noDocuments;
+
+  /// No description provided for @documentReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get documentReceipt;
+
+  /// No description provided for @documentWarrantyCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty card'**
+  String get documentWarrantyCard;
+
+  /// No description provided for @documentProductPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Product photo'**
+  String get documentProductPhoto;
+
+  /// No description provided for @documentManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get documentManual;
+
+  /// No description provided for @documentOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get documentOther;
+
+  /// No description provided for @choosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose PDF'**
+  String get choosePdf;
 }
 
 class _AppLocalizationsDelegate

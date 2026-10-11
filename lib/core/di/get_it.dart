@@ -30,6 +30,9 @@ import '../../features/notification/domain/usecase/delete_notification_use_case.
 import '../../features/notification/domain/usecase/get_notification_use_case.dart';
 import '../../features/notification/domain/usecase/mark_notification_read_use_case.dart';
 import '../../features/notification/domain/usecase/watch_added_notifications_use_case.dart';
+import '../../features/household/data/household_data_source.dart';
+import '../../features/household/data/household_repo.dart';
+import '../../features/household/presentation/cubit/household_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/products/data/product_data_source/product_local_data_source.dart';
@@ -215,6 +218,14 @@ void setupLocator() {
       reminders: getIt<ReminderController>(),
       logger: getIt<AppLogger>(),
     ),
+  );
+
+  getIt.registerLazySingleton<HouseholdRepo>(
+        () => HouseholdRepo(HouseholdDataSource(Supabase.instance.client), getIt<NetworkInfo>(), getIt<AppLogger>()),
+  );
+  // Singleton: Profile manages it, product screens read member names from it.
+  getIt.registerLazySingleton<HouseholdCubit>(
+        () => HouseholdCubit(getIt<HouseholdRepo>(), getIt<ProductsCubit>()),
   );
 
   getIt.registerLazySingleton<ProductsCubit>(

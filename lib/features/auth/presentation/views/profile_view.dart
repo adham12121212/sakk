@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../../household/presentation/widgets/household_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -100,6 +101,10 @@ class ProfileView extends StatelessWidget {
                           ),
                           AppSpacing.h12,
                           const ProfileSettingsCard(),
+                          AppSpacing.h24,
+                          SectionLabel(l10n.familySharing),
+                          AppSpacing.h12,
+                          const HouseholdCard(),
                           AppSpacing.h24,
                           const ProfileLogoutButton(),
                           AppSpacing.h12,

@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/features/category/domain/entities/product_category.dart';
 import 'package:sakk/features/products/data/models/product_model.dart';
+import 'package:sakk/features/products/domain/enties/product_document.dart';
 import 'package:sakk/features/products/domain/enties/warranty_claim.dart';
 
 /// A products row as Supabase returns it with ProductModel.selectColumns.
 Map<String, dynamic> row() => {
       'id': 'p1',
+      'user_id': 'owner-1',
       'name': 'Fridge',
       'brand': 'LG',
       'price': 32000,
@@ -25,6 +27,9 @@ Map<String, dynamic> row() => {
       'invoice_number': 'INV-9',
       'product_warranties': [
         {'id': 'w1', 'provider': 'Raya extended', 'start_date': '2025-01-15', 'months': 24},
+      ],
+      'product_documents': [
+        {'id': 'd1', 'kind': 'warranty_card', 'file_url': 'https://x/card', 'file_path': 'owner-1/documents/1.jpg', 'created_at': '2026-02-01T10:00:00Z'},
       ],
       'warranty_claims': [
         {'id': 'c1', 'issue': 'old', 'status': 'resolved', 'created_at': '2025-05-01T10:00:00Z'},
@@ -76,5 +81,21 @@ void main() {
     expect(ClaimStatus.inRepair.dbValue, 'in_repair');
     expect(ClaimStatusX.fromDb('in_repair'), ClaimStatus.inRepair);
     expect(ClaimStatusX.fromDb('nonsense'), ClaimStatus.submitted);
+  });
+
+  test('documents and the owner are read and kept in the cache', () {
+    final p = ProductModel.fromJson(row());
+    expect(p.ownerId, 'owner-1');
+    expect(p.documents.single.kind, DocumentKind.warrantyCard);
+    expect(p.documents.single.path, 'owner-1/documents/1.jpg');
+    expect(DocumentKind.productPhoto.dbValue, 'product_photo');
+    expect(DocumentKindX.fromDb('nonsense'), DocumentKind.other);
+  });
+
+  test('only the owner may edit; products cached before ownerId stay editable', () {
+    final p = ProductModel.fromJson(row());
+    expect(p.isOwnedBy('owner-1'), isTrue);
+    expect(p.isOwnedBy('household-member'), isFalse);
+    expect(ProductModel.fromJson(row()..remove('user_id')).isOwnedBy('anyone'), isTrue);
   });
 }

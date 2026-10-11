@@ -10,6 +10,7 @@ import '../../../category/domain/entities/product_category.dart';
 import '../../domain/enties/product_entity.dart';
 import '../../domain/enties/scanned_receipt.dart';
 import '../../domain/product_repo/product_repo.dart';
+import '../../domain/enties/product_document.dart';
 import '../../domain/enties/warranty_claim.dart';
 import '../models/product_model.dart';
 import '../product_data_source/product_data_source.dart';
@@ -350,4 +351,17 @@ class ProductRepoImpl implements ProductRepo {
   @override
   Future<Either<Failure, void>> deleteClaim(String id) =>
       _write('deleteClaim', () => _dataSource.deleteClaim(id));
+
+  @override
+  Future<Either<Failure, void>> addDocument({
+    required String productId,
+    required DocumentKind kind,
+    required String filePath,
+  }) =>
+      _write('addDocument',
+          () => _dataSource.addDocument(productId: productId, kind: kind.dbValue, filePath: filePath));
+
+  @override
+  Future<Either<Failure, void>> deleteDocument(ProductDocument document) =>
+      _write('deleteDocument', () => _dataSource.deleteDocument(id: document.id, path: document.path));
 }

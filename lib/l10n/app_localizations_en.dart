@@ -1029,4 +1029,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveAnyway => 'Save anyway';
+
+  @override
+  String get familySharing => 'Family sharing';
+
+  @override
+  String get familySharingHint =>
+      'Create a household to share your products with your family, or join one with an invite code.';
+
+  @override
+  String get createHousehold => 'Create';
+
+  @override
+  String get joinHousehold => 'Join';
+
+  @override
+  String get householdName => 'Household name';
+
+  @override
+  String get householdNameHint => 'e.g. The Ahmeds';
+
+  @override
+  String get inviteCode => 'Invite code';
+
+  @override
+  String get householdCreated =>
+      'Household created. Share the invite code with your family.';
+
+  @override
+  String get householdJoined => 'You joined the household.';
+
+  @override
+  String get householdSharedHint =>
+      'Members see each other\'s products. Only the person who added a product can edit it.';
+
+  @override
+  String get copyInviteCode => 'Copy invite code';
+
+  @override
+  String get inviteCodeCopied => 'Invite code copied';
+
+  @override
+  String get shareInviteCode => 'Share invite code';
+
+  @override
+  String inviteMessage(Object code, Object name) {
+    return 'Join our household \"$name\" in Sakk with this invite code: $code';
+  }
+
+  @override
+  String get newInviteCode => 'Make a new code';
+
+  @override
+  String get newInviteCodeCreated =>
+      'New invite code created. The old one no longer works.';
+
+  @override
+  String get householdMembers => 'Members';
+
+  @override
+  String memberYou(Object name) {
+    return '$name (you)';
+  }
+
+  @override
+  String get householdOwner => 'Owner';
+
+  @override
+  String get removeMember => 'Remove';
+
+  @override
+  String removeMemberQuestion(Object name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get removeMemberBody =>
+      'They will no longer see the household\'s products, and you won\'t see theirs.';
+
+  @override
+  String get leaveHousehold => 'Leave household';
+
+  @override
+  String get leaveHouseholdQuestion => 'Leave the household?';
+
+  @override
+  String get leaveHouseholdBody =>
+      'You\'ll stop seeing the other members\' products, and they\'ll stop seeing yours.';
+
+  @override
+  String addedBy(Object name) {
+    return 'Added by $name';
+  }
+
+  @override
+  String get addedByHouseholdMember => 'Added by a household member';
+
+  @override
+  String get invalidInviteCode =>
+      'That invite code doesn\'t match any household.';
+
+  @override
+  String get alreadyInHousehold =>
+      'You\'re already in a household. Leave it first to join another.';
+
+  @override
+  String get householdFull => 'This household already has 10 members.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get documents => 'Documents';
+
+  @override
+  String get addDocument => 'Add document';
+
+  @override
+  String get documentsHint =>
+      'Keep the warranty card, a product photo or the manual here, next to the receipt.';
+
+  @override
+  String get noDocuments => 'No documents added.';
+
+  @override
+  String get documentReceipt => 'Receipt';
+
+  @override
+  String get documentWarrantyCard => 'Warranty card';
+
+  @override
+  String get documentProductPhoto => 'Product photo';
+
+  @override
+  String get documentManual => 'Manual';
+
+  @override
+  String get documentOther => 'Other';
+
+  @override
+  String get choosePdf => 'Choose PDF';
 }

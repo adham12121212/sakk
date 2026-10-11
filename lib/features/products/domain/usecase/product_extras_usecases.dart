@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/Failure.dart';
+import '../enties/product_document.dart';
 import '../enties/warranty_claim.dart';
 import '../product_repo/product_repo.dart';
 
@@ -20,6 +21,14 @@ abstract class ProductExtrasUseCase {
   Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status);
 
   Future<Either<Failure, void>> deleteClaim(String id);
+
+  Future<Either<Failure, void>> addDocument({
+    required String productId,
+    required DocumentKind kind,
+    required String filePath,
+  });
+
+  Future<Either<Failure, void>> deleteDocument(ProductDocument document);
 }
 
 class ProductExtrasUseCaseImpl implements ProductExtrasUseCase {
@@ -54,4 +63,15 @@ class ProductExtrasUseCaseImpl implements ProductExtrasUseCase {
 
   @override
   Future<Either<Failure, void>> deleteClaim(String id) => _repository.deleteClaim(id);
+
+  @override
+  Future<Either<Failure, void>> addDocument({
+    required String productId,
+    required DocumentKind kind,
+    required String filePath,
+  }) =>
+      _repository.addDocument(productId: productId, kind: kind, filePath: filePath);
+
+  @override
+  Future<Either<Failure, void>> deleteDocument(ProductDocument document) => _repository.deleteDocument(document);
 }

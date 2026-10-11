@@ -11,6 +11,7 @@ import '../../../../core/error/Failure.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../category/domain/entities/product_category.dart';
+import '../../../products/domain/enties/product_document.dart';
 import '../../../products/domain/enties/product_entity.dart';
 import '../../../products/domain/enties/warranty_claim.dart';
 import '../../../products/domain/usecase/product_extras_usecases.dart';
@@ -190,6 +191,12 @@ class DetailsCubit extends Cubit<DetailsState> {
 
   Future<bool> updateClaimStatus(String claimId, ClaimStatus status) =>
       _runExtrasAction(() => _productExtrasUseCase.updateClaimStatus(claimId, status));
+
+  Future<bool> addDocument({required String productId, required DocumentKind kind, required String filePath}) =>
+      _runExtrasAction(() => _productExtrasUseCase.addDocument(productId: productId, kind: kind, filePath: filePath));
+
+  Future<bool> deleteDocument(ProductDocument document) =>
+      _runExtrasAction(() => _productExtrasUseCase.deleteDocument(document));
 
   Future<bool> deleteClaim(String claimId) =>
       _runExtrasAction(() => _productExtrasUseCase.deleteClaim(claimId));

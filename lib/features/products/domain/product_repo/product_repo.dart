@@ -3,6 +3,7 @@ import 'package:sakk/core/error/Failure.dart';
 import 'package:sakk/features/products/domain/enties/product_entity.dart';
 
 import '../../../category/domain/entities/product_category.dart';
+import '../enties/product_document.dart';
 import '../enties/scanned_receipt.dart';
 import '../enties/warranty_claim.dart';
 
@@ -78,4 +79,12 @@ abstract class ProductRepo {
   Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status);
 
   Future<Either<Failure, void>> deleteClaim(String id);
+
+  Future<Either<Failure, void>> addDocument({
+    required String productId,
+    required DocumentKind kind,
+    required String filePath,
+  });
+
+  Future<Either<Failure, void>> deleteDocument(ProductDocument document);
 }

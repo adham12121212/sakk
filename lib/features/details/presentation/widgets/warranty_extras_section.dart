@@ -12,9 +12,12 @@ import '../../../../core/theme/app_icons.dart';
 
 /// Extra warranties and warranty claims, shown under the Details tab.
 class WarrantyExtrasSection extends StatelessWidget {
-  const WarrantyExtrasSection({super.key, required this.product});
+  const WarrantyExtrasSection({super.key, required this.product, this.canEdit = true});
 
   final ProductEntity product;
+
+  /// False on a household member's product: view only.
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,8 @@ class WarrantyExtrasSection extends StatelessWidget {
         _SectionHeader(
           title: l10n.extraWarranties,
           actionLabel: l10n.addWarranty,
-          onAction: busy ? null : () => _showAddWarrantySheet(context, product),
+          onAction: busy || !canEdit ? null : () => _showAddWarrantySheet(context, product),
+          showAction: canEdit,
         ),
         const SizedBox(height: 8),
         if (product.extraWarranties.isEmpty)
@@ -48,7 +52,7 @@ class WarrantyExtrasSection extends StatelessWidget {
                     subtitle: Text(
                       '${dateFormat.format(w.startDate)} – ${dateFormat.format(w.endDate)}',
                     ),
-                    trailing: IconButton(
+                    trailing: !canEdit ? null : IconButton(
                       tooltip: l10n.delete,
                       icon: const Icon(AppIcons.delete),
                       onPressed: busy
@@ -63,7 +67,8 @@ class WarrantyExtrasSection extends StatelessWidget {
         _SectionHeader(
           title: l10n.warrantyClaims,
           actionLabel: l10n.startClaim,
-          onAction: busy ? null : () => _showStartClaimSheet(context, product),
+          onAction: busy || !canEdit ? null : () => _showStartClaimSheet(context, product),
+          showAction: canEdit,
         ),
         const SizedBox(height: 8),
         if (product.claims.isEmpty)
@@ -75,7 +80,7 @@ class WarrantyExtrasSection extends StatelessWidget {
               children: [
                 for (final c in product.claims)
                   ListTile(
-                    onTap: busy ? null : () => _showClaimStatusSheet(context, c),
+                    onTap: busy || !canEdit ? null : () => _showClaimStatusSheet(context, c),
                     title: Text(c.issue, maxLines: 2, overflow: TextOverflow.ellipsis),
                     subtitle: Text(dateFormat.format(c.createdAt), style: textTheme.bodySmall),
                     trailing: _ClaimStatusChip(c.status),
@@ -102,18 +107,25 @@ String claimStatusLabel(AppLocalizations l10n, ClaimStatus status) => switch (st
     };
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, required this.actionLabel, required this.onAction});
+  const _SectionHeader({
+    required this.title,
+    required this.actionLabel,
+    required this.onAction,
+    this.showAction = true,
+  });
 
   final String title;
   final String actionLabel;
   final VoidCallback? onAction;
+  final bool showAction;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
-        TextButton.icon(
+        if (showAction)
+          TextButton.icon(
           onPressed: onAction,
           icon: const Icon(AppIcons.add, size: 18),
           label: Text(actionLabel),

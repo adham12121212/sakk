@@ -36,6 +36,11 @@ abstract class ProductDataSource {
   Future<void> updateClaimStatus(String id, String status);
 
   Future<void> deleteClaim(String id);
+
+  /// Uploads a photo (or rendered PDF page) and attaches it to the product.
+  Future<void> addDocument({required String productId, required String kind, required String filePath});
+
+  Future<void> deleteDocument({required String id, required String path});
 }
 
 class ProductDataSourceImpl implements ProductDataSource {
@@ -229,6 +234,38 @@ class ProductDataSourceImpl implements ProductDataSource {
     } catch (e) {
       throw ServerException('Failed to update claim: $e');
     }
+  }
+
+  @override
+  Future<void> addDocument({required String productId, required String kind, required String filePath}) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) throw ServerException('You must be signed in to add a document');
+    final extension = filePath.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
+    // Own folder: the storage rules and the table's check both require it.
+    final path = '$userId/documents/${DateTime.now().millisecondsSinceEpoch}.$extension';
+    try {
+      await _client.storage.from(_receiptsBucket).upload(path, File(filePath));
+      final url = await _client.storage.from(_receiptsBucket).createSignedUrl(path, _signedUrlExpirySeconds);
+      await _client.from('product_documents').insert({
+        'product_id': productId,
+        'kind': kind,
+        'file_url': url,
+        'file_path': path,
+      });
+    } catch (e) {
+      await deleteReceiptImage(path); // don't leave an unattached file behind
+      throw ServerException('Failed to add document: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteDocument({required String id, required String path}) async {
+    try {
+      await _client.from('product_documents').delete().eq('id', id);
+    } catch (e) {
+      throw ServerException('Failed to delete document: $e');
+    }
+    await deleteReceiptImage(path);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../household/presentation/cubit/household_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,8 @@ class _HomeContentState extends State<_HomeContent> {
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
+    // Member names for "Added by ..." on shared products.
+    getIt<HouseholdCubit>().load();
     final userId = getIt<GetUserUseCase>()()?.id;
     if (userId != null) {
       _notificationCubit
