@@ -172,7 +172,11 @@ class AuthRepoImpl implements AuthRepository {
     try {
       final response = await _authDataSource.signInWithGoogle();
       return Right(response);
-    } on GoogleSignInCancelledException {
+    } on GoogleSignInCancelledException catch (e) {
+      _logger.warning(
+        'Google sign-in cancelled',
+        data: {'description': e.description},
+      );
       return const Left(CancelledFailure());
     } on ServerException catch (e, st) {
       _logger.error('Server error during signInWithGoogle', error: e, stackTrace: st);

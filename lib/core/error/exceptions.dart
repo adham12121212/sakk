@@ -15,8 +15,13 @@ class AppAuthException implements Exception {
 }
 
 class GoogleSignInCancelledException implements Exception {
+  /// Credential Manager reports some setup errors (e.g. an unregistered
+  /// SHA-1) as cancellations too, so keep its description for the logs.
+  final String? description;
+  GoogleSignInCancelledException([this.description]);
+
   @override
-  String toString() => 'GoogleSignInCancelledException';
+  String toString() => 'GoogleSignInCancelledException: $description';
 }
 
 class EmailConfirmationRequiredException implements Exception {

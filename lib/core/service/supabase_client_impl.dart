@@ -145,7 +145,7 @@ class SupabaseServiceImpl implements SupabaseService {
       googleUser = await GoogleSignIn.instance.authenticate();
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
-        throw GoogleSignInCancelledException();
+        throw GoogleSignInCancelledException(e.description);
       }
       throw ServerException('Google sign-in failed: ${e.description ?? e.code}');
     }
