@@ -1031,7 +1031,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingScanDescription.
   ///
   /// In en, this message translates to:
-  /// **'Snap a photo of any receipt or warranty card and let AI pull out the details automatically.'**
+  /// **'Snap a photo of a receipt or warranty card, or upload a PDF invoice, and AI fills in the details for you.'**
   String get onboardingScanDescription;
 
   /// No description provided for @onboardingTrackTitle.
@@ -2155,6 +2155,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open your calendar app.'**
   String get couldNotOpenCalendar;
+
+  /// No description provided for @onboardingFamilyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with Your Family'**
+  String get onboardingFamilyTitle;
+
+  /// No description provided for @onboardingFamilyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.'**
+  String get onboardingFamilyDescription;
 }
 
 class _AppLocalizationsDelegate

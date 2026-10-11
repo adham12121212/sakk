@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/service/pdf_invoice_reader.dart';
+import '../../../../core/service/review_prompter.dart';
 import '../../../products/data/product_data_source/product_data_source.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../category/domain/entities/product_category.dart';
@@ -21,7 +22,9 @@ class ScanCubit extends Cubit<ScanState> {
     ProductsCubit? productsCubit,
     WarrantyNotificationService? warrantyNotificationService,
     PdfInvoiceReader? pdfInvoiceReader,
-  })  : _pdfInvoiceReader = pdfInvoiceReader ?? PdfInvoiceReader(),
+    ReviewPrompter? reviewPrompter,
+  })  : _reviewPrompter = reviewPrompter,
+        _pdfInvoiceReader = pdfInvoiceReader ?? PdfInvoiceReader(),
         _scanReceiptUseCase = scanReceiptUseCase ?? getIt<ScanReceiptUseCase>(),
         _addProductUseCase = addProductUseCase ?? getIt<AddProductUseCase>(),
         _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
@@ -34,6 +37,9 @@ class ScanCubit extends Cubit<ScanState> {
   final ProductsCubit _productsCubit;
   final WarrantyNotificationService _warrantyNotificationService;
   final PdfInvoiceReader _pdfInvoiceReader;
+
+  /// Resolved lazily (getIt) so tests that don't register it aren't affected.
+  final ReviewPrompter? _reviewPrompter;
 
   /// True when the user chose to type the details in instead of scanning, so
   /// there's no receipt image or confidence score to show.
@@ -142,6 +148,8 @@ class ScanCubit extends Cubit<ScanState> {
           (product) {
         _saved = true;
         _productsCubit.refresh();
+        final prompter = _reviewPrompter ?? (getIt.isRegistered<ReviewPrompter>() ? getIt<ReviewPrompter>() : null);
+        unawaited(prompter?.productSaved());
         _warrantyNotificationService.scheduleFutureNotifications(product);
         emit(ScanSaveSuccess(scanned: scanned));
       },

@@ -50,6 +50,11 @@ class _OnboardingViewState extends State<OnboardingView> {
         title: l10n.onboardingNotifyTitle,
         description: l10n.onboardingNotifyDescription,
       ),
+      _OnboardingPageData(
+        icon: AppIcons.household,
+        title: l10n.onboardingFamilyTitle,
+        description: l10n.onboardingFamilyDescription,
+      ),
     ];
   }
 

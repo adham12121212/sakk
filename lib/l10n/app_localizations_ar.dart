@@ -532,7 +532,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingScanDescription =>
-      'التقط صورة لأي إيصال أو بطاقة ضمان ودع الذكاء الاصطناعي يستخرج التفاصيل تلقائيًا.';
+      'التقط صورة للفاتورة أو بطاقة الضمان، أو ارفع فاتورة PDF، وسيملأ الذكاء الاصطناعي التفاصيل لك.';
 
   @override
   String get onboardingTrackTitle => 'تتبّع كل ضمان';
@@ -1213,4 +1213,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get couldNotOpenCalendar => 'تعذّر فتح تطبيق التقويم.';
+
+  @override
+  String get onboardingFamilyTitle => 'شارك عائلتك';
+
+  @override
+  String get onboardingFamilyDescription =>
+      'أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك.';
 }

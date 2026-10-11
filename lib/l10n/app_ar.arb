@@ -139,7 +139,7 @@
   "getStarted": "ابدأ الآن",
   "next": "التالي",
   "onboardingScanTitle": "امسح إيصالاتك ضوئيًا",
-  "onboardingScanDescription": "التقط صورة لأي إيصال أو بطاقة ضمان ودع الذكاء الاصطناعي يستخرج التفاصيل تلقائيًا.",
+  "onboardingScanDescription": "التقط صورة للفاتورة أو بطاقة الضمان، أو ارفع فاتورة PDF، وسيملأ الذكاء الاصطناعي التفاصيل لك.",
   "onboardingTrackTitle": "تتبّع كل ضمان",
   "onboardingTrackDescription": "اطّلع بلمحة سريعة على المنتجات النشطة، أو التي توشك على الانتهاء، أو المنتهية بالفعل.",
   "onboardingNotifyTitle": "لا تفوّت أي موعد نهائي",
@@ -343,5 +343,7 @@
   "calendarWarrantyEnds": "انتهاء الضمان: {product}",
   "calendarReturnDeadline": "آخر يوم للاسترجاع: {product}",
   "calendarEventDescription": "أضيف من تطبيق صك لـ {product}.",
-  "couldNotOpenCalendar": "تعذّر فتح تطبيق التقويم."
+  "couldNotOpenCalendar": "تعذّر فتح تطبيق التقويم.",
+  "onboardingFamilyTitle": "شارك عائلتك",
+  "onboardingFamilyDescription": "أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك."
 }

@@ -56,6 +56,7 @@ import '../service/home_widget_sync.dart';
 import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/reminder_controller.dart';
+import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
@@ -123,6 +124,7 @@ void setupLocator() {
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
+  getIt.registerLazySingleton<ReviewPrompter>(() => ReviewPrompter());
   getIt.registerLazySingleton<AmountVisibilityController>(() => AmountVisibilityController());
   getIt.registerLazySingleton<HomeWidgetSync>(
         () => HomeWidgetSync(getIt<LocaleController>(), getIt<AppLogger>()),

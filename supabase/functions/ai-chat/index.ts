@@ -240,7 +240,7 @@ async function runChat(systemPrompt: string, message: string, history: ChatMessa
     { role: "user", content: message },
   ];
 
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -275,6 +275,21 @@ async function runChat(systemPrompt: string, message: string, history: ChatMessa
   if (!reply) throw new Error("AI returned no content");
 
   return reply;
+}
+
+// Groq's free tier allows only a few requests per minute. When it answers
+// "too many requests" with a short wait, wait and try once more instead of
+// failing the user's request; longer waits still fail fast.
+const MAX_RETRY_WAIT_SECONDS = 20;
+
+async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
+  const first = await fetch(url, init);
+  if (first.status !== 429) return first;
+  const wait = Number(first.headers.get("retry-after"));
+  if (!Number.isFinite(wait) || wait < 0 || wait > MAX_RETRY_WAIT_SECONDS) return first;
+  await first.body?.cancel();
+  await new Promise((resolve) => setTimeout(resolve, Math.ceil(wait * 1000)));
+  return fetch(url, init);
 }
 
 function jsonResponse(body: unknown, status: number): Response {

@@ -89,7 +89,16 @@ const List<_LegalSection> _enSections = [
     'Your content',
     'You keep ownership of the product information and photos you upload. '
         'By uploading them, you give us permission to store and process '
-        'them solely to provide the app\'s features to you.',
+        'them solely to provide the app\'s features to you, including showing '
+        'them to members of a household you join.',
+  ),
+  _LegalSection(
+    'Family sharing',
+    'When you join a household, its members can see your products, receipts '
+        'and documents. Only invite people you trust, and keep the invite code '
+        'private; the household owner can make a new code at any time. Only '
+        'share content you have the right to share. You can leave a household '
+        'whenever you like.',
   ),
   _LegalSection(
     'No warranty',
@@ -151,7 +160,15 @@ const List<_LegalSection> _arSections = [
   _LegalSection(
     'محتواك',
     'تحتفظ بملكية بيانات المنتجات والصور التي ترفعها. برفعك لها، فإنك '
-        'تمنحنا إذنًا بتخزينها ومعالجتها فقط لتقديم ميزات التطبيق لك.',
+        'تمنحنا إذنًا بتخزينها ومعالجتها فقط لتقديم ميزات التطبيق لك، بما في '
+        'ذلك عرضها على أعضاء العائلة التي تنضم إليها.',
+  ),
+  _LegalSection(
+    'المشاركة العائلية',
+    'عند انضمامك إلى عائلة، يستطيع أعضاؤها رؤية منتجاتك وفواتيرك ومستنداتك. '
+        'لا تدعُ إلا من تثق بهم، واحتفظ برمز الدعوة لنفسك، ويستطيع مالك العائلة '
+        'إنشاء رمز جديد في أي وقت. لا تشارك إلا المحتوى الذي يحق لك مشاركته. '
+        'يمكنك مغادرة العائلة متى شئت.',
   ),
   _LegalSection(
     'عدم وجود ضمان',

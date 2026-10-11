@@ -528,7 +528,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingScanDescription =>
-      'Snap a photo of any receipt or warranty card and let AI pull out the details automatically.';
+      'Snap a photo of a receipt or warranty card, or upload a PDF invoice, and AI fills in the details for you.';
 
   @override
   String get onboardingTrackTitle => 'Track Every Warranty';
@@ -1205,4 +1205,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotOpenCalendar => 'Couldn\'t open your calendar app.';
+
+  @override
+  String get onboardingFamilyTitle => 'Share with Your Family';
+
+  @override
+  String get onboardingFamilyDescription =>
+      'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.';
 }

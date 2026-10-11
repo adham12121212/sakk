@@ -65,40 +65,85 @@ const List<_LegalSection> _enSections = [
   _LegalSection(
     'Introduction',
     'Sakk ("we", "us", or "our") provides an app that helps you track your '
-        'purchases, warranties, and receipts, including an AI assistant for '
-        'related questions. This policy explains what information we '
+        'purchases, warranties, returns and receipts, including an AI assistant '
+        'for related questions. This policy explains what information we '
         'collect, how we use it, and the choices you have.',
   ),
   _LegalSection(
     'Information we collect',
     'Account information: your email address, name, and an optional profile '
-        'photo. Product data you enter: names, brands, prices, purchase '
-        'dates, warranty lengths, notes, categories, and any photos of '
-        'receipts or products you upload. Messages you send to the AI '
-        'assistant. Basic profile information from Google if you sign in '
-        'with Google.',
+        'photo. Basic profile information from Google if you sign in with '
+        'Google.\n\n'
+        'Product data you enter or scan: names, brands, stores, prices, purchase '
+        'dates, warranty lengths, extra warranties, return windows, serial and '
+        'invoice numbers, notes, categories, warranty claims you record, and the '
+        'photos and documents you add (receipts, PDF invoices, warranty cards, '
+        'product photos, manuals).\n\n'
+        'Family sharing: the household you create or join and the name other '
+        'members see.\n\n'
+        'Messages you send to the AI assistant.\n\n'
+        'Technical data: crash reports when the app fails (see below).',
   ),
   _LegalSection(
     'How we use your information',
-    'To provide and maintain the app, generate responses from the AI '
-        'assistant, calculate and remind you about warranty status, and '
-        'improve the app over time. We do not sell your personal '
+    'To provide and maintain the app; to read the details from receipts and '
+        'invoices you scan; to answer your questions in the AI assistant; to '
+        'calculate warranty status and remind you before warranties end and '
+        'return windows close; to show your products to your household if you '
+        'join one; and to find and fix problems. We do not sell your personal '
         'information.',
   ),
   _LegalSection(
+    'Family sharing',
+    'If you create or join a household, its other members can see your '
+        'products, including prices, receipts, documents, extra warranties and '
+        'claims, together with the name you chose. Only you can change or '
+        'delete your products. You can leave a household at any time from '
+        'Profile; members then stop seeing your products and you stop seeing '
+        'theirs. A household owner can remove members.',
+  ),
+  _LegalSection(
+    'The AI assistant and receipt scanning',
+    'To read a receipt or invoice, the photo (and, for PDFs, the text of the '
+        'invoice) is sent to our AI provider. To answer your questions, the AI '
+        'assistant receives your message, recent messages in the conversation, '
+        'and the details of the products you can see in the app (yours and, if '
+        'you are in a household, your household\'s). AI answers can be wrong; '
+        'check important details such as dates yourself.',
+  ),
+  _LegalSection(
     'Third-party services we use',
-    'Supabase provides authentication, our database, and file storage for '
-        'photos you upload. A third-party AI provider processes your chat '
-        'messages and scanned receipt images to generate responses and '
-        'extract product details. If you sign in with Google, Google '
-        'processes that sign-in. Each provider handles data under its own '
-        'privacy policy.',
+    'Supabase provides sign-in, our database, file storage and the server '
+        'functions that talk to the AI provider. Groq (our current AI provider) '
+        'processes scanned receipts and assistant messages as described above. '
+        'Sentry receives crash reports; before a report leaves your device we '
+        'remove email addresses and private links. Google processes Google '
+        'sign-in, and Firebase provides app services. Each provider handles '
+        'data under its own privacy policy.',
+  ),
+  _LegalSection(
+    'Device permissions',
+    'Camera and photos: only when you scan a receipt or add a document. Files: '
+        'only the PDF you pick. Notifications: for warranty and return '
+        'reminders. Calendar: only when you tap "Add to calendar", which opens '
+        'your calendar app with the event for you to save. On iPhone, the '
+        'calendar\'s own screen may offer place suggestions from your contacts; '
+        'Sakk itself does not read your contacts. Face ID / fingerprint: see '
+        'below.',
+  ),
+  _LegalSection(
+    'Data on your device',
+    'To work offline and remind you on time, the app keeps a copy of your '
+        'product list, your reminder and display settings, and scheduled '
+        'reminders on your device. Signing out removes your product list and '
+        'reminders from the device.',
   ),
   _LegalSection(
     'Data storage and security',
-    'Your data is stored with our backend provider using industry-standard '
-        'security practices. No method of electronic storage or '
-        'transmission is completely secure, and we cannot guarantee '
+    'Your data is stored with our backend provider. Each user\'s data is '
+        'protected so that only you (and, for products, your household) can '
+        'see it, and only you can change it. No method of electronic storage '
+        'or transmission is completely secure, and we cannot guarantee '
         'absolute security.',
   ),
   _LegalSection(
@@ -110,10 +155,13 @@ const List<_LegalSection> _enSections = [
   ),
   _LegalSection(
     'Data retention and deletion',
-    'You can delete individual products and notifications directly in the '
-        'app at any time. To delete your account and all associated data, '
-        'contact us at [support email] and we will process your request '
-        'within a reasonable time.',
+    'You can delete products, documents, claims and notifications in the app '
+        'at any time; deleting a product also deletes its photos and '
+        'documents. You can export your products as a spreadsheet from the '
+        'Products screen. To delete your account and all associated data, use '
+        'Profile > Delete account; this removes your products, photos, '
+        'documents, notifications and household membership. You can also '
+        'contact us at [support email].',
   ),
   _LegalSection(
     'Children\'s privacy',
@@ -141,38 +189,78 @@ const List<_LegalSection> _enSections = [
 const List<_LegalSection> _arSections = [
   _LegalSection(
     'مقدمة',
-    'يقدّم تطبيق "صك" ("نحن") تجربة لتتبّع مشترياتك وضماناتك وفواتيرك، '
-        'بما في ذلك مساعد ذكاء اصطناعي للأسئلة المرتبطة بذلك. توضّح هذه '
-        'السياسة ما هي المعلومات التي نجمعها، وكيف نستخدمها، والخيارات '
-        'المتاحة لك.',
+    'يقدّم تطبيق "صك" ("نحن") تجربة لتتبّع مشترياتك وضماناتك ومواعيد '
+        'الاسترجاع وفواتيرك، بما في ذلك مساعد ذكاء اصطناعي للأسئلة المرتبطة '
+        'بذلك. توضّح هذه السياسة ما هي المعلومات التي نجمعها، وكيف نستخدمها، '
+        'والخيارات المتاحة لك.',
   ),
   _LegalSection(
     'المعلومات التي نجمعها',
     'معلومات الحساب: بريدك الإلكتروني، اسمك، وصورة الملف الشخصي (اختياري). '
-        'بيانات المنتجات التي تُدخلها: الأسماء، الماركات، الأسعار، تواريخ '
-        'الشراء، مدة الضمان، الملاحظات، الفئات، وأي صور فواتير أو منتجات '
-        'ترفعها. الرسائل التي ترسلها للمساعد الذكي. معلومات أساسية من '
-        'حسابك في جوجل إذا سجّلت الدخول به.',
+        'معلومات أساسية من حسابك في جوجل إذا سجّلت الدخول به.\n\n'
+        'بيانات المنتجات التي تُدخلها أو تمسحها: الأسماء، الماركات، المتاجر، '
+        'الأسعار، تواريخ الشراء، مدة الضمان، الضمانات الإضافية، مدة الاسترجاع، '
+        'الأرقام التسلسلية وأرقام الفواتير، الملاحظات، الفئات، طلبات الضمان '
+        'التي تسجّلها، والصور والمستندات التي تضيفها (الفواتير، فواتير PDF، '
+        'بطاقات الضمان، صور المنتجات، أدلة الاستخدام).\n\n'
+        'المشاركة العائلية: العائلة التي تنشئها أو تنضم إليها، والاسم الذي '
+        'يراه بقية الأعضاء.\n\n'
+        'الرسائل التي ترسلها للمساعد الذكي.\n\n'
+        'بيانات تقنية: تقارير الأعطال عند حدوث خطأ في التطبيق (انظر أدناه).',
   ),
   _LegalSection(
     'كيف نستخدم معلوماتك',
-    'لتقديم التطبيق وصيانته، وتوليد ردود المساعد الذكي، وحساب حالة الضمان '
-        'وتذكيرك بها، وتحسين التطبيق باستمرار. لا نبيع معلوماتك الشخصية '
-        'لأي طرف آخر.',
+    'لتقديم التطبيق وصيانته؛ ولقراءة التفاصيل من الفواتير التي تمسحها؛ '
+        'وللإجابة عن أسئلتك في المساعد الذكي؛ ولحساب حالة الضمان وتذكيرك قبل '
+        'انتهاء الضمانات ومواعيد الاسترجاع؛ ولعرض منتجاتك على عائلتك إذا '
+        'انضممت إلى عائلة؛ ولاكتشاف المشكلات وإصلاحها. لا نبيع معلوماتك '
+        'الشخصية لأي طرف آخر.',
+  ),
+  _LegalSection(
+    'المشاركة العائلية',
+    'إذا أنشأت عائلة أو انضممت إليها، يستطيع بقية أعضائها رؤية منتجاتك، بما '
+        'في ذلك الأسعار والفواتير والمستندات والضمانات الإضافية وطلبات الضمان، '
+        'مع الاسم الذي اخترته. أنت وحدك من يستطيع تعديل منتجاتك أو حذفها. '
+        'يمكنك مغادرة العائلة في أي وقت من الملف الشخصي، وعندها يتوقف الأعضاء '
+        'عن رؤية منتجاتك وتتوقف أنت عن رؤية منتجاتهم. يستطيع مالك العائلة '
+        'إزالة الأعضاء.',
+  ),
+  _LegalSection(
+    'المساعد الذكي ومسح الفواتير',
+    'لقراءة فاتورة، تُرسَل الصورة (ونص الفاتورة في حالة ملفات PDF) إلى مزوّد '
+        'الذكاء الاصطناعي. وللإجابة عن أسئلتك، يتلقى المساعد رسالتك والرسائل '
+        'الأخيرة في المحادثة وتفاصيل المنتجات التي تراها في التطبيق (منتجاتك '
+        'ومنتجات عائلتك إذا كنت في عائلة). قد تكون إجابات الذكاء الاصطناعي '
+        'خاطئة، فتحقق بنفسك من التفاصيل المهمة مثل التواريخ.',
   ),
   _LegalSection(
     'خدمات طرف ثالث نستخدمها',
-    'يوفّر لنا Supabase المصادقة وقاعدة البيانات وتخزين الصور التي ترفعها. '
-        'يعالج مزوّد ذكاء اصطناعي خارجي رسائل الدردشة وصور الفواتير '
-        'الممسوحة لتوليد الردود واستخراج تفاصيل المنتج. إذا سجّلت الدخول '
-        'بحساب جوجل، فإن جوجل هي من يعالج ذلك الدخول. يخضع كل مزوّد '
-        'لسياسة الخصوصية الخاصة به.',
+    'يوفّر Supabase تسجيل الدخول وقاعدة البيانات وتخزين الملفات ووظائف '
+        'الخادم التي تتواصل مع مزوّد الذكاء الاصطناعي. تعالج Groq (مزوّد الذكاء '
+        'الاصطناعي الحالي) الفواتير الممسوحة ورسائل المساعد كما هو موضّح أعلاه. '
+        'تستقبل Sentry تقارير الأعطال، ونزيل منها عناوين البريد والروابط الخاصة '
+        'قبل أن تغادر جهازك. تعالج جوجل تسجيل الدخول بحساب جوجل، وتوفّر Firebase '
+        'خدمات للتطبيق. يخضع كل مزوّد لسياسة الخصوصية الخاصة به.',
+  ),
+  _LegalSection(
+    'أذونات الجهاز',
+    'الكاميرا والصور: فقط عند مسح فاتورة أو إضافة مستند. الملفات: فقط ملف '
+        'PDF الذي تختاره. الإشعارات: لتذكيرات الضمان والاسترجاع. التقويم: فقط '
+        'عند الضغط على "إضافة إلى التقويم"، فيُفتح تطبيق التقويم بالحدث لتحفظه '
+        'بنفسك. على iPhone قد تقترح شاشة التقويم أماكن من جهات اتصالك، أما صك '
+        'نفسه فلا يقرأ جهات اتصالك. البصمة وFace ID: انظر أدناه.',
+  ),
+  _LegalSection(
+    'البيانات على جهازك',
+    'ليعمل التطبيق دون اتصال ويذكّرك في الوقت المناسب، يحتفظ على جهازك بنسخة '
+        'من قائمة منتجاتك وإعدادات التذكير والعرض والتذكيرات المجدولة. تسجيل '
+        'الخروج يحذف قائمة منتجاتك وتذكيراتك من الجهاز.',
   ),
   _LegalSection(
     'تخزين البيانات وأمانها',
-    'تُخزَّن بياناتك عند مزوّد خدمتنا الخلفية باستخدام ممارسات أمان '
-        'قياسية في هذا المجال. لا توجد وسيلة تخزين أو نقل إلكتروني مضمونة '
-        'الأمان بشكل كامل، ولا يمكننا ضمان أمان مطلق.',
+    'تُخزَّن بياناتك عند مزوّد خدمتنا الخلفية، وتُحمى بحيث لا يراها إلا أنت '
+        '(وعائلتك بالنسبة للمنتجات)، ولا يعدّلها أحد غيرك. لا توجد وسيلة تخزين '
+        'أو نقل إلكتروني مضمونة الأمان بشكل كامل، ولا يمكننا ضمان أمان مطلق.',
   ),
   _LegalSection(
     'المصادقة البيومترية',
@@ -182,9 +270,12 @@ const List<_LegalSection> _arSections = [
   ),
   _LegalSection(
     'الاحتفاظ بالبيانات وحذفها',
-    'يمكنك حذف المنتجات والإشعارات الفردية من داخل التطبيق في أي وقت. '
-        'لحذف حسابك وكل البيانات المرتبطة به، تواصل معنا على '
-        '[البريد الإلكتروني للدعم] وسنعالج طلبك في وقت معقول.',
+    'يمكنك حذف المنتجات والمستندات وطلبات الضمان والإشعارات من داخل التطبيق '
+        'في أي وقت، وحذف المنتج يحذف صوره ومستنداته أيضًا. يمكنك تصدير منتجاتك '
+        'كجدول بيانات من شاشة المنتجات. لحذف حسابك وكل البيانات المرتبطة به، '
+        'استخدم الملف الشخصي > حذف الحساب، فيُحذف معه منتجاتك وصورك ومستنداتك '
+        'وإشعاراتك وعضويتك في العائلة. ويمكنك أيضًا التواصل معنا على '
+        '[البريد الإلكتروني للدعم].',
   ),
   _LegalSection(
     'خصوصية الأطفال',

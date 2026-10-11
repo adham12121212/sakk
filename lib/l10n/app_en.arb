@@ -168,7 +168,7 @@
   "getStarted": "Get Started",
   "next": "Next",
   "onboardingScanTitle": "Scan Your Receipts",
-  "onboardingScanDescription": "Snap a photo of any receipt or warranty card and let AI pull out the details automatically.",
+  "onboardingScanDescription": "Snap a photo of a receipt or warranty card, or upload a PDF invoice, and AI fills in the details for you.",
   "onboardingTrackTitle": "Track Every Warranty",
   "onboardingTrackDescription": "See at a glance which products are active, expiring soon, or already expired.",
   "onboardingNotifyTitle": "Never Miss a Deadline",
@@ -364,5 +364,7 @@
   "calendarWarrantyEnds": "Warranty ends: {product}",
   "calendarReturnDeadline": "Last day to return: {product}",
   "calendarEventDescription": "Added from Sakk for {product}.",
-  "couldNotOpenCalendar": "Couldn't open your calendar app."
+  "couldNotOpenCalendar": "Couldn't open your calendar app.",
+  "onboardingFamilyTitle": "Share with Your Family",
+  "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products."
 }
