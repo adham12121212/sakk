@@ -204,30 +204,60 @@ Future<String?> _askText(
   required String hint,
   bool upperCase = false,
 }) {
-  final controller = TextEditingController();
-  final l10n = AppLocalizations.of(context)!;
   return showDialog<String>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(title),
+    builder: (_) => _TextPromptDialog(title: title, label: label, hint: hint, upperCase: upperCase),
+  );
+}
+
+/// Owns its text controller so it's disposed only after the dialog's closing
+/// animation, which still draws the field. Disposing it when showDialog
+/// returns threw "A TextEditingController was used after being disposed".
+class _TextPromptDialog extends StatefulWidget {
+  const _TextPromptDialog({required this.title, required this.label, required this.hint, required this.upperCase});
+
+  final String title;
+  final String label;
+  final String hint;
+  final bool upperCase;
+
+  @override
+  State<_TextPromptDialog> createState() => _TextPromptDialogState();
+}
+
+class _TextPromptDialogState extends State<_TextPromptDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final text = _controller.text.trim();
+    if (text.isNotEmpty) Navigator.of(context).pop(text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(widget.title),
       content: TextField(
-        controller: controller,
+        controller: _controller,
         autofocus: true,
-        textCapitalization: upperCase ? TextCapitalization.characters : TextCapitalization.sentences,
-        decoration: InputDecoration(labelText: label, hintText: hint),
+        textCapitalization: widget.upperCase ? TextCapitalization.characters : TextCapitalization.sentences,
+        textInputAction: TextInputAction.done,
+        onSubmitted: (_) => _submit(),
+        decoration: InputDecoration(labelText: widget.label, hintText: widget.hint),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: Text(l10n.cancel)),
-        TextButton(
-          onPressed: () {
-            final text = controller.text.trim();
-            if (text.isNotEmpty) Navigator.of(dialogContext).pop(text);
-          },
-          child: Text(l10n.ok),
-        ),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+        TextButton(onPressed: _submit, child: Text(l10n.ok)),
       ],
-    ),
-  ).whenComplete(controller.dispose);
+    );
+  }
 }
 
 Future<bool> _confirm(BuildContext context, {required String title, required String body, required String action}) async {
