@@ -3,15 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../l10n/app_localizations.dart';
 
-/// The صك ring logo, drawn from the launcher icon's adaptive foreground so it
-/// stays sharp at any size.
-///
-/// The artwork is white with a yellow dot, for blue or dark backgrounds. On
-/// light backgrounds pass [color] (usually `AppColors.primary`): the white
-/// ring and lettering are recolored, the yellow dot is kept.
-///
-/// [size] is the full SVG canvas; the ring fills about 60% of it, matching
-/// the Android adaptive-icon safe zone, so pass the size of the tile it sits in.
 class SakkLogo extends StatelessWidget {
   const SakkLogo({super.key, required this.size, this.color});
 
@@ -20,9 +11,7 @@ class SakkLogo extends StatelessWidget {
   /// The white logo, decoded ahead of time by [precache].
   static PictureInfo? _precachedWhite;
 
-  /// Decodes the white logo before `runApp`, so its first frame paints the
-  /// logo synchronously. [SvgPicture] loads asynchronously and would show an
-  /// empty frame right after the native splash, which reads as a flicker.
+
   static Future<void> precache() async {
     _precachedWhite ??= await vg.loadPicture(const SvgAssetLoader(_asset), null);
   }
