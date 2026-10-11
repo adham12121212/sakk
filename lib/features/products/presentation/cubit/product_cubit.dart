@@ -36,6 +36,8 @@ class ProductsCubit extends Cubit<ProductsState> {
    void reset() {
     _safeEmit(const ProductsState());
     unawaited(_homeWidget.clear());
+    // Signed out (or switching accounts): no reminders for the old products.
+    unawaited(_warrantyNotificationService.syncAll(const []));
   }
 
   Future<void> loadIfNeeded() {
@@ -53,6 +55,7 @@ class ProductsCubit extends Cubit<ProductsState> {
           (products) {
         _safeEmit(state.copyWith(products: products, isLoading: false, hasLoadedOnce: true));
         unawaited(_warrantyNotificationService.checkAndNotify(products));
+        unawaited(_warrantyNotificationService.syncAll(products));
         unawaited(_homeWidget.update(products));
       },
     );
@@ -93,7 +96,10 @@ class ProductsCubit extends Cubit<ProductsState> {
     final results = allProducts.where((p) {
       return p.name.toLowerCase().contains(lower) ||
           (p.brand?.toLowerCase().contains(lower) ?? false) ||
-          (p.store?.toLowerCase().contains(lower) ?? false);
+          (p.store?.toLowerCase().contains(lower) ?? false) ||
+          // The numbers a store asks for when you make a claim.
+          (p.serialNumber?.toLowerCase().contains(lower) ?? false) ||
+          (p.invoiceNumber?.toLowerCase().contains(lower) ?? false);
     }).toList();
 
     _safeEmit(state.copyWith(query: trimmed, results: results, hasSearched: true));

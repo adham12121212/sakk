@@ -94,71 +94,122 @@ class WarrantyNotificationService {
     }
   }
 
-  /// Call right after a product is saved to schedule future local
-  /// notifications for the day it becomes "expiring soon" and the day it
-  /// expires, so the user is notified even without opening the app. Dates
-  /// already in the past are silently skipped by [NotificationService].
+  /// Call right after a product is saved or edited to schedule its future
+  /// local reminders (expiring soon, expired, return window closing), so the
+  /// user is notified even without opening the app. Past dates are skipped.
   Future<void> scheduleFutureNotifications(ProductEntity product) async {
-    final user = _getUserUseCase();
     final reminderDays = await _reminderDays();
-
-    final expiringDate = product.warrantyEndDate.subtract(Duration(days: reminderDays));
-
-    await _localNotifications.scheduleNotification(
-      id: _notificationIdFor(product.id, 0),
-      title: 'Warranty expiring soon',
-      body: "${product.name}'s warranty is expiring soon",
-      dateTime: expiringDate,
-      payload: user?.id,
-    );
-
-    await _localNotifications.scheduleNotification(
-      id: _notificationIdFor(product.id, 1),
-      title: 'Warranty expired',
-      body: "${product.name}'s warranty has expired",
-      dateTime: product.warrantyEndDate,
-      payload: user?.id,
-    );
-
-    // Return window: a nudge two days before the last day to return it.
-    final returnBy = product.returnByDate;
-    if (returnBy == null) {
-      await _localNotifications.cancelNotification(_notificationIdFor(product.id, 2));
-    } else {
-      await _localNotifications.scheduleNotification(
-        id: _notificationIdFor(product.id, 2),
-        title: 'Return window closing',
-        body: "You have 2 days left to return ${product.name} if you need to",
-        dateTime: returnBy.subtract(const Duration(days: _returnReminderDaysBefore)),
-        payload: user?.id,
-      );
+    final userId = _getUserUseCase()?.id;
+    for (final id in _idsFor(product.id)) {
+      await _localNotifications.cancelNotification(id);
+    }
+    for (final reminder in _remindersFor(product, reminderDays)) {
+      await _schedule(reminder, userId);
     }
   }
+
+  /// Makes this device's pending reminders match [products] exactly: every
+  /// product gets its reminders, and anything else pending is cancelled
+  /// (deleted products, another account's products after sign-out, ids from
+  /// older app versions). Call whenever the product list is (re)loaded, so
+  /// reminders also exist on a new phone, after a reinstall, and for products
+  /// added on another device or by a household member. Pass [] on sign-out.
+  Future<void> syncAll(List<ProductEntity> products) {
+    // Serialize: overlapping syncs could interleave cancels and schedules.
+    return _syncQueue = _syncQueue.then((_) => _syncAll(products)).catchError((Object e, StackTrace st) {
+      _logger.error('Syncing warranty reminders failed', error: e, stackTrace: st);
+    });
+  }
+
+  Future<void> _syncQueue = Future.value();
+
+  Future<void> _syncAll(List<ProductEntity> products) async {
+    final reminderDays = await _reminderDays();
+    final userId = _getUserUseCase()?.id;
+    final now = DateTime.now();
+    final wanted = [
+      for (final product in products)
+        ..._remindersFor(product, reminderDays).where((r) => r.dateTime.isAfter(now)),
+    ];
+    final wantedIds = {for (final r in wanted) r.id};
+
+    // Only warranty reminders are scheduled locally, so anything pending that
+    // isn't wanted is stale.
+    for (final pending in await _localNotifications.pendingNotifications()) {
+      if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
+    }
+    for (final reminder in wanted) {
+      await _schedule(reminder, userId);
+    }
+  }
+
+  /// Call after the reminder setting changes so pending reminders move to
+  /// the new date.
+  Future<void> rescheduleAll(List<ProductEntity> products) => syncAll(products);
+
+  List<_Reminder> _remindersFor(ProductEntity product, int reminderDays) {
+    final returnBy = product.returnByDate;
+    return [
+      _Reminder(
+        id: _notificationIdFor(product.id, 0),
+        title: 'Warranty expiring soon',
+        body: "${product.name}'s warranty is expiring soon",
+        dateTime: product.warrantyEndDate.subtract(Duration(days: reminderDays)),
+      ),
+      _Reminder(
+        id: _notificationIdFor(product.id, 1),
+        title: 'Warranty expired',
+        body: "${product.name}'s warranty has expired",
+        dateTime: product.warrantyEndDate,
+      ),
+      if (returnBy != null)
+        _Reminder(
+          id: _notificationIdFor(product.id, 2),
+          title: 'Return window closing',
+          body: "You have 2 days left to return ${product.name} if you need to",
+          dateTime: returnBy.subtract(const Duration(days: _returnReminderDaysBefore)),
+        ),
+    ];
+  }
+
+  Future<void> _schedule(_Reminder reminder, String? userId) => _localNotifications.scheduleNotification(
+        id: reminder.id,
+        title: reminder.title,
+        body: reminder.body,
+        dateTime: reminder.dateTime,
+        payload: userId,
+      );
 
   static const _returnReminderDaysBefore = 2;
 
-  /// Call after the reminder setting changes so every product's pending
-  /// "expiring soon" reminder moves to the new date. Reminders keep the same
-  /// ids, so each one replaces the old schedule.
-  Future<void> rescheduleAll(List<ProductEntity> products) async {
-    for (final product in products) {
-      if (product.isExpired) continue;
-      await _localNotifications.cancelNotification(_notificationIdFor(product.id, 0));
-      await scheduleFutureNotifications(product);
+  /// Call when a product is deleted, to cancel any pending reminders.
+  Future<void> cancelScheduledNotifications(String productId) async {
+    for (final id in _idsFor(productId)) {
+      await _localNotifications.cancelNotification(id);
     }
   }
 
-  /// Call when a product is deleted, to cancel any pending reminders.
-  Future<void> cancelScheduledNotifications(String productId) async {
-    await _localNotifications.cancelNotification(_notificationIdFor(productId, 0));
-    await _localNotifications.cancelNotification(_notificationIdFor(productId, 1));
-    await _localNotifications.cancelNotification(_notificationIdFor(productId, 2));
-  }
+  Iterable<int> _idsFor(String productId) => [0, 1, 2].map((s) => _notificationIdFor(productId, s));
 
-  /// Deterministic 32-bit int id required by flutter_local_notifications,
-  /// derived from the product id plus a suffix so a product's reminders don't
-  /// collide: 0 "expiring", 1 "expired", 2 "return window closing".
+  /// 32-bit int id required by flutter_local_notifications: a stable hash of
+  /// the product id plus a suffix so a product's reminders don't collide
+  /// (0 "expiring", 1 "expired", 2 "return window closing"). FNV-1a rather
+  /// than String.hashCode, which Dart doesn't guarantee across releases, so
+  /// an app update can still find and cancel what an older version scheduled.
   int _notificationIdFor(String productId, int suffix) {
-    return (productId.hashCode & 0x7FFFFFFF) ~/ 10 * 10 + suffix;
+    var hash = 0x811c9dc5;
+    for (final unit in productId.codeUnits) {
+      hash = ((hash ^ unit) * 0x01000193) & 0xFFFFFFFF;
+    }
+    return (hash & 0x7FFFFFFF) ~/ 10 * 10 + suffix;
   }
+}
+
+class _Reminder {
+  const _Reminder({required this.id, required this.title, required this.body, required this.dateTime});
+
+  final int id;
+  final String title;
+  final String body;
+  final DateTime dateTime;
 }

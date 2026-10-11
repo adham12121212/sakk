@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/error/Failure.dart';
 import 'package:sakk/core/logger/app_logger.dart';
@@ -59,6 +60,10 @@ class _Notifications implements NotificationService {
 
   @override
   Future<void> cancelNotification(int id) async => scheduled.remove(id);
+
+  @override
+  Future<List<PendingNotificationRequest>> pendingNotifications() async =>
+      [for (final id in scheduled.keys) PendingNotificationRequest(id, null, null, null)];
 
   @override
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
@@ -144,5 +149,36 @@ void main() {
 
     await service.cancelScheduledNotifications('r');
     expect(notifications.scheduled, isEmpty);
+  });
+
+  test('syncAll schedules every product and cancels stale reminders', () async {
+    final keep = endingIn('keep', 200);
+    final deleted = endingIn('deleted', 200);
+    await service.syncAll([keep, deleted]); // e.g. a new phone after login
+    expect(notifications.scheduled, hasLength(4));
+
+    await service.syncAll([keep]); // "deleted" was removed on another device
+    expect(notifications.scheduled, hasLength(2));
+
+    await service.syncAll(const []); // signed out
+    expect(notifications.scheduled, isEmpty);
+  });
+
+  test('reminder ids are the same on every run (stable hash)', () async {
+    await service.syncAll([endingIn('fixed-id', 200)]);
+    final ids = notifications.scheduled.keys.toSet();
+    notifications.scheduled.clear();
+    final again = WarrantyNotificationService(
+      getUserUseCase: _User(),
+      addNotificationUseCase: added,
+      tracker: _Tracker(),
+      localNotifications: notifications,
+      reminders: reminders,
+      logger: _NoLog(),
+    );
+    await again.syncAll([endingIn('fixed-id', 200)]);
+    expect(notifications.scheduled.keys.toSet(), ids);
+    // Pinned value: a change here means old reminders could no longer be found.
+    expect(ids, {852287150, 852287151});
   });
 }
