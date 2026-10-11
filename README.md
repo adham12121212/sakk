@@ -17,13 +17,20 @@ A Flutter app for tracking purchases, warranties, returns and receipts. Availabl
 
 | Area | Library |
 |---|---|
-| State | `flutter_bloc` (Cubits) |
+| State | `flutter_bloc` (Cubits only) |
 | Navigation | `go_router` |
 | Dependency injection | `get_it` |
 | Errors | `dartz` `Either` with `Failure` types |
-| Backend | Supabase (auth, database, storage, edge functions) |
+| Backend | Supabase: auth, Postgres database, storage for receipts, product documents and avatars, and edge functions in TypeScript (Deno) |
+| AI | Groq, called from edge functions: `openai/gpt-oss-120b` for `ai-chat`, `qwen/qwen3.8-27b` for `extract-receipt` |
+| Offline | Products cached per user in `shared_preferences`; connectivity via `internet_connection_checker_plus` |
+| Auth extras | `google_sign_in` (ID token passed to Supabase), `local_auth` for the biometric lock |
+| Notifications | `flutter_local_notifications` with `timezone`; `add_2_calendar` for calendar events |
+| Home screen widget | `home_widget` (Android provider + iOS WidgetKit extension) |
+| PDF | `pdfrx` reads the text layer of PDF invoices before scanning |
 | Crash reporting | Firebase Crashlytics |
-| Localization | `flutter_localizations` + ARB files in `lib/l10n` |
+| UI | `flutter_screenutil` for sizing, Cairo font via `google_fonts`, Phosphor icons, `skeletonizer` loading states |
+| Localization | `flutter_localizations` + ARB files in `lib/l10n` (English, Arabic) |
 
 ## Project structure
 
