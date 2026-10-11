@@ -1233,4 +1233,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sharePhotoAndTextHint => 'صورة الفاتورة، مع التفاصيل كرسالة.';
+
+  @override
+  String get shareTextOnly => 'نص';
+
+  @override
+  String get shareTextOnlyHint => 'تفاصيل المنتج كرسالة.';
+
+  @override
+  String get sharedFromSakk => 'تمت المشاركة من تطبيق صك';
 }

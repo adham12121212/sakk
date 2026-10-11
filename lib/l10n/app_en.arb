@@ -370,5 +370,8 @@
   "shareImageWithDetails": "Image with details",
   "shareImageWithDetailsHint": "One image: the receipt with the product details under it. Best for Messenger.",
   "sharePhotoAndText": "Photo and text",
-  "sharePhotoAndTextHint": "The receipt photo, with the details as a message."
+  "sharePhotoAndTextHint": "The receipt photo, with the details as a message.",
+  "shareTextOnly": "Text",
+  "shareTextOnlyHint": "The product details as a message.",
+  "sharedFromSakk": "Shared from Sakk"
 }

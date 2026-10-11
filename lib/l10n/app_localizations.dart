@@ -2191,6 +2191,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The receipt photo, with the details as a message.'**
   String get sharePhotoAndTextHint;
+
+  /// No description provided for @shareTextOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get shareTextOnly;
+
+  /// No description provided for @shareTextOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The product details as a message.'**
+  String get shareTextOnlyHint;
+
+  /// No description provided for @sharedFromSakk.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared from Sakk'**
+  String get sharedFromSakk;
 }
 
 class _AppLocalizationsDelegate

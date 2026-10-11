@@ -1226,4 +1226,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sharePhotoAndTextHint =>
       'The receipt photo, with the details as a message.';
+
+  @override
+  String get shareTextOnly => 'Text';
+
+  @override
+  String get shareTextOnlyHint => 'The product details as a message.';
+
+  @override
+  String get sharedFromSakk => 'Shared from Sakk';
 }

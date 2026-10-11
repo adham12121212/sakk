@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constant/app_colors.dart';
@@ -95,40 +97,66 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return (product.daysRemaining / totalDays).clamp(0.0, 1.0);
   }
 
-  /// The product details, one per line, for the share text and the share
-  /// image. No receipt link: the photo itself is attached when there is one,
-  /// and the link would let anyone who sees the message open the receipt.
-  List<String> get _shareLines {
+  String get _dateLocale {
+    final appLocale = Localizations.localeOf(context);
+    return appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
+  }
+
+  /// Label/value pairs shared as text and drawn on the share image. No
+  /// receipt link: the photo itself is attached when there is one, and the
+  /// link would let anyone who sees the message open the receipt.
+  List<(String, String)> get _shareRows {
     final l10n = AppLocalizations.of(context)!;
+    final date = DateFormat.yMMMd(_dateLocale);
+    final daysToReturn = product.daysToReturn;
     return [
-      CategoryUi.label(context, product.category),
-      if (product.brand != null) l10n.shareBrand(product.brand!),
-      if (product.store != null) l10n.shareStore(product.store!),
-      if (product.price != null) l10n.sharePrice(product.currency, product.price!.toStringAsFixed(2)),
-      l10n.sharePurchased(_formatDate(product.purchaseDate)),
-      l10n.shareWarranty(product.warrantyMonths),
-      l10n.shareExpires(_formatDate(product.warrantyEndDate)),
-      if (product.serialNumber != null) '${l10n.serialNumber}: ${product.serialNumber}',
+      if (product.store != null) (l10n.store, product.store!),
+      if (product.price != null)
+        (l10n.price, '${NumberFormat.decimalPattern(_dateLocale).format(product.price!.round())} $_currencyLabel'),
+      (l10n.purchaseDate, date.format(product.purchaseDate)),
+      (l10n.warrantyPeriod, '${product.warrantyMonths} ${l10n.months}'),
+      (l10n.warrantyEnds, date.format(product.warrantyEndDate)),
+      if (daysToReturn != null && daysToReturn >= 0) (l10n.returnBy, date.format(product.returnByDate!)),
+      if (product.serialNumber != null) (l10n.serialNumber, product.serialNumber!),
+      if (product.invoiceNumber != null) (l10n.invoiceNumber, product.invoiceNumber!),
     ];
   }
 
-  String get _shareText => [product.name, ..._shareLines].join('\n');
+  /// Arabic text reads "ج.م" after the amount; a Latin "EGP" next to Arabic
+  /// digits gets reordered by right-to-left layout.
+  String get _currencyLabel =>
+      Localizations.localeOf(context).languageCode == 'ar' && product.currency == 'EGP' ? 'ج.م' : product.currency;
 
-  /// Chosen in the share sheet: one image with the details drawn on it, or
-  /// the photo with the details as text.
+  /// "Samsung · Electronics"
+  String get _shareSubtitle =>
+      [if (product.brand != null) product.brand!, CategoryUi.label(context, product.category)].join(' · ');
+
+  /// "Active · 412 days left" / "Expired"
+  String get _shareStatus {
+    final l10n = AppLocalizations.of(context)!;
+    return product.isExpired ? _statusLabel : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining)}';
+  }
+
+  String get _shareText {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      product.name,
+      _shareSubtitle,
+      _shareStatus,
+      '',
+      for (final (label, value) in _shareRows) '$label: $value',
+      '',
+      l10n.sharedFromSakk,
+    ].join('\n');
+  }
+
+  /// Chosen in the share sheet: one image with everything on it, or plain
+  /// text (with the receipt photo attached when there is one).
   bool _shareAsImageCard = false;
 
-  String _formatDate(DateTime d) =>
-      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  bool get _hasPhoto => product.receiptUrl != null || product.imageUrl != null;
 
-  /// Shares the product details with the invoice photo attached; the cubit
-  /// downloads the photo first and the listener opens the share sheet. With no
-  /// invoice, shares the details alone.
   Future<void> _share() async {
-    if (product.receiptUrl == null && product.imageUrl == null) {
-      await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
-      return;
-    }
     final l10n = AppLocalizations.of(context)!;
     final asImageCard = await showModalBottomSheet<bool>(
       context: context,
@@ -145,8 +173,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             ),
             ListTile(
               leading: const Icon(AppIcons.share),
-              title: Text(l10n.sharePhotoAndText),
-              subtitle: Text(l10n.sharePhotoAndTextHint),
+              title: Text(_hasPhoto ? l10n.sharePhotoAndText : l10n.shareTextOnly),
+              subtitle: Text(_hasPhoto ? l10n.sharePhotoAndTextHint : l10n.shareTextOnlyHint),
               onTap: () => Navigator.of(sheetContext).pop(false),
             ),
             const SizedBox(height: 8),
@@ -156,21 +184,34 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     );
     if (asImageCard == null || !mounted) return;
     _shareAsImageCard = asImageCard;
-    context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
+    if (_hasPhoto) {
+      // Downloads the photo; the listener continues with DetailsDownloadReady.
+      context.read<DetailsCubit>().downloadInvoice(product, shareText: _shareText);
+    } else if (asImageCard) {
+      await _shareImageCard(null);
+    } else {
+      await _openShareSheet(ShareParams(text: _shareText, subject: product.name));
+    }
   }
 
-  /// Draws the details under the downloaded receipt photo and shares that
-  /// single image.
-  Future<void> _shareImageCard(String photoPath) async {
+  /// Draws the product card (with the receipt photo when there is one) and
+  /// shares that single image.
+  Future<void> _shareImageCard(String? photoPath) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final cardPath = await composeShareCard(
-        photoBytes: await File(photoPath).readAsBytes(),
+      final cardPath = await composeShareCard(ShareCardData(
+        brandName: l10n.appName,
         title: product.name,
-        lines: _shareLines,
+        subtitle: _shareSubtitle,
+        statusLabel: _shareStatus,
+        statusColor: _statusColor,
+        rows: _shareRows,
+        receiptLabel: l10n.documentReceipt,
         footer: l10n.appTagline,
         textDirection: Directionality.of(context),
-      );
+        photoBytes: photoPath == null ? null : await File(photoPath).readAsBytes(),
+        fontFamily: GoogleFonts.cairo().fontFamily,
+      ));
       if (!mounted) return;
       await _openShareSheet(ShareParams(files: [XFile(cardPath, mimeType: 'image/png')], subject: product.name));
     } catch (_) {
