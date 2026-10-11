@@ -10,7 +10,7 @@ A Flutter app for tracking purchases, warranties, returns and receipts. Availabl
 - **Households** — share products with other people.
 - **Reminders** — local notifications and calendar events before warranties and return windows end.
 - **Home screen widget** — upcoming warranty expiries at a glance.
-- **Analytics** — spending and warranty overview.
+- **Analytics** — total spent (can be hidden), spending by year, top 5 stores, a category breakdown donut chart, and how many warranties are active, expiring or expired; switch between your own products and the household's.
 - **Sign-in** — email/password or Google, with optional biometric lock.
 
 ## Tech stack
