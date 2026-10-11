@@ -12,8 +12,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
 import '../cubit/household_cubit.dart';
 
-/// Profile's "Family sharing" card: create or join a household, or (when in
-/// one) its invite code, members and leave.
+
+
 class HouseholdCard extends StatefulWidget {
   const HouseholdCard({super.key});
 
@@ -26,7 +26,6 @@ class _HouseholdCardState extends State<HouseholdCard> {
 
   String? get _myId => getIt<GetUserUseCase>()()?.id;
 
-  /// Shown to other members; the account's name, or its email's first part.
   String get _myName {
     final user = getIt<GetUserUseCase>()();
     if (user == null) return '';
@@ -210,9 +209,7 @@ Future<String?> _askText(
   );
 }
 
-/// Owns its text controller so it's disposed only after the dialog's closing
-/// animation, which still draws the field. Disposing it when showDialog
-/// returns threw "A TextEditingController was used after being disposed".
+
 class _TextPromptDialog extends StatefulWidget {
   const _TextPromptDialog({required this.title, required this.label, required this.hint, required this.upperCase});
 
