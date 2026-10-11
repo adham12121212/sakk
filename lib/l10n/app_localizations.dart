@@ -2167,6 +2167,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.'**
   String get onboardingFamilyDescription;
+
+  /// No description provided for @notifExpiringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty expiring soon'**
+  String get notifExpiringTitle;
+
+  /// No description provided for @notifExpiringBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{product}\'s warranty is ending soon'**
+  String notifExpiringBody(Object product);
+
+  /// No description provided for @notifExpiringInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{product}\'s warranty ends in {days, plural, one{1 day} other{{days} days}}'**
+  String notifExpiringInDays(num days, Object product);
+
+  /// No description provided for @notifExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty expired'**
+  String get notifExpiredTitle;
+
+  /// No description provided for @notifExpiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{product}\'s warranty has expired'**
+  String notifExpiredBody(Object product);
+
+  /// No description provided for @notifReturnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Return window closing'**
+  String get notifReturnTitle;
+
+  /// No description provided for @notifReturnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have 2 days left to return {product} if you need to'**
+  String notifReturnBody(Object product);
 }
 
 class _AppLocalizationsDelegate

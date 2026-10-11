@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/enties/product_entity.dart';
+import '../../domain/entities/product_entity.dart';
 
 class ProductsState extends Equatable {
   const ProductsState({

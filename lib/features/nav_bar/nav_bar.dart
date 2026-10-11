@@ -187,7 +187,7 @@ class _ScanItem extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                    colors: AppColors.brandGradientColors,
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [

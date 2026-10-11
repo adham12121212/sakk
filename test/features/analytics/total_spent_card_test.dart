@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/di/get_it.dart';
 import 'package:sakk/core/service/amount_visibility_controller.dart';
 import 'package:sakk/features/analytics/presentation/widgets/total_spent_card.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 import 'package:sakk/features/products/presentation/cubit/product_state.dart';
 import 'package:sakk/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/core/service/notification_service.dart';
 import 'package:sakk/core/service/reminder_controller.dart';
@@ -11,7 +12,7 @@ import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
 import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _User implements GetUserUseCase {
@@ -180,5 +181,19 @@ void main() {
     expect(notifications.scheduled.keys.toSet(), ids);
     // Pinned value: a change here means old reminders could no longer be found.
     expect(ids, {852287150, 852287151});
+  });
+
+  test('reminders use the app language', () async {
+    final arabic = WarrantyNotificationService(
+      getUserUseCase: _User(),
+      addNotificationUseCase: added,
+      tracker: _Tracker(),
+      localNotifications: notifications,
+      reminders: reminders,
+      logger: _NoLog(),
+      locale: ValueNotifier(const Locale('ar')),
+    );
+    await arabic.checkAndNotify([endingIn('gone', -3)]);
+    expect(added.added.single, 'gone:انتهى الضمان');
   });
 }

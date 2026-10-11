@@ -22,8 +22,8 @@ void main() {
   testWidgets('no build error at launch; hidden on splash, shown after', (tester) async {
     final network = _Network();
     final router = GoRouter(initialLocation: '/', routes: [
-      GoRoute(path: '/', builder: (_, __) => const Text('splash')),
-      GoRoute(path: '/home', builder: (_, __) => const Text('home')),
+      GoRoute(path: '/', builder: (_, _) => const Text('splash')),
+      GoRoute(path: '/home', builder: (_, _) => const Text('home')),
     ]);
     // Attach the way runApp does (outside a frame), not via pumpWidget, which
     // builds inside one and hides the bug.

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/scanned_receipt.dart';
+import '../../../products/domain/entities/scanned_receipt.dart';
 import 'datex.dart';
 
 

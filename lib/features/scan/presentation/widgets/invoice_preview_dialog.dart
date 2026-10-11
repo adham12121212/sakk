@@ -8,7 +8,7 @@ void showInvoicePreviewDialog(BuildContext context, String? imageUrl) {
 
   showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.9),
+    barrierColor: Colors.black.withValues(alpha: 0.9),
     builder: (_) => Dialog(
       insetPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,

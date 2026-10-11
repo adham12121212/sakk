@@ -1,4 +1,4 @@
-import 'enties/product_entity.dart';
+import 'entities/product_entity.dart';
 
 /// Why a new product looks like one the user already saved.
 enum DuplicateReason { sameInvoiceNumber, sameSerialNumber, sameNameAndDate }

@@ -1,7 +1,7 @@
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 
-import '../../features/products/domain/enties/product_entity.dart';
+import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';

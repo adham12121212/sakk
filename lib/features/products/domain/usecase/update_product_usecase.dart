@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../product_repo/product_repo.dart';
 

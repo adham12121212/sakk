@@ -1,4 +1,4 @@
-import 'package:sakk/core/error/Exceptions.dart';
+import 'package:sakk/core/error/exceptions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' ;
 
 class SupabaseErrorMapper {

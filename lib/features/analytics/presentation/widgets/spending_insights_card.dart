@@ -7,7 +7,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/service/amount_visibility_controller.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/spending_insights.dart';
 
 /// Spending per year and the top stores, as slim bars. Amounts are blurred

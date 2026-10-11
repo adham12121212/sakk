@@ -1220,4 +1220,42 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get onboardingFamilyDescription =>
       'أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك.';
+
+  @override
+  String get notifExpiringTitle => 'الضمان على وشك الانتهاء';
+
+  @override
+  String notifExpiringBody(Object product) {
+    return 'ضمان $product سينتهي قريبًا';
+  }
+
+  @override
+  String notifExpiringInDays(num days, Object product) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'بعد $days يوم',
+      many: 'بعد $days يومًا',
+      few: 'بعد $days أيام',
+      two: 'بعد يومين',
+      one: 'غدًا',
+    );
+    return 'ضمان $product ينتهي $_temp0';
+  }
+
+  @override
+  String get notifExpiredTitle => 'انتهى الضمان';
+
+  @override
+  String notifExpiredBody(Object product) {
+    return 'انتهى ضمان $product';
+  }
+
+  @override
+  String get notifReturnTitle => 'موعد الاسترجاع يقترب';
+
+  @override
+  String notifReturnBody(Object product) {
+    return 'باقي يومان لاسترجاع $product إذا احتجت لذلك';
+  }
 }

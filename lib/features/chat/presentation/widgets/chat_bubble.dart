@@ -6,6 +6,7 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'ai_avatar.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/constant/app_colors.dart';
 
 /// User messages: brand-gradient bubble at the end. Assistant replies: white
 /// card at the start next to the AI avatar, selectable so it can be copied.
@@ -22,7 +23,7 @@ class ChatBubble extends StatelessWidget {
   static const _gradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+    colors: AppColors.brandGradientColors,
   );
 
   @override

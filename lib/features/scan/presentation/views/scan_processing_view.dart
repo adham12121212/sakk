@@ -7,11 +7,12 @@ import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/scanned_receipt.dart';
+import '../../../products/domain/entities/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/processing_field_spec.dart';
 import '../widgets/processing_field_tile.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/constant/app_colors.dart';
 
 
 class ScanProcessingView extends StatelessWidget {
@@ -185,7 +186,7 @@ class _ProcessingBody extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                  colors: AppColors.brandGradientColors,
                 ),
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: const [

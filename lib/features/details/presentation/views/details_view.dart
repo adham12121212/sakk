@@ -7,12 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constant/app_colors.dart';
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/di/get_it.dart';
@@ -27,7 +27,7 @@ import '../util/share_card_image.dart';
 import '../widgets/calendar_actions.dart';
 import '../widgets/product_documents_section.dart';
 import '../widgets/warranty_extras_section.dart';
-import '../widgets/warrenty_banner.dart';
+import '../widgets/warranty_banner.dart';
 import 'edit_view.dart';
 import '../../../../core/theme/app_icons.dart';
 
@@ -153,6 +153,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   Future<void> _shareImageCard(String? photoPath) async {
     final l10n = AppLocalizations.of(context)!;
     try {
+      final photoBytes = photoPath == null ? null : await File(photoPath).readAsBytes();
+      if (!mounted) return;
       final cardPath = await composeShareCard(ShareCardData(
         brandName: l10n.appName,
         title: product.name,
@@ -163,7 +165,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         receiptLabel: l10n.documentReceipt,
         footer: l10n.appTagline,
         textDirection: Directionality.of(context),
-        photoBytes: photoPath == null ? null : await File(photoPath).readAsBytes(),
+        photoBytes: photoBytes,
         fontFamily: GoogleFonts.cairo().fontFamily,
       ));
       if (!mounted) return;

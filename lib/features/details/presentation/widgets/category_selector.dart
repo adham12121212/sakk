@@ -18,7 +18,7 @@ class CategorySelector extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: ProductCategory.values.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        separatorBuilder: (_, _) => SizedBox(width: 8.w),
         itemBuilder: (context, index) {
           final category = ProductCategory.values[index];
           final isSelected = category == selected;
@@ -30,7 +30,7 @@ class CategorySelector extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
               decoration: BoxDecoration(
-                color: isSelected ? color : color.withOpacity(0.1),
+                color: isSelected ? color : color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Row(

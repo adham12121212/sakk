@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sakk/features/auth/presentation/widgets/semented_toggle.dart';
+import 'package:sakk/features/auth/presentation/widgets/segmented_toggle.dart';
 
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/di/get_it.dart';

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/features/category/domain/entities/product_category.dart';
 import 'package:sakk/features/products/data/models/product_model.dart';
-import 'package:sakk/features/products/domain/enties/product_document.dart';
-import 'package:sakk/features/products/domain/enties/warranty_claim.dart';
+import 'package:sakk/features/products/domain/entities/product_document.dart';
+import 'package:sakk/features/products/domain/entities/warranty_claim.dart';
 
 /// A products row as Supabase returns it with ProductModel.selectColumns.
 Map<String, dynamic> row() => {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OtpBox extends StatelessWidget {
-  const OtpBox({
+  const OtpBox({super.key, 
     required this.controller,
     required this.focusNode,
     required this.onChanged,

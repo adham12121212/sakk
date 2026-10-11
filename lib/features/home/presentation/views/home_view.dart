@@ -14,7 +14,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../notification/presentation/cubit/notification_state.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';

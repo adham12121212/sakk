@@ -4,7 +4,7 @@ import '../../../../core/util/warranty_progress_color.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class RecentProductData {

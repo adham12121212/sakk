@@ -1,4 +1,4 @@
-import '../../products/domain/enties/product_entity.dart';
+import '../../products/domain/entities/product_entity.dart';
 
 /// Money spent per year, newest first (years with no priced product are
 /// left out).

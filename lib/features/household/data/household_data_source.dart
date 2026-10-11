@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../core/error/Exceptions.dart';
+import '../../../core/error/exceptions.dart';
 import '../domain/household.dart';
 
 /// Household reads go through RLS (members only see their own household);

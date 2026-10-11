@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/Failure.dart';
-import '../enties/scanned_receipt.dart';
+import '../../../../core/error/failure.dart';
+import '../entities/scanned_receipt.dart';
 import '../product_repo/product_repo.dart';
 
 abstract class ScanReceiptUseCase {

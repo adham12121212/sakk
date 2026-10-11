@@ -21,7 +21,7 @@ void main() {
   testWidgets('going offline and back keeps the same Router and open screen', (tester) async {
     final network = _Network();
     final router = GoRouter(routes: [
-      GoRoute(path: '/', builder: (_, __) => const Text('home')),
+      GoRoute(path: '/', builder: (_, _) => const Text('home')),
       GoRoute(path: '/details', builder: (_, state) => Text('details ${state.extra}')),
     ]);
     await tester.pumpWidget(MaterialApp.router(

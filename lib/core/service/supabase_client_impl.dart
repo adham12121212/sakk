@@ -3,7 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakk/core/service/supabase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../error/Exceptions.dart';
+import '../error/exceptions.dart';
 
 class SupabaseServiceImpl implements SupabaseService {
   final SupabaseClient _client;

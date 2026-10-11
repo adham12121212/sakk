@@ -5,7 +5,7 @@ import '../../../../core/util/warranty_progress_color.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class DetailsHeader extends StatelessWidget {
@@ -45,7 +45,7 @@ class DetailsHeader extends StatelessWidget {
               Image.network(
                 imageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _fallbackBackground(),
+                errorBuilder: (_, _, _) => _fallbackBackground(),
               )
             else
               _fallbackBackground(),
@@ -55,8 +55,8 @@ class DetailsHeader extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.15),
-                    Colors.black.withOpacity(0.65),
+                    Colors.black.withValues(alpha: 0.15),
+                    Colors.black.withValues(alpha: 0.65),
                   ],
                 ),
               ),
@@ -116,7 +116,7 @@ class DetailsHeader extends StatelessWidget {
                                 Text(
                                   product.brand!,
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.85),
+                                    color: Colors.white.withValues(alpha: 0.85),
                                     fontSize: 14.sp,
                                   ),
                                 ),
@@ -133,7 +133,7 @@ class DetailsHeader extends StatelessWidget {
                                 strokeAlign: 2,
                                 value: warrantyProgress,
                                 strokeWidth: 4,
-                                backgroundColor: Colors.white.withOpacity(0.25),
+                                backgroundColor: Colors.white.withValues(alpha: 0.25),
                                 valueColor: AlwaysStoppedAnimation(
                                   warrantyProgressColor(
                                     context,
@@ -170,14 +170,14 @@ class DetailsHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primary.withOpacity(0.8), AppColors.primary],
+          colors: [AppColors.primary.withValues(alpha: 0.8), AppColors.primary],
         ),
       ),
       child: Center(
         child: Icon(
           CategoryUi.icon(product.category),
           size: 64.sp,
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.white.withValues(alpha: 0.5),
         ),
       ),
     );

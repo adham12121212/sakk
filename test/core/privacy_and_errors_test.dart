@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/error/user_facing_error.dart';
 import 'package:sakk/core/util/pii_masker.dart';
 import 'package:sakk/features/products/data/product_data_source/product_data_source.dart';

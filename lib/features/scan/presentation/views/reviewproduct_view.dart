@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/di/get_it.dart';
 import '../../../products/domain/duplicate_finder.dart';
-import '../../../products/domain/enties/scanned_receipt.dart';
+import '../../../products/domain/entities/scanned_receipt.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/capsule_field.dart';

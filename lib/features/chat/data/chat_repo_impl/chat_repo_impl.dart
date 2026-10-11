@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 
-import '../../../../core/error/Exceptions.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/network_info.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../domain/chat_repo/chat_repo.dart';

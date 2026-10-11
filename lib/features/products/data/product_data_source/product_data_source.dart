@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/error/Exceptions.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../category/domain/entities/product_category.dart';
-import '../../domain/enties/scanned_receipt.dart';
+import '../../domain/entities/scanned_receipt.dart';
 import '../models/product_model.dart';
 
 abstract class ProductDataSource {
@@ -81,7 +81,7 @@ class ProductDataSourceImpl implements ProductDataSource {
 
         final response = await _client.functions.invoke(
           _extractFunctionName,
-          body: {'imageUrl': signedUrl, if (pdfText != null) 'pdfText': pdfText},
+          body: {'imageUrl': signedUrl, 'pdfText': ?pdfText},
         );
         data = response.data as Map<String, dynamic>;
       } catch (e) {

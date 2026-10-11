@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/features/auth/presentation/views/signin_view.dart';
@@ -19,11 +18,11 @@ import '../../features/nav_bar/nav_bar.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
 import '../../features/notification/presentation/views/notifications_view.dart';
 import '../../features/onboarding/presentation/views/onboarding_view.dart';
-import '../../features/products/domain/enties/product_entity.dart';
+import '../../features/products/domain/entities/product_entity.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
-import '../../features/products/presentation/view/products_veiw.dart';
+import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
-import '../../features/spalsh/presentation/views/splash_view.dart';
+import '../../features/splash/presentation/views/splash_view.dart';
 import '../di/get_it.dart';
 
 

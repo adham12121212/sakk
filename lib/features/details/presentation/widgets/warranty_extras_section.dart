@@ -5,8 +5,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/product_entity.dart';
-import '../../../products/domain/enties/warranty_claim.dart';
+import '../../../products/domain/entities/product_entity.dart';
+import '../../../products/domain/entities/warranty_claim.dart';
 import '../cubit/details_cubit.dart';
 import '../../../../core/theme/app_icons.dart';
 

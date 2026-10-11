@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/features/analytics/domain/spending_insights.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
 ProductEntity p(String id, double? price, int year, {String? store}) =>
     ProductEntity(id: id, name: id, price: price, store: store, purchaseDate: DateTime(year, 5, 1), warrantyMonths: 12);

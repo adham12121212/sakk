@@ -16,7 +16,7 @@ import '../../../category/presentation/views/category_view.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../home/presentation/widgets/recent_product_data.dart';
-import '../../domain/enties/product_entity.dart';
+import '../../domain/entities/product_entity.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
 import '../util/products_csv_export.dart';
@@ -234,7 +234,7 @@ class _ProductsViewState extends State<ProductsView> {
         child: ListView.separated(
           padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
           itemCount: placeholders.length,
-          separatorBuilder: (_, __) => SizedBox(height: 12.h),
+          separatorBuilder: (_, _) => SizedBox(height: 12.h),
           itemBuilder: (context, index) => RecentProductTile(data: placeholders[index]),
         ),
       );
@@ -263,7 +263,7 @@ class _ProductsViewState extends State<ProductsView> {
     return ListView.separated(
       padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
       itemCount: filtered.length,
-      separatorBuilder: (_, __) => SizedBox(height: 12.h),
+      separatorBuilder: (_, _) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         final product = filtered[index];
         return RecentProductTile(

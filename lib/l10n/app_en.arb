@@ -366,5 +366,12 @@
   "calendarEventDescription": "Added from Sakk for {product}.",
   "couldNotOpenCalendar": "Couldn't open your calendar app.",
   "onboardingFamilyTitle": "Share with Your Family",
-  "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products."
+  "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products.",
+  "notifExpiringTitle": "Warranty expiring soon",
+  "notifExpiringBody": "{product}'s warranty is ending soon",
+  "notifExpiringInDays": "{product}'s warranty ends in {days, plural, one{1 day} other{{days} days}}",
+  "notifExpiredTitle": "Warranty expired",
+  "notifExpiredBody": "{product}'s warranty has expired",
+  "notifReturnTitle": "Return window closing",
+  "notifReturnBody": "You have 2 days left to return {product} if you need to"
 }

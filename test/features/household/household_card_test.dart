@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/di/get_it.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';

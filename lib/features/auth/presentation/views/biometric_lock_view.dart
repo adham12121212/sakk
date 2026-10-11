@@ -8,6 +8,7 @@ import '../../../../core/route/app_router.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/constant/app_colors.dart';
 
 class BiometricLockView extends StatefulWidget {
   const BiometricLockView({super.key});
@@ -83,7 +84,7 @@ class _BiometricLockViewState extends State<BiometricLockView>
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                      colors: AppColors.brandGradientColors,
                     ),
                     borderRadius: BorderRadius.circular(32.r),
                     boxShadow: const [

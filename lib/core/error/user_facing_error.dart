@@ -1,7 +1,7 @@
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/household/data/household_data_source.dart';
 import '../../l10n/app_localizations.dart';
-import 'Failure.dart';
+import 'failure.dart';
 
 /// Turns a failure message from a cubit into something safe to show users.
 ///

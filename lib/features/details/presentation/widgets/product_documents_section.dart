@@ -12,8 +12,8 @@ import '../../../../core/service/pdf_invoice_reader.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../products/domain/enties/product_document.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_document.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../cubit/details_cubit.dart';
 
 String documentKindLabel(AppLocalizations l10n, DocumentKind kind) => switch (kind) {
@@ -67,7 +67,7 @@ class ProductDocumentsSection extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: product.documents.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, i) {
                 final document = product.documents[i];
                 return Semantics(
@@ -87,7 +87,7 @@ class ProductDocumentsSection extends StatelessWidget {
                               width: 96,
                               height: 100,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
+                              errorBuilder: (_, _, _) => Container(
                                 width: 96,
                                 height: 100,
                                 color: colorScheme.surfaceContainerHighest,

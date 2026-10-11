@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../entities/notification_enitiy.dart';
 import '../notification_repo/notification_repo.dart';
 

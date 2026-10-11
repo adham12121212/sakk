@@ -128,7 +128,7 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                   return ListView.separated(
                     padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
                     itemCount: state.results.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       final product = state.results[index];
                       return RecentProductTile(

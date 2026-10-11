@@ -2,7 +2,7 @@ import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserModel extends UserEntity {
-  UserModel({
+  const UserModel({
     required super.id,
     required super.email,
     required super.name,

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../core/error/Exceptions.dart';
-import '../../../core/error/Failure.dart';
+import '../../../core/error/exceptions.dart';
+import '../../../core/error/failure.dart';
 import '../../../core/error/network_info.dart';
 import '../../../core/logger/app_logger.dart';
 import '../domain/household.dart';

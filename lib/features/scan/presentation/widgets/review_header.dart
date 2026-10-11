@@ -61,7 +61,7 @@ class ReviewHeader extends StatelessWidget {
               children: [
                 Text(title ?? l10n.verifyDetails, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: colorScheme.onSurface)),
                 SizedBox(height: 2.h),
-                Text(subtitle ?? l10n.reviewAndEditExtractedData, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withOpacity(0.6))),
+                Text(subtitle ?? l10n.reviewAndEditExtractedData, style: TextStyle(fontSize: 13.sp, color: colorScheme.onSurface.withValues(alpha: 0.6))),
               ],
             ),
           ),

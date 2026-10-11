@@ -27,7 +27,7 @@ class PrivacyPolicyView extends StatelessWidget {
             children: [
               Text(
                 isArabic ? 'آخر تحديث: [أضف التاريخ هنا]' : 'Last updated: [add date here]',
-                style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withOpacity(0.5)),
+                style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
               ),
               SizedBox(height: 20.h),
               for (final section in sections) ...[
@@ -38,7 +38,7 @@ class PrivacyPolicyView extends StatelessWidget {
                 SizedBox(height: 6.h),
                 Text(
                   section.body,
-                  style: TextStyle(fontSize: 14.sp, height: 1.5, color: colorScheme.onSurface.withOpacity(0.8)),
+                  style: TextStyle(fontSize: 14.sp, height: 1.5, color: colorScheme.onSurface.withValues(alpha: 0.8)),
                 ),
                 SizedBox(height: 18.h),
               ],

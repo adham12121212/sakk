@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../../category/domain/entities/product_category.dart';
-import '../enties/product_entity.dart';
+import '../entities/product_entity.dart';
 import '../product_repo/product_repo.dart';
 
 abstract class AddProductUseCase {

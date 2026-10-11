@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/sakk_logo.dart';
+import '../../../../core/constant/app_colors.dart';
 
 class SigninHeader extends StatelessWidget {
   const SigninHeader({super.key});
@@ -22,7 +23,7 @@ class SigninHeader extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+              colors: AppColors.brandGradientColors,
             ),
             borderRadius: BorderRadius.circular(24.r),
             boxShadow: const [

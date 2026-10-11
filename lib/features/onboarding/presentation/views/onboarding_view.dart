@@ -127,7 +127,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                               gradient: const LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                                colors: AppColors.brandGradientColors,
                               ),
                               borderRadius: BorderRadius.circular(30.r),
                               boxShadow: const [

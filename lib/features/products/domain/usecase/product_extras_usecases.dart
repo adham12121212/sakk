@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/Failure.dart';
-import '../enties/product_document.dart';
-import '../enties/warranty_claim.dart';
+import '../../../../core/error/failure.dart';
+import '../entities/product_document.dart';
+import '../entities/warranty_claim.dart';
 import '../product_repo/product_repo.dart';
 
 /// Extra warranties and warranty claims on a product.

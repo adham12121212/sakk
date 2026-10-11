@@ -1,48 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sakk/core/constant/app_colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
-import '../../../../core/di/get_it.dart';
-import '../../../../core/route/app_router.dart';
-import '../../../../core/service/biometric_auth_service.dart';
-import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 
 class SocialLoginButtons extends StatelessWidget {
   final bool showBiometric;
   const SocialLoginButtons({super.key, this.showBiometric = true});
-
-  void _showComingSoon(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
-  }
-
-  Future<void> _handleBiometricSignIn(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    final session = Supabase.instance.client.auth.currentSession;
-
-    if (session == null) {
-      AppSnackBar.error(context, l10n.biometricRequiresActiveSession);
-      return;
-    }
-
-    final biometricService = getIt<BiometricAuthService>();
-    if (!await biometricService.isEnabled) {
-      if (!context.mounted) return;
-      AppSnackBar.error(context, l10n.biometricNotEnabledYet);
-      return;
-    }
-
-    final success = await biometricService.authenticate(
-      reason: l10n.biometricUnlockReason,
-    );
-    if (success && context.mounted) {
-      context.go(AppRoutes.home);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

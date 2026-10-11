@@ -1,7 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../product_repo/product_repo.dart';
 
 abstract class DeleteProductUseCase {

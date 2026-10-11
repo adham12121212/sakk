@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/products/domain/enties/product_entity.dart';
+import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme/app_palette.dart';
 

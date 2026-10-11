@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:sakk/features/chat/domain/usecase/send_message_use_case.dart';
 import 'package:sakk/features/chat/presentation/cubit/chat_cubit.dart';

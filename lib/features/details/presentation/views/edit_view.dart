@@ -7,7 +7,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../scan/presentation/widgets/capsule_field.dart';
 import '../../../scan/presentation/widgets/datex.dart';
 import '../../../scan/presentation/widgets/field_label.dart';

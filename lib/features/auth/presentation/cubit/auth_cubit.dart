@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakk/features/auth/domain/usecase/signout_usecase.dart';
 import 'package:sakk/features/auth/domain/usecase/signup_usecase.dart';
 import '../../../../core/di/get_it.dart';
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:sakk/core/error/supabase_error_mapper.dart';
 import 'package:sakk/features/auth/data/models/user_model.dart';
-import '../../../../core/error/Exceptions.dart';
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/service/storage_service.dart';
 import '../../../../core/service/supabase_client.dart';
 

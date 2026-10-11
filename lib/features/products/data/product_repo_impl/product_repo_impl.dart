@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/error/Exceptions.dart';
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/error/network_info.dart';
 import '../../../../core/logger/app_logger.dart';
 
 import '../../../category/domain/entities/product_category.dart';
-import '../../domain/enties/product_entity.dart';
-import '../../domain/enties/scanned_receipt.dart';
+import '../../domain/entities/product_entity.dart';
+import '../../domain/entities/scanned_receipt.dart';
 import '../../domain/product_repo/product_repo.dart';
-import '../../domain/enties/product_document.dart';
-import '../../domain/enties/warranty_claim.dart';
+import '../../domain/entities/product_document.dart';
+import '../../domain/entities/warranty_claim.dart';
 import '../models/product_model.dart';
 import '../product_data_source/product_data_source.dart';
 import '../product_data_source/product_local_data_source.dart';

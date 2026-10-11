@@ -75,7 +75,7 @@ class _ChatViewState extends State<ChatView> {
                   controller: _scrollController,
                   padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
                   itemCount: state.messages.length + (state.isSending ? 1 : 0),
-                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 12.h),
                   itemBuilder: (context, index) {
                     if (index == state.messages.length) {
                       return const ChatTypingIndicator();

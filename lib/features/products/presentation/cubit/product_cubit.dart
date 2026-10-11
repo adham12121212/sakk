@@ -6,7 +6,7 @@ import 'package:sakk/features/products/presentation/cubit/product_state.dart';
 import '../../../../core/service/home_widget_sync.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../../core/util/shared_preferences.dart';
-import '../../domain/enties/product_entity.dart';
+import '../../domain/entities/product_entity.dart';
 import '../../domain/usecase/delete_product_usecase.dart';
 import '../../domain/usecase/get_products_usecase.dart';
 
@@ -19,6 +19,7 @@ class ProductsCubit extends Cubit<ProductsState> {
       this._homeWidget,
       ) : super(const ProductsState()) {
     _homeWidget.followLanguage(() => state.products);
+    _warrantyNotificationService.followLanguage(() => state.products);
   }
 
   final GetProductsUseCase _getProductsUseCase;

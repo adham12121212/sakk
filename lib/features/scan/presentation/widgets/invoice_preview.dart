@@ -28,7 +28,7 @@ class InvoicePreview extends StatelessWidget {
                 Image.network(
                   imageUrl!,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const _Placeholder(),
+                  errorBuilder: (_, _, _) => const _Placeholder(),
                 )
               else
                 const _Placeholder(),

@@ -9,7 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../details/presentation/widgets/warranty_extras_section.dart' show claimStatusLabel;
 import '../../../scan/presentation/widgets/datex.dart';
-import '../../domain/enties/product_entity.dart';
+import '../../domain/entities/product_entity.dart';
 
 /// Writes the products to a CSV file (opens in Excel, Numbers, Google Sheets)
 /// and hands it to the share sheet. Headers, categories and statuses are in

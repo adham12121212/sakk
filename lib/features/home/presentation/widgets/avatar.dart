@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class Avatar extends StatelessWidget {
-  const Avatar({
+  const Avatar({super.key, 
     required this.name,
     required this.semanticLabel,
     this.avatarUrl,

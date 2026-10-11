@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
-import '../../../spalsh/presentation/widgets/blob.dart';
+import '../../../splash/presentation/widgets/blob.dart';
 import 'profile_avatar.dart';
 import '../../../../core/theme/app_icons.dart';
 
@@ -48,7 +48,7 @@ class ProfileHeader extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+            colors: AppColors.brandGradientColors,
           ),
         ),
         child: Stack(

@@ -6,7 +6,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 
 /// Categories ranked by product count: tinted icon, name, count, percentage
 /// and a slim bar in the category colour.

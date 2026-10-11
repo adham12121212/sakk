@@ -1212,4 +1212,39 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingFamilyDescription =>
       'Create a household so everyone sees the family\'s warranties, and ask the AI assistant anything about your products.';
+
+  @override
+  String get notifExpiringTitle => 'Warranty expiring soon';
+
+  @override
+  String notifExpiringBody(Object product) {
+    return '$product\'s warranty is ending soon';
+  }
+
+  @override
+  String notifExpiringInDays(num days, Object product) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$product\'s warranty ends in $_temp0';
+  }
+
+  @override
+  String get notifExpiredTitle => 'Warranty expired';
+
+  @override
+  String notifExpiredBody(Object product) {
+    return '$product\'s warranty has expired';
+  }
+
+  @override
+  String get notifReturnTitle => 'Return window closing';
+
+  @override
+  String notifReturnBody(Object product) {
+    return 'You have 2 days left to return $product if you need to';
+  }
 }

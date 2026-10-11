@@ -9,6 +9,7 @@ import '../../../../core/service/amount_visibility_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/constant/app_colors.dart';
 
 /// Brand-gradient hero card with the total spent across all products. The
 /// eye button hides the amount (remembered on this device).
@@ -21,7 +22,7 @@ class TotalSpentCard extends StatelessWidget {
   static const _gradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+    colors: AppColors.brandGradientColors,
   );
 
   @override

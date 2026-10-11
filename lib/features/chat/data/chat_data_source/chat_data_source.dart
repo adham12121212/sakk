@@ -1,7 +1,7 @@
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/error/Exceptions.dart';
+import '../../../../core/error/exceptions.dart';
 import '../models/chat_message_model.dart';
 
 abstract class ChatDataSource {

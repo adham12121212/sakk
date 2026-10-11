@@ -9,7 +9,7 @@ import 'category_ui.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({
+  const CategoryCard({super.key, 
     required this.category,
     required this.count,
     required this.isSelected,

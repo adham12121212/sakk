@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart' show Locale;
+
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/notification/domain/entities/notification_enitiy.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
-import '../../features/products/domain/enties/product_entity.dart';
+import '../../features/products/domain/entities/product_entity.dart';
+import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
@@ -19,7 +23,9 @@ class WarrantyNotificationService {
     required NotificationService localNotifications,
     required ReminderController reminders,
     required AppLogger logger,
-  })  : _getUserUseCase = getUserUseCase,
+    ValueListenable<Locale>? locale,
+  })  : _locale = locale,
+        _getUserUseCase = getUserUseCase,
         _addNotificationUseCase = addNotificationUseCase,
         _tracker = tracker,
         _localNotifications = localNotifications,
@@ -32,6 +38,16 @@ class WarrantyNotificationService {
   final NotificationService _localNotifications;
   final ReminderController _reminders;
   final AppLogger _logger;
+
+  /// The app's language (it can differ from the phone's); English if unset.
+  final ValueListenable<Locale>? _locale;
+
+  AppLocalizations get _l10n => lookupAppLocalizations(_locale?.value ?? const Locale('en'));
+
+  /// Re-schedules reminders in the new language when the user switches it.
+  void followLanguage(List<ProductEntity> Function() currentProducts) {
+    _locale?.addListener(() => syncAll(currentProducts()));
+  }
 
   /// Days before the end date for the "expiring soon" reminder (Profile setting).
   Future<int> _reminderDays() async {
@@ -63,10 +79,11 @@ class WarrantyNotificationService {
       final statusKey = isExpired ? WarrantyStatus.expired.name : WarrantyStatus.expiring.name;
       if (await _tracker.hasNotified(product.id, statusKey)) continue;
 
-      final title = isExpired ? 'Warranty expired' : 'Warranty expiring soon';
+      final l10n = _l10n;
+      final title = isExpired ? l10n.notifExpiredTitle : l10n.notifExpiringTitle;
       final subtitle = isExpired
-          ? "${product.name}'s warranty has expired"
-          : "${product.name}'s warranty expires in ${product.daysRemaining} days";
+          ? l10n.notifExpiredBody(product.name)
+          : l10n.notifExpiringInDays(product.daysRemaining, product.name);
 
       try {
         await _localNotifications.scheduleNotification(
@@ -149,24 +166,25 @@ class WarrantyNotificationService {
 
   List<_Reminder> _remindersFor(ProductEntity product, int reminderDays) {
     final returnBy = product.returnByDate;
+    final l10n = _l10n;
     return [
       _Reminder(
         id: _notificationIdFor(product.id, 0),
-        title: 'Warranty expiring soon',
-        body: "${product.name}'s warranty is expiring soon",
+        title: l10n.notifExpiringTitle,
+        body: l10n.notifExpiringBody(product.name),
         dateTime: product.warrantyEndDate.subtract(Duration(days: reminderDays)),
       ),
       _Reminder(
         id: _notificationIdFor(product.id, 1),
-        title: 'Warranty expired',
-        body: "${product.name}'s warranty has expired",
+        title: l10n.notifExpiredTitle,
+        body: l10n.notifExpiredBody(product.name),
         dateTime: product.warrantyEndDate,
       ),
       if (returnBy != null)
         _Reminder(
           id: _notificationIdFor(product.id, 2),
-          title: 'Return window closing',
-          body: "You have 2 days left to return ${product.name} if you need to",
+          title: l10n.notifReturnTitle,
+          body: l10n.notifReturnBody(product.name),
           dateTime: returnBy.subtract(const Duration(days: _returnReminderDaysBefore)),
         ),
     ];

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../constant/app_colors.dart';
-import '../error/Failure.dart';
+import '../error/failure.dart';
 import '../theme/app_icons.dart';
 
 /// Shared error state: tinted icon, short title, one-line explanation and a

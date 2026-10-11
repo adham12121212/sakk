@@ -2,13 +2,13 @@ import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/service/pdf_invoice_reader.dart';
 import 'package:sakk/core/service/warranty_notification_service.dart';
 import 'package:sakk/features/products/data/product_data_source/product_data_source.dart';
 import 'package:sakk/features/category/domain/entities/product_category.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
-import 'package:sakk/features/products/domain/enties/scanned_receipt.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/scanned_receipt.dart';
 import 'package:sakk/features/products/domain/usecase/add_product_usecase.dart';
 import 'package:sakk/features/products/domain/usecase/scan_receipt_usecase.dart';
 import 'package:sakk/features/products/presentation/cubit/product_cubit.dart';
@@ -68,7 +68,7 @@ class _PdfReader implements PdfInvoiceReader {
   Future<PdfInvoice> read(Uint8List pdfBytes) async => result ?? (throw const PdfInvoiceException());
 }
 
-ScanCubit cubit(_Scan scan, _Add add, {PdfInvoiceReader? pdf}) => ScanCubit(
+ScanCubit _cubit(_Scan scan, _Add add, {PdfInvoiceReader? pdf}) => ScanCubit(
       scanReceiptUseCase: scan,
       addProductUseCase: add,
       productsCubit: _Products(),
@@ -79,7 +79,7 @@ ScanCubit cubit(_Scan scan, _Add add, {PdfInvoiceReader? pdf}) => ScanCubit(
 void main() {
   test('leaving without saving deletes the uploaded photo', () async {
     final scan = _Scan();
-    final c = cubit(scan, _Add());
+    final c = _cubit(scan, _Add());
     await c.processReceipt('x.jpg');
     await c.close();
     expect(scan.discarded, ['u1/1.jpg']);
@@ -88,7 +88,7 @@ void main() {
   test('saving keeps the photo and saves the scanned extras', () async {
     final scan = _Scan();
     final add = _Add();
-    final c = cubit(scan, add);
+    final c = _cubit(scan, add);
     await c.processReceipt('x.jpg');
     await c.save(
       name: 'TV',
@@ -108,7 +108,7 @@ void main() {
 
   test('manual entry starts empty, dated today, with no photo', () async {
     final scan = _Scan();
-    final c = cubit(scan, _Add())..startManualEntry();
+    final c = _cubit(scan, _Add())..startManualEntry();
     expect(c.isManualEntry, isTrue);
     final scanned = (c.state as ScanLoaded).scanned;
     final today = DateTime.now();
@@ -120,7 +120,7 @@ void main() {
 
   test('a PDF invoice is scanned as its first-page image plus its text', () async {
     final scan = _Scan();
-    final c = cubit(scan, _Add(), pdf: _PdfReader(const PdfInvoice(imagePath: '/tmp/page.png', text: 'Invoice No: 1')));
+    final c = _cubit(scan, _Add(), pdf: _PdfReader(const PdfInvoice(imagePath: '/tmp/page.png', text: 'Invoice No: 1')));
     await c.processPdf(Uint8List(0));
     expect(scan.lastImagePath, '/tmp/page.png');
     expect(scan.lastPdfText, 'Invoice No: 1');
@@ -128,7 +128,7 @@ void main() {
   });
 
   test('a PDF that cannot be opened shows the PDF error', () async {
-    final c = cubit(_Scan(), _Add(), pdf: _PdfReader(null));
+    final c = _cubit(_Scan(), _Add(), pdf: _PdfReader(null));
     await c.processPdf(Uint8List(0));
     expect((c.state as ScanProcessingFailed).message, ProductDataSourceImpl.pdfUnreadable);
   });

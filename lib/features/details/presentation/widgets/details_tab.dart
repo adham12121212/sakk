@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
-import '../../../products/domain/enties/product_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import 'detail_row.dart';
 import '../../../../core/theme/app_icons.dart';
 

@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../../core/constant/app_colors.dart';
 
 /// Everything shown on the shared product card.
 class ShareCardData {
@@ -51,7 +52,7 @@ const _card = Color(0xFFFFFFFF);
 const _ink = Color(0xFF0F172A);
 const _muted = Color(0xFF64748B);
 const _divider = Color(0xFFE2E8F0);
-const _gradient = [Color(0xFF3D7BFF), Color(0xFF5B3DF5)];
+const _gradient = AppColors.brandGradientColors;
 
 /// Builds one PNG summarizing a product: a branded header with the warranty
 /// status, the product's details as a table and the receipt photo. Apps like

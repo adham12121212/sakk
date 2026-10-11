@@ -6,7 +6,7 @@ import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
-import '../../../auth/presentation/widgets/semented_toggle.dart';
+import '../../../auth/presentation/widgets/segmented_toggle.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';

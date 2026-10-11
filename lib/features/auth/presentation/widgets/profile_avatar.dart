@@ -76,7 +76,7 @@ class ProfileAvatar extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.35),
+                    color: Colors.black.withValues(alpha: 0.35),
                   ),
                   child: Center(
                     child: SizedBox(

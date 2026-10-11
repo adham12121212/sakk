@@ -1,8 +1,8 @@
 import '../../../category/domain/entities/product_category.dart';
-import '../../domain/enties/extra_warranty.dart';
-import '../../domain/enties/product_document.dart';
-import '../../domain/enties/product_entity.dart';
-import '../../domain/enties/warranty_claim.dart';
+import '../../domain/entities/extra_warranty.dart';
+import '../../domain/entities/product_document.dart';
+import '../../domain/entities/product_entity.dart';
+import '../../domain/entities/warranty_claim.dart';
 
 class ProductModel extends ProductEntity {
   const ProductModel({

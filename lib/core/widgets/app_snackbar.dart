@@ -96,11 +96,11 @@ class _SnackBarContent extends StatelessWidget {
         color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: color.withOpacity(.35),
+          color: color.withValues(alpha: .35),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.18),
+            color: Colors.black.withValues(alpha: .18),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -112,7 +112,7 @@ class _SnackBarContent extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: color.withOpacity(.15),
+              color: color.withValues(alpha: .15),
               shape: BoxShape.circle,
             ),
             child: Icon(

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/features/products/domain/duplicate_finder.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
 final saved = [
   ProductEntity(

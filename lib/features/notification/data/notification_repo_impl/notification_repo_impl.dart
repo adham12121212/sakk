@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:sakk/core/error/Exceptions.dart';
-import 'package:sakk/core/error/Failure.dart';
+import 'package:sakk/core/error/exceptions.dart';
+import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/error/network_info.dart';
 import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
@@ -91,7 +91,7 @@ class NotificationRepoImpl implements NotificationRepo {
         'subtitle': subtitle,
         'type': type.name,
         'is_read': false,
-        if (productId != null) 'product_id': productId,
+        'product_id': ?productId,
       });
       _addedController.add(userId);
       return const Right(null);

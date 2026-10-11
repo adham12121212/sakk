@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:sakk/core/error/Failure.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/core/error/failure.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
 import '../../../category/domain/entities/product_category.dart';
-import '../enties/product_document.dart';
-import '../enties/scanned_receipt.dart';
-import '../enties/warranty_claim.dart';
+import '../entities/product_document.dart';
+import '../entities/scanned_receipt.dart';
+import '../entities/warranty_claim.dart';
 
 abstract class ProductRepo {
 

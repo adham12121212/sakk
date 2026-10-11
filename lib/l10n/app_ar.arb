@@ -345,5 +345,12 @@
   "calendarEventDescription": "أضيف من تطبيق صك لـ {product}.",
   "couldNotOpenCalendar": "تعذّر فتح تطبيق التقويم.",
   "onboardingFamilyTitle": "شارك عائلتك",
-  "onboardingFamilyDescription": "أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك."
+  "onboardingFamilyDescription": "أنشئ عائلة ليرى الجميع ضمانات الأسرة، واسأل المساعد الذكي أي شيء عن منتجاتك.",
+  "notifExpiringTitle": "الضمان على وشك الانتهاء",
+  "notifExpiringBody": "ضمان {product} سينتهي قريبًا",
+  "notifExpiringInDays": "ضمان {product} ينتهي {days, plural, =1{غدًا} =2{بعد يومين} few{بعد {days} أيام} many{بعد {days} يومًا} other{بعد {days} يوم}}",
+  "notifExpiredTitle": "انتهى الضمان",
+  "notifExpiredBody": "انتهى ضمان {product}",
+  "notifReturnTitle": "موعد الاسترجاع يقترب",
+  "notifReturnBody": "باقي يومان لاسترجاع {product} إذا احتجت لذلك"
 }

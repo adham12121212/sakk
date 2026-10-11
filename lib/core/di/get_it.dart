@@ -219,6 +219,7 @@ void setupLocator() {
       localNotifications: getIt<NotificationService>(),
       reminders: getIt<ReminderController>(),
       logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
     ),
   );
 

@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 
 class Dots extends StatefulWidget {
-  const Dots();
+  const Dots({super.key});
 
   @override
   State<Dots> createState() => _DotsState();
@@ -38,7 +38,7 @@ class _DotsState extends State<Dots> with SingleTickerProviderStateMixin {
               child: Container(
                 width: 6,
                 height: 6,
-                decoration:  BoxDecoration(color: colorScheme.onSurface.withOpacity(0.5), shape: BoxShape.circle),
+                decoration:  BoxDecoration(color: colorScheme.onSurface.withValues(alpha: 0.5), shape: BoxShape.circle),
               ),
             );
           }),

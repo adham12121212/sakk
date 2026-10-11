@@ -7,10 +7,11 @@ import 'package:sakk/core/route/app_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/scan_cubit.dart';
-import '../widgets/sacn_source_button.dart';
+import '../widgets/scan_source_button.dart';
 import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/constant/app_colors.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key});
@@ -126,7 +127,7 @@ class ScanViewState extends State<ScanView> {
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFF3D7BFF), Color(0xFF5B3DF5)],
+                      colors: AppColors.brandGradientColors,
                     ),
                     borderRadius: BorderRadius.circular(32),
                     boxShadow: const [

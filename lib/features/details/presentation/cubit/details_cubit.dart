@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/di/get_it.dart';
-import '../../../../core/error/Failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../category/domain/entities/product_category.dart';
-import '../../../products/domain/enties/product_document.dart';
-import '../../../products/domain/enties/product_entity.dart';
-import '../../../products/domain/enties/warranty_claim.dart';
+import '../../../products/domain/entities/product_document.dart';
+import '../../../products/domain/entities/product_entity.dart';
+import '../../../products/domain/entities/warranty_claim.dart';
 import '../../../products/domain/usecase/product_extras_usecases.dart';
 import '../../../products/domain/usecase/update_product_usecase.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';

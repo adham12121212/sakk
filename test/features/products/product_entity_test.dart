@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sakk/features/products/domain/enties/extra_warranty.dart';
-import 'package:sakk/features/products/domain/enties/product_entity.dart';
+import 'package:sakk/features/products/domain/entities/extra_warranty.dart';
+import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
 /// A product whose warranty ends [days] days from today.
 ProductEntity endingIn(int days, {List<ExtraWarranty> extras = const []}) {
