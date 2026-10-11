@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakk/core/service/supabase_client.dart';
@@ -11,11 +14,17 @@ class SupabaseServiceImpl implements SupabaseService {
 
   bool _googleSignInInitialized = false;
 
+  /// Google puts the SHA-256 of this into the ID token (iOS always adds a
+  /// nonce), and Supabase needs the raw value to match it. GoogleSignIn can
+  /// only be initialized once, so one nonce serves the whole app session.
+  late final String _googleRawNonce = _client.auth.generateRawNonce();
+
   Future<void> _ensureGoogleSignInInitialized() async {
     if (_googleSignInInitialized) return;
     await GoogleSignIn.instance.initialize(
       clientId: dotenv.env['GOOGLE_IOS_CLIENT_ID'],
       serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+      nonce: sha256.convert(utf8.encode(_googleRawNonce)).toString(),
     );
     _googleSignInInitialized = true;
   }
@@ -138,6 +147,7 @@ class SupabaseServiceImpl implements SupabaseService {
     return _client.auth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
+      nonce: _googleRawNonce,
     );
   }
 
