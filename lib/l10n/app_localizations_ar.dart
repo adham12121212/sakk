@@ -1541,4 +1541,10 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get accountActionsHint => 'تسجيل الخروج أو حذف الحساب';
 }

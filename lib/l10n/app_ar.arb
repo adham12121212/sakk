@@ -421,5 +421,7 @@
   "subscriptionsAnalyticsEmpty": "لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.",
   "subscriptionsBreakdownNote": "توزيع الاشتراكات بعملة {currency}",
   "notifRenewedTitle": "تم تجديد الاشتراك",
-  "notifRenewedBody": "{days, plural, =1{تم تجديد {name} أمس بقيمة {price}. تأكد من خصم المبلغ الصحيح.} =2{تم تجديد {name} منذ يومين بقيمة {price}. تأكد من خصم المبلغ الصحيح.} few{تم تجديد {name} منذ {daysText} أيام بقيمة {price}. تأكد من خصم المبلغ الصحيح.} many{تم تجديد {name} منذ {daysText} يومًا بقيمة {price}. تأكد من خصم المبلغ الصحيح.} other{تم تجديد {name} منذ {daysText} يوم بقيمة {price}. تأكد من خصم المبلغ الصحيح.}}"
+  "notifRenewedBody": "{days, plural, =1{تم تجديد {name} أمس بقيمة {price}. تأكد من خصم المبلغ الصحيح.} =2{تم تجديد {name} منذ يومين بقيمة {price}. تأكد من خصم المبلغ الصحيح.} few{تم تجديد {name} منذ {daysText} أيام بقيمة {price}. تأكد من خصم المبلغ الصحيح.} many{تم تجديد {name} منذ {daysText} يومًا بقيمة {price}. تأكد من خصم المبلغ الصحيح.} other{تم تجديد {name} منذ {daysText} يوم بقيمة {price}. تأكد من خصم المبلغ الصحيح.}}",
+  "account": "الحساب",
+  "accountActionsHint": "تسجيل الخروج أو حذف الحساب"
 }

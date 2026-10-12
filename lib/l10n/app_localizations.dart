@@ -2623,6 +2623,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days, plural, =1{{name} renewed yesterday for {price}. Check you were charged the right amount.} other{{name} renewed {daysText} days ago for {price}. Check you were charged the right amount.}}'**
   String notifRenewedBody(int days, String daysText, String name, String price);
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @accountActionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out or delete your account'**
+  String get accountActionsHint;
 }
 
 class _AppLocalizationsDelegate

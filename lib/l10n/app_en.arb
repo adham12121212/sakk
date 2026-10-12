@@ -532,5 +532,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "account": "Account",
+  "accountActionsHint": "Log out or delete your account"
 }

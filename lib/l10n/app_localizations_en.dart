@@ -1517,4 +1517,10 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get accountActionsHint => 'Log out or delete your account';
 }
