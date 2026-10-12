@@ -3,8 +3,9 @@
 /// flutter_local_notifications needs a 32-bit int id. Each reminder's id is a
 /// stable hash of the thing it's about (product or subscription id) with the
 /// last digit as a "slot" saying which reminder it is:
-///   0, 1, 2  warranty: expiring soon, expired, return window closing
-///   5        subscription: renewing soon
+///   0, 1, 2     warranty: expiring soon, expired, return window closing
+///   5, 6, 7, 8  subscription: renews in 3 days, renews tomorrow, renewed
+///               (next renewal), renewed (the one that just passed)
 /// Each service only touches its own slots, so syncing one never cancels the
 /// other's reminders.
 ///
@@ -25,4 +26,4 @@ int reminderNotificationId(String entityId, int slot) {
 int reminderSlot(int id) => id % 10;
 
 const warrantyReminderSlots = {0, 1, 2};
-const subscriptionRenewalSlot = 5;
+const subscriptionReminderSlots = {5, 6, 7, 8};

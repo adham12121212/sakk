@@ -419,5 +419,7 @@
   "notifRenewalBody": "{days, plural, =0{يتجدد {name} اليوم بقيمة {price}} =1{يتجدد {name} غدًا بقيمة {price}} =2{يتجدد {name} بعد يومين بقيمة {price}} few{يتجدد {name} بعد {daysText} أيام بقيمة {price}} many{يتجدد {name} بعد {daysText} يومًا بقيمة {price}} other{يتجدد {name} بعد {daysText} يوم بقيمة {price}}}",
   "subscriptionsAnalyticsTitle": "الاشتراكات",
   "subscriptionsAnalyticsEmpty": "لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.",
-  "subscriptionsBreakdownNote": "توزيع الاشتراكات بعملة {currency}"
+  "subscriptionsBreakdownNote": "توزيع الاشتراكات بعملة {currency}",
+  "notifRenewedTitle": "تم تجديد الاشتراك",
+  "notifRenewedBody": "{days, plural, =1{تم تجديد {name} أمس بقيمة {price}. تأكد من خصم المبلغ الصحيح.} =2{تم تجديد {name} منذ يومين بقيمة {price}. تأكد من خصم المبلغ الصحيح.} few{تم تجديد {name} منذ {daysText} أيام بقيمة {price}. تأكد من خصم المبلغ الصحيح.} many{تم تجديد {name} منذ {daysText} يومًا بقيمة {price}. تأكد من خصم المبلغ الصحيح.} other{تم تجديد {name} منذ {daysText} يوم بقيمة {price}. تأكد من خصم المبلغ الصحيح.}}"
 }

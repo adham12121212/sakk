@@ -2611,6 +2611,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Breakdown of {currency} subscriptions'**
   String subscriptionsBreakdownNote(String currency);
+
+  /// No description provided for @notifRenewedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription renewed'**
+  String get notifRenewedTitle;
+
+  /// daysText is the day count in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{{name} renewed yesterday for {price}. Check you were charged the right amount.} other{{name} renewed {daysText} days ago for {price}. Check you were charged the right amount.}}'**
+  String notifRenewedBody(int days, String daysText, String name, String price);
 }
 
 class _AppLocalizationsDelegate

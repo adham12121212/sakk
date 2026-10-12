@@ -1496,4 +1496,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String subscriptionsBreakdownNote(String currency) {
     return 'Breakdown of $currency subscriptions';
   }
+
+  @override
+  String get notifRenewedTitle => 'Subscription renewed';
+
+  @override
+  String notifRenewedBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other:
+          '$name renewed $daysText days ago for $price. Check you were charged the right amount.',
+      one:
+          '$name renewed yesterday for $price. Check you were charged the right amount.',
+    );
+    return '$_temp0';
+  }
 }

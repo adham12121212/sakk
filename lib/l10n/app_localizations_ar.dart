@@ -1516,4 +1516,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String subscriptionsBreakdownNote(String currency) {
     return 'توزيع الاشتراكات بعملة $currency';
   }
+
+  @override
+  String get notifRenewedTitle => 'تم تجديد الاشتراك';
+
+  @override
+  String notifRenewedBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other:
+          'تم تجديد $name منذ $daysText يوم بقيمة $price. تأكد من خصم المبلغ الصحيح.',
+      many:
+          'تم تجديد $name منذ $daysText يومًا بقيمة $price. تأكد من خصم المبلغ الصحيح.',
+      few:
+          'تم تجديد $name منذ $daysText أيام بقيمة $price. تأكد من خصم المبلغ الصحيح.',
+      two: 'تم تجديد $name منذ يومين بقيمة $price. تأكد من خصم المبلغ الصحيح.',
+      one: 'تم تجديد $name أمس بقيمة $price. تأكد من خصم المبلغ الصحيح.',
+    );
+    return '$_temp0';
+  }
 }
