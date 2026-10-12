@@ -146,8 +146,9 @@ class AuthDataSourceImpl implements AuthDataSource {
       final bustedUrl =
           '$publicUrl?updated=${DateTime.now().millisecondsSinceEpoch}';
 
+      // Not 'avatar_url': Google sign-in rewrites that key on every login.
       final updatedUser = await _supabaseService.updateUserMetadata(
-        {'avatar_url': bustedUrl},
+        {UserModel.customAvatarKey: bustedUrl},
       );
 
       return UserModel.fromSupabaseUser(updatedUser);

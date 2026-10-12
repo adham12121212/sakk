@@ -8,6 +8,7 @@ import '../../../../core/route/app_router.dart';
 import '../../../../core/service/onboarding_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../auth/presentation/widgets/language_switch.dart';
 
 class _OnboardingPageData {
   const _OnboardingPageData({
@@ -86,17 +87,20 @@ class _OnboardingViewState extends State<OnboardingView> {
       body: SafeArea(
         child: Column(
           children: [
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: TextButton(
-                  onPressed: _finish,
-                  child: Text(
-                    l10n.skip,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14.sp, fontWeight: FontWeight.w600),
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const LanguageSwitch(),
+                  TextButton(
+                    onPressed: _finish,
+                    child: Text(
+                      l10n.skip,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14.sp, fontWeight: FontWeight.w600),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             Expanded(

@@ -9,12 +9,18 @@ class UserModel extends UserEntity {
     required super.avatarUrl,
   });
 
+  /// Metadata key for a photo the user uploaded. Kept apart from
+  /// 'avatar_url', which Google overwrites with its own photo on each sign-in.
+  static const customAvatarKey = 'custom_avatar_url';
+
   factory UserModel.fromSupabaseUser(User user) {
+    final metadata = user.userMetadata;
     return UserModel(
       id: user.id,
       email: user.email ?? '',
-      name: user.userMetadata?['name'] ?? '',
-      avatarUrl: _fullSizeAvatar(user.userMetadata?['avatar_url'] as String?),
+      name: metadata?['name'] ?? '',
+      avatarUrl: metadata?[customAvatarKey] as String? ??
+          _fullSizeAvatar(metadata?['avatar_url'] as String?),
     );
   }
 
