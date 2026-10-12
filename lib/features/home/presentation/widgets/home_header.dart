@@ -52,7 +52,16 @@ class HomeHeader extends StatelessWidget {
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
+            // Profile and name first, then search and notifications. The row
+            // follows the text direction, so Arabic mirrors it.
             children: [
+              Avatar(
+                name: userName,
+                avatarUrl: avatarUrl,
+                onTap: onAvatarTap,
+                semanticLabel: l10n.openProfile,
+              ),
+              AppSpacing.w8,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,13 +103,6 @@ class HomeHeader extends StatelessWidget {
                 onTap: onNotificationTap,
                 badgeCount: unreadNotificationCount,
                 color: colorScheme.onSurface,
-              ),
-              AppSpacing.w8,
-              Avatar(
-                name: userName,
-                avatarUrl: avatarUrl,
-                onTap: onAvatarTap,
-                semanticLabel: l10n.openProfile,
               ),
             ],
           ),

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/sakk_logo.dart';
 import '../../../../core/constant/app_colors.dart';
-import 'language_switch.dart';
 
 class SigninHeader extends StatelessWidget {
   const SigninHeader({super.key});
@@ -16,14 +15,7 @@ class SigninHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-          child: const Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: LanguageSwitch(),
-          ),
-        ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 40.h),
         Container(
           width: 78.w,
           height: 78.w,
