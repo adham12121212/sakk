@@ -87,13 +87,6 @@ class SubscriptionsHomeCard extends StatelessWidget {
                     else
                       Icon(AppIcons.add, color: colorScheme.primary),
                     const SizedBox(width: 2),
-                    Icon(
-                      AppIcons.chevronForward,
-                      size: 20,
-                      color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.6,
-                      ),
-                    ),
                   ],
                 ),
                 if (next != null) ...[
