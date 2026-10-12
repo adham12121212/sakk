@@ -1423,4 +1423,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionCategoryOther => 'Other';
+
+  @override
+  String get smartAdd => 'Smart add';
+
+  @override
+  String get smartAddHint => 'From a screenshot or a bank SMS';
+
+  @override
+  String get smartAddTakePhoto => 'Take a photo';
+
+  @override
+  String get smartAddChooseScreenshot => 'Choose a screenshot';
+
+  @override
+  String get smartAddPasteText => 'Paste an SMS or email';
+
+  @override
+  String get smartAddPasteTitle => 'Paste the message';
+
+  @override
+  String get smartAddPasteHint => 'For example, the bank SMS for the charge';
+
+  @override
+  String get smartAddPasteFromClipboard => 'Paste';
+
+  @override
+  String get smartAddPasteEmpty => 'Paste the message first';
+
+  @override
+  String get smartAddRead => 'Read';
+
+  @override
+  String get smartAddReading => 'Reading…';
+
+  @override
+  String get smartAddPrivacyNote =>
+      'Full card numbers and email addresses are removed before the text is read.';
+
+  @override
+  String get subscriptionScanUnreadable =>
+      'We couldn\'t find a subscription in that. Try a clearer screenshot or the full message, or add it manually.';
 }

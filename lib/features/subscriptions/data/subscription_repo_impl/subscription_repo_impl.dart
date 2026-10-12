@@ -6,6 +6,7 @@ import '../../../../core/error/network_info.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../domain/entities/billing_cycle.dart';
 import '../../domain/entities/catalog_service.dart';
+import '../../domain/entities/scanned_subscription.dart';
 import '../../domain/entities/subscription_category.dart';
 import '../../domain/entities/user_subscription.dart';
 import '../../domain/subscription_repo/subscription_repo.dart';
@@ -207,6 +208,22 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
         (current) => current.where((s) => s.id != id).toList(),
       );
     });
+  }
+
+  @override
+  Future<Either<Failure, ScannedSubscription>> extractSubscription({
+    String? imagePath,
+    String? text,
+    List<String> knownServices = const [],
+  }) {
+    return _online(
+      'extractSubscription',
+      () => _dataSource.extractSubscription(
+        imagePath: imagePath,
+        text: text,
+        knownServices: knownServices,
+      ),
+    );
   }
 
   @override

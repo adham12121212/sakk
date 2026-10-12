@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failure.dart';
 import '../entities/billing_cycle.dart';
 import '../entities/catalog_service.dart';
+import '../entities/scanned_subscription.dart';
 import '../entities/subscription_category.dart';
 import '../entities/user_subscription.dart';
 
@@ -41,6 +42,13 @@ abstract class SubscriptionRepo {
   });
 
   Future<Either<Failure, void>> deleteSubscription(String id);
+
+  /// Reads a subscription from a screenshot and/or pasted text with the AI.
+  Future<Either<Failure, ScannedSubscription>> extractSubscription({
+    String? imagePath,
+    String? text,
+    List<String> knownServices,
+  });
 
   /// Removes subscriptions and the catalog saved on this device for offline use.
   Future<void> clearCachedSubscriptions();

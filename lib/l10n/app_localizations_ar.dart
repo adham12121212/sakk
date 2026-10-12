@@ -1440,4 +1440,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get subscriptionCategoryOther => 'أخرى';
+
+  @override
+  String get smartAdd => 'إضافة ذكية';
+
+  @override
+  String get smartAddHint => 'من لقطة شاشة أو رسالة البنك';
+
+  @override
+  String get smartAddTakePhoto => 'التقاط صورة';
+
+  @override
+  String get smartAddChooseScreenshot => 'اختيار لقطة شاشة';
+
+  @override
+  String get smartAddPasteText => 'لصق رسالة أو بريد إلكتروني';
+
+  @override
+  String get smartAddPasteTitle => 'الصق الرسالة';
+
+  @override
+  String get smartAddPasteHint => 'مثلًا رسالة البنك الخاصة بالخصم';
+
+  @override
+  String get smartAddPasteFromClipboard => 'لصق';
+
+  @override
+  String get smartAddPasteEmpty => 'الصق الرسالة أولًا';
+
+  @override
+  String get smartAddRead => 'قراءة';
+
+  @override
+  String get smartAddReading => 'جارٍ القراءة…';
+
+  @override
+  String get smartAddPrivacyNote =>
+      'تُحذف أرقام البطاقات الكاملة وعناوين البريد الإلكتروني قبل قراءة النص.';
+
+  @override
+  String get subscriptionScanUnreadable =>
+      'لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا.';
 }

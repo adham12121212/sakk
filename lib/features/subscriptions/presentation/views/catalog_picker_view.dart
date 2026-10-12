@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/route/app_router.dart';
@@ -8,11 +9,15 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_empty_view.dart';
 import '../../../../core/widgets/app_error_view.dart';
+import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/billing_cycle.dart';
 import '../../domain/entities/catalog_service.dart';
 import '../cubit/catalog_cubit.dart';
 import '../cubit/catalog_state.dart';
+import '../cubit/smart_add_cubit.dart';
+import '../widgets/smart_add_sheets.dart';
 import '../util/subscription_category_ui.dart';
 import '../util/subscription_format.dart';
 import '../widgets/subscription_logo.dart';
@@ -29,6 +34,7 @@ class CatalogPickerView extends StatefulWidget {
 
 class _CatalogPickerViewState extends State<CatalogPickerView> {
   final _searchController = TextEditingController();
+  final _picker = ImagePicker();
 
   @override
   void initState() {
@@ -62,10 +68,73 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
     await _openForm(SubscriptionFormArgs.fromCatalog(service, choice.plan));
   }
 
+  /// Smart add: pick a source, read it with the AI, then open the form
+  /// (handled by the listener in [build]).
+  Future<void> _smartAdd() async {
+    final source = await showSmartAddSourceSheet(context);
+    if (source == null || !mounted) return;
+
+    String? imagePath;
+    String? text;
+    if (source == SmartAddSource.text) {
+      text = await showPasteMessageSheet(context);
+      if (text == null) return;
+    } else {
+      // Same size limits as receipt scanning: sharp text, small upload.
+      final picked = await _picker.pickImage(
+        source: source == SmartAddSource.camera
+            ? ImageSource.camera
+            : ImageSource.gallery,
+        imageQuality: 85,
+        maxWidth: 2000,
+        maxHeight: 2000,
+      );
+      if (picked == null) return;
+      imagePath = picked.path;
+    }
+    if (!mounted) return;
+    await context.read<SmartAddCubit>().read(
+      imagePath: imagePath,
+      text: text,
+      catalog: context.read<CatalogCubit>().state.services,
+    );
+  }
+
+  Future<void> _onSmartAddState(
+    BuildContext context,
+    SmartAddState state,
+  ) async {
+    switch (state) {
+      case SmartAddReady(:final args):
+        context.read<SmartAddCubit>().acknowledge();
+        await _openForm(args);
+      case SmartAddFailure(:final message):
+        context.read<SmartAddCubit>().acknowledge();
+        AppSnackBar.error(
+          context,
+          userFacingError(AppLocalizations.of(context)!, message),
+        );
+      case SmartAddIdle() || SmartAddReading():
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    return BlocConsumer<SmartAddCubit, SmartAddState>(
+      listener: _onSmartAddState,
+      builder: (context, smartAdd) => Stack(
+        children: [
+          _scaffold(context, l10n),
+          if (smartAdd is SmartAddReading) const _ReadingOverlay(),
+        ],
+      ),
+    );
+  }
+
+  Widget _scaffold(BuildContext context, AppLocalizations l10n) {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.addSubscription),
@@ -123,6 +192,13 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
     final actions = Column(
       children: [
         _ActionTile(
+          icon: AppIcons.scan,
+          title: l10n.smartAdd,
+          subtitle: l10n.smartAddHint,
+          onTap: _smartAdd,
+        ),
+        const SizedBox(height: 10),
+        _ActionTile(
           icon: AppIcons.edit,
           title: l10n.customSubscription,
           subtitle: l10n.customSubscriptionHint,
@@ -178,6 +254,50 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Full-screen "Reading…" while the AI reads a screenshot or message; blocks
+/// taps so the picker can't be used meanwhile.
+class _ReadingOverlay extends StatelessWidget {
+  const _ReadingOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Positioned.fill(
+      child: Semantics(
+        liveRegion: true,
+        label: l10n.smartAddReading,
+        child: AbsorbPointer(
+          child: ColoredBox(
+            color: Colors.black.withValues(alpha: 0.45),
+            child: Center(
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.smartAddReading,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

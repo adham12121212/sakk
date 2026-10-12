@@ -471,5 +471,18 @@
   "subscriptionCategoryAi": "AI",
   "subscriptionCategoryDelivery": "Delivery",
   "subscriptionCategoryTelecom": "Telecom & internet",
-  "subscriptionCategoryOther": "Other"
+  "subscriptionCategoryOther": "Other",
+  "smartAdd": "Smart add",
+  "smartAddHint": "From a screenshot or a bank SMS",
+  "smartAddTakePhoto": "Take a photo",
+  "smartAddChooseScreenshot": "Choose a screenshot",
+  "smartAddPasteText": "Paste an SMS or email",
+  "smartAddPasteTitle": "Paste the message",
+  "smartAddPasteHint": "For example, the bank SMS for the charge",
+  "smartAddPasteFromClipboard": "Paste",
+  "smartAddPasteEmpty": "Paste the message first",
+  "smartAddRead": "Read",
+  "smartAddReading": "Reading…",
+  "smartAddPrivacyNote": "Full card numbers and email addresses are removed before the text is read.",
+  "subscriptionScanUnreadable": "We couldn't find a subscription in that. Try a clearer screenshot or the full message, or add it manually."
 }

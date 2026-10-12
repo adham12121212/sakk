@@ -7,6 +7,7 @@ import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/catalog_service.dart';
+import 'package:sakk/features/subscriptions/domain/entities/scanned_subscription.dart';
 import 'package:sakk/features/subscriptions/domain/entities/subscription_category.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/add_subscription_usecase.dart';
@@ -169,5 +170,32 @@ void main() {
     await open(tester);
     expect(find.text('إضافة اشتراك'), findsWidgets);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('from smart add: pre-filled from the scan, with its confidence', (tester) async {
+    final add = CaptureAdd();
+    final today = DateTime.now();
+    final charged = DateTime(today.year, today.month, today.day).subtract(const Duration(days: 3));
+    await tester.pumpWidget(app(
+      SubscriptionFormArgs.fromScan(ScannedSubscription(
+        serviceName: 'Gold Gym',
+        price: 750,
+        billingCycle: BillingCycle.monthly,
+        chargeDate: charged,
+        paymentMethod: 'Visa •• 4242',
+        confidence: 0.92,
+      )),
+      add,
+    ));
+    await open(tester);
+
+    expect(find.textContaining('92%', findRichText: true), findsOneWidget);
+    expect(find.text('Gold Gym'), findsOneWidget); // custom: in the name field
+    expect(find.text('750'), findsOneWidget);
+    expect(find.text('Visa •• 4242'), findsOneWidget);
+
+    await tapSave(tester);
+    expect(add.sent!['customName'], 'Gold Gym');
+    expect(add.sent!['price'], 750.0);
   });
 }

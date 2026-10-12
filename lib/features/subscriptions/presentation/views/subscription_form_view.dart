@@ -9,38 +9,55 @@ import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/widgets/segmented_toggle.dart';
 import '../../../scan/presentation/widgets/capsule_field.dart';
+import '../../../scan/presentation/widgets/confidence_banner.dart';
 import '../../../scan/presentation/widgets/datex.dart';
 import '../../../scan/presentation/widgets/field_label.dart';
 import '../../domain/entities/billing_cycle.dart';
 import '../../domain/entities/catalog_service.dart';
+import '../../domain/entities/scanned_subscription.dart';
 import '../../domain/entities/subscription_category.dart';
 import '../../domain/entities/user_subscription.dart';
 import '../../domain/renewal_schedule.dart';
+import '../../domain/smart_add_match.dart';
 import '../cubit/subscription_form_cubit.dart';
 import '../util/subscription_category_ui.dart';
 import '../widgets/subscription_category_selector.dart';
 import '../widgets/subscription_logo.dart';
 
-/// What the form opens with: a catalog service (and maybe a plan), an
-/// existing subscription to edit, or nothing for a custom one.
+/// What the form opens with: a catalog service (and maybe a plan), what
+/// smart add read, an existing subscription to edit, or nothing for a
+/// custom one.
 class SubscriptionFormArgs {
   const SubscriptionFormArgs.custom()
     : existing = null,
       service = null,
-      plan = null;
+      plan = null,
+      scan = null;
 
   const SubscriptionFormArgs.fromCatalog(CatalogService this.service, this.plan)
-    : existing = null;
+    : existing = null,
+      scan = null;
+
+  /// [service] and [plan] are the catalog matches for the scan, if any.
+  const SubscriptionFormArgs.fromScan(
+    ScannedSubscription this.scan, {
+    this.service,
+    this.plan,
+  }) : existing = null;
 
   const SubscriptionFormArgs.edit(UserSubscription this.existing)
     : service = null,
-      plan = null;
+      plan = null,
+      scan = null;
 
   final UserSubscription? existing;
   final CatalogService? service;
 
   /// Null for "Other plan": the user types the price.
   final CatalogPlan? plan;
+
+  /// What smart add read; its values win over the plan's.
+  final ScannedSubscription? scan;
 }
 
 /// Add flow, step 2 (confirm), and the edit screen. Pops with `true` once
@@ -60,20 +77,21 @@ class _SubscriptionFormViewState extends State<SubscriptionFormView> {
   UserSubscription? get _existing => widget.args.existing;
   CatalogService? get _service => widget.args.service;
   CatalogPlan? get _plan => widget.args.plan;
+  ScannedSubscription? get _scan => widget.args.scan;
 
   /// Catalog subscriptions show the service instead of a name field.
   bool get _fromCatalog =>
       _service != null || (_existing != null && !_existing!.isCustom);
 
   late final _nameController = TextEditingController(
-    text: _existing?.customName ?? '',
+    text: _existing?.customName ?? _scan?.serviceName ?? '',
   );
   late final _planController = TextEditingController(
-    text: _existing?.planName ?? _plan?.name ?? '',
+    text: _existing?.planName ?? _plan?.name ?? _scan?.planName ?? '',
   );
   late final _priceController = TextEditingController(text: _initialPrice());
   late final _paymentController = TextEditingController(
-    text: _existing?.paymentMethod ?? '',
+    text: _existing?.paymentMethod ?? _scan?.paymentMethod ?? '',
   );
   late final _notesController = TextEditingController(
     text: _existing?.notes ?? '',
@@ -82,11 +100,13 @@ class _SubscriptionFormViewState extends State<SubscriptionFormView> {
   late SubscriptionCategory _category =
       _existing?.category ??
       _service?.category ??
+      _scan?.category ??
       SubscriptionCategory.other;
   late String _currency =
-      _existing?.currency ?? _plan?.currency ?? 'EGP';
+      _existing?.currency ?? _scan?.currency ?? _plan?.currency ?? 'EGP';
   late BillingCycle _cycle =
       _existing?.billingCycle ??
+      _scan?.billingCycle ??
       _plan?.billingCycle ??
       BillingCycle.monthly;
   late DateTime _renewalDate =
@@ -98,15 +118,21 @@ class _SubscriptionFormViewState extends State<SubscriptionFormView> {
   static const _currencies = ['EGP', 'USD', 'EUR'];
 
   String _initialPrice() {
-    final price = _existing?.price ?? _plan?.price;
+    final price = _existing?.price ?? _scan?.price ?? _plan?.price;
     if (price == null) return '';
     return price == price.truncateToDouble()
         ? price.toStringAsFixed(0)
         : price.toStringAsFixed(2);
   }
 
-  DateTime _defaultRenewal(BillingCycle cycle) =>
-      addMonthsClamped(DateTime.now(), cycle.months);
+  /// One cycle from today, or for smart add, from what was read (the shown
+  /// renewal, or one cycle after the shown charge).
+  DateTime _defaultRenewal(BillingCycle cycle) {
+    final scan = _scan;
+    return scan == null
+        ? addMonthsClamped(DateTime.now(), cycle.months)
+        : suggestedRenewal(scan, cycle, DateTime.now());
+  }
 
   @override
   void dispose() {
@@ -253,6 +279,10 @@ class _SubscriptionFormViewState extends State<SubscriptionFormView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (_scan != null) ...[
+                      ConfidenceBanner(confidence: _scan!.confidence),
+                      const SizedBox(height: 16),
+                    ],
                     if (_fromCatalog) ...[
                       _ServiceHeader(
                         name: _service?.name ?? _existing!.name,

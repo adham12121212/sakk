@@ -53,10 +53,12 @@ import '../../features/subscriptions/domain/subscription_repo/subscription_repo.
 import '../../features/subscriptions/domain/usecase/add_subscription_usecase.dart';
 import '../../features/subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
 import '../../features/subscriptions/domain/usecase/delete_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/extract_subscription_usecase.dart';
 import '../../features/subscriptions/domain/usecase/get_catalog_usecase.dart';
 import '../../features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
 import '../../features/subscriptions/domain/usecase/update_subscription_usecase.dart';
 import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../error/network_info.dart';
@@ -70,6 +72,7 @@ import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/password_recovery_service.dart';
 import '../service/reminder_controller.dart';
+import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
 import '../service/storage_service_impl.dart';
@@ -153,8 +156,10 @@ void setupLocator() {
   );
 
   // ---- Products ----
+  // Shared by receipt scanning and subscription smart add.
+  getIt.registerLazySingleton<ReceiptAiClient>(() => ReceiptAiClient(Supabase.instance.client));
   getIt.registerLazySingleton<ProductDataSource>(
-        () => ProductDataSourceImpl(Supabase.instance.client),
+        () => ProductDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
   );
   getIt.registerLazySingleton<ProductLocalDataSource>(
         () => ProductLocalDataSourceImpl(getIt<SupabaseService>()),
@@ -186,7 +191,7 @@ void setupLocator() {
 
   // ---- Subscriptions ----
   getIt.registerLazySingleton<SubscriptionDataSource>(
-        () => SubscriptionDataSourceImpl(Supabase.instance.client),
+        () => SubscriptionDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
   );
   getIt.registerLazySingleton<SubscriptionLocalDataSource>(
         () => SubscriptionLocalDataSourceImpl(getIt<SupabaseService>()),
@@ -209,6 +214,9 @@ void setupLocator() {
   getIt.registerLazySingleton<DeleteSubscriptionUseCase>(
         () => DeleteSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
   );
+  getIt.registerLazySingleton<ExtractSubscriptionUseCase>(
+        () => ExtractSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
   getIt.registerLazySingleton<ClearCachedSubscriptionsUseCase>(
         () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
   );
@@ -217,6 +225,7 @@ void setupLocator() {
         () => SubscriptionsCubit(getIt<GetSubscriptionsUseCase>()),
   );
   getIt.registerFactory<CatalogCubit>(() => CatalogCubit(getIt<GetCatalogUseCase>()));
+  getIt.registerFactory<SmartAddCubit>(() => SmartAddCubit(getIt<ExtractSubscriptionUseCase>()));
   getIt.registerFactory<SubscriptionFormCubit>(
         () => SubscriptionFormCubit(
       getIt<AddSubscriptionUseCase>(),

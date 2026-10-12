@@ -401,5 +401,18 @@
   "subscriptionCategoryAi": "ذكاء اصطناعي",
   "subscriptionCategoryDelivery": "توصيل",
   "subscriptionCategoryTelecom": "اتصالات وإنترنت",
-  "subscriptionCategoryOther": "أخرى"
+  "subscriptionCategoryOther": "أخرى",
+  "smartAdd": "إضافة ذكية",
+  "smartAddHint": "من لقطة شاشة أو رسالة البنك",
+  "smartAddTakePhoto": "التقاط صورة",
+  "smartAddChooseScreenshot": "اختيار لقطة شاشة",
+  "smartAddPasteText": "لصق رسالة أو بريد إلكتروني",
+  "smartAddPasteTitle": "الصق الرسالة",
+  "smartAddPasteHint": "مثلًا رسالة البنك الخاصة بالخصم",
+  "smartAddPasteFromClipboard": "لصق",
+  "smartAddPasteEmpty": "الصق الرسالة أولًا",
+  "smartAddRead": "قراءة",
+  "smartAddReading": "جارٍ القراءة…",
+  "smartAddPrivacyNote": "تُحذف أرقام البطاقات الكاملة وعناوين البريد الإلكتروني قبل قراءة النص.",
+  "subscriptionScanUnreadable": "لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا."
 }

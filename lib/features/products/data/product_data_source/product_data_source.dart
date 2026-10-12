@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/service/receipt_ai_client.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../domain/entities/scanned_receipt.dart';
 import '../models/product_model.dart';
@@ -45,52 +46,30 @@ abstract class ProductDataSource {
 
 class ProductDataSourceImpl implements ProductDataSource {
   final SupabaseClient _client;
-  ProductDataSourceImpl(this._client);
+  final ReceiptAiClient _ai;
+  ProductDataSourceImpl(this._client, {ReceiptAiClient? ai}) : _ai = ai ?? ReceiptAiClient(_client);
 
-  static const _receiptsBucket = 'receipts';
-  static const _extractFunctionName = 'extract-receipt';
+  static const _receiptsBucket = ReceiptAiClient.bucket;
 
-  static const _signedUrlExpirySeconds = 60 * 60 * 24 * 365 * 5;
+  static const _signedUrlExpiry = Duration(days: 365 * 5);
 
   /// Error codes the extract-receipt function returns, passed up as the
   /// failure message so the UI can explain them (see userFacingError).
-  static const unreadableReceipt = 'unreadable_receipt';
-  static const aiBusy = 'ai_busy';
+  static const unreadableReceipt = ReceiptAiClient.unreadable;
+  static const aiBusy = ReceiptAiClient.aiBusy;
   static const pdfUnreadable = 'pdf_unreadable';
 
   @override
   Future<ScannedReceiptData> scanReceipt({required String imagePath, String? pdfText}) async {
     try {
-      final userId = _client.auth.currentUser?.id;
-      if (userId == null) {
-        throw ServerException('You must be signed in to scan a receipt');
-      }
-
-      // .png for rendered PDF pages, .jpg for photos; the upload's content
-      // type follows the extension.
-      final extension = imagePath.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
-      final fileName = '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
-      await _client.storage.from(_receiptsBucket).upload(fileName, File(imagePath));
+      final upload = await _ai.upload(imagePath, expiry: _signedUrlExpiry);
 
       final Map<String, dynamic> data;
-      final String signedUrl;
       try {
-        signedUrl = await _client.storage
-            .from(_receiptsBucket)
-            .createSignedUrl(fileName, _signedUrlExpirySeconds);
-
-        final response = await _client.functions.invoke(
-          _extractFunctionName,
-          body: {'imageUrl': signedUrl, 'pdfText': ?pdfText},
-        );
-        data = response.data as Map<String, dynamic>;
-      } catch (e) {
+        data = await _ai.extract({'imageUrl': upload.signedUrl, 'pdfText': ?pdfText});
+      } catch (_) {
         // The scan failed, so nothing will reference the photo: don't keep it.
-        await deleteReceiptImage(fileName);
-        if (e is FunctionException) {
-          if (e.status == 422) throw ServerException(unreadableReceipt);
-          if (e.status == 503) throw ServerException(aiBusy);
-        }
+        await _ai.delete(upload.path);
         rethrow;
       }
 
@@ -107,8 +86,8 @@ class ProductDataSourceImpl implements ProductDataSource {
         invoiceNumber: data['invoiceNumber'] as String?,
         foreignPrice: (data['foreignPrice'] as num?)?.toDouble(),
         foreignCurrency: data['foreignCurrency'] as String?,
-        receiptPath: fileName,
-        receiptImageUrl: signedUrl,
+        receiptPath: upload.path,
+        receiptImageUrl: upload.signedUrl,
         confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
         imageUrl: data['imageUrl'] as String?,
         // The `extract-receipt` edge function already classifies the
@@ -128,13 +107,7 @@ class ProductDataSourceImpl implements ProductDataSource {
   }
 
   @override
-  Future<void> deleteReceiptImage(String path) async {
-    try {
-      await _client.storage.from(_receiptsBucket).remove([path]);
-    } catch (_) {
-      // Best effort: a leftover photo is harmless, so never fail the flow.
-    }
-  }
+  Future<void> deleteReceiptImage(String path) => _ai.delete(path);
 
   @override
   Future<ProductModel> addProduct(Map<String, dynamic> insertJson) async {
@@ -276,7 +249,7 @@ class ProductDataSourceImpl implements ProductDataSource {
     final path = '$userId/documents/${DateTime.now().millisecondsSinceEpoch}.$extension';
     try {
       await _client.storage.from(_receiptsBucket).upload(path, File(filePath));
-      final url = await _client.storage.from(_receiptsBucket).createSignedUrl(path, _signedUrlExpirySeconds);
+      final url = await _client.storage.from(_receiptsBucket).createSignedUrl(path, _signedUrlExpiry.inSeconds);
       await _client.from('product_documents').insert({
         'product_id': productId,
         'kind': kind,

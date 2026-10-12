@@ -24,6 +24,7 @@ import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
 import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../features/subscriptions/presentation/views/catalog_picker_view.dart';
@@ -143,8 +144,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.subscriptionCatalog,
-      builder: (context, state) => BlocProvider(
-        create: (_) => getIt<CatalogCubit>(),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<CatalogCubit>()),
+          BlocProvider(create: (_) => getIt<SmartAddCubit>()),
+        ],
         child: const CatalogPickerView(),
       ),
     ),

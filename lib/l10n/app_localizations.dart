@@ -2503,6 +2503,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get subscriptionCategoryOther;
+
+  /// No description provided for @smartAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart add'**
+  String get smartAdd;
+
+  /// No description provided for @smartAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From a screenshot or a bank SMS'**
+  String get smartAddHint;
+
+  /// No description provided for @smartAddTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get smartAddTakePhoto;
+
+  /// No description provided for @smartAddChooseScreenshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a screenshot'**
+  String get smartAddChooseScreenshot;
+
+  /// No description provided for @smartAddPasteText.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste an SMS or email'**
+  String get smartAddPasteText;
+
+  /// No description provided for @smartAddPasteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the message'**
+  String get smartAddPasteTitle;
+
+  /// No description provided for @smartAddPasteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example, the bank SMS for the charge'**
+  String get smartAddPasteHint;
+
+  /// No description provided for @smartAddPasteFromClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get smartAddPasteFromClipboard;
+
+  /// No description provided for @smartAddPasteEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the message first'**
+  String get smartAddPasteEmpty;
+
+  /// No description provided for @smartAddRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get smartAddRead;
+
+  /// No description provided for @smartAddReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading…'**
+  String get smartAddReading;
+
+  /// No description provided for @smartAddPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Full card numbers and email addresses are removed before the text is read.'**
+  String get smartAddPrivacyNote;
+
+  /// No description provided for @subscriptionScanUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find a subscription in that. Try a clearer screenshot or the full message, or add it manually.'**
+  String get subscriptionScanUnreadable;
 }
 
 class _AppLocalizationsDelegate

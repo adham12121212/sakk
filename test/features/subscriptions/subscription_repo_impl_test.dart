@@ -10,6 +10,7 @@ import 'package:sakk/features/subscriptions/data/subscription_data_source/subscr
 import 'package:sakk/features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
 import 'package:sakk/features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
+import 'package:sakk/features/subscriptions/domain/entities/scanned_subscription.dart';
 import 'package:sakk/features/subscriptions/domain/entities/subscription_category.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
 
@@ -59,6 +60,14 @@ class _FakeRemote implements SubscriptionDataSource {
 
   @override
   Future<List<CatalogServiceModel>> getCatalog() async => [];
+
+  @override
+  Future<ScannedSubscription> extractSubscription({
+    String? imagePath,
+    String? text,
+    List<String> knownServices = const [],
+  }) async =>
+      const ScannedSubscription();
 }
 
 class _MemoryCache implements SubscriptionLocalDataSource {
