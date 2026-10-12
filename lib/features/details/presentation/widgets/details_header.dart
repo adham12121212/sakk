@@ -77,14 +77,12 @@ class DetailsHeader extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            _CircleIconButton(
-                              icon: AppIcons.share,
+                            _ActionChip(
                               label: l10n.share,
                               onTap: onShare,
                             ),
                             SizedBox(width: 8.w),
-                            _CircleIconButton(
-                              icon: AppIcons.download,
+                            _ActionChip(
                               label: l10n.downloadInvoice,
                               onTap: onDownload,
                             ),
@@ -222,6 +220,53 @@ class _CircleIconButton extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: Colors.white, size: 20.sp),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Text-only pill over the photo, with a 48 tall tap area.
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20.r),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Container(
+              height: 36.h,
+              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+              ),
+              child: Text(
+                label,
+                maxLines: 1,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
