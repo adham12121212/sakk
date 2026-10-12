@@ -1,0 +1,58 @@
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/error/failure.dart';
+import '../entities/billing_cycle.dart';
+import '../entities/catalog_service.dart';
+import '../entities/scanned_subscription.dart';
+import '../entities/subscription_category.dart';
+import '../entities/user_subscription.dart';
+
+abstract class SubscriptionRepo {
+  /// Active services users can pick from, sorted by name.
+  Future<Either<Failure, List<CatalogService>>> getCatalog();
+
+  /// The signed-in user's subscriptions, nearest renewal first.
+  Future<Either<Failure, List<UserSubscription>>> getSubscriptions();
+
+  Future<Either<Failure, UserSubscription>> addSubscription({
+    String? catalogId,
+    String? customName,
+    String? planName,
+    required SubscriptionCategory category,
+    required double price,
+    required String currency,
+    required BillingCycle billingCycle,
+    required DateTime nextRenewalDate,
+    String? paymentMethod,
+    String? notes,
+  });
+
+  Future<Either<Failure, UserSubscription>> updateSubscription({
+    required String id,
+    String? catalogId,
+    String? customName,
+    String? planName,
+    required SubscriptionCategory category,
+    required double price,
+    required String currency,
+    required BillingCycle billingCycle,
+    required DateTime nextRenewalDate,
+    String? paymentMethod,
+    String? notes,
+  });
+
+  Future<Either<Failure, void>> deleteSubscription(String id);
+
+  /// Saves a new next renewal date (after one passed).
+  Future<Either<Failure, void>> updateRenewalDate(String id, DateTime nextRenewalDate);
+
+  /// Reads a subscription from a screenshot and/or pasted text with the AI.
+  Future<Either<Failure, ScannedSubscription>> extractSubscription({
+    String? imagePath,
+    String? text,
+    List<String> knownServices,
+  });
+
+  /// Removes subscriptions and the catalog saved on this device for offline use.
+  Future<void> clearCachedSubscriptions();
+}

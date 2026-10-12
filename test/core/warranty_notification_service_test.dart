@@ -7,6 +7,7 @@ import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/core/service/notification_service.dart';
 import 'package:sakk/core/service/reminder_controller.dart';
 import 'package:sakk/core/service/warranty_notification_service.dart';
+import 'package:sakk/core/util/notification_ids.dart';
 import 'package:sakk/core/util/notified_warranties_tracker.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
@@ -163,6 +164,14 @@ void main() {
 
     await service.syncAll(const []); // signed out
     expect(notifications.scheduled, isEmpty);
+  });
+
+  test('syncAll never cancels subscription reminders', () async {
+    final subscriptionId = reminderNotificationId('netflix-sub', subscriptionRenewalSlot);
+    notifications.scheduled[subscriptionId] = DateTime.now().add(const Duration(days: 20));
+    await service.syncAll([endingIn('keep', 200)]);
+    await service.syncAll(const []);
+    expect(notifications.scheduled.keys, [subscriptionId]);
   });
 
   test('reminder ids are the same on every run (stable hash)', () async {

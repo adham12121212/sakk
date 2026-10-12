@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/get_it.dart';
+import '../../../../core/route/app_router.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -10,6 +12,9 @@ import '../../../auth/presentation/widgets/segmented_toggle.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
+import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
+import '../../../subscriptions/presentation/cubit/subscriptions_state.dart';
+import '../../../subscriptions/presentation/widgets/subscriptions_analytics_card.dart';
 import '../widgets/category_break_down_card.dart';
 import '../widgets/spending_insights_card.dart';
 import '../widgets/total_spent_card.dart';
@@ -25,11 +30,19 @@ class AnalyticsView extends StatefulWidget {
 class _AnalyticsViewState extends State<AnalyticsView> {
   /// In a household: only my products (default) or everyone's.
   bool _householdScope = false;
+  final _subscriptionsCubit = getIt<SubscriptionsCubit>();
+
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().getTotalPrice();
+    _subscriptionsCubit.loadIfNeeded();
   }
+
+  Future<void> _refresh() => Future.wait([
+        context.read<ProductsCubit>().refresh(),
+        _subscriptionsCubit.refresh(),
+      ]);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
         bottom: false,
         child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, allState) {
-            final refresh = context.read<ProductsCubit>().refresh;
+            final refresh = _refresh;
             final myId = getIt<GetUserUseCase>()()?.id;
             final inHousehold = getIt<HouseholdCubit>().state.members.length > 1;
             // Family sharing shows members' products everywhere; totals here
@@ -84,6 +97,17 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                               CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
                               const SizedBox(height: 16),
                               SpendingInsightsCard(products: state.products, l10n: l10n),
+                              // Subscriptions are private, so only in "Mine".
+                              if (!(inHousehold && _householdScope)) ...[
+                                const SizedBox(height: 16),
+                                BlocBuilder<SubscriptionsCubit, SubscriptionsState>(
+                                  bloc: _subscriptionsCubit,
+                                  builder: (context, subscriptions) => SubscriptionsAnalyticsCard(
+                                    state: subscriptions,
+                                    onTap: () => context.push(AppRoutes.subscriptions),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                   ),

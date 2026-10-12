@@ -382,4 +382,46 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // package
+
+  // Subscriptions and their categories.
+  static const subscriptions = IconData(
+    0xe094,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // arrowsClockwise
+  static const streaming = IconData(
+    0xe58c,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // monitorPlay
+  static const music = IconData(
+    0xe340,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // musicNotes
+  static const gaming = IconData(
+    0xe26e,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // gameController
+  static const cloud = IconData(
+    0xe1aa,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // cloud
+  static const productivity = IconData(
+    0xe0ee,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // briefcase
+  static const delivery = IconData(
+    0xe824,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // moped
+  static const telecom = IconData(
+    0xe664,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // simCard
 }

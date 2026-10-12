@@ -1251,4 +1251,249 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get confirmEmailToFinishSignup =>
       'Check your email and open the confirmation link, then sign in';
+
+  @override
+  String get subscriptions => 'Subscriptions';
+
+  @override
+  String get subscriptionsMonthlyTotal => 'Monthly total';
+
+  @override
+  String subscriptionsYearlyTotal(String amount) {
+    return '$amount a year';
+  }
+
+  @override
+  String subscriptionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscriptions',
+      one: '1 subscription',
+      zero: 'No subscriptions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noSubscriptionsYet => 'No subscriptions yet';
+
+  @override
+  String get noSubscriptionsBody =>
+      'Add Netflix, Spotify and the rest to see what you pay each month and get reminded before each renewal.';
+
+  @override
+  String get subscriptionsHomeEmpty => 'Track Netflix, Spotify and more';
+
+  @override
+  String get addSubscription => 'Add subscription';
+
+  @override
+  String get editSubscription => 'Edit subscription';
+
+  @override
+  String get customSubscription => 'Custom subscription';
+
+  @override
+  String get customSubscriptionHint => 'Not in the list? Enter it yourself';
+
+  @override
+  String get searchServicesHint => 'Search services';
+
+  @override
+  String get noServicesFound => 'No services match your search';
+
+  @override
+  String get choosePlan => 'Choose a plan';
+
+  @override
+  String get otherPlan => 'Other plan';
+
+  @override
+  String get otherPlanHint => 'Enter the price yourself';
+
+  @override
+  String fromPrice(String amount) {
+    return 'From $amount';
+  }
+
+  @override
+  String get subscriptionName => 'Name';
+
+  @override
+  String get subscriptionNameRequired => 'Enter a name';
+
+  @override
+  String get planNameOptional => 'Plan (optional)';
+
+  @override
+  String get priceRequired => 'Enter the price';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get billingCycle => 'Billing cycle';
+
+  @override
+  String get billingMonthly => 'Monthly';
+
+  @override
+  String get billingYearly => 'Yearly';
+
+  @override
+  String pricePerMonth(String amount) {
+    return '$amount / month';
+  }
+
+  @override
+  String pricePerYear(String amount) {
+    return '$amount / year';
+  }
+
+  @override
+  String get nextRenewal => 'Next renewal';
+
+  @override
+  String get paymentMethodOptional => 'Payment method (optional)';
+
+  @override
+  String get notesOptional => 'Notes (optional)';
+
+  @override
+  String get renewsToday => 'Renews today';
+
+  @override
+  String get renewsTomorrow => 'Renews tomorrow';
+
+  @override
+  String renewsInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Renews in $days days',
+      one: 'Renews in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get renewalPassed => 'Renewal date passed';
+
+  @override
+  String get subscriptionSaved => 'Subscription saved';
+
+  @override
+  String get subscriptionDeleted => 'Subscription deleted';
+
+  @override
+  String get deleteSubscriptionQuestion => 'Delete subscription?';
+
+  @override
+  String deleteSubscriptionBody(String name) {
+    return '$name and its reminders will be removed.';
+  }
+
+  @override
+  String get currencyEgp => 'EGP';
+
+  @override
+  String get subscriptionCategoryStreaming => 'Streaming';
+
+  @override
+  String get subscriptionCategoryMusic => 'Music';
+
+  @override
+  String get subscriptionCategoryGaming => 'Gaming';
+
+  @override
+  String get subscriptionCategoryCloud => 'Cloud storage';
+
+  @override
+  String get subscriptionCategoryProductivity => 'Productivity';
+
+  @override
+  String get subscriptionCategoryAi => 'AI';
+
+  @override
+  String get subscriptionCategoryDelivery => 'Delivery';
+
+  @override
+  String get subscriptionCategoryTelecom => 'Telecom & internet';
+
+  @override
+  String get subscriptionCategoryOther => 'Other';
+
+  @override
+  String get smartAdd => 'Smart add';
+
+  @override
+  String get smartAddHint => 'From a screenshot or a bank SMS';
+
+  @override
+  String get smartAddTakePhoto => 'Take a photo';
+
+  @override
+  String get smartAddChooseScreenshot => 'Choose a screenshot';
+
+  @override
+  String get smartAddPasteText => 'Paste an SMS or email';
+
+  @override
+  String get smartAddPasteTitle => 'Paste the message';
+
+  @override
+  String get smartAddPasteHint => 'For example, the bank SMS for the charge';
+
+  @override
+  String get smartAddPasteFromClipboard => 'Paste';
+
+  @override
+  String get smartAddPasteEmpty => 'Paste the message first';
+
+  @override
+  String get smartAddRead => 'Read';
+
+  @override
+  String get smartAddReading => 'Reading…';
+
+  @override
+  String get smartAddPrivacyNote =>
+      'Full card numbers and email addresses are removed before the text is read.';
+
+  @override
+  String get subscriptionScanUnreadable =>
+      'We couldn\'t find a subscription in that. Try a clearer screenshot or the full message, or add it manually.';
+
+  @override
+  String get notifRenewalTitle => 'Subscription renewing soon';
+
+  @override
+  String notifRenewalBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name renews in $daysText days for $price',
+      one: '$name renews tomorrow for $price',
+      zero: '$name renews today for $price',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get subscriptionsAnalyticsTitle => 'Subscriptions';
+
+  @override
+  String get subscriptionsAnalyticsEmpty =>
+      'No subscriptions yet. Tap to add Netflix, Spotify and more.';
+
+  @override
+  String subscriptionsBreakdownNote(String currency) {
+    return 'Breakdown of $currency subscriptions';
+  }
 }

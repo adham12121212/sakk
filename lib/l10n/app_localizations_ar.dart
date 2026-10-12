@@ -1262,4 +1262,258 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get confirmEmailToFinishSignup =>
       'تحقق من بريدك الإلكتروني وافتح رابط التأكيد، ثم سجّل الدخول';
+
+  @override
+  String get subscriptions => 'الاشتراكات';
+
+  @override
+  String get subscriptionsMonthlyTotal => 'الإجمالي الشهري';
+
+  @override
+  String subscriptionsYearlyTotal(String amount) {
+    return '$amount في السنة';
+  }
+
+  @override
+  String subscriptionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count اشتراك',
+      many: '$count اشتراكًا',
+      few: '$count اشتراكات',
+      two: 'اشتراكان',
+      one: 'اشتراك واحد',
+      zero: 'لا توجد اشتراكات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noSubscriptionsYet => 'لا توجد اشتراكات بعد';
+
+  @override
+  String get noSubscriptionsBody =>
+      'أضف نتفليكس وسبوتيفاي وغيرها لتعرف ما تدفعه كل شهر ويصلك تذكير قبل كل تجديد.';
+
+  @override
+  String get subscriptionsHomeEmpty => 'تابع نتفليكس وسبوتيفاي وغيرها';
+
+  @override
+  String get addSubscription => 'إضافة اشتراك';
+
+  @override
+  String get editSubscription => 'تعديل الاشتراك';
+
+  @override
+  String get customSubscription => 'اشتراك مخصص';
+
+  @override
+  String get customSubscriptionHint => 'غير موجود في القائمة؟ أدخله بنفسك';
+
+  @override
+  String get searchServicesHint => 'ابحث عن خدمة';
+
+  @override
+  String get noServicesFound => 'لا توجد خدمات مطابقة لبحثك';
+
+  @override
+  String get choosePlan => 'اختر الباقة';
+
+  @override
+  String get otherPlan => 'باقة أخرى';
+
+  @override
+  String get otherPlanHint => 'أدخل السعر بنفسك';
+
+  @override
+  String fromPrice(String amount) {
+    return 'يبدأ من $amount';
+  }
+
+  @override
+  String get subscriptionName => 'الاسم';
+
+  @override
+  String get subscriptionNameRequired => 'أدخل الاسم';
+
+  @override
+  String get planNameOptional => 'الباقة (اختياري)';
+
+  @override
+  String get priceRequired => 'أدخل السعر';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get billingCycle => 'دورة الدفع';
+
+  @override
+  String get billingMonthly => 'شهري';
+
+  @override
+  String get billingYearly => 'سنوي';
+
+  @override
+  String pricePerMonth(String amount) {
+    return '$amount / شهريًا';
+  }
+
+  @override
+  String pricePerYear(String amount) {
+    return '$amount / سنويًا';
+  }
+
+  @override
+  String get nextRenewal => 'التجديد القادم';
+
+  @override
+  String get paymentMethodOptional => 'طريقة الدفع (اختياري)';
+
+  @override
+  String get notesOptional => 'ملاحظات (اختياري)';
+
+  @override
+  String get renewsToday => 'يتجدد اليوم';
+
+  @override
+  String get renewsTomorrow => 'يتجدد غدًا';
+
+  @override
+  String renewsInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'يتجدد خلال $days يوم',
+      many: 'يتجدد خلال $days يومًا',
+      few: 'يتجدد خلال $days أيام',
+      two: 'يتجدد خلال يومين',
+      one: 'يتجدد خلال يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get renewalPassed => 'فات موعد التجديد';
+
+  @override
+  String get subscriptionSaved => 'تم حفظ الاشتراك';
+
+  @override
+  String get subscriptionDeleted => 'تم حذف الاشتراك';
+
+  @override
+  String get deleteSubscriptionQuestion => 'حذف الاشتراك؟';
+
+  @override
+  String deleteSubscriptionBody(String name) {
+    return 'سيتم حذف $name مع تذكيراته.';
+  }
+
+  @override
+  String get currencyEgp => 'ج.م';
+
+  @override
+  String get subscriptionCategoryStreaming => 'بث';
+
+  @override
+  String get subscriptionCategoryMusic => 'موسيقى';
+
+  @override
+  String get subscriptionCategoryGaming => 'ألعاب';
+
+  @override
+  String get subscriptionCategoryCloud => 'تخزين سحابي';
+
+  @override
+  String get subscriptionCategoryProductivity => 'إنتاجية';
+
+  @override
+  String get subscriptionCategoryAi => 'ذكاء اصطناعي';
+
+  @override
+  String get subscriptionCategoryDelivery => 'توصيل';
+
+  @override
+  String get subscriptionCategoryTelecom => 'اتصالات وإنترنت';
+
+  @override
+  String get subscriptionCategoryOther => 'أخرى';
+
+  @override
+  String get smartAdd => 'إضافة ذكية';
+
+  @override
+  String get smartAddHint => 'من لقطة شاشة أو رسالة البنك';
+
+  @override
+  String get smartAddTakePhoto => 'التقاط صورة';
+
+  @override
+  String get smartAddChooseScreenshot => 'اختيار لقطة شاشة';
+
+  @override
+  String get smartAddPasteText => 'لصق رسالة أو بريد إلكتروني';
+
+  @override
+  String get smartAddPasteTitle => 'الصق الرسالة';
+
+  @override
+  String get smartAddPasteHint => 'مثلًا رسالة البنك الخاصة بالخصم';
+
+  @override
+  String get smartAddPasteFromClipboard => 'لصق';
+
+  @override
+  String get smartAddPasteEmpty => 'الصق الرسالة أولًا';
+
+  @override
+  String get smartAddRead => 'قراءة';
+
+  @override
+  String get smartAddReading => 'جارٍ القراءة…';
+
+  @override
+  String get smartAddPrivacyNote =>
+      'تُحذف أرقام البطاقات الكاملة وعناوين البريد الإلكتروني قبل قراءة النص.';
+
+  @override
+  String get subscriptionScanUnreadable =>
+      'لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا.';
+
+  @override
+  String get notifRenewalTitle => 'اشتراك سيتجدد قريبًا';
+
+  @override
+  String notifRenewalBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'يتجدد $name بعد $daysText يوم بقيمة $price',
+      many: 'يتجدد $name بعد $daysText يومًا بقيمة $price',
+      few: 'يتجدد $name بعد $daysText أيام بقيمة $price',
+      two: 'يتجدد $name بعد يومين بقيمة $price',
+      one: 'يتجدد $name غدًا بقيمة $price',
+      zero: 'يتجدد $name اليوم بقيمة $price',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get subscriptionsAnalyticsTitle => 'الاشتراكات';
+
+  @override
+  String get subscriptionsAnalyticsEmpty =>
+      'لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.';
+
+  @override
+  String subscriptionsBreakdownNote(String currency) {
+    return 'توزيع الاشتراكات بعملة $currency';
+  }
 }

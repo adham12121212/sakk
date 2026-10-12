@@ -18,6 +18,8 @@ import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';
+import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
+import '../../../subscriptions/presentation/widgets/subscriptions_home_card.dart';
 import '../widgets/home_header.dart';
 import '../widgets/recent_product_data.dart';
 import '../widgets/recent_products_section.dart';
@@ -45,11 +47,13 @@ class _HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<_HomeContent> {
   final _notificationCubit = getIt<NotificationCubit>();
+  final _subscriptionsCubit = getIt<SubscriptionsCubit>();
 
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
+    _subscriptionsCubit.loadIfNeeded();
     // Member names for "Added by ..." on shared products.
     getIt<HouseholdCubit>().load();
     final userId = getIt<GetUserUseCase>()()?.id;
@@ -141,6 +145,7 @@ class _HomeContentState extends State<_HomeContent> {
               onRefresh: () => Future.wait([
                 context.read<ProductsCubit>().refresh(),
                 _notificationCubit.refresh(),
+                _subscriptionsCubit.refresh(),
               ]),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -232,6 +237,24 @@ class _HomeContentState extends State<_HomeContent> {
                                 ],
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    // Outside the products skeleton: it has its own loading state.
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                      child: BlocProvider.value(
+                        value: _subscriptionsCubit,
+                        child: SubscriptionsHomeCard(
+                          onTap: () => context.push(AppRoutes.subscriptions),
+                        ),
+                      ),
+                    ),
+                    if (!(state.error != null && state.products.isEmpty))
+                      Skeletonizer(
+                        enabled: isInitialLoading,
+                        child: Column(
+                          children: [
                             const SizedBox(height: 28),
                             RecentProductsSection(
                               items: recentProducts,

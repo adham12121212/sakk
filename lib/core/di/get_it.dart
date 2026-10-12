@@ -46,6 +46,22 @@ import '../../features/products/domain/usecase/product_extras_usecases.dart';
 import '../../features/products/domain/usecase/scan_receipt_usecase.dart';
 import '../../features/products/domain/usecase/update_product_usecase.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
+import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
+import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
+import '../../features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
+import '../../features/subscriptions/domain/subscription_repo/subscription_repo.dart';
+import '../../features/subscriptions/domain/usecase/add_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
+import '../../features/subscriptions/domain/usecase/delete_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/extract_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/get_catalog_usecase.dart';
+import '../../features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
+import '../../features/subscriptions/domain/usecase/update_renewal_date_usecase.dart';
+import '../../features/subscriptions/domain/usecase/update_subscription_usecase.dart';
+import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../error/network_info.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
@@ -57,8 +73,10 @@ import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/password_recovery_service.dart';
 import '../service/reminder_controller.dart';
+import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
+import '../service/subscription_reminder_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
 import '../service/supabase_client_impl.dart';
@@ -140,8 +158,10 @@ void setupLocator() {
   );
 
   // ---- Products ----
+  // Shared by receipt scanning and subscription smart add.
+  getIt.registerLazySingleton<ReceiptAiClient>(() => ReceiptAiClient(Supabase.instance.client));
   getIt.registerLazySingleton<ProductDataSource>(
-        () => ProductDataSourceImpl(Supabase.instance.client),
+        () => ProductDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
   );
   getIt.registerLazySingleton<ProductLocalDataSource>(
         () => ProductLocalDataSourceImpl(getIt<SupabaseService>()),
@@ -169,6 +189,69 @@ void setupLocator() {
   );
   getIt.registerLazySingleton<GetProductsUseCase>(
         () => GetProductsUseCaseImpl(getIt<ProductRepo>()),
+  );
+
+  // ---- Subscriptions ----
+  getIt.registerLazySingleton<SubscriptionDataSource>(
+        () => SubscriptionDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
+  );
+  getIt.registerLazySingleton<SubscriptionLocalDataSource>(
+        () => SubscriptionLocalDataSourceImpl(getIt<SupabaseService>()),
+  );
+  getIt.registerLazySingleton<SubscriptionRepo>(
+        () => SubscriptionRepoImpl(getIt<SubscriptionDataSource>(), getIt<SubscriptionLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+  );
+  getIt.registerLazySingleton<GetCatalogUseCase>(
+        () => GetCatalogUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<GetSubscriptionsUseCase>(
+        () => GetSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<AddSubscriptionUseCase>(
+        () => AddSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<UpdateSubscriptionUseCase>(
+        () => UpdateSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<DeleteSubscriptionUseCase>(
+        () => DeleteSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<ExtractSubscriptionUseCase>(
+        () => ExtractSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<ClearCachedSubscriptionsUseCase>(
+        () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  // Singleton: the Home card and the Subscriptions screen share its list.
+  getIt.registerLazySingleton<UpdateRenewalDateUseCase>(
+        () => UpdateRenewalDateUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<SubscriptionReminderService>(
+        () => SubscriptionReminderService(
+      getUserUseCase: getIt<GetUserUseCase>(),
+      addNotificationUseCase: getIt<AddNotificationUseCase>(),
+      tracker: getIt<NotifiedWarrantiesTracker>(),
+      localNotifications: getIt<NotificationService>(),
+      logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
+    ),
+  );
+  getIt.registerLazySingleton<SubscriptionsCubit>(
+        () => SubscriptionsCubit(
+      getIt<GetSubscriptionsUseCase>(),
+      updateRenewalDateUseCase: getIt<UpdateRenewalDateUseCase>(),
+      reminders: getIt<SubscriptionReminderService>(),
+    ),
+  );
+  getIt.registerFactory<CatalogCubit>(() => CatalogCubit(getIt<GetCatalogUseCase>()));
+  getIt.registerFactory<SmartAddCubit>(() => SmartAddCubit(getIt<ExtractSubscriptionUseCase>()));
+  getIt.registerFactory<SubscriptionFormCubit>(
+        () => SubscriptionFormCubit(
+      getIt<AddSubscriptionUseCase>(),
+      getIt<UpdateSubscriptionUseCase>(),
+      getIt<DeleteSubscriptionUseCase>(),
+      getIt<SubscriptionsCubit>(),
+    ),
   );
 
   getIt.registerLazySingleton<SearchHistoryService>(() => SearchHistoryServiceImpl());
