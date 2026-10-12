@@ -23,6 +23,12 @@ import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
+import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
+import '../../features/subscriptions/presentation/views/catalog_picker_view.dart';
+import '../../features/subscriptions/presentation/views/subscription_form_view.dart';
+import '../../features/subscriptions/presentation/views/subscriptions_view.dart';
 import '../di/get_it.dart';
 
 
@@ -43,6 +49,9 @@ class AppRoutes {
   static const scan = '/scan';
   static const notifications = '/notifications';
   static const profile = '/profile';
+  static const subscriptions = '/subscriptions';
+  static const subscriptionCatalog = '/subscriptions/catalog';
+  static const subscriptionForm = '/subscriptions/form';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -122,6 +131,31 @@ final GoRouter appRouter = GoRouter(
           BlocProvider(create: (_) => getIt<DetailsCubit>()),
         ],
         child: DetailsView(product: state.extra as ProductEntity),
+      ),
+    ),
+
+    GoRoute(
+      path: AppRoutes.subscriptions,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<SubscriptionsCubit>(),
+        child: const SubscriptionsView(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.subscriptionCatalog,
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<CatalogCubit>(),
+        child: const CatalogPickerView(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.subscriptionForm,
+      // Opened with SubscriptionFormArgs as `extra`; same fallback as details.
+      redirect: (context, state) =>
+          state.extra is SubscriptionFormArgs ? null : AppRoutes.subscriptions,
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<SubscriptionFormCubit>(),
+        child: SubscriptionFormView(args: state.extra as SubscriptionFormArgs),
       ),
     ),
 

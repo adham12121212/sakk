@@ -2215,6 +2215,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check your email and open the confirmation link, then sign in'**
   String get confirmEmailToFinishSignup;
+
+  /// No description provided for @subscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions;
+
+  /// No description provided for @subscriptionsMonthlyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly total'**
+  String get subscriptionsMonthlyTotal;
+
+  /// No description provided for @subscriptionsYearlyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} a year'**
+  String subscriptionsYearlyTotal(String amount);
+
+  /// No description provided for @subscriptionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No subscriptions} one{1 subscription} other{{count} subscriptions}}'**
+  String subscriptionsCount(int count);
+
+  /// No description provided for @noSubscriptionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No subscriptions yet'**
+  String get noSubscriptionsYet;
+
+  /// No description provided for @noSubscriptionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Netflix, Spotify and the rest to see what you pay each month and get reminded before each renewal.'**
+  String get noSubscriptionsBody;
+
+  /// No description provided for @subscriptionsHomeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Netflix, Spotify and more'**
+  String get subscriptionsHomeEmpty;
+
+  /// No description provided for @addSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add subscription'**
+  String get addSubscription;
+
+  /// No description provided for @editSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit subscription'**
+  String get editSubscription;
+
+  /// No description provided for @customSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom subscription'**
+  String get customSubscription;
+
+  /// No description provided for @customSubscriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in the list? Enter it yourself'**
+  String get customSubscriptionHint;
+
+  /// No description provided for @searchServicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search services'**
+  String get searchServicesHint;
+
+  /// No description provided for @noServicesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No services match your search'**
+  String get noServicesFound;
+
+  /// No description provided for @choosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan'**
+  String get choosePlan;
+
+  /// No description provided for @otherPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Other plan'**
+  String get otherPlan;
+
+  /// No description provided for @otherPlanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the price yourself'**
+  String get otherPlanHint;
+
+  /// No description provided for @fromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'From {amount}'**
+  String fromPrice(String amount);
+
+  /// No description provided for @subscriptionName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get subscriptionName;
+
+  /// No description provided for @subscriptionNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get subscriptionNameRequired;
+
+  /// No description provided for @planNameOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan (optional)'**
+  String get planNameOptional;
+
+  /// No description provided for @priceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the price'**
+  String get priceRequired;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @billingCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing cycle'**
+  String get billingCycle;
+
+  /// No description provided for @billingMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get billingMonthly;
+
+  /// No description provided for @billingYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get billingYearly;
+
+  /// No description provided for @pricePerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} / month'**
+  String pricePerMonth(String amount);
+
+  /// No description provided for @pricePerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} / year'**
+  String pricePerYear(String amount);
+
+  /// No description provided for @nextRenewal.
+  ///
+  /// In en, this message translates to:
+  /// **'Next renewal'**
+  String get nextRenewal;
+
+  /// No description provided for @paymentMethodOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method (optional)'**
+  String get paymentMethodOptional;
+
+  /// No description provided for @notesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get notesOptional;
+
+  /// No description provided for @renewsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews today'**
+  String get renewsToday;
+
+  /// No description provided for @renewsTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews tomorrow'**
+  String get renewsTomorrow;
+
+  /// No description provided for @renewsInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{Renews in 1 day} other{Renews in {days} days}}'**
+  String renewsInDays(int days);
+
+  /// No description provided for @renewalPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewal date passed'**
+  String get renewalPassed;
+
+  /// No description provided for @subscriptionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription saved'**
+  String get subscriptionSaved;
+
+  /// No description provided for @subscriptionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription deleted'**
+  String get subscriptionDeleted;
+
+  /// No description provided for @deleteSubscriptionQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete subscription?'**
+  String get deleteSubscriptionQuestion;
+
+  /// No description provided for @deleteSubscriptionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and its reminders will be removed.'**
+  String deleteSubscriptionBody(String name);
+
+  /// No description provided for @currencyEgp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get currencyEgp;
+
+  /// No description provided for @subscriptionCategoryStreaming.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaming'**
+  String get subscriptionCategoryStreaming;
+
+  /// No description provided for @subscriptionCategoryMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get subscriptionCategoryMusic;
+
+  /// No description provided for @subscriptionCategoryGaming.
+  ///
+  /// In en, this message translates to:
+  /// **'Gaming'**
+  String get subscriptionCategoryGaming;
+
+  /// No description provided for @subscriptionCategoryCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud storage'**
+  String get subscriptionCategoryCloud;
+
+  /// No description provided for @subscriptionCategoryProductivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Productivity'**
+  String get subscriptionCategoryProductivity;
+
+  /// No description provided for @subscriptionCategoryAi.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get subscriptionCategoryAi;
+
+  /// No description provided for @subscriptionCategoryDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get subscriptionCategoryDelivery;
+
+  /// No description provided for @subscriptionCategoryTelecom.
+  ///
+  /// In en, this message translates to:
+  /// **'Telecom & internet'**
+  String get subscriptionCategoryTelecom;
+
+  /// No description provided for @subscriptionCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get subscriptionCategoryOther;
 }
 
 class _AppLocalizationsDelegate

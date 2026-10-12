@@ -10,6 +10,7 @@ import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../../subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
+import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecase/delete_account_usecase.dart';
@@ -45,6 +46,8 @@ class AuthCubit extends Cubit<AuthState> {
           (user) {
 
         getIt<ProductsCubit>().reset();
+
+        getIt<SubscriptionsCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -68,6 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
       },
           (user) {
         getIt<ProductsCubit>().reset();
+        getIt<SubscriptionsCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -84,6 +88,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } finally {
       getIt<ProductsCubit>().reset();
+      getIt<SubscriptionsCubit>().reset();
       getIt<NotificationCubit>().reset();
       getIt<HouseholdCubit>().reset();
       try {
@@ -112,7 +117,7 @@ class AuthCubit extends Cubit<AuthState> {
         if (failure is CancelledFailure) { emit(AuthInitial()); return; }
         emit(AuthError(failure.message));
       },
-          (user) { getIt<ProductsCubit>().reset(); emit(AuthSuccess(user)); },
+          (user) { getIt<ProductsCubit>().reset(); getIt<SubscriptionsCubit>().reset(); emit(AuthSuccess(user)); },
     );
   }
 
@@ -124,6 +129,7 @@ class AuthCubit extends Cubit<AuthState> {
           (_) async {
         await getIt<BiometricAuthService>().setEnabled(false);
         getIt<ProductsCubit>().reset();
+        getIt<SubscriptionsCubit>().reset();
         getIt<NotificationCubit>().reset();
         getIt<HouseholdCubit>().reset();
         await getIt<ClearCachedProductsUseCase>()();

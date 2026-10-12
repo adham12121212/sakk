@@ -8,10 +8,21 @@ import 'package:intl/intl.dart';
 /// app is Egyptian (EGP), so Arabic numbers are formatted as `ar_EG`
 /// (e.g. 12 -> ١٢).
 String formatLocalizedInt(Locale locale, int value) {
-  final tag = locale.languageCode == 'ar' && (locale.countryCode ?? '').isEmpty
+  return NumberFormat.decimalPattern(_numberTag(locale)).format(value);
+}
+
+/// Formats an amount of money with the digits of [locale]: whole amounts
+/// without decimals (240), others with two (5.99).
+String formatLocalizedAmount(Locale locale, double value) {
+  final rounded = (value * 100).round() / 100;
+  final digits = rounded == rounded.truncateToDouble() ? 0 : 2;
+  return NumberFormat.decimalPatternDigits(locale: _numberTag(locale), decimalDigits: digits).format(rounded);
+}
+
+String _numberTag(Locale locale) {
+  return locale.languageCode == 'ar' && (locale.countryCode ?? '').isEmpty
       ? 'ar_EG'
       : locale.toString();
-  return NumberFormat.decimalPattern(tag).format(value);
 }
 
 /// Badge text for [count]: the number in locale digits, capped at "[max]+".

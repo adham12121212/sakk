@@ -56,6 +56,9 @@ import '../../features/subscriptions/domain/usecase/delete_subscription_usecase.
 import '../../features/subscriptions/domain/usecase/get_catalog_usecase.dart';
 import '../../features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
 import '../../features/subscriptions/domain/usecase/update_subscription_usecase.dart';
+import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
+import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../error/network_info.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
@@ -208,6 +211,19 @@ void setupLocator() {
   );
   getIt.registerLazySingleton<ClearCachedSubscriptionsUseCase>(
         () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  // Singleton: the Home card and the Subscriptions screen share its list.
+  getIt.registerLazySingleton<SubscriptionsCubit>(
+        () => SubscriptionsCubit(getIt<GetSubscriptionsUseCase>()),
+  );
+  getIt.registerFactory<CatalogCubit>(() => CatalogCubit(getIt<GetCatalogUseCase>()));
+  getIt.registerFactory<SubscriptionFormCubit>(
+        () => SubscriptionFormCubit(
+      getIt<AddSubscriptionUseCase>(),
+      getIt<UpdateSubscriptionUseCase>(),
+      getIt<DeleteSubscriptionUseCase>(),
+      getIt<SubscriptionsCubit>(),
+    ),
   );
 
   getIt.registerLazySingleton<SearchHistoryService>(() => SearchHistoryServiceImpl());

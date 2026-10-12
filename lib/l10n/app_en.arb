@@ -374,5 +374,102 @@
   "notifExpiredBody": "{product}'s warranty has expired",
   "notifReturnTitle": "Return window closing",
   "notifReturnBody": "You have 2 days left to return {product} if you need to",
-  "confirmEmailToFinishSignup": "Check your email and open the confirmation link, then sign in"
+  "confirmEmailToFinishSignup": "Check your email and open the confirmation link, then sign in",
+  "subscriptions": "Subscriptions",
+  "subscriptionsMonthlyTotal": "Monthly total",
+  "subscriptionsYearlyTotal": "{amount} a year",
+  "@subscriptionsYearlyTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionsCount": "{count, plural, =0{No subscriptions} one{1 subscription} other{{count} subscriptions}}",
+  "@subscriptionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noSubscriptionsYet": "No subscriptions yet",
+  "noSubscriptionsBody": "Add Netflix, Spotify and the rest to see what you pay each month and get reminded before each renewal.",
+  "subscriptionsHomeEmpty": "Track Netflix, Spotify and more",
+  "addSubscription": "Add subscription",
+  "editSubscription": "Edit subscription",
+  "customSubscription": "Custom subscription",
+  "customSubscriptionHint": "Not in the list? Enter it yourself",
+  "searchServicesHint": "Search services",
+  "noServicesFound": "No services match your search",
+  "choosePlan": "Choose a plan",
+  "otherPlan": "Other plan",
+  "otherPlanHint": "Enter the price yourself",
+  "fromPrice": "From {amount}",
+  "@fromPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionName": "Name",
+  "subscriptionNameRequired": "Enter a name",
+  "planNameOptional": "Plan (optional)",
+  "priceRequired": "Enter the price",
+  "currency": "Currency",
+  "billingCycle": "Billing cycle",
+  "billingMonthly": "Monthly",
+  "billingYearly": "Yearly",
+  "pricePerMonth": "{amount} / month",
+  "@pricePerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "pricePerYear": "{amount} / year",
+  "@pricePerYear": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nextRenewal": "Next renewal",
+  "paymentMethodOptional": "Payment method (optional)",
+  "notesOptional": "Notes (optional)",
+  "renewsToday": "Renews today",
+  "renewsTomorrow": "Renews tomorrow",
+  "renewsInDays": "{days, plural, one{Renews in 1 day} other{Renews in {days} days}}",
+  "@renewsInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "renewalPassed": "Renewal date passed",
+  "subscriptionSaved": "Subscription saved",
+  "subscriptionDeleted": "Subscription deleted",
+  "deleteSubscriptionQuestion": "Delete subscription?",
+  "deleteSubscriptionBody": "{name} and its reminders will be removed.",
+  "@deleteSubscriptionBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "currencyEgp": "EGP",
+  "subscriptionCategoryStreaming": "Streaming",
+  "subscriptionCategoryMusic": "Music",
+  "subscriptionCategoryGaming": "Gaming",
+  "subscriptionCategoryCloud": "Cloud storage",
+  "subscriptionCategoryProductivity": "Productivity",
+  "subscriptionCategoryAi": "AI",
+  "subscriptionCategoryDelivery": "Delivery",
+  "subscriptionCategoryTelecom": "Telecom & internet",
+  "subscriptionCategoryOther": "Other"
 }
