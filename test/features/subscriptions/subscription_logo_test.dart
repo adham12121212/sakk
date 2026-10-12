@@ -86,4 +86,29 @@ void main() {
     await show(tester, const SubscriptionLogo(name: 'Gym', logoUrl: '  '));
     expect(find.text('G'), findsOneWidget);
   });
+
+  group('performance', () {
+    testWidgets('logos decode at the size they are drawn, not the file size', (tester) async {
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      // Filling a 44pt tile at 3x: 132px, doubled so cropping stays sharp.
+      await show(tester, const SubscriptionLogo(name: 'Netflix', logoUrl: 'https://cdn.example.com/netflix.png'));
+      expect(tester.widget<CachedNetworkImage>(find.byType(CachedNetworkImage)).memCacheWidth, 264);
+      // Width only: both would stretch non-square images.
+      expect(tester.widget<CachedNetworkImage>(find.byType(CachedNetworkImage)).memCacheHeight, isNull);
+
+      // A framed favicon: the tile's width.
+      await show(tester, const SubscriptionLogo(name: 'Spotify', domain: 'spotify.com', size: 28));
+      expect(tester.widget<CachedNetworkImage>(find.byType(CachedNetworkImage)).memCacheWidth, 84);
+    });
+
+    testWidgets('logos appear without a fade', (tester) async {
+      await show(tester, const SubscriptionLogo(name: 'Netflix', logoUrl: 'https://cdn.example.com/netflix.png', domain: 'netflix.com'));
+      final image = tester.widget<CachedNetworkImage>(find.byType(CachedNetworkImage));
+      expect(image.fadeInDuration, Duration.zero);
+      expect(image.fadeOutDuration, Duration.zero);
+      expect(image.placeholderFadeInDuration, Duration.zero);
+    });
+  });
 }

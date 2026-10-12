@@ -35,11 +35,12 @@ class SubscriptionLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context);
     final letter = _LetterAvatar(name: name, size: size);
     final favicon = faviconUrl(domain);
     final fallback = favicon == null
         ? letter
-        : _framed(_bitmap(favicon, BoxFit.contain, letter));
+        : _framed(_bitmap(favicon, BoxFit.contain, letter, pixelRatio));
 
     final logo = logoUrl;
     final Widget child;
@@ -50,7 +51,7 @@ class SubscriptionLogo extends StatelessWidget {
     } else {
       child = SizedBox.square(
         dimension: size,
-        child: _bitmap(logo, BoxFit.cover, fallback),
+        child: _bitmap(logo, BoxFit.cover, fallback, pixelRatio),
       );
     }
 
@@ -71,19 +72,30 @@ class SubscriptionLogo extends StatelessWidget {
     child: image,
   );
 
-  Widget _bitmap(String url, BoxFit fit, Widget onError) => CachedNetworkImage(
-    imageUrl: url,
-    fit: fit,
-    // Filling: the tile's size. Framed: whatever the margin leaves.
-    width: fit == BoxFit.cover ? size : null,
-    height: fit == BoxFit.cover ? size : null,
-    fadeInDuration: const Duration(milliseconds: 150),
-    placeholder: (_, _) => const SizedBox.shrink(),
-    errorWidget: (_, failedUrl, error) {
-      _logFailure(failedUrl, error);
-      return onError;
-    },
-  );
+  Widget _bitmap(String url, BoxFit fit, Widget onError, double pixelRatio) =>
+      CachedNetworkImage(
+        imageUrl: url,
+        fit: fit,
+        // Filling: the tile's size. Framed: whatever the margin leaves.
+        width: fit == BoxFit.cover ? size : null,
+        height: fit == BoxFit.cover ? size : null,
+        // Decode at the size it's drawn, not the file's (a 1000px logo for a
+        // 44pt tile drops frames when a list of them opens). Width only: giving
+        // both stretches non-square images. Filling crops, so twice the width
+        // keeps logos up to 2:1 sharp; small images are never enlarged.
+        memCacheWidth: (size * pixelRatio * (fit == BoxFit.cover ? 2 : 1))
+            .ceil(),
+        // No fade: on a list, every row fading in at once is wasted work, and a
+        // logo already in memory shows at once anyway.
+        fadeInDuration: Duration.zero,
+        fadeOutDuration: Duration.zero,
+        placeholderFadeInDuration: Duration.zero,
+        placeholder: (_, _) => const SizedBox.shrink(),
+        errorWidget: (_, failedUrl, error) {
+          _logFailure(failedUrl, error);
+          return onError;
+        },
+      );
 
   /// By the path's extension, ignoring any query string (signed URLs).
   static bool _isSvg(String url) {
