@@ -43,6 +43,9 @@ abstract class SubscriptionRepo {
 
   Future<Either<Failure, void>> deleteSubscription(String id);
 
+  /// Saves a new next renewal date (after one passed).
+  Future<Either<Failure, void>> updateRenewalDate(String id, DateTime nextRenewalDate);
+
   /// Reads a subscription from a screenshot and/or pasted text with the AI.
   Future<Either<Failure, ScannedSubscription>> extractSubscription({
     String? imagePath,

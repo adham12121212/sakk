@@ -414,5 +414,10 @@
   "smartAddRead": "قراءة",
   "smartAddReading": "جارٍ القراءة…",
   "smartAddPrivacyNote": "تُحذف أرقام البطاقات الكاملة وعناوين البريد الإلكتروني قبل قراءة النص.",
-  "subscriptionScanUnreadable": "لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا."
+  "subscriptionScanUnreadable": "لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا.",
+  "notifRenewalTitle": "اشتراك سيتجدد قريبًا",
+  "notifRenewalBody": "{days, plural, =0{يتجدد {name} اليوم بقيمة {price}} =1{يتجدد {name} غدًا بقيمة {price}} =2{يتجدد {name} بعد يومين بقيمة {price}} few{يتجدد {name} بعد {daysText} أيام بقيمة {price}} many{يتجدد {name} بعد {daysText} يومًا بقيمة {price}} other{يتجدد {name} بعد {daysText} يوم بقيمة {price}}}",
+  "subscriptionsAnalyticsTitle": "الاشتراكات",
+  "subscriptionsAnalyticsEmpty": "لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.",
+  "subscriptionsBreakdownNote": "توزيع الاشتراكات بعملة {currency}"
 }

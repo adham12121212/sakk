@@ -484,5 +484,34 @@
   "smartAddRead": "Read",
   "smartAddReading": "Reading…",
   "smartAddPrivacyNote": "Full card numbers and email addresses are removed before the text is read.",
-  "subscriptionScanUnreadable": "We couldn't find a subscription in that. Try a clearer screenshot or the full message, or add it manually."
+  "subscriptionScanUnreadable": "We couldn't find a subscription in that. Try a clearer screenshot or the full message, or add it manually.",
+  "notifRenewalTitle": "Subscription renewing soon",
+  "notifRenewalBody": "{days, plural, =0{{name} renews today for {price}} =1{{name} renews tomorrow for {price}} other{{name} renews in {daysText} days for {price}}}",
+  "@notifRenewalBody": {
+    "description": "daysText is the day count in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionsAnalyticsTitle": "Subscriptions",
+  "subscriptionsAnalyticsEmpty": "No subscriptions yet. Tap to add Netflix, Spotify and more.",
+  "subscriptionsBreakdownNote": "Breakdown of {currency} subscriptions",
+  "@subscriptionsBreakdownNote": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1464,4 +1464,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionScanUnreadable =>
       'We couldn\'t find a subscription in that. Try a clearer screenshot or the full message, or add it manually.';
+
+  @override
+  String get notifRenewalTitle => 'Subscription renewing soon';
+
+  @override
+  String notifRenewalBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name renews in $daysText days for $price',
+      one: '$name renews tomorrow for $price',
+      zero: '$name renews today for $price',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get subscriptionsAnalyticsTitle => 'Subscriptions';
+
+  @override
+  String get subscriptionsAnalyticsEmpty =>
+      'No subscriptions yet. Tap to add Netflix, Spotify and more.';
+
+  @override
+  String subscriptionsBreakdownNote(String currency) {
+    return 'Breakdown of $currency subscriptions';
+  }
 }

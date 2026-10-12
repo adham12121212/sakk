@@ -9,6 +9,7 @@ import '../../features/notification/domain/usecase/add_notification_use_case.dar
 import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
+import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
 import 'reminder_controller.dart';
@@ -150,9 +151,10 @@ class WarrantyNotificationService {
     ];
     final wantedIds = {for (final r in wanted) r.id};
 
-    // Only warranty reminders are scheduled locally, so anything pending that
-    // isn't wanted is stale.
+    // Any pending warranty reminder that isn't wanted is stale. Other slots
+    // belong to other reminders (subscriptions) and are left alone.
     for (final pending in await _localNotifications.pendingNotifications()) {
+      if (!warrantyReminderSlots.contains(reminderSlot(pending.id))) continue;
       if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
     }
     for (final reminder in wanted) {
@@ -209,18 +211,9 @@ class WarrantyNotificationService {
 
   Iterable<int> _idsFor(String productId) => [0, 1, 2].map((s) => _notificationIdFor(productId, s));
 
-  /// 32-bit int id required by flutter_local_notifications: a stable hash of
-  /// the product id plus a suffix so a product's reminders don't collide
-  /// (0 "expiring", 1 "expired", 2 "return window closing"). FNV-1a rather
-  /// than String.hashCode, which Dart doesn't guarantee across releases, so
-  /// an app update can still find and cancel what an older version scheduled.
-  int _notificationIdFor(String productId, int suffix) {
-    var hash = 0x811c9dc5;
-    for (final unit in productId.codeUnits) {
-      hash = ((hash ^ unit) * 0x01000193) & 0xFFFFFFFF;
-    }
-    return (hash & 0x7FFFFFFF) ~/ 10 * 10 + suffix;
-  }
+  /// Slot 0 "expiring", 1 "expired", 2 "return window closing"; see
+  /// [reminderNotificationId].
+  int _notificationIdFor(String productId, int suffix) => reminderNotificationId(productId, suffix);
 }
 
 class _Reminder {

@@ -1481,4 +1481,39 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get subscriptionScanUnreadable =>
       'لم نجد اشتراكًا في ذلك. جرّب لقطة شاشة أوضح أو الرسالة كاملة، أو أضفه يدويًا.';
+
+  @override
+  String get notifRenewalTitle => 'اشتراك سيتجدد قريبًا';
+
+  @override
+  String notifRenewalBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'يتجدد $name بعد $daysText يوم بقيمة $price',
+      many: 'يتجدد $name بعد $daysText يومًا بقيمة $price',
+      few: 'يتجدد $name بعد $daysText أيام بقيمة $price',
+      two: 'يتجدد $name بعد يومين بقيمة $price',
+      one: 'يتجدد $name غدًا بقيمة $price',
+      zero: 'يتجدد $name اليوم بقيمة $price',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get subscriptionsAnalyticsTitle => 'الاشتراكات';
+
+  @override
+  String get subscriptionsAnalyticsEmpty =>
+      'لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.';
+
+  @override
+  String subscriptionsBreakdownNote(String currency) {
+    return 'توزيع الاشتراكات بعملة $currency';
+  }
 }

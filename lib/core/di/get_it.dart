@@ -56,6 +56,7 @@ import '../../features/subscriptions/domain/usecase/delete_subscription_usecase.
 import '../../features/subscriptions/domain/usecase/extract_subscription_usecase.dart';
 import '../../features/subscriptions/domain/usecase/get_catalog_usecase.dart';
 import '../../features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
+import '../../features/subscriptions/domain/usecase/update_renewal_date_usecase.dart';
 import '../../features/subscriptions/domain/usecase/update_subscription_usecase.dart';
 import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
@@ -75,6 +76,7 @@ import '../service/reminder_controller.dart';
 import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
+import '../service/subscription_reminder_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
 import '../service/supabase_client_impl.dart';
@@ -221,8 +223,25 @@ void setupLocator() {
         () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   // Singleton: the Home card and the Subscriptions screen share its list.
+  getIt.registerLazySingleton<UpdateRenewalDateUseCase>(
+        () => UpdateRenewalDateUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<SubscriptionReminderService>(
+        () => SubscriptionReminderService(
+      getUserUseCase: getIt<GetUserUseCase>(),
+      addNotificationUseCase: getIt<AddNotificationUseCase>(),
+      tracker: getIt<NotifiedWarrantiesTracker>(),
+      localNotifications: getIt<NotificationService>(),
+      logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
+    ),
+  );
   getIt.registerLazySingleton<SubscriptionsCubit>(
-        () => SubscriptionsCubit(getIt<GetSubscriptionsUseCase>()),
+        () => SubscriptionsCubit(
+      getIt<GetSubscriptionsUseCase>(),
+      updateRenewalDateUseCase: getIt<UpdateRenewalDateUseCase>(),
+      reminders: getIt<SubscriptionReminderService>(),
+    ),
   );
   getIt.registerFactory<CatalogCubit>(() => CatalogCubit(getIt<GetCatalogUseCase>()));
   getIt.registerFactory<SmartAddCubit>(() => SmartAddCubit(getIt<ExtractSubscriptionUseCase>()));

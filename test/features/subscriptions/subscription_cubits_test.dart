@@ -8,6 +8,7 @@ import 'package:sakk/features/subscriptions/domain/entities/user_subscription.da
 import 'package:sakk/features/subscriptions/domain/usecase/add_subscription_usecase.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/delete_subscription_usecase.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
+import 'package:sakk/features/subscriptions/domain/usecase/update_renewal_date_usecase.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/update_subscription_usecase.dart';
 import 'package:sakk/features/subscriptions/presentation/cubit/catalog_state.dart';
 import 'package:sakk/features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
@@ -138,6 +139,46 @@ void main() {
     });
   });
 
+  group('SubscriptionsCubit renewals', () {
+    final today = DateTime(2026, 10, 12);
+
+    test('passed renewals move to the next date, are saved, and re-sort', () async {
+      final saved = _FakeUpdateRenewal();
+      final cubit = SubscriptionsCubit(
+        _FakeGet()
+          ..result = Right([
+            sub('soon', DateTime(2026, 10, 15)),
+            sub('passed', DateTime(2026, 10, 2)), // monthly → 2026-11-02
+          ]),
+        updateRenewalDateUseCase: saved,
+        clock: () => today,
+      );
+      await cubit.refresh();
+      expect(cubit.state.subscriptions.map((s) => s.id), ['soon', 'passed']);
+      expect(cubit.state.subscriptions.last.nextRenewalDate, DateTime(2026, 11, 2));
+      expect(saved.calls, {'passed': DateTime(2026, 11, 2)});
+    });
+
+    test('a failed save still shows the moved date', () async {
+      final saved = _FakeUpdateRenewal()..fail = true;
+      final cubit = SubscriptionsCubit(
+        _FakeGet()..result = Right([sub('passed', DateTime(2026, 10, 2))]),
+        updateRenewalDateUseCase: saved,
+        clock: () => today,
+      );
+      await cubit.refresh();
+      expect(cubit.state.subscriptions.single.nextRenewalDate, DateTime(2026, 11, 2));
+    });
+
+    test('saving a past date from the form moves it too', () async {
+      final saved = _FakeUpdateRenewal();
+      final cubit = SubscriptionsCubit(_FakeGet(), updateRenewalDateUseCase: saved, clock: () => today);
+      cubit.upsert(sub('new', DateTime(2026, 9, 12)));
+      expect(cubit.state.subscriptions.single.nextRenewalDate, DateTime(2026, 10, 12));
+      expect(saved.calls, {'new': DateTime(2026, 10, 12)});
+    });
+  });
+
   group('SubscriptionFormCubit', () {
     late _FakeWrites writes;
     late _FakeDelete delete;
@@ -206,4 +247,14 @@ void main() {
     expect(state.copyWith(query: ' premium ').filtered.single.name, 'YouTube Premium');
     expect(state.copyWith(query: 'zzz').filtered, isEmpty);
   });
+}
+
+class _FakeUpdateRenewal implements UpdateRenewalDateUseCase {
+  final calls = <String, DateTime>{};
+  bool fail = false;
+  @override
+  Future<Either<Failure, void>> call(String id, DateTime nextRenewalDate) async {
+    calls[id] = nextRenewalDate;
+    return fail ? const Left(NetworkFailure(NetworkFailure.noConnectionMessage)) : const Right(null);
+  }
 }

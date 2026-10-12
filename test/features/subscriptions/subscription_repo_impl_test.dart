@@ -58,6 +58,10 @@ class _FakeRemote implements SubscriptionDataSource {
   @override
   Future<void> deleteSubscription(String id) async {}
 
+  final renewalUpdates = <String, DateTime>{};
+  @override
+  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async => renewalUpdates[id] = nextRenewalDate;
+
   @override
   Future<List<CatalogServiceModel>> getCatalog() async => [];
 
@@ -167,5 +171,23 @@ void main() {
     network.connected = false;
     final result = await repo.deleteSubscription('s1');
     expect(result, const Left<Failure, void>(NetworkFailure(NetworkFailure.noConnectionMessage)));
+  });
+
+  test('a moved renewal date is saved and kept in the cache, in order', () async {
+    final gym = UserSubscriptionModel.fromJson({
+      ...subscriptionRow(),
+      'id': 'gym',
+      'catalog_id': null,
+      'custom_name': 'Gym',
+      'subscription_catalog': null,
+      'next_renewal_date': '2026-11-15',
+    });
+    cache.subscriptions = [netflix, gym]; // Netflix renews 2026-11-01
+    final result = await repo.updateRenewalDate('s1', DateTime(2026, 12, 1));
+    expect(result.isRight(), isTrue);
+    expect(remote.renewalUpdates, {'s1': DateTime(2026, 12, 1)});
+    expect(cache.subscriptions!.map((s) => s.id), ['gym', 's1']);
+    expect(cache.subscriptions!.last.nextRenewalDate, DateTime(2026, 12, 1));
+    expect(cache.subscriptions!.last.name, 'Netflix'); // the rest is untouched
   });
 }

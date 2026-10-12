@@ -211,6 +211,22 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
   }
 
   @override
+  Future<Either<Failure, void>> updateRenewalDate(String id, DateTime nextRenewalDate) {
+    return _online('updateRenewalDate', () async {
+      await _dataSource.updateRenewalDate(id, nextRenewalDate);
+      await _updateCache((current) => [
+            for (final s in current)
+              s.id == id
+                  ? UserSubscriptionModel.fromJson({
+                      ...s.toCacheJson(),
+                      'next_renewal_date': nextRenewalDate.toIso8601String().split('T').first,
+                    })
+                  : s,
+          ]);
+    });
+  }
+
+  @override
   Future<Either<Failure, ScannedSubscription>> extractSubscription({
     String? imagePath,
     String? text,

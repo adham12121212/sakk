@@ -2581,6 +2581,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t find a subscription in that. Try a clearer screenshot or the full message, or add it manually.'**
   String get subscriptionScanUnreadable;
+
+  /// No description provided for @notifRenewalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription renewing soon'**
+  String get notifRenewalTitle;
+
+  /// daysText is the day count in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{{name} renews today for {price}} =1{{name} renews tomorrow for {price}} other{{name} renews in {daysText} days for {price}}}'**
+  String notifRenewalBody(int days, String daysText, String name, String price);
+
+  /// No description provided for @subscriptionsAnalyticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptionsAnalyticsTitle;
+
+  /// No description provided for @subscriptionsAnalyticsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No subscriptions yet. Tap to add Netflix, Spotify and more.'**
+  String get subscriptionsAnalyticsEmpty;
+
+  /// No description provided for @subscriptionsBreakdownNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown of {currency} subscriptions'**
+  String subscriptionsBreakdownNote(String currency);
 }
 
 class _AppLocalizationsDelegate

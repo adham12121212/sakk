@@ -1,4 +1,5 @@
 import 'entities/billing_cycle.dart';
+import 'entities/user_subscription.dart';
 
 /// [date] moved by [months], keeping its day of the month where it exists
 /// and using the month's last day where it doesn't (Jan 31 + 1 → Feb 28).
@@ -35,4 +36,15 @@ DateTime nextRenewalOnOrAfter(
     next = addMonthsClamped(start, cycles * cycle.months);
   }
   return next;
+}
+
+/// [subscriptions] with every renewal that already passed moved to its next
+/// one on or after [today]. Unchanged subscriptions are returned as they are.
+List<UserSubscription> advancePassedRenewals(Iterable<UserSubscription> subscriptions, DateTime today) {
+  return [
+    for (final s in subscriptions)
+      s.daysLeft(today) < 0
+          ? s.copyWith(nextRenewalDate: nextRenewalOnOrAfter(s.nextRenewalDate, s.billingCycle, today))
+          : s,
+  ];
 }

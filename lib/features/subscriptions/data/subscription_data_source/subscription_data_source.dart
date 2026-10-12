@@ -25,6 +25,8 @@ abstract class SubscriptionDataSource {
 
   Future<void> deleteSubscription(String id);
 
+  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate);
+
   Future<ScannedSubscription> extractSubscription({
     String? imagePath,
     String? text,
@@ -126,6 +128,18 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
       await _client.from(_table).delete().eq('id', id);
     } catch (e) {
       throw ServerException('Failed to delete subscription: $e');
+    }
+  }
+
+  @override
+  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async {
+    try {
+      await _client
+          .from(_table)
+          .update({'next_renewal_date': nextRenewalDate.toIso8601String().split('T').first})
+          .eq('id', id);
+    } catch (e) {
+      throw ServerException('Failed to update the renewal date: $e');
     }
   }
 

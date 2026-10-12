@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
+import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
 import 'package:sakk/features/subscriptions/domain/renewal_schedule.dart';
 
 void main() {
@@ -49,6 +50,24 @@ void main() {
         nextRenewalOnOrAfter(DateTime(2026, 1, 31), BillingCycle.monthly, DateTime(2026, 2, 2)),
         DateTime(2026, 2, 28),
       );
+    });
+  });
+
+  test('advancePassedRenewals moves only renewals that passed', () {
+    UserSubscription sub(String id, DateTime renewal, BillingCycle cycle) =>
+        UserSubscription(id: id, customName: id, price: 1, billingCycle: cycle, nextRenewalDate: renewal);
+    final today = DateTime(2026, 10, 12);
+    final result = advancePassedRenewals([
+      sub('future', DateTime(2026, 10, 20), BillingCycle.monthly),
+      sub('today', DateTime(2026, 10, 12), BillingCycle.monthly),
+      sub('passed', DateTime(2026, 9, 30), BillingCycle.monthly),
+      sub('yearly', DateTime(2025, 8, 1), BillingCycle.yearly),
+    ], today);
+    expect({for (final s in result) s.id: s.nextRenewalDate}, {
+      'future': DateTime(2026, 10, 20),
+      'today': DateTime(2026, 10, 12),
+      'passed': DateTime(2026, 10, 30),
+      'yearly': DateTime(2027, 8, 1),
     });
   });
 }
