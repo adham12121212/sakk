@@ -14,6 +14,13 @@ void main() {
       expect(addMonthsClamped(DateTime(2028, 1, 31), 1), DateTime(2028, 2, 29));
     });
 
+    test('goes back too, into the previous year', () {
+      expect(addMonthsClamped(DateTime(2026, 1, 15), -1), DateTime(2025, 12, 15));
+      expect(addMonthsClamped(DateTime(2026, 3, 31), -1), DateTime(2026, 2, 28));
+      expect(addMonthsClamped(DateTime(2026, 2, 10), -12), DateTime(2025, 2, 10));
+      expect(addMonthsClamped(DateTime(2026, 1, 1), -13), DateTime(2024, 12, 1));
+    });
+
     test('crosses year boundaries', () {
       expect(addMonthsClamped(DateTime(2026, 11, 30), 3), DateTime(2027, 2, 28));
       expect(addMonthsClamped(DateTime(2028, 2, 29), 12), DateTime(2029, 2, 28));

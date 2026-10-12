@@ -167,7 +167,7 @@ void main() {
   });
 
   test('syncAll never cancels subscription reminders', () async {
-    final subscriptionId = reminderNotificationId('netflix-sub', subscriptionRenewalSlot);
+    final subscriptionId = reminderNotificationId('netflix-sub', 5);
     notifications.scheduled[subscriptionId] = DateTime.now().add(const Duration(days: 20));
     await service.syncAll([endingIn('keep', 200)]);
     await service.syncAll(const []);

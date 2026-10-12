@@ -513,5 +513,26 @@
         "type": "String"
       }
     }
-  }
+  },
+  "notifRenewedTitle": "Subscription renewed",
+  "notifRenewedBody": "{days, plural, =1{{name} renewed yesterday for {price}. Check you were charged the right amount.} other{{name} renewed {daysText} days ago for {price}. Check you were charged the right amount.}}",
+  "@notifRenewedBody": {
+    "description": "daysText is the day count in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "account": "Account",
+  "accountActionsHint": "Log out or delete your account"
 }
