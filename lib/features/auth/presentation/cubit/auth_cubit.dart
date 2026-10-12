@@ -9,6 +9,7 @@ import '../../../../core/service/biometric_auth_service.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
+import '../../../subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecase/delete_account_usecase.dart';
@@ -87,6 +88,7 @@ class AuthCubit extends Cubit<AuthState> {
       getIt<HouseholdCubit>().reset();
       try {
         await getIt<ClearCachedProductsUseCase>()();
+        await getIt<ClearCachedSubscriptionsUseCase>()();
       } finally {
         if (!isClosed) emit(AuthInitial());
       }
@@ -125,6 +127,7 @@ class AuthCubit extends Cubit<AuthState> {
         getIt<NotificationCubit>().reset();
         getIt<HouseholdCubit>().reset();
         await getIt<ClearCachedProductsUseCase>()();
+        await getIt<ClearCachedSubscriptionsUseCase>()();
         emit(AuthInitial());
       },
     );

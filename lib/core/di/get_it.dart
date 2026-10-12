@@ -46,6 +46,16 @@ import '../../features/products/domain/usecase/product_extras_usecases.dart';
 import '../../features/products/domain/usecase/scan_receipt_usecase.dart';
 import '../../features/products/domain/usecase/update_product_usecase.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
+import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
+import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
+import '../../features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
+import '../../features/subscriptions/domain/subscription_repo/subscription_repo.dart';
+import '../../features/subscriptions/domain/usecase/add_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
+import '../../features/subscriptions/domain/usecase/delete_subscription_usecase.dart';
+import '../../features/subscriptions/domain/usecase/get_catalog_usecase.dart';
+import '../../features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
+import '../../features/subscriptions/domain/usecase/update_subscription_usecase.dart';
 import '../error/network_info.dart';
 import '../locale_controller/locale_controller.dart';
 import '../logger/app_logger.dart';
@@ -169,6 +179,35 @@ void setupLocator() {
   );
   getIt.registerLazySingleton<GetProductsUseCase>(
         () => GetProductsUseCaseImpl(getIt<ProductRepo>()),
+  );
+
+  // ---- Subscriptions ----
+  getIt.registerLazySingleton<SubscriptionDataSource>(
+        () => SubscriptionDataSourceImpl(Supabase.instance.client),
+  );
+  getIt.registerLazySingleton<SubscriptionLocalDataSource>(
+        () => SubscriptionLocalDataSourceImpl(getIt<SupabaseService>()),
+  );
+  getIt.registerLazySingleton<SubscriptionRepo>(
+        () => SubscriptionRepoImpl(getIt<SubscriptionDataSource>(), getIt<SubscriptionLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+  );
+  getIt.registerLazySingleton<GetCatalogUseCase>(
+        () => GetCatalogUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<GetSubscriptionsUseCase>(
+        () => GetSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<AddSubscriptionUseCase>(
+        () => AddSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<UpdateSubscriptionUseCase>(
+        () => UpdateSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<DeleteSubscriptionUseCase>(
+        () => DeleteSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+  );
+  getIt.registerLazySingleton<ClearCachedSubscriptionsUseCase>(
+        () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
   );
 
   getIt.registerLazySingleton<SearchHistoryService>(() => SearchHistoryServiceImpl());

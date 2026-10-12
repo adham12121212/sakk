@@ -27,10 +27,12 @@ create table public.subscription_catalog (
 
 alter table public.subscription_catalog enable row level security;
 
--- Read-only for users: signed-in users see active services. No insert,
--- update or delete policies, so only the service role can change the list.
-create policy "Signed-in users can view active catalog services" on public.subscription_catalog
-  for select to authenticated using (is_active);
+-- Read-only for users: no insert, update or delete policies, so only the
+-- service role can change the list. Inactive services stay readable so
+-- existing subscriptions keep their name and logo; the app's picker only
+-- offers active ones.
+create policy "Signed-in users can view catalog services" on public.subscription_catalog
+  for select to authenticated using (true);
 
 -- ---------------------------------------------------------------------------
 -- User subscriptions
