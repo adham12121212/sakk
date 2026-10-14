@@ -7,6 +7,7 @@ import 'package:sakk/features/auth/presentation/widgets/signup_view_body.dart';
 
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'welcome_message.dart';
 
 class SignupViewConsumerBody extends StatelessWidget {
   const SignupViewConsumerBody({super.key});
@@ -19,10 +20,10 @@ class SignupViewConsumerBody extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         switch (state) {
-          case AuthSuccess():
+          case AuthSuccess(:final user):
             AppSnackBar.success(
               context,
-               l10n.welcometoSakk,
+              welcomeMessage(AppLocalizations.of(context)!, user),
             );
 
             context.go(AppRoutes.home);

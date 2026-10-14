@@ -7,6 +7,7 @@ class UserModel extends UserEntity {
     required super.email,
     required super.name,
     required super.avatarUrl,
+    super.isNewAccount,
   });
 
   /// Metadata key for a photo the user uploaded. Kept apart from
@@ -21,7 +22,18 @@ class UserModel extends UserEntity {
       name: metadata?['name'] ?? '',
       avatarUrl: metadata?[customAvatarKey] as String? ??
           _fullSizeAvatar(metadata?['avatar_url'] as String?),
+      isNewAccount: _isNewAccount(user.createdAt, user.lastSignInAt),
     );
+  }
+
+  /// A new account's first sign-in happens when it's created; a returning
+  /// user's latest sign-in is long after. The margin covers the few seconds
+  /// between Supabase creating the user and recording the sign-in.
+  static bool _isNewAccount(String createdAt, String? lastSignInAt) {
+    final created = DateTime.tryParse(createdAt);
+    final signedIn = lastSignInAt == null ? null : DateTime.tryParse(lastSignInAt);
+    if (created == null || signedIn == null) return false;
+    return signedIn.difference(created).abs() < const Duration(minutes: 1);
   }
 
   /// Google profile photos come as 96px thumbnails (`…=s96-c`), which blur
