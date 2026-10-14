@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/util/validators.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 import 'auth_footer.dart';
@@ -40,7 +41,7 @@ class _SigninFormState extends State<SigninForm> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     context.read<AuthCubit>().signin(
-      email: _emailController.text.trim(),
+      email: AppValidators.normalizeEmail(_emailController.text),
       password: _passwordController.text,
     );
   }

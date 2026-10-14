@@ -55,7 +55,7 @@ class _SignupFormState extends State<SignupForm> {
     if (!isFormValid || !_agreedToTerms) return;
 
     context.read<AuthCubit>().signup(
-      email: _emailController.text.trim(),
+      email: AppValidators.normalizeEmail(_emailController.text),
       password: _passwordController.text,
       fullName: _nameController.text.trim(),
     );

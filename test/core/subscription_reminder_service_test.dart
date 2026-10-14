@@ -215,14 +215,21 @@ void main() {
     expect(notifications.scheduled, isEmpty);
   });
 
-  test('added the day before it renews: "tomorrow" pushes right away, once', () async {
+  test('added the day before it renews: "tomorrow" pushes once, scheduled or right away', () async {
+    // "Tomorrow" is due today at 10:00, so whether it can still be scheduled
+    // depends on the time the test runs; both cases must push exactly once.
+    final beforeTen = DateTime.now().isBefore(at10(today, 0));
     final shahid = renewingIn('Shahid', 1, price: 100);
-    await service.syncAll([shahid]); // too late for the 3-day and 1-day pushes
-    expect(notifications.scheduled.keys, [idOf('Shahid', RenewalReminder.dayAfter)]);
+    await service.syncAll([shahid]); // too late for the 3-day push either way
+    expect(notifications.scheduled.keys.toSet(), {
+      if (beforeTen) idOf('Shahid', RenewalReminder.dayBefore),
+      idOf('Shahid', RenewalReminder.dayAfter),
+    });
     notifications.scheduled.clear();
 
     await service.checkAndNotify([shahid]);
-    expect(notifications.scheduled.keys, [idOf('Shahid', RenewalReminder.dayBefore)]);
+    // Already scheduled for 10:00: no extra push now. Too late: pushed now.
+    expect(notifications.scheduled.keys, beforeTen ? isEmpty : [idOf('Shahid', RenewalReminder.dayBefore)]);
     expect(added.added, ['Shahid renews tomorrow for 100 EGP']);
 
     notifications.scheduled.clear();

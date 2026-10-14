@@ -4,18 +4,29 @@ import '../../l10n/app_localizations.dart';
 class AppValidators {
   AppValidators._();
 
+  // Zero-width and bidi control characters. Keyboards (notably in RTL
+  // locales) and copy-paste can slip these into a field invisibly; they
+  // aren't whitespace, so trim() leaves them in place.
+  static final _invisibleChars =
+      RegExp(r'[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF\u00AD]');
+
+  static final _emailRegex = RegExp(
+    r'^[\w.+-]+@([\w-]+\.)+[A-Za-z]{2,}$',
+  );
+
+  /// The email as it should be validated and sent to the backend.
+  static String normalizeEmail(String value) =>
+      value.replaceAll(_invisibleChars, '').trim();
+
   static String? email(BuildContext context, String? value) {
     final l10n = AppLocalizations.of(context)!;
+    final email = normalizeEmail(value ?? '');
 
-    if (value == null || value.trim().isEmpty) {
+    if (email.isEmpty) {
       return l10n.emailRequired;
     }
 
-    final emailRegex = RegExp(
-      r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
-    );
-
-    if (!emailRegex.hasMatch(value.trim())) {
+    if (!_emailRegex.hasMatch(email)) {
       return l10n.invalidEmail;
     }
 

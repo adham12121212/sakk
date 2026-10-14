@@ -18,6 +18,7 @@ import 'core/service/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/widgets/route_aware_connectivity_banner.dart';
+import 'core/widgets/app_skeleton_config.dart';
 import 'core/widgets/sakk_logo.dart';
 import 'features/notification/presentation/cubit/notification_cubit.dart';
 import 'features/products/presentation/cubit/product_cubit.dart';
@@ -118,13 +119,15 @@ class MyApp extends StatelessWidget {
               routerConfig: appRouter,
 
               // App-wide offline strip; reloads data when the connection returns.
-              builder: (context, child) => RouteAwareConnectivityBanner(
-                routerDelegate: appRouter.routerDelegate,
-                isSuppressed: () =>
-                    appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
-                networkInfo: getIt<NetworkInfo>(),
-                onReconnected: _reloadAfterReconnect,
-                child: child ?? const SizedBox.shrink(),
+              builder: (context, child) => AppSkeletonConfig(
+                child: RouteAwareConnectivityBanner(
+                  routerDelegate: appRouter.routerDelegate,
+                  isSuppressed: () =>
+                      appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
+                  networkInfo: getIt<NetworkInfo>(),
+                  onReconnected: _reloadAfterReconnect,
+                  child: child ?? const SizedBox.shrink(),
+                ),
               ),
 
               onGenerateTitle: (context) =>

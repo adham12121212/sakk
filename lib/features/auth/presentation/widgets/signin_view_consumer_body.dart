@@ -7,6 +7,7 @@ import 'package:sakk/features/auth/presentation/widgets/signin_view_body.dart';
 
 import '../../../../core/route/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'welcome_message.dart';
 
 class SigninViewConsumerBody extends StatelessWidget {
   const SigninViewConsumerBody({super.key});
@@ -16,10 +17,10 @@ class SigninViewConsumerBody extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         switch (state) {
-          case AuthSuccess():
+          case AuthSuccess(:final user):
             AppSnackBar.success(
               context,
-              AppLocalizations.of(context)!.welcomeback,
+              welcomeMessage(AppLocalizations.of(context)!, user),
             );
            context.go(AppRoutes.home);
             break;

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../core/util/validators.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../auth/presentation/widgets/email_text_field.dart';
@@ -43,7 +44,7 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<PasswordResetCubit>().sendOtp(_emailController.text.trim());
+    context.read<PasswordResetCubit>().sendOtp(AppValidators.normalizeEmail(_emailController.text));
   }
 
   void _handleStateChange(BuildContext context, PasswordResetState state) {
@@ -57,7 +58,7 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
         MaterialPageRoute(
           builder: (_) => BlocProvider.value(
             value: context.read<PasswordResetCubit>(),
-            child: OtpVerificationView(email: _emailController.text.trim()),
+            child: OtpVerificationView(email: AppValidators.normalizeEmail(_emailController.text)),
           ),
         ),
       );
