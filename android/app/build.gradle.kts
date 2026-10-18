@@ -64,6 +64,11 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // Flutter's Gradle plugin turns these on for release already;
+            // stated here so they're not lost if that default changes.
+            // Keep rules: proguard-rules.pro (added by the Flutter plugin).
+            isMinifyEnabled = true
+            isShrinkResources = true
         }
     }
 }
