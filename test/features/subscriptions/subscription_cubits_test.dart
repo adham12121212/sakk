@@ -93,7 +93,7 @@ void main() {
     test('refresh sorts by nearest renewal and marks the list loaded', () async {
       final get = _FakeGet()
         ..result = Right([sub('late', DateTime(2026, 12, 1)), sub('soon', DateTime(2026, 10, 14))]);
-      final cubit = SubscriptionsCubit(get);
+      final cubit = SubscriptionsCubit(get, clock: () => DateTime(2026, 10, 12));
       await cubit.refresh();
       expect(cubit.state.subscriptions.map((s) => s.id), ['soon', 'late']);
       expect(cubit.state.hasLoadedOnce, isTrue);
@@ -115,6 +115,9 @@ void main() {
     test('upsert replaces and re-sorts; remove and reset clear', () async {
       final cubit = SubscriptionsCubit(
         _FakeGet()..result = Right([sub('a', DateTime(2026, 10, 20)), sub('b', DateTime(2026, 11, 20))]),
+        // Fixed, so none of these dates has passed (the cubit moves passed
+        // renewals on to their next date).
+        clock: () => DateTime(2026, 10, 12),
       );
       await cubit.refresh();
       cubit.upsert(sub('b', DateTime(2026, 10, 15)));
@@ -188,7 +191,10 @@ void main() {
     setUp(() async {
       writes = _FakeWrites();
       delete = _FakeDelete();
-      list = SubscriptionsCubit(_FakeGet()..result = Right([sub('old', DateTime(2026, 11, 1))]));
+      list = SubscriptionsCubit(
+        _FakeGet()..result = Right([sub('old', DateTime(2026, 11, 1))]),
+        clock: () => DateTime(2026, 10, 12),
+      );
       await list.refresh();
       form = SubscriptionFormCubit(_FakeAdd(writes), _FakeUpdate(writes), delete, list);
     });
