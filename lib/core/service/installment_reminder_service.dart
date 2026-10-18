@@ -15,6 +15,7 @@ import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
+import 'reminder_settings.dart';
 
 /// The reminders each installment gets.
 enum InstallmentReminder {
@@ -69,7 +70,9 @@ class InstallmentReminderService {
     required NotificationService localNotifications,
     required AppLogger logger,
     ValueListenable<Locale>? locale,
-  })  : _getUserUseCase = getUserUseCase,
+    ReminderSettings? settings,
+  })  : _settings = settings,
+        _getUserUseCase = getUserUseCase,
         _addNotificationUseCase = addNotificationUseCase,
         _tracker = tracker,
         _localNotifications = localNotifications,
@@ -82,6 +85,10 @@ class InstallmentReminderService {
   final NotificationService _localNotifications;
   final AppLogger _logger;
   final ValueListenable<Locale>? _locale;
+
+  /// Which reminders the user wants (Reminders screen); all when null.
+  final ReminderSettings? _settings;
+  bool _wants(InstallmentReminder kind) => _settings?.wantsInstallment(kind) ?? true;
 
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
@@ -123,9 +130,11 @@ class InstallmentReminderService {
       kind == InstallmentReminder.threeDaysBefore ? 'due-3d' : 'due-0d';
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
-  /// Re-schedules reminders in the new language when the user switches it.
+  /// Re-schedules reminders when the user switches the language or changes
+  /// which reminders they want.
   void followLanguage(List<InstallmentPlan> Function() current) {
     _locale?.addListener(() => syncAll(current()));
+    _settings?.addListener(() => syncAll(current()));
   }
 
   /// Makes this device's pending installment reminders match [plans] exactly
@@ -141,13 +150,14 @@ class InstallmentReminderService {
   Future<void> _syncQueue = Future.value();
 
   Future<void> _syncAll(List<InstallmentPlan> plans) async {
+    await _settings?.ready;
     final now = DateTime.now();
     final userId = _getUserUseCase()?.id;
     final wanted = <_Reminder>[];
     for (final plan in plans) {
       final payment = upcomingPayment(plan, now);
       if (payment == null) continue;
-      for (final kind in InstallmentReminder.values) {
+      for (final kind in InstallmentReminder.values.where(_wants)) {
         final r = _reminder(plan, payment, kind, userId: userId);
         if (r.dateTime.isAfter(now)) wanted.add(r);
       }
@@ -223,6 +233,8 @@ class InstallmentReminderService {
     int days,
     String userId,
   ) async {
+    await _settings?.ready;
+    if (!_wants(kind)) return;
     final trackerId = _trackerId(payment.id);
     if (await _tracker.hasNotified(trackerId, _notifiedKey(kind, payment.dueDate))) return;
 

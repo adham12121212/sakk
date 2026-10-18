@@ -24,6 +24,7 @@ import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
 import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/notification/presentation/views/reminder_settings_view.dart';
 import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
 import '../../features/installments/presentation/cubit/installments_cubit.dart';
 import '../../features/installments/presentation/views/installment_details_view.dart';
@@ -59,6 +60,7 @@ class AppRoutes {
   static const subscriptions = '/subscriptions';
   static const subscriptionCatalog = '/subscriptions/catalog';
   static const subscriptionForm = '/subscriptions/form';
+  static const reminders = '/reminders';
   static const installments = '/installments';
   static const installmentForm = '/installments/form';
   static const installmentDetails = '/installments/plan';
@@ -207,6 +209,10 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
+    GoRoute(
+      path: AppRoutes.reminders,
+      builder: (context, state) => const ReminderSettingsView(),
+    ),
     GoRoute(
       path: AppRoutes.profile,
       builder: (context, state) =>

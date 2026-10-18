@@ -15,6 +15,7 @@ import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
+import 'reminder_settings.dart';
 
 /// The reminders each renewal gets.
 enum RenewalReminder {
@@ -40,7 +41,9 @@ class SubscriptionReminderService {
     required NotificationService localNotifications,
     required AppLogger logger,
     ValueListenable<Locale>? locale,
-  })  : _getUserUseCase = getUserUseCase,
+    ReminderSettings? settings,
+  })  : _settings = settings,
+        _getUserUseCase = getUserUseCase,
         _addNotificationUseCase = addNotificationUseCase,
         _tracker = tracker,
         _localNotifications = localNotifications,
@@ -53,6 +56,10 @@ class SubscriptionReminderService {
   final NotificationService _localNotifications;
   final AppLogger _logger;
   final ValueListenable<Locale>? _locale;
+
+  /// Which reminders the user wants (Reminders screen); all when null.
+  final ReminderSettings? _settings;
+  bool _wants(RenewalReminder kind) => _settings?.wantsSubscription(kind) ?? true;
 
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
@@ -109,9 +116,11 @@ class SubscriptionReminderService {
       };
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
-  /// Re-schedules reminders in the new language when the user switches it.
+  /// Re-schedules reminders when the user switches the language or changes
+  /// which reminders they want.
   void followLanguage(List<UserSubscription> Function() current) {
     _locale?.addListener(() => syncAll(current()));
+    _settings?.addListener(() => syncAll(current()));
   }
 
   /// Makes this device's pending renewal reminders match [subscriptions]
@@ -127,10 +136,11 @@ class SubscriptionReminderService {
   Future<void> _syncQueue = Future.value();
 
   Future<void> _syncAll(List<UserSubscription> subscriptions) async {
+    await _settings?.ready;
     final now = DateTime.now();
     final userId = _getUserUseCase()?.id;
     final wanted = [
-      for (final s in subscriptions) ..._remindersFor(s).where((r) => r.dateTime.isAfter(now)),
+      for (final s in subscriptions) ..._remindersFor(s).where((r) => _wants(r.kind) && r.dateTime.isAfter(now)),
     ];
     final wantedIds = {for (final r in wanted) r.id};
 
@@ -217,6 +227,8 @@ class SubscriptionReminderService {
     String userId, {
     bool previous = false,
   }) async {
+    await _settings?.ready;
+    if (!_wants(kind)) return;
     final trackerId = _trackerId(s.id);
     if (await _tracker.hasNotified(trackerId, _notifiedKey(kind, renewal))) return;
 

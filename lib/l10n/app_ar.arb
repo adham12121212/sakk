@@ -515,5 +515,17 @@
   "installmentsThisMonth": "مستحق هذا الشهر",
   "installmentsDuePerMonth": "المستحق كل شهر",
   "installmentsAnalyticsEmpty": "لا توجد أقساط بعد. اضغط لإضافة ما تقسّطه شهريًا.",
-  "installmentsChartCurrencyNote": "الرسم يعرض الأقساط بعملة {currency} فقط"
+  "installmentsChartCurrencyNote": "الرسم يعرض الأقساط بعملة {currency} فقط",
+  "reminders": "التذكيرات",
+  "remindersIntro": "اختر التذكيرات التي يرسلها صك على هذا الهاتف.",
+  "remindersAllOff": "كلها متوقفة",
+  "listSeparator": "، ",
+  "reminderWarranties": "الضمانات",
+  "reminderWarrantiesHint": "قبل انتهاء الضمان، وعند انتهائه، وقبل انتهاء مدة الاسترجاع",
+  "reminderSubscriptionsHint": "حول موعد كل تجديد",
+  "reminderInstallmentsHint": "قبل موعد كل قسط",
+  "reminderThreeDaysBefore": "قبلها بـ ٣ أيام",
+  "reminderDayBefore": "قبلها بيوم",
+  "reminderDayAfterCheckCharge": "بعدها بيوم، للتأكد من المبلغ المخصوم",
+  "reminderOnDueDay": "في يوم الاستحقاق"
 }

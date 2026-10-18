@@ -13,6 +13,7 @@ import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
 import 'reminder_controller.dart';
+import 'reminder_settings.dart';
 
 /// Bridges product warranty status to both local push notifications and
 /// the in-app notification list.
@@ -25,7 +26,9 @@ class WarrantyNotificationService {
     required ReminderController reminders,
     required AppLogger logger,
     ValueListenable<Locale>? locale,
-  })  : _locale = locale,
+    ReminderSettings? settings,
+  })  : _settings = settings,
+        _locale = locale,
         _getUserUseCase = getUserUseCase,
         _addNotificationUseCase = addNotificationUseCase,
         _tracker = tracker,
@@ -43,11 +46,20 @@ class WarrantyNotificationService {
   /// The app's language (it can differ from the phone's); English if unset.
   final ValueListenable<Locale>? _locale;
 
+  /// Whether the user wants warranty reminders (Reminders screen); on when null.
+  final ReminderSettings? _settings;
+  Future<bool> _enabled() async {
+    await _settings?.ready;
+    return _settings?.warrantyEnabled ?? true;
+  }
+
   AppLocalizations get _l10n => lookupAppLocalizations(_locale?.value ?? const Locale('en'));
 
-  /// Re-schedules reminders in the new language when the user switches it.
+  /// Re-schedules reminders when the user switches the language or turns
+  /// warranty reminders on or off.
   void followLanguage(List<ProductEntity> Function() currentProducts) {
     _locale?.addListener(() => syncAll(currentProducts()));
+    _settings?.addListener(() => syncAll(currentProducts()));
   }
 
   /// Days before the end date for the "expiring soon" reminder (Profile setting).
@@ -70,7 +82,7 @@ class WarrantyNotificationService {
   /// call repeatedly.
   Future<void> checkAndNotify(List<ProductEntity> products) async {
     final user = _getUserUseCase();
-    if (user == null) return;
+    if (user == null || !await _enabled()) return;
     final reminderDays = await _reminderDays();
 
     for (final product in products) {
@@ -121,6 +133,7 @@ class WarrantyNotificationService {
     for (final id in _idsFor(product.id)) {
       await _localNotifications.cancelNotification(id);
     }
+    if (!await _enabled()) return;
     for (final reminder in _remindersFor(product, reminderDays)) {
       await _schedule(reminder, userId);
     }
@@ -145,9 +158,12 @@ class WarrantyNotificationService {
     final reminderDays = await _reminderDays();
     final userId = _getUserUseCase()?.id;
     final now = DateTime.now();
+    // Turned off: everything pending is cancelled below.
+    final enabled = await _enabled();
     final wanted = [
-      for (final product in products)
-        ..._remindersFor(product, reminderDays).where((r) => r.dateTime.isAfter(now)),
+      if (enabled)
+        for (final product in products)
+          ..._remindersFor(product, reminderDays).where((r) => r.dateTime.isAfter(now)),
     ];
     final wantedIds = {for (final r in wanted) r.id};
 

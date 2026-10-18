@@ -87,6 +87,7 @@ import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/password_recovery_service.dart';
 import '../service/reminder_controller.dart';
+import '../service/reminder_settings.dart';
 import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
@@ -158,6 +159,7 @@ void setupLocator() {
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
+  getIt.registerLazySingleton<ReminderSettings>(() => ReminderSettings());
   getIt.registerLazySingleton<ReviewPrompter>(() => ReviewPrompter());
   getIt.registerLazySingleton<AmountVisibilityController>(() => AmountVisibilityController());
   getIt.registerLazySingleton<HomeWidgetSync>(
@@ -249,6 +251,7 @@ void setupLocator() {
       localNotifications: getIt<NotificationService>(),
       logger: getIt<AppLogger>(),
       locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
     ),
   );
   getIt.registerLazySingleton<SubscriptionsCubit>(
@@ -310,6 +313,7 @@ void setupLocator() {
       localNotifications: getIt<NotificationService>(),
       logger: getIt<AppLogger>(),
       locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
     ),
   );
   getIt.registerLazySingleton<InstallmentsCubit>(
@@ -378,6 +382,7 @@ void setupLocator() {
       reminders: getIt<ReminderController>(),
       logger: getIt<AppLogger>(),
       locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
     ),
   );
 

@@ -1978,4 +1978,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String installmentsChartCurrencyNote(String currency) {
     return 'الرسم يعرض الأقساط بعملة $currency فقط';
   }
+
+  @override
+  String get reminders => 'التذكيرات';
+
+  @override
+  String get remindersIntro => 'اختر التذكيرات التي يرسلها صك على هذا الهاتف.';
+
+  @override
+  String get remindersAllOff => 'كلها متوقفة';
+
+  @override
+  String get listSeparator => '، ';
+
+  @override
+  String get reminderWarranties => 'الضمانات';
+
+  @override
+  String get reminderWarrantiesHint =>
+      'قبل انتهاء الضمان، وعند انتهائه، وقبل انتهاء مدة الاسترجاع';
+
+  @override
+  String get reminderSubscriptionsHint => 'حول موعد كل تجديد';
+
+  @override
+  String get reminderInstallmentsHint => 'قبل موعد كل قسط';
+
+  @override
+  String get reminderThreeDaysBefore => 'قبلها بـ ٣ أيام';
+
+  @override
+  String get reminderDayBefore => 'قبلها بيوم';
+
+  @override
+  String get reminderDayAfterCheckCharge =>
+      'بعدها بيوم، للتأكد من المبلغ المخصوم';
+
+  @override
+  String get reminderOnDueDay => 'في يوم الاستحقاق';
 }

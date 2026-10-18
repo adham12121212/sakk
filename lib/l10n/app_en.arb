@@ -837,5 +837,20 @@
         "type": "String"
       }
     }
-  }
+  },
+  "reminders": "Reminders",
+  "remindersIntro": "Choose which reminders Sakk sends on this phone.",
+  "remindersAllOff": "All off",
+  "listSeparator": ", ",
+  "@listSeparator": {
+    "description": "Joins a short list, e.g. \"Warranties, Subscriptions\"."
+  },
+  "reminderWarranties": "Warranties",
+  "reminderWarrantiesHint": "Before a warranty ends, when it ends, and before a return window closes",
+  "reminderSubscriptionsHint": "Around each renewal",
+  "reminderInstallmentsHint": "Before each installment is due",
+  "reminderThreeDaysBefore": "3 days before",
+  "reminderDayBefore": "The day before",
+  "reminderDayAfterCheckCharge": "The day after, to check the charge",
+  "reminderOnDueDay": "On the due day"
 }

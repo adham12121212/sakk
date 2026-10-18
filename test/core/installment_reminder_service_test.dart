@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sakk/core/service/reminder_settings.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/core/service/installment_reminder_service.dart';
@@ -236,6 +238,33 @@ void main() {
       expect(notifications.scheduled, isEmpty);
       await cubit.close();
     });
+  });
+
+  test('only the reminders chosen in Reminders are scheduled and shown', () async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = ReminderSettings();
+    await settings.ready;
+    final chosen = InstallmentReminderService(
+      getUserUseCase: _User(),
+      addNotificationUseCase: added,
+      tracker: tracker,
+      localNotifications: notifications,
+      logger: _NoLog(),
+      locale: locale,
+      settings: settings,
+    );
+    final tv = dueIn('tv', 10);
+    chosen.followLanguage(() => [tv]);
+
+    await settings.setInstallmentKind(InstallmentReminder.threeDaysBefore, false);
+    await chosen.syncAll([tv]);
+    expect(notifications.scheduled.keys.toSet(), {idOf('tv-p0', InstallmentReminder.dueDay)});
+
+    await settings.setInstallmentsEnabled(false);
+    await chosen.syncAll([tv]);
+    expect(notifications.scheduled, isEmpty);
+    await chosen.checkAndNotify([dueIn('tv', 0)], today: today);
+    expect(added.added, isEmpty);
   });
 }
 

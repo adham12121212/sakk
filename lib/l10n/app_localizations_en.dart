@@ -1926,4 +1926,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String installmentsChartCurrencyNote(String currency) {
     return 'The chart shows $currency installments only';
   }
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get remindersIntro =>
+      'Choose which reminders Sakk sends on this phone.';
+
+  @override
+  String get remindersAllOff => 'All off';
+
+  @override
+  String get listSeparator => ', ';
+
+  @override
+  String get reminderWarranties => 'Warranties';
+
+  @override
+  String get reminderWarrantiesHint =>
+      'Before a warranty ends, when it ends, and before a return window closes';
+
+  @override
+  String get reminderSubscriptionsHint => 'Around each renewal';
+
+  @override
+  String get reminderInstallmentsHint => 'Before each installment is due';
+
+  @override
+  String get reminderThreeDaysBefore => '3 days before';
+
+  @override
+  String get reminderDayBefore => 'The day before';
+
+  @override
+  String get reminderDayAfterCheckCharge =>
+      'The day after, to check the charge';
+
+  @override
+  String get reminderOnDueDay => 'On the due day';
 }

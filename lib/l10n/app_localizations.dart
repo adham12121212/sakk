@@ -3197,6 +3197,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The chart shows {currency} installments only'**
   String installmentsChartCurrencyNote(String currency);
+
+  /// No description provided for @reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get reminders;
+
+  /// No description provided for @remindersIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which reminders Sakk sends on this phone.'**
+  String get remindersIntro;
+
+  /// No description provided for @remindersAllOff.
+  ///
+  /// In en, this message translates to:
+  /// **'All off'**
+  String get remindersAllOff;
+
+  /// Joins a short list, e.g. "Warranties, Subscriptions".
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get listSeparator;
+
+  /// No description provided for @reminderWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranties'**
+  String get reminderWarranties;
+
+  /// No description provided for @reminderWarrantiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Before a warranty ends, when it ends, and before a return window closes'**
+  String get reminderWarrantiesHint;
+
+  /// No description provided for @reminderSubscriptionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Around each renewal'**
+  String get reminderSubscriptionsHint;
+
+  /// No description provided for @reminderInstallmentsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Before each installment is due'**
+  String get reminderInstallmentsHint;
+
+  /// No description provided for @reminderThreeDaysBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'3 days before'**
+  String get reminderThreeDaysBefore;
+
+  /// No description provided for @reminderDayBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'The day before'**
+  String get reminderDayBefore;
+
+  /// No description provided for @reminderDayAfterCheckCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'The day after, to check the charge'**
+  String get reminderDayAfterCheckCharge;
+
+  /// No description provided for @reminderOnDueDay.
+  ///
+  /// In en, this message translates to:
+  /// **'On the due day'**
+  String get reminderOnDueDay;
 }
 
 class _AppLocalizationsDelegate
