@@ -12,7 +12,10 @@ import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 // Every file is expected under "<user_id>/..." (that's how avatars are stored today).
 const BUCKETS = ["avatars", "receipts"];
 // Tables with a `user_id` column. Children first, parents last.
-const TABLES = ["notifications", "products"];
+// installment_payments goes before installment_plans, and plans before
+// products. (Rows with user_id also cascade when the auth user is deleted;
+// listing them here makes the cleanup not depend on that.)
+const TABLES = ["notifications", "installment_payments", "installment_plans", "products"];
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
