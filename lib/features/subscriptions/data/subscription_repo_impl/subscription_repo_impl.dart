@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/exceptions.dart';
+import '../../../../core/data/online_repo.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/network_info.dart';
 import '../../../../core/logger/app_logger.dart';
@@ -15,7 +15,7 @@ import '../models/user_subscription_model.dart';
 import '../subscription_data_source/subscription_data_source.dart';
 import '../subscription_data_source/subscription_local_data_source.dart';
 
-class SubscriptionRepoImpl implements SubscriptionRepo {
+class SubscriptionRepoImpl with OnlineRepo implements SubscriptionRepo {
   final SubscriptionDataSource _dataSource;
   final SubscriptionLocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
@@ -27,67 +27,10 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
     this._logger,
   );
 
-  /// Runs [action] online, mapping exceptions to failures the same way the
-  /// products repo does. [operation] names it in the logs.
-  Future<Either<Failure, T>> _online<T>(
-    String operation,
-    Future<T> Function() action,
-  ) async {
-    if (!await _networkInfo.isConnected) {
-      return const Left(NetworkFailure(NetworkFailure.noConnectionMessage));
-    }
-    try {
-      return Right(await action());
-    } on ServerException catch (e, st) {
-      _logger.error('Server error during $operation', error: e, stackTrace: st);
-      return Left(ServerFailure(e.message));
-    } catch (e, st) {
-      _logger.error(
-        'Unexpected error during $operation',
-        error: e,
-        stackTrace: st,
-      );
-      return Left(UnknownFailure(e.toString()));
-    }
-  }
-
-  /// Loads with [load] and saves the result with [save]. Offline or on a
-  /// failed load, serves the last list saved on this device, if there is one.
-  Future<Either<Failure, List<E>>> _loadWithCache<E, M extends E>({
-    required String operation,
-    required Future<List<M>> Function() load,
-    required Future<void> Function(List<M>) save,
-    required Future<List<M>?> Function() cached,
-  }) async {
-    final result = await _online<List<M>>(operation, load);
-    return result.fold(
-      (failure) async {
-        try {
-          final rows = await cached();
-          // Re-wrap so the list is a List<E> at runtime, not List<M>
-          // (see the comment in ProductRepoImpl.getProducts).
-          if (rows != null) return Right(List<E>.from(rows));
-        } catch (e) {
-          _logger.warning(
-            'Reading the offline cache for $operation failed',
-            data: {'error': '$e'},
-          );
-        }
-        return Left(failure);
-      },
-      (rows) async {
-        try {
-          await save(rows);
-        } catch (e) {
-          _logger.warning(
-            'Saving the offline cache for $operation failed',
-            data: {'error': '$e'},
-          );
-        }
-        return Right(List<E>.from(rows));
-      },
-    );
-  }
+  @override
+  NetworkInfo get networkInfo => _networkInfo;
+  @override
+  AppLogger get logger => _logger;
 
   /// Applies [change] to the cached list (if any), so an add/edit/delete made
   /// online is also reflected the next time the app is offline.
@@ -112,7 +55,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
 
   @override
   Future<Either<Failure, List<CatalogService>>> getCatalog() {
-    return _loadWithCache<CatalogService, CatalogServiceModel>(
+    return loadWithCache<CatalogService, CatalogServiceModel>(
       operation: 'getCatalog',
       load: _dataSource.getCatalog,
       save: _localDataSource.cacheCatalog,
@@ -122,7 +65,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
 
   @override
   Future<Either<Failure, List<UserSubscription>>> getSubscriptions() {
-    return _loadWithCache<UserSubscription, UserSubscriptionModel>(
+    return loadWithCache<UserSubscription, UserSubscriptionModel>(
       operation: 'getSubscriptions',
       load: _dataSource.getSubscriptions,
       save: _localDataSource.cacheSubscriptions,
@@ -143,7 +86,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
     String? paymentMethod,
     String? notes,
   }) {
-    return _online('addSubscription', () async {
+    return online('addSubscription', () async {
       final saved = await _dataSource.addSubscription(
         UserSubscriptionModel.writeJson(
           catalogId: catalogId,
@@ -177,7 +120,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
     String? paymentMethod,
     String? notes,
   }) {
-    return _online('updateSubscription', () async {
+    return online('updateSubscription', () async {
       final saved = await _dataSource.updateSubscription(
         id,
         UserSubscriptionModel.writeJson(
@@ -202,7 +145,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
 
   @override
   Future<Either<Failure, void>> deleteSubscription(String id) {
-    return _online('deleteSubscription', () async {
+    return online('deleteSubscription', () async {
       await _dataSource.deleteSubscription(id);
       await _updateCache(
         (current) => current.where((s) => s.id != id).toList(),
@@ -212,7 +155,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
 
   @override
   Future<Either<Failure, void>> updateRenewalDate(String id, DateTime nextRenewalDate) {
-    return _online('updateRenewalDate', () async {
+    return online('updateRenewalDate', () async {
       await _dataSource.updateRenewalDate(id, nextRenewalDate);
       await _updateCache((current) => [
             for (final s in current)
@@ -232,7 +175,7 @@ class SubscriptionRepoImpl implements SubscriptionRepo {
     String? text,
     List<String> knownServices = const [],
   }) {
-    return _online(
+    return online(
       'extractSubscription',
       () => _dataSource.extractSubscription(
         imagePath: imagePath,

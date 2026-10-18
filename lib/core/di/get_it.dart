@@ -46,6 +46,18 @@ import '../../features/products/domain/usecase/product_extras_usecases.dart';
 import '../../features/products/domain/usecase/scan_receipt_usecase.dart';
 import '../../features/products/domain/usecase/update_product_usecase.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
+import '../../features/installments/data/installment_data_source/installment_data_source.dart';
+import '../../features/installments/data/installment_data_source/installment_local_data_source.dart';
+import '../../features/installments/data/installment_repo_impl/installment_repo_impl.dart';
+import '../../features/installments/domain/installment_repo/installment_repo.dart';
+import '../../features/installments/domain/usecase/add_installment_plan_usecase.dart';
+import '../../features/installments/domain/usecase/clear_cached_installments_usecase.dart';
+import '../../features/installments/domain/usecase/delete_installment_plan_usecase.dart';
+import '../../features/installments/domain/usecase/get_installment_plans_usecase.dart';
+import '../../features/installments/domain/usecase/set_payment_paid_usecase.dart';
+import '../../features/installments/domain/usecase/update_installment_plan_usecase.dart';
+import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/installments/presentation/cubit/installments_cubit.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
 import '../../features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
@@ -251,6 +263,47 @@ void setupLocator() {
       getIt<UpdateSubscriptionUseCase>(),
       getIt<DeleteSubscriptionUseCase>(),
       getIt<SubscriptionsCubit>(),
+    ),
+  );
+
+  // ---- Installments ----
+  getIt.registerLazySingleton<InstallmentDataSource>(
+        () => InstallmentDataSourceImpl(Supabase.instance.client),
+  );
+  getIt.registerLazySingleton<InstallmentLocalDataSource>(
+        () => InstallmentLocalDataSourceImpl(getIt<SupabaseService>()),
+  );
+  getIt.registerLazySingleton<InstallmentRepo>(
+        () => InstallmentRepoImpl(getIt<InstallmentDataSource>(), getIt<InstallmentLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+  );
+  getIt.registerLazySingleton<GetInstallmentPlansUseCase>(
+        () => GetInstallmentPlansUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<AddInstallmentPlanUseCase>(
+        () => AddInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<UpdateInstallmentPlanUseCase>(
+        () => UpdateInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<DeleteInstallmentPlanUseCase>(
+        () => DeleteInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<SetPaymentPaidUseCase>(
+        () => SetPaymentPaidUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<ClearCachedInstallmentsUseCase>(
+        () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  // Singleton: Home, the Installments screens, product details and Analytics share its list.
+  getIt.registerLazySingleton<InstallmentsCubit>(
+        () => InstallmentsCubit(getIt<GetInstallmentPlansUseCase>(), getIt<SetPaymentPaidUseCase>()),
+  );
+  getIt.registerFactory<InstallmentFormCubit>(
+        () => InstallmentFormCubit(
+      getIt<AddInstallmentPlanUseCase>(),
+      getIt<UpdateInstallmentPlanUseCase>(),
+      getIt<DeleteInstallmentPlanUseCase>(),
+      getIt<InstallmentsCubit>(),
     ),
   );
 
