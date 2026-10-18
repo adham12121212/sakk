@@ -53,10 +53,12 @@ import '../../features/installments/domain/installment_repo/installment_repo.dar
 import '../../features/installments/domain/usecase/add_installment_plan_usecase.dart';
 import '../../features/installments/domain/usecase/clear_cached_installments_usecase.dart';
 import '../../features/installments/domain/usecase/delete_installment_plan_usecase.dart';
+import '../../features/installments/domain/usecase/extract_installment_usecase.dart';
 import '../../features/installments/domain/usecase/get_installment_plans_usecase.dart';
 import '../../features/installments/domain/usecase/set_payment_paid_usecase.dart';
 import '../../features/installments/domain/usecase/update_installment_plan_usecase.dart';
 import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
 import '../../features/installments/presentation/cubit/installments_cubit.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
@@ -269,7 +271,7 @@ void setupLocator() {
 
   // ---- Installments ----
   getIt.registerLazySingleton<InstallmentDataSource>(
-        () => InstallmentDataSourceImpl(Supabase.instance.client),
+        () => InstallmentDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
   );
   getIt.registerLazySingleton<InstallmentLocalDataSource>(
         () => InstallmentLocalDataSourceImpl(getIt<SupabaseService>()),
@@ -292,6 +294,10 @@ void setupLocator() {
   getIt.registerLazySingleton<SetPaymentPaidUseCase>(
         () => SetPaymentPaidUseCaseImpl(getIt<InstallmentRepo>()),
   );
+  getIt.registerLazySingleton<ExtractInstallmentUseCase>(
+        () => ExtractInstallmentUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerFactory<InstallmentSmartAddCubit>(() => InstallmentSmartAddCubit(getIt<ExtractInstallmentUseCase>()));
   getIt.registerLazySingleton<ClearCachedInstallmentsUseCase>(
         () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
   );

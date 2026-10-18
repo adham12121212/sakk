@@ -822,5 +822,20 @@
         "type": "String"
       }
     }
+  },
+  "smartAddChoosePdf": "Choose a PDF (e.g. the contract)",
+  "smartAddInstallmentHint": "Fill this in from a contract, screenshot or SMS",
+  "smartAddInstallmentReview": "Check every field before saving: nothing is saved until you tap the button below.",
+  "installmentScanUnreadable": "We couldn't find an installment plan in that. Try a clearer screenshot, the contract's first page or the full message, or fill it in yourself.",
+  "installmentsThisMonth": "Due this month",
+  "installmentsDuePerMonth": "Due each month",
+  "installmentsAnalyticsEmpty": "No installments yet. Tap to add what you pay off monthly.",
+  "installmentsChartCurrencyNote": "The chart shows {currency} installments only",
+  "@installmentsChartCurrencyNote": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
   }
 }

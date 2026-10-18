@@ -69,3 +69,31 @@ Map<String, double> overdueByCurrency(
   }
   return totals;
 }
+
+/// One month of [dueByMonth].
+typedef MonthlyDue = ({int year, int month, double amount});
+
+/// What falls due each month in [currency], paid or not, for [months]
+/// months from [from]'s month on. Cancelled plans are left out.
+List<MonthlyDue> dueByMonth(
+  Iterable<InstallmentPlan> plans, {
+  required DateTime from,
+  int months = 6,
+  String currency = 'EGP',
+}) {
+  final totals = List<double>.filled(months, 0);
+  for (final plan in plans.where((p) => !p.isCancelled && p.currency == currency)) {
+    for (final p in plan.payments) {
+      final index = (p.dueDate.year - from.year) * 12 + p.dueDate.month - from.month;
+      if (index >= 0 && index < months) totals[index] += p.amount;
+    }
+  }
+  return [
+    for (var i = 0; i < months; i++)
+      (
+        year: DateTime(from.year, from.month + i).year,
+        month: DateTime(from.year, from.month + i).month,
+        amount: totals[i],
+      ),
+  ];
+}

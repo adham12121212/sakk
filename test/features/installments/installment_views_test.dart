@@ -8,14 +8,17 @@ import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/installments/domain/entities/installment_payment.dart';
 import 'package:sakk/features/installments/domain/entities/installment_plan.dart';
 import 'package:sakk/features/installments/domain/entities/installment_plan_draft.dart';
+import 'package:sakk/features/installments/domain/entities/scanned_installment.dart';
 import 'package:sakk/features/installments/domain/entities/scheduled_payment.dart';
 import 'package:sakk/features/installments/domain/installment_repo/installment_repo.dart';
 import 'package:sakk/features/installments/domain/usecase/add_installment_plan_usecase.dart';
 import 'package:sakk/features/installments/domain/usecase/delete_installment_plan_usecase.dart';
+import 'package:sakk/features/installments/domain/usecase/extract_installment_usecase.dart';
 import 'package:sakk/features/installments/domain/usecase/get_installment_plans_usecase.dart';
 import 'package:sakk/features/installments/domain/usecase/set_payment_paid_usecase.dart';
 import 'package:sakk/features/installments/domain/usecase/update_installment_plan_usecase.dart';
 import 'package:sakk/features/installments/presentation/cubit/installment_form_cubit.dart';
+import 'package:sakk/features/installments/presentation/cubit/installment_smart_add_cubit.dart';
 import 'package:sakk/features/installments/presentation/cubit/installments_cubit.dart';
 import 'package:sakk/features/installments/presentation/views/installment_details_view.dart';
 import 'package:sakk/features/installments/presentation/views/installment_form_view.dart';
@@ -57,6 +60,11 @@ class _Repo implements InstallmentRepo {
 
   @override
   Future<void> clearCachedInstallments() async {}
+
+  ScannedInstallment scan = const ScannedInstallment();
+  @override
+  Future<Either<Failure, ScannedInstallment>> extractInstallment({String? imagePath, String? pdfText, String? text}) async =>
+      Right(scan);
 }
 
 Widget app(Widget home, {Locale locale = const Locale('en'), bool dark = false}) => ScreenUtilInit(
@@ -188,7 +196,21 @@ void main() {
 
   group('InstallmentFormView', () {
     Widget form(InstallmentFormArgs args) =>
-        app(BlocProvider(create: (_) => formCubit(), child: InstallmentFormView(args: args, products: const [])));
+        app(MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => formCubit()),
+            BlocProvider(create: (_) => InstallmentSmartAddCubit(ExtractInstallmentUseCaseImpl(repo))),
+          ],
+          child: InstallmentFormView(args: args, products: const []),
+        ));
+
+    String fieldText(WidgetTester tester, String label) => tester
+        .widget<TextFormField>(find.descendant(
+          of: find.byWidgetPredicate((w) => w is Semantics && w.properties.label == label),
+          matching: find.byType(TextFormField),
+        ))
+        .controller!
+        .text;
 
     Future<void> enter(WidgetTester tester, String label, String text) async {
       final field = find.descendant(
@@ -199,14 +221,6 @@ void main() {
       await tester.enterText(field, text);
       await tester.pump();
     }
-
-    String fieldText(WidgetTester tester, String label) => tester
-        .widget<TextFormField>(find.descendant(
-          of: find.byWidgetPredicate((w) => w is Semantics && w.properties.label == label),
-          matching: find.byType(TextFormField),
-        ))
-        .controller!
-        .text;
 
     testWidgets('splits the price and previews the schedule as you type', (tester) async {
       setUpCubit([]);
@@ -233,6 +247,43 @@ void main() {
       expect(repo.savedDraft!.productId, isNull);
       expect(repo.savedDraft!.terms.installmentAmount, 1100);
       expect(repo.savedUnpaid, hasLength(12));
+    });
+
+    testWidgets('smart add fills the form for review; nothing is saved until the user saves', (tester) async {
+      setUpCubit([]);
+      repo.scan = ScannedInstallment(
+        title: 'iPhone 16',
+        provider: 'Valu',
+        totalPrice: 60000,
+        downPayment: 12000,
+        installmentAmount: 4300,
+        installmentsCount: 12,
+        firstDueDate: DateTime(2026, 11, 30),
+        dueDayOfMonth: 31,
+        confidence: 0.9,
+      );
+      await tester.pumpWidget(form(const InstallmentFormArgs.add()));
+      await tester.pumpAndSettle();
+      final context = tester.element(find.byType(InstallmentFormView));
+      await BlocProvider.of<InstallmentSmartAddCubit>(context).read(text: 'contract');
+      await tester.pumpAndSettle();
+
+      expect(fieldText(tester, 'What did you buy?'), 'iPhone 16');
+      expect(fieldText(tester, 'Provider (optional)'), 'Valu');
+      expect(fieldText(tester, 'Total Price'), '60000');
+      expect(fieldText(tester, 'Monthly installment'), '4300');
+      expect(find.text('Your own amount.'), findsOneWidget); // 4300 isn't the even split (4000)
+      expect(find.textContaining('Check every field before saving'), findsOneWidget);
+      expect(find.textContaining('12 installments · 63,600 EGP in total'), findsOneWidget);
+      expect(repo.savedDraft, isNull);
+
+      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Add installment'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Add installment'));
+      await tester.pumpAndSettle();
+      expect(repo.savedDraft!.provider, 'Valu');
+      expect(repo.savedDraft!.terms.dueDayOfMonth, 31);
+      expect(repo.savedUnpaid!.first.dueDate, DateTime(2026, 11, 30));
+      expect(repo.savedUnpaid![3].dueDate, DateTime(2027, 2, 28));
     });
 
     testWidgets('editing keeps paid installments and refuses fewer than paid', (tester) async {

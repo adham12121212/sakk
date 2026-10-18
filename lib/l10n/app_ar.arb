@@ -507,5 +507,13 @@
   "productInstallmentsHint": "تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط.",
   "notifInstallmentDueSoonTitle": "قسط مستحق قريبًا",
   "notifInstallmentDueTodayTitle": "قسط مستحق اليوم",
-  "notifInstallmentDueBody": "{days, plural, =0{{name}: قسط {price} مستحق اليوم} =1{{name}: قسط {price} مستحق غدًا} =2{{name}: قسط {price} مستحق بعد يومين} few{{name}: قسط {price} مستحق بعد {daysText} أيام} many{{name}: قسط {price} مستحق بعد {daysText} يومًا} other{{name}: قسط {price} مستحق بعد {daysText} يوم}}"
+  "notifInstallmentDueBody": "{days, plural, =0{{name}: قسط {price} مستحق اليوم} =1{{name}: قسط {price} مستحق غدًا} =2{{name}: قسط {price} مستحق بعد يومين} few{{name}: قسط {price} مستحق بعد {daysText} أيام} many{{name}: قسط {price} مستحق بعد {daysText} يومًا} other{{name}: قسط {price} مستحق بعد {daysText} يوم}}",
+  "smartAddChoosePdf": "اختر ملف PDF (مثل العقد)",
+  "smartAddInstallmentHint": "املأ البيانات من عقد أو لقطة شاشة أو رسالة",
+  "smartAddInstallmentReview": "راجع كل الحقول قبل الحفظ: لن يُحفظ شيء حتى تضغط الزر بالأسفل.",
+  "installmentScanUnreadable": "لم نجد خطة تقسيط في ذلك. جرّب لقطة شاشة أوضح أو أول صفحة من العقد أو الرسالة كاملة، أو املأ البيانات بنفسك.",
+  "installmentsThisMonth": "مستحق هذا الشهر",
+  "installmentsDuePerMonth": "المستحق كل شهر",
+  "installmentsAnalyticsEmpty": "لا توجد أقساط بعد. اضغط لإضافة ما تقسّطه شهريًا.",
+  "installmentsChartCurrencyNote": "الرسم يعرض الأقساط بعملة {currency} فقط"
 }

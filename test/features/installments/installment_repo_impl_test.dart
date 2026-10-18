@@ -8,6 +8,7 @@ import 'package:sakk/features/installments/data/installment_data_source/installm
 import 'package:sakk/features/installments/data/installment_repo_impl/installment_repo_impl.dart';
 import 'package:sakk/features/installments/data/models/installment_payment_model.dart';
 import 'package:sakk/features/installments/data/models/installment_plan_model.dart';
+import 'package:sakk/features/installments/domain/entities/scanned_installment.dart';
 import 'package:sakk/features/installments/domain/entities/scheduled_payment.dart';
 
 import 'installment_models_test.dart' show planRow;
@@ -53,6 +54,13 @@ class _FakeRemote implements InstallmentDataSource {
 
   @override
   Future<void> deletePlan(String id) async {}
+
+  ScannedInstallment scan = const ScannedInstallment(title: 'TV');
+  @override
+  Future<ScannedInstallment> extractInstallment({String? imagePath, String? pdfText, String? text}) async {
+    if (fail) throw ServerException('boom');
+    return scan;
+  }
 
   @override
   Future<InstallmentPaymentModel> setPaymentPaid(String paymentId, DateTime? paidAt) async =>

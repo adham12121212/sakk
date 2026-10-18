@@ -1896,4 +1896,34 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get smartAddChoosePdf => 'Choose a PDF (e.g. the contract)';
+
+  @override
+  String get smartAddInstallmentHint =>
+      'Fill this in from a contract, screenshot or SMS';
+
+  @override
+  String get smartAddInstallmentReview =>
+      'Check every field before saving: nothing is saved until you tap the button below.';
+
+  @override
+  String get installmentScanUnreadable =>
+      'We couldn\'t find an installment plan in that. Try a clearer screenshot, the contract\'s first page or the full message, or fill it in yourself.';
+
+  @override
+  String get installmentsThisMonth => 'Due this month';
+
+  @override
+  String get installmentsDuePerMonth => 'Due each month';
+
+  @override
+  String get installmentsAnalyticsEmpty =>
+      'No installments yet. Tap to add what you pay off monthly.';
+
+  @override
+  String installmentsChartCurrencyNote(String currency) {
+    return 'The chart shows $currency installments only';
+  }
 }

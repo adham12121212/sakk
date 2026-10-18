@@ -1,6 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/service/receipt_ai_client.dart';
+import '../../../../core/util/pii_masker.dart';
+import '../../domain/entities/scanned_installment.dart';
 import '../models/installment_payment_model.dart';
 import '../models/installment_plan_model.dart';
 
@@ -20,11 +23,29 @@ abstract class InstallmentDataSource {
     String paymentId,
     DateTime? paidAt,
   );
+
+  /// Reads a plan with the AI from a screenshot or a contract's first page
+  /// ([imagePath], with the PDF's own [pdfText] when there is one) and/or
+  /// pasted [text].
+  Future<ScannedInstallment> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
+  });
 }
 
 class InstallmentDataSourceImpl implements InstallmentDataSource {
   final SupabaseClient _client;
-  InstallmentDataSourceImpl(this._client);
+  final ReceiptAiClient _ai;
+  InstallmentDataSourceImpl(this._client, {ReceiptAiClient? ai})
+    : _ai = ai ?? ReceiptAiClient(_client);
+
+  /// Error code passed up as the failure message when the AI found no plan
+  /// in the contract, screenshot or text (see userFacingError).
+  static const unreadableInstallment = 'unreadable_installment';
+
+  /// The screenshot is only needed while the AI reads it.
+  static const _screenshotUrlExpiry = Duration(minutes: 10);
 
   static const _table = 'installment_plans';
   static const _paymentsTable = 'installment_payments';
@@ -95,6 +116,53 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
       return InstallmentPaymentModel.fromJson(row);
     } catch (e) {
       throw ServerException('Failed to update the installment payment: $e');
+    }
+  }
+
+  @override
+  Future<ScannedInstallment> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
+  }) async {
+    UploadedReceipt? upload;
+    try {
+      if (imagePath != null) {
+        upload = await _ai.upload(imagePath, expiry: _screenshotUrlExpiry);
+      }
+      // Full card numbers and email addresses never leave the device.
+      String? scrub(String? value) =>
+          value == null ? null : PiiMasker.scrub(PiiMasker.maskCardNumbers(value));
+      final data = await _ai.extract({
+        'mode': 'installment',
+        'imageUrl': ?upload?.signedUrl,
+        'pdfText': ?scrub(pdfText),
+        'text': ?scrub(text),
+      });
+      double? number(String key) => (data[key] as num?)?.toDouble();
+      return ScannedInstallment(
+        title: data['title'] as String?,
+        provider: data['provider'] as String?,
+        totalPrice: number('totalPrice'),
+        downPayment: number('downPayment'),
+        installmentAmount: number('installmentAmount'),
+        installmentsCount: (data['installmentsCount'] as num?)?.toInt(),
+        firstDueDate: data['firstDueDate'] is String ? DateTime.tryParse(data['firstDueDate'] as String) : null,
+        dueDayOfMonth: (data['dueDayOfMonth'] as num?)?.toInt(),
+        interestOrFees: number('interestOrFees'),
+        currency: data['currency'] as String?,
+        confidence: number('confidence') ?? 0,
+      );
+    } on ServerException catch (e) {
+      if (e.message == ReceiptAiClient.unreadable) {
+        throw ServerException(unreadableInstallment);
+      }
+      rethrow;
+    } catch (e) {
+      throw ServerException('Installment scan failed: $e');
+    } finally {
+      // Not kept: plans don't store the screenshot or contract.
+      if (upload != null) await _ai.delete(upload.path);
     }
   }
 }

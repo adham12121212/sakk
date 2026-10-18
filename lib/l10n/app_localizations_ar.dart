@@ -1948,4 +1948,34 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get smartAddChoosePdf => 'اختر ملف PDF (مثل العقد)';
+
+  @override
+  String get smartAddInstallmentHint =>
+      'املأ البيانات من عقد أو لقطة شاشة أو رسالة';
+
+  @override
+  String get smartAddInstallmentReview =>
+      'راجع كل الحقول قبل الحفظ: لن يُحفظ شيء حتى تضغط الزر بالأسفل.';
+
+  @override
+  String get installmentScanUnreadable =>
+      'لم نجد خطة تقسيط في ذلك. جرّب لقطة شاشة أوضح أو أول صفحة من العقد أو الرسالة كاملة، أو املأ البيانات بنفسك.';
+
+  @override
+  String get installmentsThisMonth => 'مستحق هذا الشهر';
+
+  @override
+  String get installmentsDuePerMonth => 'المستحق كل شهر';
+
+  @override
+  String get installmentsAnalyticsEmpty =>
+      'لا توجد أقساط بعد. اضغط لإضافة ما تقسّطه شهريًا.';
+
+  @override
+  String installmentsChartCurrencyNote(String currency) {
+    return 'الرسم يعرض الأقساط بعملة $currency فقط';
+  }
 }

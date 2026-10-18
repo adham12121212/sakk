@@ -3149,6 +3149,54 @@ abstract class AppLocalizations {
     String name,
     String price,
   );
+
+  /// No description provided for @smartAddChoosePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a PDF (e.g. the contract)'**
+  String get smartAddChoosePdf;
+
+  /// No description provided for @smartAddInstallmentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill this in from a contract, screenshot or SMS'**
+  String get smartAddInstallmentHint;
+
+  /// No description provided for @smartAddInstallmentReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Check every field before saving: nothing is saved until you tap the button below.'**
+  String get smartAddInstallmentReview;
+
+  /// No description provided for @installmentScanUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find an installment plan in that. Try a clearer screenshot, the contract\'s first page or the full message, or fill it in yourself.'**
+  String get installmentScanUnreadable;
+
+  /// No description provided for @installmentsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Due this month'**
+  String get installmentsThisMonth;
+
+  /// No description provided for @installmentsDuePerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Due each month'**
+  String get installmentsDuePerMonth;
+
+  /// No description provided for @installmentsAnalyticsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No installments yet. Tap to add what you pay off monthly.'**
+  String get installmentsAnalyticsEmpty;
+
+  /// No description provided for @installmentsChartCurrencyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The chart shows {currency} installments only'**
+  String installmentsChartCurrencyNote(String currency);
 }
 
 class _AppLocalizationsDelegate

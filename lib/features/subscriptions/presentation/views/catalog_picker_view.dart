@@ -128,7 +128,7 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
       builder: (context, smartAdd) => Stack(
         children: [
           _scaffold(context, l10n),
-          if (smartAdd is SmartAddReading) const _ReadingOverlay(),
+          if (smartAdd is SmartAddReading) const SmartAddReadingOverlay(),
         ],
       ),
     );
@@ -258,49 +258,6 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
   }
 }
 
-/// Full-screen "Reading…" while the AI reads a screenshot or message; blocks
-/// taps so the picker can't be used meanwhile.
-class _ReadingOverlay extends StatelessWidget {
-  const _ReadingOverlay();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Positioned.fill(
-      child: Semantics(
-        liveRegion: true,
-        label: l10n.smartAddReading,
-        child: AbsorbPointer(
-          child: ColoredBox(
-            color: Colors.black.withValues(alpha: 0.45),
-            child: Center(
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 28,
-                    vertical: 24,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.smartAddReading,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 /// Tinted icon, title, hint and a chevron: the picker's top actions.
 class _ActionTile extends StatelessWidget {

@@ -4,6 +4,7 @@ import '../../../../core/error/failure.dart';
 import '../entities/installment_payment.dart';
 import '../entities/installment_plan.dart';
 import '../entities/installment_plan_draft.dart';
+import '../entities/scanned_installment.dart';
 import '../entities/scheduled_payment.dart';
 
 abstract class InstallmentRepo {
@@ -26,6 +27,14 @@ abstract class InstallmentRepo {
   Future<Either<Failure, InstallmentPayment>> setPaymentPaid(
     String paymentId, {
     DateTime? paidAt,
+  });
+
+  /// Reads a plan with the AI from a screenshot or contract page and/or
+  /// pasted text.
+  Future<Either<Failure, ScannedInstallment>> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
   });
 
   /// Removes the plans saved on this device for offline use.

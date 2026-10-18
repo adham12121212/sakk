@@ -7,6 +7,7 @@ import '../../../../core/logger/app_logger.dart';
 import '../../domain/entities/installment_payment.dart';
 import '../../domain/entities/installment_plan.dart';
 import '../../domain/entities/installment_plan_draft.dart';
+import '../../domain/entities/scanned_installment.dart';
 import '../../domain/entities/scheduled_payment.dart';
 import '../../domain/installment_repo/installment_repo.dart';
 import '../installment_data_source/installment_data_source.dart';
@@ -103,6 +104,18 @@ class InstallmentRepoImpl with OnlineRepo implements InstallmentRepo {
       );
       return saved;
     });
+  }
+
+  @override
+  Future<Either<Failure, ScannedInstallment>> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
+  }) {
+    return online(
+      'extractInstallment',
+      () => _dataSource.extractInstallment(imagePath: imagePath, pdfText: pdfText, text: text),
+    );
   }
 
   @override

@@ -24,6 +24,7 @@ import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
 import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
 import '../../features/installments/presentation/cubit/installments_cubit.dart';
 import '../../features/installments/presentation/views/installment_details_view.dart';
 import '../../features/installments/presentation/views/installment_form_view.dart';
@@ -183,8 +184,11 @@ final GoRouter appRouter = GoRouter(
       // Opened with InstallmentFormArgs as `extra`; same fallback as details.
       redirect: (context, state) =>
           state.extra is InstallmentFormArgs ? null : AppRoutes.installments,
-      builder: (context, state) => BlocProvider(
-        create: (_) => getIt<InstallmentFormCubit>(),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<InstallmentFormCubit>()),
+          BlocProvider(create: (_) => getIt<InstallmentSmartAddCubit>()),
+        ],
         child: InstallmentFormView(args: state.extra as InstallmentFormArgs),
       ),
     ),

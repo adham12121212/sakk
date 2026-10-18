@@ -4,6 +4,7 @@ import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/features/installments/domain/entities/installment_payment.dart';
 import 'package:sakk/features/installments/domain/entities/installment_plan.dart';
 import 'package:sakk/features/installments/domain/entities/installment_plan_draft.dart';
+import 'package:sakk/features/installments/domain/entities/scanned_installment.dart';
 import 'package:sakk/features/installments/domain/entities/scheduled_payment.dart';
 import 'package:sakk/features/installments/domain/installment_repo/installment_repo.dart';
 import 'package:sakk/features/installments/domain/usecase/add_installment_plan_usecase.dart';
@@ -52,6 +53,10 @@ class _FakeRepo implements InstallmentRepo {
 
   @override
   Future<void> clearCachedInstallments() async {}
+
+  @override
+  Future<Either<Failure, ScannedInstallment>> extractInstallment({String? imagePath, String? pdfText, String? text}) async =>
+      const Right(ScannedInstallment());
 }
 
 void main() {
