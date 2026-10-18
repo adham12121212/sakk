@@ -22,6 +22,8 @@ import '../util/subscription_category_ui.dart';
 import '../util/subscription_format.dart';
 import '../widgets/subscription_logo.dart';
 import 'subscription_form_view.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// Add flow, step 1: search the catalog and pick a service (then a plan), or
 /// choose to enter a custom subscription.
@@ -71,6 +73,8 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
   /// Smart add: pick a source, read it with the AI, then open the form
   /// (handled by the listener in [build]).
   Future<void> _smartAdd() async {
+    // Reading it with the AI is a scan.
+    if (!ProActions.ensureCanUse(context, QuotaType.scan)) return;
     final source = await showSmartAddSourceSheet(context);
     if (source == null || !mounted) return;
 
@@ -128,7 +132,7 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
       builder: (context, smartAdd) => Stack(
         children: [
           _scaffold(context, l10n),
-          if (smartAdd is SmartAddReading) const _ReadingOverlay(),
+          if (smartAdd is SmartAddReading) const SmartAddReadingOverlay(),
         ],
       ),
     );
@@ -258,49 +262,6 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
   }
 }
 
-/// Full-screen "Reading…" while the AI reads a screenshot or message; blocks
-/// taps so the picker can't be used meanwhile.
-class _ReadingOverlay extends StatelessWidget {
-  const _ReadingOverlay();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Positioned.fill(
-      child: Semantics(
-        liveRegion: true,
-        label: l10n.smartAddReading,
-        child: AbsorbPointer(
-          child: ColoredBox(
-            color: Colors.black.withValues(alpha: 0.45),
-            child: Center(
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 28,
-                    vertical: 24,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.smartAddReading,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 /// Tinted icon, title, hint and a chevron: the picker's top actions.
 class _ActionTile extends StatelessWidget {

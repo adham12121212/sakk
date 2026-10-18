@@ -1,11 +1,15 @@
 /// Ids for scheduled local notifications.
 ///
 /// flutter_local_notifications needs a 32-bit int id. Each reminder's id is a
-/// stable hash of the thing it's about (product or subscription id) with the
-/// last digit as a "slot" saying which reminder it is:
+/// stable hash of the thing it's about (product, subscription or installment
+/// payment id) with the last digit as a "slot" saying which reminder it is:
 ///   0, 1, 2     warranty: expiring soon, expired, return window closing
+///   3, 4        installment: due in 3 days, due today
 ///   5, 6, 7, 8  subscription: renews in 3 days, renews tomorrow, renewed
 ///               (next renewal), renewed (the one that just passed)
+///   9           Sakk Pro's "N days before", for subscriptions and
+///               installments alike; told apart by the payload (an
+///               installment's starts with "installment|")
 /// Each service only touches its own slots, so syncing one never cancels the
 /// other's reminders.
 ///
@@ -27,3 +31,5 @@ int reminderSlot(int id) => id % 10;
 
 const warrantyReminderSlots = {0, 1, 2};
 const subscriptionReminderSlots = {5, 6, 7, 8};
+const installmentReminderSlots = {3, 4};
+const customReminderSlot = 9;

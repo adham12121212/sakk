@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/features/auth/presentation/views/signin_view.dart';
@@ -23,6 +24,13 @@ import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
+import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/notification/presentation/views/reminder_settings_view.dart';
+import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
+import '../../features/installments/presentation/cubit/installments_cubit.dart';
+import '../../features/installments/presentation/views/installment_details_view.dart';
+import '../../features/installments/presentation/views/installment_form_view.dart';
+import '../../features/installments/presentation/views/installments_view.dart';
 import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
@@ -30,6 +38,11 @@ import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart
 import '../../features/subscriptions/presentation/views/catalog_picker_view.dart';
 import '../../features/subscriptions/presentation/views/subscription_form_view.dart';
 import '../../features/subscriptions/presentation/views/subscriptions_view.dart';
+import '../../features/pro/domain/pro_limit.dart';
+import '../../features/pro/presentation/cubit/paywall_cubit.dart';
+import '../../features/pro/presentation/cubit/pro_cubit.dart';
+import '../../features/pro/presentation/views/monthly_summary_view.dart';
+import '../../features/pro/presentation/views/paywall_view.dart';
 import '../di/get_it.dart';
 
 
@@ -53,6 +66,12 @@ class AppRoutes {
   static const subscriptions = '/subscriptions';
   static const subscriptionCatalog = '/subscriptions/catalog';
   static const subscriptionForm = '/subscriptions/form';
+  static const reminders = '/reminders';
+  static const installments = '/installments';
+  static const installmentForm = '/installments/form';
+  static const installmentDetails = '/installments/plan';
+  static const paywall = '/pro';
+  static const monthlySummary = '/pro/monthly-summary';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -163,6 +182,75 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
+    GoRoute(
+      path: AppRoutes.installments,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<InstallmentsCubit>(),
+        child: const InstallmentsView(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.installmentForm,
+      // Opened with InstallmentFormArgs as `extra`; same fallback as details.
+      redirect: (context, state) =>
+          state.extra is InstallmentFormArgs ? null : AppRoutes.installments,
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<InstallmentFormCubit>()),
+          BlocProvider(create: (_) => getIt<InstallmentSmartAddCubit>()),
+        ],
+        child: InstallmentFormView(args: state.extra as InstallmentFormArgs),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.installmentDetails,
+      // Opened with the plan's id as `extra` (from the list, a product or a
+      // reminder); the plan itself is read from the shared cubit.
+      redirect: (context, state) =>
+          state.extra is String ? null : AppRoutes.installments,
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: getIt<InstallmentsCubit>()..loadIfNeeded()),
+          BlocProvider(create: (_) => getIt<InstallmentFormCubit>()),
+        ],
+        child: InstallmentDetailsView(planId: state.extra as String),
+      ),
+    ),
+
+    GoRoute(
+      path: AppRoutes.paywall,
+      // Opened with a PaywallReason as `extra`; a general upgrade without one.
+      pageBuilder: (context, state) => MaterialPage(
+        fullscreenDialog: true,
+        child: BlocProvider(
+          create: (_) => getIt<PaywallCubit>(),
+          child: PaywallView(
+            reason: state.extra is PaywallReason ? state.extra as PaywallReason : PaywallReason.upgrade,
+          ),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.monthlySummary,
+      // Pro only: free users get the paywall in its place.
+      builder: (context, state) => getIt<ProCubit>().isPro
+          ? MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: getIt<SubscriptionsCubit>()),
+                BlocProvider.value(value: getIt<InstallmentsCubit>()),
+                BlocProvider.value(value: getIt<ProductsCubit>()),
+              ],
+              child: const MonthlySummaryView(),
+            )
+          : BlocProvider(
+              create: (_) => getIt<PaywallCubit>(),
+              child: const PaywallView(reason: PaywallReason.monthlySummary),
+            ),
+    ),
+    GoRoute(
+      path: AppRoutes.reminders,
+      builder: (context, state) => const ReminderSettingsView(),
+    ),
     GoRoute(
       path: AppRoutes.profile,
       builder: (context, state) =>

@@ -9,16 +9,40 @@ class ChatCubit extends Cubit<ChatState> {
   /// [userIdChanges] emits the signed-in user's id (null when signed out).
   /// The cubit is an app-wide singleton, so the conversation is wiped whenever
   /// that id changes; otherwise the next account on the device would see it.
-  ChatCubit(this._sendMessageUseCase, Stream<String?> userIdChanges) : super(const ChatState()) {
+  ///
+  /// [getHistoryUseCase] loads the conversation saved on the server (see
+  /// [loadHistoryIfNeeded]).
+  ChatCubit(this._sendMessageUseCase, Stream<String?> userIdChanges, {GetChatHistoryUseCase? getHistoryUseCase})
+      : _getHistoryUseCase = getHistoryUseCase,
+        super(const ChatState()) {
     _userSubscription = userIdChanges.distinct().listen((_) => clearChat());
   }
 
   final SendMessageUseCase _sendMessageUseCase;
+  final GetChatHistoryUseCase? _getHistoryUseCase;
+  bool _historyLoaded = false;
   late final StreamSubscription<String?> _userSubscription;
 
   /// Bumped by [clearChat] so a reply that arrives after the chat was cleared
   /// (e.g. the user logged out mid-request) is dropped instead of shown.
   int _conversation = 0;
+
+  /// Shows the saved conversation the first time the chat opens for this
+  /// account. Quietly does nothing if it can't be loaded (e.g. offline):
+  /// the chat still works.
+  Future<void> loadHistoryIfNeeded() async {
+    final getHistory = _getHistoryUseCase;
+    if (getHistory == null || _historyLoaded || state.isSending) return;
+    _historyLoaded = true;
+    final conversation = _conversation;
+    final result = await getHistory();
+    if (isClosed || conversation != _conversation) return;
+    result.fold(
+      (_) => _historyLoaded = false,
+      // Messages sent while it loaded stay after the saved ones.
+      (saved) => emit(state.copyWith(messages: [...saved, ...state.messages])),
+    );
+  }
 
   Future<void> sendMessage(String content) async {
     final trimmed = content.trim();
@@ -76,6 +100,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   void clearChat() {
     _conversation++;
+    _historyLoaded = false;
     emit(const ChatState());
   }
 

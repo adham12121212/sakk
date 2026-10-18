@@ -10,6 +10,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
 import '../../../auth/presentation/widgets/segmented_toggle.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
+import '../../../installments/presentation/cubit/installments_cubit.dart';
+import '../../../installments/presentation/cubit/installments_state.dart';
+import '../../../installments/presentation/widgets/installments_analytics_card.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
@@ -31,17 +34,20 @@ class _AnalyticsViewState extends State<AnalyticsView> {
   /// In a household: only my products (default) or everyone's.
   bool _householdScope = false;
   final _subscriptionsCubit = getIt<SubscriptionsCubit>();
+  final _installmentsCubit = getIt<InstallmentsCubit>();
 
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().getTotalPrice();
     _subscriptionsCubit.loadIfNeeded();
+    _installmentsCubit.loadIfNeeded();
   }
 
   Future<void> _refresh() => Future.wait([
         context.read<ProductsCubit>().refresh(),
         _subscriptionsCubit.refresh(),
+        _installmentsCubit.refresh(),
       ]);
 
   @override
@@ -97,7 +103,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                               CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
                               const SizedBox(height: 16),
                               SpendingInsightsCard(products: state.products, l10n: l10n),
-                              // Subscriptions are private, so only in "Mine".
+                              // Subscriptions and installments are private, so only in "Mine".
                               if (!(inHousehold && _householdScope)) ...[
                                 const SizedBox(height: 16),
                                 BlocBuilder<SubscriptionsCubit, SubscriptionsState>(
@@ -105,6 +111,14 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                   builder: (context, subscriptions) => SubscriptionsAnalyticsCard(
                                     state: subscriptions,
                                     onTap: () => context.push(AppRoutes.subscriptions),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                BlocBuilder<InstallmentsCubit, InstallmentsState>(
+                                  bloc: _installmentsCubit,
+                                  builder: (context, installments) => InstallmentsAnalyticsCard(
+                                    state: installments,
+                                    onTap: () => context.push(AppRoutes.installments),
                                   ),
                                 ),
                               ],

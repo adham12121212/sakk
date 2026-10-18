@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakk/features/auth/presentation/widgets/segmented_toggle.dart';
 
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/locale_controller/locale_controller.dart';
 import '../../../../core/service/biometric_auth_service.dart';
-import '../../../../core/service/reminder_controller.dart';
-import '../../../../core/service/warranty_notification_service.dart';
-import '../../../products/presentation/cubit/product_cubit.dart';
+import '../../../../core/route/app_router.dart';
+import '../../../../core/service/reminder_settings.dart';
 import '../../../../core/theme/theme_controller.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -69,10 +69,14 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
     setState(() => _biometricEnabled = value);
   }
 
-  /// Saves the new reminder lead time and moves every pending reminder to it.
-  Future<void> _onReminderChanged(int days) async {
-    await getIt<ReminderController>().setDays(days);
-    await getIt<WarrantyNotificationService>().rescheduleAll(getIt<ProductsCubit>().state.products);
+  /// "Warranties, Subscriptions, Installments", the ones that are on.
+  String _remindersSummary(AppLocalizations l10n, ReminderSettings settings) {
+    final on = [
+      if (settings.warrantyEnabled) l10n.reminderWarranties,
+      if (settings.subscriptionsEnabled) l10n.subscriptions,
+      if (settings.installmentsEnabled) l10n.installments,
+    ];
+    return on.isEmpty ? l10n.remindersAllOff : on.join(l10n.listSeparator);
   }
 
   @override
@@ -80,10 +84,10 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
     final l10n = AppLocalizations.of(context)!;
     final localeController = getIt<LocaleController>();
     final themeController = getIt<ThemeController>();
-    final reminderController = getIt<ReminderController>();
+    final reminderSettings = getIt<ReminderSettings>();
 
     return ListenableBuilder(
-      listenable: Listenable.merge([localeController, themeController, reminderController]),
+      listenable: Listenable.merge([localeController, themeController, reminderSettings]),
       builder: (context, _) {
         // One white card, rows separated by hairlines (iOS-settings style).
         return AppCard(
@@ -115,19 +119,16 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
                 onChanged: (mode) => themeController.setThemeMode(mode),
               ),
             ),
+            // Warranties, subscriptions and installments: their own screen.
             _SettingsRow(
               icon: AppIcons.reminder,
-              label: l10n.warrantyReminder,
-              stacked: true,
-              child: SegmentedToggle<int>(
-                options: {
-                  90: l10n.reminder3Months,
-                  30: l10n.reminder1Month,
-                  7: l10n.reminder1Week,
-                  1: l10n.reminder1Day,
-                },
-                selected: reminderController.value,
-                onChanged: _onReminderChanged,
+              label: l10n.reminders,
+              subtitle: _remindersSummary(l10n, reminderSettings),
+              onTap: () => context.push(AppRoutes.reminders),
+              child: Icon(
+                AppIcons.chevronForward,
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             _SettingsRow(
@@ -158,6 +159,8 @@ class _SettingsRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.child,
+    this.subtitle,
+    this.onTap,
     this.isLast = false,
     this.stacked = false,
   });
@@ -165,6 +168,10 @@ class _SettingsRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final Widget child;
+  final String? subtitle;
+
+  /// Makes the whole row tappable (e.g. to open a screen).
+  final VoidCallback? onTap;
   final bool isLast;
 
   /// Puts [child] full width under the label instead of at the row's end.
@@ -187,14 +194,25 @@ class _SettingsRow extends StatelessWidget {
           child: Icon(icon, size: 19, color: colorScheme.primary),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Text(label, style: textTheme.titleSmall?.copyWith(fontSize: 15))),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: textTheme.titleSmall?.copyWith(fontSize: 15)),
+              if (subtitle != null)
+                Text(subtitle!, maxLines: 2, overflow: TextOverflow.ellipsis, style: textTheme.bodySmall),
+            ],
+          ),
+        ),
         if (!stacked) child,
       ],
     );
 
     return Column(
       children: [
-        Padding(
+        InkWell(
+          onTap: onTap,
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: stacked
               ? Column(
@@ -205,6 +223,7 @@ class _SettingsRow extends StatelessWidget {
                   ],
                 )
               : header,
+          ),
         ),
         if (!isLast) Divider(height: 1, indent: 66, endIndent: 16, color: colorScheme.outlineVariant),
       ],

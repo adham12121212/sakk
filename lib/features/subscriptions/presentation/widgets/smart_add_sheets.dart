@@ -5,10 +5,14 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Where smart add reads from.
-enum SmartAddSource { camera, gallery, text }
+enum SmartAddSource { camera, gallery, pdf, text }
 
-/// Asks how to smart add: a photo, a screenshot or pasted text.
-Future<SmartAddSource?> showSmartAddSourceSheet(BuildContext context) {
+/// Asks how to smart add: a photo, a screenshot, pasted text, and with
+/// [allowPdf] a PDF (e.g. an installment contract).
+Future<SmartAddSource?> showSmartAddSourceSheet(
+  BuildContext context, {
+  bool allowPdf = false,
+}) {
   final l10n = AppLocalizations.of(context)!;
   return showModalBottomSheet<SmartAddSource>(
     context: context,
@@ -26,6 +30,7 @@ Future<SmartAddSource?> showSmartAddSourceSheet(BuildContext context) {
                 l10n.smartAddChooseScreenshot,
               ),
               (SmartAddSource.camera, AppIcons.camera, l10n.smartAddTakePhoto),
+              if (allowPdf) (SmartAddSource.pdf, AppIcons.pdf, l10n.smartAddChoosePdf),
               (SmartAddSource.text, AppIcons.chat, l10n.smartAddPasteText),
             ])
               ListTile(
@@ -147,6 +152,50 @@ class _PasteMessageSheetState extends State<_PasteMessageSheet> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Full-screen "Reading…" while the AI reads a screenshot or message; blocks
+/// taps so the screen behind can't be used meanwhile.
+class SmartAddReadingOverlay extends StatelessWidget {
+  const SmartAddReadingOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Positioned.fill(
+      child: Semantics(
+        liveRegion: true,
+        label: l10n.smartAddReading,
+        child: AbsorbPointer(
+          child: ColoredBox(
+            color: Colors.black.withValues(alpha: 0.45),
+            child: Center(
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.smartAddReading,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

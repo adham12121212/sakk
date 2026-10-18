@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sakk/core/service/reminder_settings.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/logger/app_logger.dart';
 import 'package:sakk/core/service/notification_service.dart';
@@ -55,6 +56,7 @@ class _Notifications implements NotificationService {
     required DateTime dateTime,
     String? payload,
     dynamic matchDateTimeComponents,
+    String? markPaidLabel,
   }) async {
     if (dateTime.isBefore(DateTime.now())) return;
     scheduled[id] = dateTime;
@@ -130,11 +132,14 @@ void main() {
     final p = endingIn('p', 200);
     await service.scheduleFutureNotifications(p);
     DateTime earliest() => notifications.scheduled.values.reduce((a, b) => a.isBefore(b) ? a : b);
-    expect(p.warrantyEndDate.difference(earliest()).inDays, 90);
+    // Calendar days, not 24-hour ones: a daylight-saving change may fall in between.
+    DateTime daysBeforeEnd(int days) =>
+        DateTime(p.warrantyEndDate.year, p.warrantyEndDate.month, p.warrantyEndDate.day - days);
+    expect(earliest(), daysBeforeEnd(90));
 
     await reminders.setDays(7);
     await service.rescheduleAll([p]);
-    expect(p.warrantyEndDate.difference(earliest()).inDays, 7);
+    expect(earliest(), daysBeforeEnd(7));
     expect(notifications.scheduled, hasLength(2)); // "expiring" + "expired"
   });
 
@@ -204,5 +209,35 @@ void main() {
     );
     await arabic.checkAndNotify([endingIn('gone', -3)]);
     expect(added.added.single, 'gone:انتهى الضمان');
+  });
+
+  test('turned off in Reminders: nothing scheduled or shown, and pending ones cancelled', () async {
+    final settings = ReminderSettings();
+    await settings.ready;
+    final off = WarrantyNotificationService(
+      getUserUseCase: _User(),
+      addNotificationUseCase: added,
+      tracker: _Tracker(),
+      localNotifications: notifications,
+      reminders: reminders,
+      logger: _NoLog(),
+      settings: settings,
+    );
+    final products = [endingIn('p', 200), endingIn('soon', 5)];
+    off.followLanguage(() => products);
+    await off.syncAll(products);
+    expect(notifications.scheduled, isNotEmpty);
+
+    await settings.setWarrantyEnabled(false);
+    await off.syncAll(products); // the listener's sync is queued before this one
+    expect(notifications.scheduled, isEmpty);
+    await off.scheduleFutureNotifications(endingIn('new', 200));
+    expect(notifications.scheduled, isEmpty);
+    await off.checkAndNotify(products);
+    expect(added.added, isEmpty);
+
+    await settings.setWarrantyEnabled(true);
+    await off.syncAll(products);
+    expect(notifications.scheduled, isNotEmpty);
   });
 }

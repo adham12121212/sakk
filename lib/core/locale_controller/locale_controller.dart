@@ -4,8 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocaleController extends ValueNotifier<Locale> {
   LocaleController() : super(const Locale('en')) {
-    _loadSaved();
+    loaded = _loadSaved();
   }
+
+  /// Completes once the saved language (if any) is applied.
+  late final Future<void> loaded;
 
   static const _key = 'app_locale_code';
 

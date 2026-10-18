@@ -7,6 +7,8 @@ import '../../../../core/di/get_it.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/service/biometric_auth_service.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
+import '../../../installments/domain/usecase/clear_cached_installments_usecase.dart';
+import '../../../installments/presentation/cubit/installments_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
 import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../../subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
@@ -48,6 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
         getIt<ProductsCubit>().reset();
 
         getIt<SubscriptionsCubit>().reset();
+        getIt<InstallmentsCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -72,6 +75,7 @@ class AuthCubit extends Cubit<AuthState> {
           (user) {
         getIt<ProductsCubit>().reset();
         getIt<SubscriptionsCubit>().reset();
+        getIt<InstallmentsCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -89,11 +93,13 @@ class AuthCubit extends Cubit<AuthState> {
     } finally {
       getIt<ProductsCubit>().reset();
       getIt<SubscriptionsCubit>().reset();
+      getIt<InstallmentsCubit>().reset();
       getIt<NotificationCubit>().reset();
       getIt<HouseholdCubit>().reset();
       try {
         await getIt<ClearCachedProductsUseCase>()();
         await getIt<ClearCachedSubscriptionsUseCase>()();
+        await getIt<ClearCachedInstallmentsUseCase>()();
       } finally {
         if (!isClosed) emit(AuthInitial());
       }
@@ -117,7 +123,7 @@ class AuthCubit extends Cubit<AuthState> {
         if (failure is CancelledFailure) { emit(AuthInitial()); return; }
         emit(AuthError(failure.message));
       },
-          (user) { getIt<ProductsCubit>().reset(); getIt<SubscriptionsCubit>().reset(); emit(AuthSuccess(user)); },
+          (user) { getIt<ProductsCubit>().reset(); getIt<SubscriptionsCubit>().reset(); getIt<InstallmentsCubit>().reset(); emit(AuthSuccess(user)); },
     );
   }
 
@@ -130,10 +136,12 @@ class AuthCubit extends Cubit<AuthState> {
         await getIt<BiometricAuthService>().setEnabled(false);
         getIt<ProductsCubit>().reset();
         getIt<SubscriptionsCubit>().reset();
+        getIt<InstallmentsCubit>().reset();
         getIt<NotificationCubit>().reset();
         getIt<HouseholdCubit>().reset();
         await getIt<ClearCachedProductsUseCase>()();
         await getIt<ClearCachedSubscriptionsUseCase>()();
+        await getIt<ClearCachedInstallmentsUseCase>()();
         emit(AuthInitial());
       },
     );

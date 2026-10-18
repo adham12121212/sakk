@@ -18,6 +18,8 @@ import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
 import '../../../household/presentation/cubit/household_cubit.dart';
+import '../../../installments/presentation/cubit/installments_cubit.dart';
+import '../../../installments/presentation/widgets/product_installments_section.dart';
 import '../cubit/details_cubit.dart';
 import '../widgets/details_header.dart';
 import '../widgets/details_tab.dart';
@@ -242,6 +244,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
           case DetailsGallerySaved():
             _showSnack(l10n.invoiceSavedToPhotos);
           case DetailsDeleted():
+            // The server unlinks the product's plans; reload so they show
+            // under their own title.
+            final installments = getIt<InstallmentsCubit>();
+            if (installments.state.plansForProduct(product.id).isNotEmpty) installments.refresh();
             Navigator.of(context).pop();
           case DetailsActionError(:final error):
             final message = switch (error) {
@@ -295,6 +301,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                           CalendarActions(product: product),
                           ProductDocumentsSection(product: product, canEdit: _isMine),
                           WarrantyExtrasSection(product: product, canEdit: _isMine),
+                          // Plans are private, and only the owner can link one.
+                          if (_isMine) ProductInstallmentsSection(product: product),
                         ],
                       )
                     : InvoiceTab(imageUrl: product.receiptUrl ?? product.imageUrl),

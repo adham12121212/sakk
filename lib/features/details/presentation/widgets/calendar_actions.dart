@@ -23,7 +23,8 @@ class CalendarActions extends StatelessWidget {
         title: title,
         description: l10n.calendarEventDescription(product.name),
         startDate: day,
-        endDate: day.add(const Duration(days: 1)),
+        // The next calendar day, not +24h (off by an hour across a DST change).
+        endDate: DateTime(day.year, day.month, day.day + 1),
         allDay: true,
       ));
     } catch (_) {

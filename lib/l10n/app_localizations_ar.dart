@@ -18,7 +18,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailAddress => 'البريد الإلكتروني';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get emailHint => 'example@gmail.com';
 
   @override
   String get password => 'كلمة المرور';
@@ -1547,4 +1547,801 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountActionsHint => 'تسجيل الخروج أو حذف الحساب';
+
+  @override
+  String get installments => 'الأقساط';
+
+  @override
+  String get addInstallment => 'إضافة تقسيط';
+
+  @override
+  String get editInstallment => 'تعديل خطة التقسيط';
+
+  @override
+  String get installmentsLeftToPay => 'المتبقي للسداد';
+
+  @override
+  String get installmentsHomeEmpty => 'تابع أقساط فاليو والبنك والمحلات';
+
+  @override
+  String get noInstallmentsYet => 'لا توجد أقساط بعد';
+
+  @override
+  String get noInstallmentsBody =>
+      'أضف ما تقسّطه مع فاليو أو البنك أو المحل لتعرف المتبقي ويصلك تذكير قبل كل قسط.';
+
+  @override
+  String installmentsActiveCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText خطة نشطة',
+      many: '$countText خطة نشطة',
+      few: '$countText خطط نشطة',
+      two: 'خطتان نشطتان',
+      one: 'خطة نشطة واحدة',
+      zero: 'لا توجد خطط نشطة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsDueThisMonth(String amount) {
+    return 'مستحق هذا الشهر: $amount';
+  }
+
+  @override
+  String installmentsOverdueTotal(String amount) {
+    return 'متأخر: $amount';
+  }
+
+  @override
+  String installmentsOverdueBanner(int count, String countText, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText قسط متأخر ($amount)',
+      many: '$countText قسطًا متأخرًا ($amount)',
+      few: '$countText أقساط متأخرة ($amount)',
+      two: 'قسطان متأخران ($amount)',
+      one: 'قسط واحد متأخر ($amount)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsPaidOf(String paid, String total) {
+    return 'تم دفع $paid من $total';
+  }
+
+  @override
+  String get installmentDueToday => 'مستحق اليوم';
+
+  @override
+  String get installmentDueTomorrow => 'مستحق غدًا';
+
+  @override
+  String installmentDueInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'مستحق خلال $daysText يوم',
+      many: 'مستحق خلال $daysText يومًا',
+      few: 'مستحق خلال $daysText أيام',
+      two: 'مستحق خلال يومين',
+      one: 'مستحق خلال يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentOverdueBy(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'متأخر $daysText يوم',
+      many: 'متأخر $daysText يومًا',
+      few: 'متأخر $daysText أيام',
+      two: 'متأخر يومين',
+      one: 'متأخر يومًا واحدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentPaidOff => 'تم السداد';
+
+  @override
+  String get installmentCancelled => 'ملغاة';
+
+  @override
+  String installmentOfTotal(String amount) {
+    return 'من $amount';
+  }
+
+  @override
+  String get nextInstallment => 'القسط القادم';
+
+  @override
+  String nextInstallmentDue(String amount, String when) {
+    return 'القسط القادم $amount · $when';
+  }
+
+  @override
+  String get markAsPaid => 'تسجيل كمدفوع';
+
+  @override
+  String get markUnpaid => 'تسجيل كغير مدفوع';
+
+  @override
+  String get markUnpaidQuestion => 'تسجيل كغير مدفوع؟';
+
+  @override
+  String markUnpaidBody(String date) {
+    return 'سيظهر قسط $date كغير مدفوع مرة أخرى.';
+  }
+
+  @override
+  String get installmentMarkedPaid => 'تم تسجيل القسط كمدفوع';
+
+  @override
+  String paidOn(String date) {
+    return 'دُفع في $date';
+  }
+
+  @override
+  String get paymentSchedule => 'جدول الأقساط';
+
+  @override
+  String get linkedProduct => 'المنتج';
+
+  @override
+  String get installmentProvider => 'جهة التقسيط';
+
+  @override
+  String get installmentProviderOptional => 'جهة التقسيط (اختياري)';
+
+  @override
+  String get providerBank => 'بنك';
+
+  @override
+  String get providerStore => 'المحل';
+
+  @override
+  String get downPayment => 'المقدم';
+
+  @override
+  String get downPaymentOptional => 'المقدم (اختياري)';
+
+  @override
+  String get downPaymentTooHigh => 'أكبر من السعر الإجمالي';
+
+  @override
+  String get interestOrFees => 'الفوائد أو المصاريف';
+
+  @override
+  String get interestOrFeesOptional => 'فوائد / مصاريف (اختياري)';
+
+  @override
+  String get installmentAmount => 'الأقساط';
+
+  @override
+  String installmentsTimesAmount(String count, String amount) {
+    return '$count × $amount';
+  }
+
+  @override
+  String get installmentAmountPerMonth => 'القسط الشهري';
+
+  @override
+  String get installmentAmountAuto => 'محسوب من الإجمالي والمقدم والمصاريف.';
+
+  @override
+  String get installmentAmountCustom => 'مبلغ أدخلته بنفسك.';
+
+  @override
+  String get useEvenSplit => 'تقسيم بالتساوي';
+
+  @override
+  String get nothingLeftToFinance => 'المقدم يغطي السعر بالكامل';
+
+  @override
+  String get installmentsCountLabel => 'عدد الأقساط';
+
+  @override
+  String get installmentsCountInvalid => 'أدخل رقمًا صحيحًا من ١ إلى ٣٦٠';
+
+  @override
+  String installmentsCountBelowPaid(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لا يقل عن $countText، فهناك $countText قسط مدفوع',
+      many: 'لا يقل عن $countText، فهناك $countText قسطًا مدفوعًا',
+      few: 'لا يقل عن $countText، فهناك $countText أقساط مدفوعة',
+      two: 'لا يقل عن $countText، فهناك قسطان مدفوعان',
+      one: 'لا يقل عن ١، فهناك قسط مدفوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentsCountBelowPaidGeneric =>
+      'لا يمكن أن يقل عدد الأقساط عن المدفوع منها.';
+
+  @override
+  String monthsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText شهر',
+      many: '$countText شهرًا',
+      few: '$countText أشهر',
+      two: 'شهران',
+      one: 'شهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get firstInstallmentDate => 'أول قسط';
+
+  @override
+  String get dueDayOfMonth => 'يوم الاستحقاق';
+
+  @override
+  String dueDayValue(String day) {
+    return 'يوم $day من كل شهر';
+  }
+
+  @override
+  String get dueDayShortMonthsHint =>
+      'في الشهور الأقصر يُستحق في آخر يوم من الشهر.';
+
+  @override
+  String get installmentFor => 'ماذا تقسّط؟';
+
+  @override
+  String get installmentForProduct => 'منتج من منتجاتي';
+
+  @override
+  String get installmentForOther => 'شيء آخر';
+
+  @override
+  String get installmentTitle => 'ماذا اشتريت؟';
+
+  @override
+  String get installmentTitleRequired => 'أدخل ما اشتريته';
+
+  @override
+  String get chooseProduct => 'اختر منتجًا';
+
+  @override
+  String get chooseProductRequired => 'اختر منتجًا أو اختر \"شيء آخر\"';
+
+  @override
+  String get searchProducts => 'ابحث في منتجاتك';
+
+  @override
+  String get noProductsMatch => 'لا توجد منتجات مطابقة.';
+
+  @override
+  String get noProductsToLink =>
+      'لا توجد منتجات بعد. أضف منتجًا أولًا أو اختر \"شيء آخر\".';
+
+  @override
+  String editPaidInstallmentsNote(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$countText قسط مدفوع بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      many:
+          '$countText قسطًا مدفوعًا بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      few:
+          '$countText أقساط مدفوعة بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      two:
+          'قسطان مدفوعان بالفعل وسيبقيان كما هما. التعديلات تسري على باقي الأقساط.',
+      one:
+          'قسط واحد مدفوع بالفعل وسيبقى كما هو. التعديلات تسري على باقي الأقساط.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get schedulePreview => 'معاينة الجدول';
+
+  @override
+  String get schedulePreviewEmpty =>
+      'أدخل السعر الإجمالي وعدد الأقساط لترى الجدول.';
+
+  @override
+  String schedulePreviewSummary(
+    int count,
+    String countText,
+    String total,
+    String lastDate,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText قسط · الإجمالي $total · آخر قسط $lastDate',
+      many: '$countText قسطًا · الإجمالي $total · آخر قسط $lastDate',
+      few: '$countText أقساط · الإجمالي $total · آخر قسط $lastDate',
+      two: 'قسطان · الإجمالي $total · آخر قسط $lastDate',
+      one: 'قسط واحد · الإجمالي $total · آخر قسط $lastDate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showAllInstallments(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض الكل ($countText)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get showLess => 'عرض أقل';
+
+  @override
+  String get installmentSaved => 'تم حفظ خطة التقسيط';
+
+  @override
+  String get installmentDeleted => 'تم حذف خطة التقسيط';
+
+  @override
+  String get deleteInstallmentQuestion => 'حذف خطة التقسيط؟';
+
+  @override
+  String deleteInstallmentBody(String name) {
+    return 'سيتم حذف $name مع جدول الأقساط والتذكيرات.';
+  }
+
+  @override
+  String get cancelInstallmentPlan => 'إلغاء الخطة';
+
+  @override
+  String get reactivateInstallmentPlan => 'إعادة تفعيل الخطة';
+
+  @override
+  String get installmentPlanCancelled => 'تم إلغاء الخطة';
+
+  @override
+  String get installmentPlanReactivated => 'تم تفعيل الخطة مرة أخرى';
+
+  @override
+  String get installmentNotFound => 'الخطة غير موجودة';
+
+  @override
+  String get installmentNotFoundBody => 'ربما تم حذفها.';
+
+  @override
+  String get productInstallmentsHint =>
+      'تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط.';
+
+  @override
+  String get notifInstallmentDueSoonTitle => 'قسط مستحق قريبًا';
+
+  @override
+  String get notifInstallmentDueTodayTitle => 'قسط مستحق اليوم';
+
+  @override
+  String notifInstallmentDueBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name: قسط $price مستحق بعد $daysText يوم',
+      many: '$name: قسط $price مستحق بعد $daysText يومًا',
+      few: '$name: قسط $price مستحق بعد $daysText أيام',
+      two: '$name: قسط $price مستحق بعد يومين',
+      one: '$name: قسط $price مستحق غدًا',
+      zero: '$name: قسط $price مستحق اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get smartAddChoosePdf => 'اختر ملف PDF (مثل العقد)';
+
+  @override
+  String get smartAddInstallmentHint =>
+      'املأ البيانات من عقد أو لقطة شاشة أو رسالة';
+
+  @override
+  String get smartAddInstallmentReview =>
+      'راجع كل الحقول قبل الحفظ: لن يُحفظ شيء حتى تضغط الزر بالأسفل.';
+
+  @override
+  String get installmentScanUnreadable =>
+      'لم نجد خطة تقسيط في ذلك. جرّب لقطة شاشة أوضح أو أول صفحة من العقد أو الرسالة كاملة، أو املأ البيانات بنفسك.';
+
+  @override
+  String get installmentsThisMonth => 'مستحق هذا الشهر';
+
+  @override
+  String get installmentsDuePerMonth => 'المستحق كل شهر';
+
+  @override
+  String get installmentsAnalyticsEmpty =>
+      'لا توجد أقساط بعد. اضغط لإضافة ما تقسّطه شهريًا.';
+
+  @override
+  String installmentsChartCurrencyNote(String currency) {
+    return 'الرسم يعرض الأقساط بعملة $currency فقط';
+  }
+
+  @override
+  String get reminders => 'التذكيرات';
+
+  @override
+  String get remindersIntro => 'اختر التذكيرات التي يرسلها صك على هذا الهاتف.';
+
+  @override
+  String get remindersAllOff => 'كلها متوقفة';
+
+  @override
+  String get listSeparator => '، ';
+
+  @override
+  String get reminderWarranties => 'الضمانات';
+
+  @override
+  String get reminderWarrantiesHint =>
+      'قبل انتهاء الضمان، وعند انتهائه، وقبل انتهاء مدة الاسترجاع';
+
+  @override
+  String get reminderSubscriptionsHint => 'حول موعد كل تجديد';
+
+  @override
+  String get reminderInstallmentsHint => 'قبل موعد كل قسط';
+
+  @override
+  String get reminderThreeDaysBefore => 'قبلها بـ ٣ أيام';
+
+  @override
+  String get reminderDayBefore => 'قبلها بيوم';
+
+  @override
+  String get reminderDayAfterCheckCharge =>
+      'بعدها بيوم، للتأكد من المبلغ المخصوم';
+
+  @override
+  String get reminderOnDueDay => 'في يوم الاستحقاق';
+
+  @override
+  String get limitReachedProducts =>
+      'وصلت لحد المنتجات في الخطة المجانية. اشترك في Sakk Pro عشان تضيف أكتر.';
+
+  @override
+  String get limitReachedSubscriptions =>
+      'وصلت لحد الاشتراكات في الخطة المجانية. اشترك في Sakk Pro عشان تتابع أكتر.';
+
+  @override
+  String get limitReachedInstallments =>
+      'الخطة المجانية بتتابع خطة تقسيط واحدة شغالة. اشترك في Sakk Pro عشان تضيف أكتر.';
+
+  @override
+  String get limitReachedScan =>
+      'خلصت السكانات المجانية النهارده. اشترك في Sakk Pro لسكانات بلا حدود، أو جرّب بكرة.';
+
+  @override
+  String get limitReachedChat =>
+      'خلصت رسائل المساعد المجانية النهارده. اشترك في Sakk Pro، أو ارجع بكرة.';
+
+  @override
+  String get limitReachedFairUse => 'وصلت للحد اليومي. جرّب تاني بكرة.';
+
+  @override
+  String get chatBusy => 'المساعد عليه ضغط دلوقتي. جرّب تاني كمان دقيقة.';
+
+  @override
+  String get scanNeedsInternet =>
+      'السكان محتاج إنترنت. تقدر تدخل البيانات بنفسك.';
+
+  @override
+  String get chatNeedsInternet => 'المساعد محتاج اتصال بالإنترنت.';
+
+  @override
+  String scansLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'فاضل لك $countText سكان النهارده',
+      one: 'فاضل لك سكان واحد النهارده',
+      zero: 'مفيش سكانات مجانية تاني النهارده',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chatMessagesLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'فاضل لك $countText رسائل النهارده',
+      one: 'فاضل لك رسالة واحدة النهارده',
+      zero: 'مفيش رسائل مجانية تاني النهارده',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeFree => 'مجاني';
+
+  @override
+  String get planBadgePro => 'Sakk Pro';
+
+  @override
+  String get planBadgeYearly => 'Pro ⭐ سنوي';
+
+  @override
+  String get planBadgeTrial => 'Pro – تجربة';
+
+  @override
+  String planBadgeTrialDaysLeft(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'فاضل $daysText يوم',
+      many: 'فاضل $daysText يوم',
+      few: 'فاضل $daysText أيام',
+      two: 'فاضل يومين',
+      one: 'فاضل يوم',
+      zero: 'بتخلص النهارده',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeBillingIssue => 'مشكلة في الدفع';
+
+  @override
+  String get sakkPro => 'Sakk Pro';
+
+  @override
+  String get proCardFreeBody =>
+      'منتجات واشتراكات وأقساط بلا حدود، ذكاء اصطناعي بلا حدود، وملخص الشهر.';
+
+  @override
+  String proCardRenewsOn(String date) {
+    return 'بيتجدد يوم $date';
+  }
+
+  @override
+  String proCardEndsOn(String date) {
+    return 'Pro بيخلص يوم $date. بياناتك هتفضل موجودة.';
+  }
+
+  @override
+  String proCardTrialEndsOn(String date) {
+    return 'التجربة المجانية بتخلص يوم $date';
+  }
+
+  @override
+  String get proCardBillingIssueBody =>
+      'جوجل بلاي معرفش يخصم من وسيلة الدفع. حدّثها عشان Pro ما يقفش.';
+
+  @override
+  String get upgradeToPro => 'اشترك في Pro';
+
+  @override
+  String get manageSubscription => 'إدارة الاشتراك';
+
+  @override
+  String get updatePaymentMethod => 'تحديث وسيلة الدفع';
+
+  @override
+  String get restorePurchases => 'استعادة المشتريات';
+
+  @override
+  String get restoreSuccess => 'تم استعادة Sakk Pro';
+
+  @override
+  String get restoreNothing => 'مفيش اشتراك Sakk Pro على حساب جوجل ده';
+
+  @override
+  String get paywallHeadlineUpgrade => 'خلي صك يشتغل لك أكتر';
+
+  @override
+  String get paywallHeadlineScan => 'خلصت السكانات المجانية النهارده';
+
+  @override
+  String get paywallHeadlineChat => 'خلصت رسائل المساعد المجانية النهارده';
+
+  @override
+  String get paywallHeadlineProducts => 'الخطة المجانية اتملت';
+
+  @override
+  String get paywallHeadlineSubscriptions => 'تابع كل اشتراكاتك';
+
+  @override
+  String get paywallHeadlineInstallments => 'تابع كل أقساطك';
+
+  @override
+  String get paywallHeadlineSummary => 'اعرف هتدفع كام الشهر ده';
+
+  @override
+  String get paywallSubtitle =>
+      'من غير حدود للمنتجات والاشتراكات والأقساط والذكاء الاصطناعي، ومعاها تذكيرات ذكية وملخص الشهر.';
+
+  @override
+  String get paywallFeature => 'الميزة';
+
+  @override
+  String get paywallFree => 'مجاني';
+
+  @override
+  String get paywallPro => 'Pro';
+
+  @override
+  String get featureProducts => 'منتجات بضمان';
+
+  @override
+  String get featureSubscriptions => 'اشتراكات متابَعة';
+
+  @override
+  String get featureInstallments => 'الأقساط';
+
+  @override
+  String get featureScans => 'سكان بالذكاء الاصطناعي';
+
+  @override
+  String get featureChat => 'رسائل المساعد';
+
+  @override
+  String get featureReminders => 'التذكيرات';
+
+  @override
+  String get featureSummary => 'ملخص الشهر';
+
+  @override
+  String valuePerDay(String countText) {
+    return '$countText في اليوم';
+  }
+
+  @override
+  String get valueUnlimited => 'بلا حدود';
+
+  @override
+  String get valueBasic => 'أساسية';
+
+  @override
+  String get valueSmart => 'ذكية';
+
+  @override
+  String get planMonthly => 'شهري';
+
+  @override
+  String get planYearly => 'سنوي';
+
+  @override
+  String get bestValue => 'الأوفر';
+
+  @override
+  String savePercent(String percent) {
+    return 'وفّر ~$percent%';
+  }
+
+  @override
+  String freeTrialDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'تجربة مجانية $daysText يوم',
+      few: 'تجربة مجانية $daysText أيام',
+      two: 'تجربة مجانية يومين',
+      one: 'تجربة مجانية يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get startFreeTrial => 'ابدأ التجربة المجانية';
+
+  @override
+  String get subscribe => 'اشترك';
+
+  @override
+  String autoRenewTrialDisclosure(String days, String price) {
+    return 'مجانًا لمدة $days أيام، وبعدها $price. لو لغيت قبل ما التجربة تخلص مش هيتخصم منك حاجة.';
+  }
+
+  @override
+  String get autoRenewDisclosure =>
+      'الدفع بيتم من حساب جوجل بلاي بتاعك. الاشتراك بيتجدد تلقائيًا بالسعر المعروض إلا لو لغيته قبل نهاية الفترة الحالية بـ ٢٤ ساعة على الأقل. تقدر تديره أو تلغيه في أي وقت من جوجل بلاي ← المدفوعات والاشتراكات.';
+
+  @override
+  String get purchaseSuccess => 'أهلًا بيك في Sakk Pro!';
+
+  @override
+  String get purchaseFailed => 'الدفع ما تمّش. جرّب تاني.';
+
+  @override
+  String get purchasesUnavailable =>
+      'الاشتراكات مش متاحة دلوقتي. جرّب تاني بعدين.';
+
+  @override
+  String get alreadyPro => 'إنت مشترك في Sakk Pro';
+
+  @override
+  String get monthlySummary => 'هتدفع كام الشهر ده';
+
+  @override
+  String get monthlySummaryTotal => 'باقي تدفعه الشهر ده';
+
+  @override
+  String get monthlySummaryTotalHint =>
+      'تجديدات الاشتراكات والأقساط اللي لسه ما اتدفعتش من النهارده لآخر الشهر، ومعاها المتأخر.';
+
+  @override
+  String get monthlySummaryUpcoming => 'المدفوعات الجاية';
+
+  @override
+  String get monthlySummaryNothingDue => 'مفيش حاجة باقية تدفعها الشهر ده.';
+
+  @override
+  String get monthlySummaryWarranties => 'ضمانات قربت تخلص';
+
+  @override
+  String get monthlySummaryNoWarranties =>
+      'مفيش ضمانات بتخلص في الـ ٦٠ يوم الجايين.';
+
+  @override
+  String get monthlySummaryOverdue => 'متأخر';
+
+  @override
+  String get summaryRenewal => 'تجديد';
+
+  @override
+  String get summaryInstallment => 'قسط';
+
+  @override
+  String get reminderCustomTitle => 'تذكير أبكر';
+
+  @override
+  String get reminderCustomHint => 'تذكير زيادة، قبلها بعدد الأيام ده';
+
+  @override
+  String get reminderCustomOff => 'لا';
+
+  @override
+  String reminderCustomDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText يوم',
+      few: '$daysText أيام',
+      two: 'يومين',
+      one: 'يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderCustomProOnly => 'مع Sakk Pro';
+
+  @override
+  String get backupExport => 'تصدير نسخة احتياطية (JSON)';
+
+  @override
+  String get backupFailed => 'معرفناش نعمل النسخة الاحتياطية. جرّب تاني.';
+
+  @override
+  String get paywallHeadlineBackup => 'خلّي معاك نسخة من كل حاجة';
+
+  @override
+  String get featureBackup => 'نسخة احتياطية';
+
+  @override
+  String get proStatusLoadFailed =>
+      'معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني.';
 }

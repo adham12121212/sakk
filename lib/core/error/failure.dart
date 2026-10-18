@@ -40,3 +40,9 @@ class CancelledFailure extends Failure {
 class EmailConfirmationRequiredFailure extends Failure {
   const EmailConfirmationRequiredFailure() : super('');
 }
+
+/// The input can't be saved as it is; [message] is a code the UI maps to a
+/// localized explanation (see `userFacingError`).
+class ValidationFailure extends Failure {
+  const ValidationFailure(super.message);
+}

@@ -41,7 +41,7 @@ class SocialLoginButtons extends StatelessWidget {
                   foregroundColor: colorScheme.onSurface,
                   side: BorderSide(color: colorScheme.outline, width: 1.2),
                 ),
-                icon: Image.asset('assets/icons/google.png', width: 22, height: 22),
+                icon: Image.asset('assets/icons/google.webp', width: 22, height: 22),
                 label: Text(l10n.google, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             );

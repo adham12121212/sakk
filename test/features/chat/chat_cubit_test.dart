@@ -67,4 +67,40 @@ void main() {
     await cubit.sendMessage('   ');
     expect(cubit.state.messages, isEmpty);
   });
+
+  test('the saved conversation loads once, before anything sent meanwhile', () async {
+    final send = _SendMessage();
+    final history = _History([reply('saved')]);
+    final cubit = ChatCubit(send, const Stream.empty(), getHistoryUseCase: history);
+
+    await cubit.loadHistoryIfNeeded();
+    await cubit.loadHistoryIfNeeded();
+    expect(history.calls, 1);
+    expect(cubit.state.messages.map((m) => m.content), ['saved']);
+  });
+
+  test('history that fails to load (offline) is tried again next time', () async {
+    final history = _History(null);
+    final cubit = ChatCubit(_SendMessage(), const Stream.empty(), getHistoryUseCase: history);
+    await cubit.loadHistoryIfNeeded();
+    expect(cubit.state.messages, isEmpty);
+    history.result = [reply('saved')];
+    await cubit.loadHistoryIfNeeded();
+    expect(cubit.state.messages.map((m) => m.content), ['saved']);
+  });
+}
+
+class _History implements GetChatHistoryUseCase {
+  _History(this.result);
+
+  /// Null fails like being offline.
+  List<ChatMessageEntity>? result;
+  int calls = 0;
+
+  @override
+  Future<Either<Failure, List<ChatMessageEntity>>> call() async {
+    calls++;
+    final r = result;
+    return r == null ? const Left(NetworkFailure(NetworkFailure.noConnectionMessage)) : Right(r);
+  }
 }

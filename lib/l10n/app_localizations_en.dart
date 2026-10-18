@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailAddress => 'Email address';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get emailHint => 'example@gmail.com';
 
   @override
   String get password => 'Password';
@@ -1523,4 +1523,770 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountActionsHint => 'Log out or delete your account';
+
+  @override
+  String get installments => 'Installments';
+
+  @override
+  String get addInstallment => 'Add installment';
+
+  @override
+  String get editInstallment => 'Edit installment plan';
+
+  @override
+  String get installmentsLeftToPay => 'Left to pay';
+
+  @override
+  String get installmentsHomeEmpty => 'Track Valu, bank and store installments';
+
+  @override
+  String get noInstallmentsYet => 'No installments yet';
+
+  @override
+  String get noInstallmentsBody =>
+      'Add what you\'re paying off with Valu, your bank or a store to see what\'s left and get reminded before each due date.';
+
+  @override
+  String installmentsActiveCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText active plans',
+      one: '1 active plan',
+      zero: 'No active plans',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsDueThisMonth(String amount) {
+    return '$amount due this month';
+  }
+
+  @override
+  String installmentsOverdueTotal(String amount) {
+    return '$amount overdue';
+  }
+
+  @override
+  String installmentsOverdueBanner(int count, String countText, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText installments are overdue ($amount)',
+      one: '1 installment is overdue ($amount)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsPaidOf(String paid, String total) {
+    return '$paid of $total paid';
+  }
+
+  @override
+  String get installmentDueToday => 'Due today';
+
+  @override
+  String get installmentDueTomorrow => 'Due tomorrow';
+
+  @override
+  String installmentDueInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Due in $daysText days',
+      one: 'Due in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentOverdueBy(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Overdue by $daysText days',
+      one: 'Overdue by 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentPaidOff => 'Paid off';
+
+  @override
+  String get installmentCancelled => 'Cancelled';
+
+  @override
+  String installmentOfTotal(String amount) {
+    return 'of $amount';
+  }
+
+  @override
+  String get nextInstallment => 'Next installment';
+
+  @override
+  String nextInstallmentDue(String amount, String when) {
+    return 'Next $amount · $when';
+  }
+
+  @override
+  String get markAsPaid => 'Mark as paid';
+
+  @override
+  String get markUnpaid => 'Mark as unpaid';
+
+  @override
+  String get markUnpaidQuestion => 'Mark as unpaid?';
+
+  @override
+  String markUnpaidBody(String date) {
+    return 'The installment due $date will show as unpaid again.';
+  }
+
+  @override
+  String get installmentMarkedPaid => 'Marked as paid';
+
+  @override
+  String paidOn(String date) {
+    return 'Paid $date';
+  }
+
+  @override
+  String get paymentSchedule => 'Payment schedule';
+
+  @override
+  String get linkedProduct => 'Product';
+
+  @override
+  String get installmentProvider => 'Provider';
+
+  @override
+  String get installmentProviderOptional => 'Provider (optional)';
+
+  @override
+  String get providerBank => 'Bank';
+
+  @override
+  String get providerStore => 'Store';
+
+  @override
+  String get downPayment => 'Down payment';
+
+  @override
+  String get downPaymentOptional => 'Down payment (optional)';
+
+  @override
+  String get downPaymentTooHigh => 'More than the total price';
+
+  @override
+  String get interestOrFees => 'Interest or fees';
+
+  @override
+  String get interestOrFeesOptional => 'Interest / fees (optional)';
+
+  @override
+  String get installmentAmount => 'Installments';
+
+  @override
+  String installmentsTimesAmount(String count, String amount) {
+    return '$count × $amount';
+  }
+
+  @override
+  String get installmentAmountPerMonth => 'Monthly installment';
+
+  @override
+  String get installmentAmountAuto =>
+      'Worked out from the total, down payment and fees.';
+
+  @override
+  String get installmentAmountCustom => 'Your own amount.';
+
+  @override
+  String get useEvenSplit => 'Split evenly';
+
+  @override
+  String get nothingLeftToFinance => 'The down payment covers the whole price';
+
+  @override
+  String get installmentsCountLabel => 'Number of installments';
+
+  @override
+  String get installmentsCountInvalid => 'Enter a whole number from 1 to 360';
+
+  @override
+  String installmentsCountBelowPaid(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'At least $countText: that many are already paid',
+      one: 'At least 1: one is already paid',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentsCountBelowPaidGeneric =>
+      'The number of installments can\'t be less than those already paid.';
+
+  @override
+  String monthsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get firstInstallmentDate => 'First installment';
+
+  @override
+  String get dueDayOfMonth => 'Due day';
+
+  @override
+  String dueDayValue(String day) {
+    return 'Day $day of each month';
+  }
+
+  @override
+  String get dueDayShortMonthsHint =>
+      'In shorter months it\'s due on the last day.';
+
+  @override
+  String get installmentFor => 'What are you paying for?';
+
+  @override
+  String get installmentForProduct => 'One of my products';
+
+  @override
+  String get installmentForOther => 'Something else';
+
+  @override
+  String get installmentTitle => 'What did you buy?';
+
+  @override
+  String get installmentTitleRequired => 'Enter what you bought';
+
+  @override
+  String get chooseProduct => 'Choose a product';
+
+  @override
+  String get chooseProductRequired =>
+      'Choose a product, or pick \"Something else\"';
+
+  @override
+  String get searchProducts => 'Search your products';
+
+  @override
+  String get noProductsMatch => 'No products match.';
+
+  @override
+  String get noProductsToLink =>
+      'You have no products yet. Add one first, or pick \"Something else\".';
+
+  @override
+  String editPaidInstallmentsNote(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$countText installments are already paid and stay as they are. Changes apply to the rest.',
+      one:
+          '1 installment is already paid and stays as it is. Changes apply to the rest.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get schedulePreview => 'Schedule preview';
+
+  @override
+  String get schedulePreviewEmpty =>
+      'Enter the total price and number of installments to see the schedule.';
+
+  @override
+  String schedulePreviewSummary(
+    int count,
+    String countText,
+    String total,
+    String lastDate,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText installments · $total in total · last on $lastDate',
+      one: '1 installment · $total in total · last on $lastDate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showAllInstallments(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show all $countText',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get showLess => 'Show less';
+
+  @override
+  String get installmentSaved => 'Installment plan saved';
+
+  @override
+  String get installmentDeleted => 'Installment plan deleted';
+
+  @override
+  String get deleteInstallmentQuestion => 'Delete installment plan?';
+
+  @override
+  String deleteInstallmentBody(String name) {
+    return '$name, its payment schedule and reminders will be removed.';
+  }
+
+  @override
+  String get cancelInstallmentPlan => 'Cancel plan';
+
+  @override
+  String get reactivateInstallmentPlan => 'Make active again';
+
+  @override
+  String get installmentPlanCancelled => 'Plan cancelled';
+
+  @override
+  String get installmentPlanReactivated => 'Plan active again';
+
+  @override
+  String get installmentNotFound => 'Plan not found';
+
+  @override
+  String get installmentNotFoundBody => 'It may have been deleted.';
+
+  @override
+  String get productInstallmentsHint =>
+      'Paying for this in installments? Track what\'s left and get reminded before each due date.';
+
+  @override
+  String get notifInstallmentDueSoonTitle => 'Installment due soon';
+
+  @override
+  String get notifInstallmentDueTodayTitle => 'Installment due today';
+
+  @override
+  String notifInstallmentDueBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name: $price is due in $daysText days',
+      one: '$name: $price is due tomorrow',
+      zero: '$name: $price is due today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get smartAddChoosePdf => 'Choose a PDF (e.g. the contract)';
+
+  @override
+  String get smartAddInstallmentHint =>
+      'Fill this in from a contract, screenshot or SMS';
+
+  @override
+  String get smartAddInstallmentReview =>
+      'Check every field before saving: nothing is saved until you tap the button below.';
+
+  @override
+  String get installmentScanUnreadable =>
+      'We couldn\'t find an installment plan in that. Try a clearer screenshot, the contract\'s first page or the full message, or fill it in yourself.';
+
+  @override
+  String get installmentsThisMonth => 'Due this month';
+
+  @override
+  String get installmentsDuePerMonth => 'Due each month';
+
+  @override
+  String get installmentsAnalyticsEmpty =>
+      'No installments yet. Tap to add what you pay off monthly.';
+
+  @override
+  String installmentsChartCurrencyNote(String currency) {
+    return 'The chart shows $currency installments only';
+  }
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get remindersIntro =>
+      'Choose which reminders Sakk sends on this phone.';
+
+  @override
+  String get remindersAllOff => 'All off';
+
+  @override
+  String get listSeparator => ', ';
+
+  @override
+  String get reminderWarranties => 'Warranties';
+
+  @override
+  String get reminderWarrantiesHint =>
+      'Before a warranty ends, when it ends, and before a return window closes';
+
+  @override
+  String get reminderSubscriptionsHint => 'Around each renewal';
+
+  @override
+  String get reminderInstallmentsHint => 'Before each installment is due';
+
+  @override
+  String get reminderThreeDaysBefore => '3 days before';
+
+  @override
+  String get reminderDayBefore => 'The day before';
+
+  @override
+  String get reminderDayAfterCheckCharge =>
+      'The day after, to check the charge';
+
+  @override
+  String get reminderOnDueDay => 'On the due day';
+
+  @override
+  String get limitReachedProducts =>
+      'You\'ve reached the free plan\'s product limit. Upgrade to Sakk Pro to add more.';
+
+  @override
+  String get limitReachedSubscriptions =>
+      'You\'ve reached the free plan\'s subscription limit. Upgrade to Sakk Pro to track more.';
+
+  @override
+  String get limitReachedInstallments =>
+      'The free plan tracks one running installment plan. Upgrade to Sakk Pro to add more.';
+
+  @override
+  String get limitReachedScan =>
+      'You\'ve used today\'s free scans. Upgrade to Sakk Pro for unlimited scans, or try again tomorrow.';
+
+  @override
+  String get limitReachedChat =>
+      'You\'ve used today\'s free messages. Upgrade to Sakk Pro, or come back tomorrow.';
+
+  @override
+  String get limitReachedFairUse =>
+      'You\'ve reached today\'s limit. Please try again tomorrow.';
+
+  @override
+  String get chatBusy =>
+      'The assistant is busy right now. Please try again in a minute.';
+
+  @override
+  String get scanNeedsInternet =>
+      'Scanning needs an internet connection. You can still enter the details yourself.';
+
+  @override
+  String get chatNeedsInternet => 'The assistant needs an internet connection.';
+
+  @override
+  String scansLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText scans left today',
+      one: '1 scan left today',
+      zero: 'No free scans left today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chatMessagesLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText messages left today',
+      one: '1 message left today',
+      zero: 'No free messages left today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeFree => 'Free';
+
+  @override
+  String get planBadgePro => 'Sakk Pro';
+
+  @override
+  String get planBadgeYearly => 'Pro ⭐ Yearly';
+
+  @override
+  String get planBadgeTrial => 'Pro – Trial';
+
+  @override
+  String planBadgeTrialDaysLeft(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText days left',
+      one: '1 day left',
+      zero: 'ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeBillingIssue => 'Payment issue';
+
+  @override
+  String get sakkPro => 'Sakk Pro';
+
+  @override
+  String get proCardFreeBody =>
+      'Unlimited products, subscriptions and installments, unlimited AI, and your monthly summary.';
+
+  @override
+  String proCardRenewsOn(String date) {
+    return 'Renews on $date';
+  }
+
+  @override
+  String proCardEndsOn(String date) {
+    return 'Pro ends on $date. Your data stays.';
+  }
+
+  @override
+  String proCardTrialEndsOn(String date) {
+    return 'Free trial ends on $date';
+  }
+
+  @override
+  String get proCardBillingIssueBody =>
+      'Google Play couldn\'t charge your payment method. Update it to keep Pro.';
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro';
+
+  @override
+  String get manageSubscription => 'Manage subscription';
+
+  @override
+  String get updatePaymentMethod => 'Update payment method';
+
+  @override
+  String get restorePurchases => 'Restore purchases';
+
+  @override
+  String get restoreSuccess => 'Sakk Pro restored';
+
+  @override
+  String get restoreNothing =>
+      'No Sakk Pro purchase found for this Google account';
+
+  @override
+  String get paywallHeadlineUpgrade => 'Get more out of Sakk';
+
+  @override
+  String get paywallHeadlineScan => 'You\'ve used today\'s free scans';
+
+  @override
+  String get paywallHeadlineChat => 'You\'ve used today\'s free messages';
+
+  @override
+  String get paywallHeadlineProducts => 'Your free plan is full';
+
+  @override
+  String get paywallHeadlineSubscriptions => 'Track all your subscriptions';
+
+  @override
+  String get paywallHeadlineInstallments => 'Track all your installments';
+
+  @override
+  String get paywallHeadlineSummary => 'See what you\'ll pay this month';
+
+  @override
+  String get paywallSubtitle =>
+      'No limits on products, subscriptions, installments or AI, plus smart reminders and your monthly summary.';
+
+  @override
+  String get paywallFeature => 'Feature';
+
+  @override
+  String get paywallFree => 'Free';
+
+  @override
+  String get paywallPro => 'Pro';
+
+  @override
+  String get featureProducts => 'Warranty products';
+
+  @override
+  String get featureSubscriptions => 'Tracked subscriptions';
+
+  @override
+  String get featureInstallments => 'Installments';
+
+  @override
+  String get featureScans => 'AI scans';
+
+  @override
+  String get featureChat => 'AI chat messages';
+
+  @override
+  String get featureReminders => 'Reminders';
+
+  @override
+  String get featureSummary => 'Monthly summary';
+
+  @override
+  String valuePerDay(String countText) {
+    return '$countText/day';
+  }
+
+  @override
+  String get valueUnlimited => 'Unlimited';
+
+  @override
+  String get valueBasic => 'Basic';
+
+  @override
+  String get valueSmart => 'Smart';
+
+  @override
+  String get planMonthly => 'Monthly';
+
+  @override
+  String get planYearly => 'Yearly';
+
+  @override
+  String get bestValue => 'Best value';
+
+  @override
+  String savePercent(String percent) {
+    return 'Save ~$percent%';
+  }
+
+  @override
+  String freeTrialDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText-day free trial',
+      one: '1-day free trial',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get startFreeTrial => 'Start free trial';
+
+  @override
+  String get subscribe => 'Subscribe';
+
+  @override
+  String autoRenewTrialDisclosure(String days, String price) {
+    return 'Free for $days days, then $price. Cancel before the trial ends and you won\'t be charged.';
+  }
+
+  @override
+  String get autoRenewDisclosure =>
+      'Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.';
+
+  @override
+  String get purchaseSuccess => 'Welcome to Sakk Pro!';
+
+  @override
+  String get purchaseFailed =>
+      'The purchase didn\'t go through. Please try again.';
+
+  @override
+  String get purchasesUnavailable =>
+      'Subscriptions aren\'t available right now. Please try again later.';
+
+  @override
+  String get alreadyPro => 'You\'re on Sakk Pro';
+
+  @override
+  String get monthlySummary => 'This month';
+
+  @override
+  String get monthlySummaryTotal => 'Left to pay this month';
+
+  @override
+  String get monthlySummaryTotalHint =>
+      'Subscription renewals and unpaid installments from today to the end of the month, overdue ones included.';
+
+  @override
+  String get monthlySummaryUpcoming => 'Upcoming payments';
+
+  @override
+  String get monthlySummaryNothingDue => 'Nothing left to pay this month.';
+
+  @override
+  String get monthlySummaryWarranties => 'Warranties ending soon';
+
+  @override
+  String get monthlySummaryNoWarranties =>
+      'No warranties end in the next 60 days.';
+
+  @override
+  String get monthlySummaryOverdue => 'Overdue';
+
+  @override
+  String get summaryRenewal => 'Renewal';
+
+  @override
+  String get summaryInstallment => 'Installment';
+
+  @override
+  String get reminderCustomTitle => 'Earlier reminder';
+
+  @override
+  String get reminderCustomHint => 'One more reminder, this many days before';
+
+  @override
+  String get reminderCustomOff => 'Off';
+
+  @override
+  String reminderCustomDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderCustomProOnly => 'Sakk Pro';
+
+  @override
+  String get backupExport => 'Export backup (JSON)';
+
+  @override
+  String get backupFailed => 'Couldn\'t create the backup. Please try again.';
+
+  @override
+  String get paywallHeadlineBackup => 'Keep a copy of everything';
+
+  @override
+  String get featureBackup => 'Backup export';
+
+  @override
+  String get proStatusLoadFailed =>
+      'Couldn\'t load your plan. Check your connection and try again.';
 }

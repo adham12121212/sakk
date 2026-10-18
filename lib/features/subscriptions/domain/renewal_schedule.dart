@@ -1,19 +1,9 @@
+import '../../../core/util/date_math.dart';
 import 'entities/billing_cycle.dart';
 import 'entities/user_subscription.dart';
 
-/// [date] moved by [months] (negative goes back), keeping its day of the
-/// month where it exists and using the month's last day where it doesn't
-/// (Jan 31 + 1 → Feb 28).
-DateTime addMonthsClamped(DateTime date, int months) {
-  final monthIndex = date.month - 1 + months;
-  // Floor, not ~/ (which rounds toward zero): going back from January must
-  // land in the previous year's December.
-  final year = date.year + (monthIndex / 12).floor();
-  final month = monthIndex % 12 + 1;
-  final lastDay = DateTime(year, month + 1, 0).day;
-  final day = date.day > lastDay ? lastDay : date.day;
-  return DateTime(year, month, day);
-}
+// Moved to core (installments use it too); re-exported for existing imports.
+export '../../../core/util/date_math.dart' show addMonthsClamped;
 
 /// The first renewal on or after [today], counting whole [cycle]s from
 /// [renewalDate]. Returns [renewalDate] itself if it hasn't passed.

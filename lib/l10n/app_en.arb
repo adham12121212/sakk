@@ -4,7 +4,7 @@
   "welcomeBack": "Welcome back",
   "signInToContinue": "Sign in to continue",
   "emailAddress": "Email address",
-  "emailHint": "example@email.com",
+  "emailHint": "example@gmail.com",
   "password": "Password",
   "passwordHint": "Enter your password",
   "forgotPassword": "Forgot password?",
@@ -534,5 +534,508 @@
     }
   },
   "account": "Account",
-  "accountActionsHint": "Log out or delete your account"
+  "accountActionsHint": "Log out or delete your account",
+  "installments": "Installments",
+  "addInstallment": "Add installment",
+  "editInstallment": "Edit installment plan",
+  "installmentsLeftToPay": "Left to pay",
+  "installmentsHomeEmpty": "Track Valu, bank and store installments",
+  "noInstallmentsYet": "No installments yet",
+  "noInstallmentsBody": "Add what you're paying off with Valu, your bank or a store to see what's left and get reminded before each due date.",
+  "installmentsActiveCount": "{count, plural, =0{No active plans} one{1 active plan} other{{countText} active plans}}",
+  "@installmentsActiveCount": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsDueThisMonth": "{amount} due this month",
+  "@installmentsDueThisMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsOverdueTotal": "{amount} overdue",
+  "@installmentsOverdueTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsOverdueBanner": "{count, plural, one{1 installment is overdue ({amount})} other{{countText} installments are overdue ({amount})}}",
+  "@installmentsOverdueBanner": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsPaidOf": "{paid} of {total} paid",
+  "@installmentsPaidOf": {
+    "description": "Numbers already in the app's digits.",
+    "placeholders": {
+      "paid": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentDueToday": "Due today",
+  "installmentDueTomorrow": "Due tomorrow",
+  "installmentDueInDays": "{days, plural, one{Due in 1 day} other{Due in {daysText} days}}",
+  "@installmentDueInDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentOverdueBy": "{days, plural, one{Overdue by 1 day} other{Overdue by {daysText} days}}",
+  "@installmentOverdueBy": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentPaidOff": "Paid off",
+  "installmentCancelled": "Cancelled",
+  "installmentOfTotal": "of {amount}",
+  "@installmentOfTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nextInstallment": "Next installment",
+  "nextInstallmentDue": "Next {amount} · {when}",
+  "@nextInstallmentDue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "markAsPaid": "Mark as paid",
+  "markUnpaid": "Mark as unpaid",
+  "markUnpaidQuestion": "Mark as unpaid?",
+  "markUnpaidBody": "The installment due {date} will show as unpaid again.",
+  "@markUnpaidBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentMarkedPaid": "Marked as paid",
+  "paidOn": "Paid {date}",
+  "@paidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentSchedule": "Payment schedule",
+  "linkedProduct": "Product",
+  "installmentProvider": "Provider",
+  "installmentProviderOptional": "Provider (optional)",
+  "providerBank": "Bank",
+  "providerStore": "Store",
+  "downPayment": "Down payment",
+  "downPaymentOptional": "Down payment (optional)",
+  "downPaymentTooHigh": "More than the total price",
+  "interestOrFees": "Interest or fees",
+  "interestOrFeesOptional": "Interest / fees (optional)",
+  "installmentAmount": "Installments",
+  "installmentsTimesAmount": "{count} × {amount}",
+  "@installmentsTimesAmount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentAmountPerMonth": "Monthly installment",
+  "installmentAmountAuto": "Worked out from the total, down payment and fees.",
+  "installmentAmountCustom": "Your own amount.",
+  "useEvenSplit": "Split evenly",
+  "nothingLeftToFinance": "The down payment covers the whole price",
+  "installmentsCountLabel": "Number of installments",
+  "installmentsCountInvalid": "Enter a whole number from 1 to 360",
+  "installmentsCountBelowPaid": "{count, plural, one{At least 1: one is already paid} other{At least {countText}: that many are already paid}}",
+  "@installmentsCountBelowPaid": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsCountBelowPaidGeneric": "The number of installments can't be less than those already paid.",
+  "monthsCount": "{count, plural, one{1 month} other{{countText} months}}",
+  "@monthsCount": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "firstInstallmentDate": "First installment",
+  "dueDayOfMonth": "Due day",
+  "dueDayValue": "Day {day} of each month",
+  "@dueDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "dueDayShortMonthsHint": "In shorter months it's due on the last day.",
+  "installmentFor": "What are you paying for?",
+  "installmentForProduct": "One of my products",
+  "installmentForOther": "Something else",
+  "installmentTitle": "What did you buy?",
+  "installmentTitleRequired": "Enter what you bought",
+  "chooseProduct": "Choose a product",
+  "chooseProductRequired": "Choose a product, or pick \"Something else\"",
+  "searchProducts": "Search your products",
+  "noProductsMatch": "No products match.",
+  "noProductsToLink": "You have no products yet. Add one first, or pick \"Something else\".",
+  "editPaidInstallmentsNote": "{count, plural, one{1 installment is already paid and stays as it is. Changes apply to the rest.} other{{countText} installments are already paid and stay as they are. Changes apply to the rest.}}",
+  "@editPaidInstallmentsNote": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "schedulePreview": "Schedule preview",
+  "schedulePreviewEmpty": "Enter the total price and number of installments to see the schedule.",
+  "schedulePreviewSummary": "{count, plural, one{1 installment · {total} in total · last on {lastDate}} other{{countText} installments · {total} in total · last on {lastDate}}}",
+  "@schedulePreviewSummary": {
+    "description": "total includes the down payment. countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "lastDate": {
+        "type": "String"
+      }
+    }
+  },
+  "showAllInstallments": "{count, plural, other{Show all {countText}}}",
+  "@showAllInstallments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "showLess": "Show less",
+  "installmentSaved": "Installment plan saved",
+  "installmentDeleted": "Installment plan deleted",
+  "deleteInstallmentQuestion": "Delete installment plan?",
+  "deleteInstallmentBody": "{name}, its payment schedule and reminders will be removed.",
+  "@deleteInstallmentBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelInstallmentPlan": "Cancel plan",
+  "reactivateInstallmentPlan": "Make active again",
+  "installmentPlanCancelled": "Plan cancelled",
+  "installmentPlanReactivated": "Plan active again",
+  "installmentNotFound": "Plan not found",
+  "installmentNotFoundBody": "It may have been deleted.",
+  "productInstallmentsHint": "Paying for this in installments? Track what's left and get reminded before each due date.",
+  "notifInstallmentDueSoonTitle": "Installment due soon",
+  "notifInstallmentDueTodayTitle": "Installment due today",
+  "notifInstallmentDueBody": "{days, plural, =0{{name}: {price} is due today} =1{{name}: {price} is due tomorrow} other{{name}: {price} is due in {daysText} days}}",
+  "@notifInstallmentDueBody": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "smartAddChoosePdf": "Choose a PDF (e.g. the contract)",
+  "smartAddInstallmentHint": "Fill this in from a contract, screenshot or SMS",
+  "smartAddInstallmentReview": "Check every field before saving: nothing is saved until you tap the button below.",
+  "installmentScanUnreadable": "We couldn't find an installment plan in that. Try a clearer screenshot, the contract's first page or the full message, or fill it in yourself.",
+  "installmentsThisMonth": "Due this month",
+  "installmentsDuePerMonth": "Due each month",
+  "installmentsAnalyticsEmpty": "No installments yet. Tap to add what you pay off monthly.",
+  "installmentsChartCurrencyNote": "The chart shows {currency} installments only",
+  "@installmentsChartCurrencyNote": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "reminders": "Reminders",
+  "remindersIntro": "Choose which reminders Sakk sends on this phone.",
+  "remindersAllOff": "All off",
+  "listSeparator": ", ",
+  "@listSeparator": {
+    "description": "Joins a short list, e.g. \"Warranties, Subscriptions\"."
+  },
+  "reminderWarranties": "Warranties",
+  "reminderWarrantiesHint": "Before a warranty ends, when it ends, and before a return window closes",
+  "reminderSubscriptionsHint": "Around each renewal",
+  "reminderInstallmentsHint": "Before each installment is due",
+  "reminderThreeDaysBefore": "3 days before",
+  "reminderDayBefore": "The day before",
+  "reminderDayAfterCheckCharge": "The day after, to check the charge",
+  "reminderOnDueDay": "On the due day",
+  "limitReachedProducts": "You've reached the free plan's product limit. Upgrade to Sakk Pro to add more.",
+  "limitReachedSubscriptions": "You've reached the free plan's subscription limit. Upgrade to Sakk Pro to track more.",
+  "limitReachedInstallments": "The free plan tracks one running installment plan. Upgrade to Sakk Pro to add more.",
+  "limitReachedScan": "You've used today's free scans. Upgrade to Sakk Pro for unlimited scans, or try again tomorrow.",
+  "limitReachedChat": "You've used today's free messages. Upgrade to Sakk Pro, or come back tomorrow.",
+  "limitReachedFairUse": "You've reached today's limit. Please try again tomorrow.",
+  "chatBusy": "The assistant is busy right now. Please try again in a minute.",
+  "scanNeedsInternet": "Scanning needs an internet connection. You can still enter the details yourself.",
+  "chatNeedsInternet": "The assistant needs an internet connection.",
+  "scansLeftToday": "{count, plural, =0{No free scans left today} =1{1 scan left today} other{{countText} scans left today}}",
+  "@scansLeftToday": {
+    "description": "countText is the number in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "chatMessagesLeftToday": "{count, plural, =0{No free messages left today} =1{1 message left today} other{{countText} messages left today}}",
+  "@chatMessagesLeftToday": {
+    "description": "countText is the number in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "planBadgeFree": "Free",
+  "planBadgePro": "Sakk Pro",
+  "planBadgeYearly": "Pro ⭐ Yearly",
+  "planBadgeTrial": "Pro – Trial",
+  "planBadgeTrialDaysLeft": "{days, plural, =0{ends today} =1{1 day left} other{{daysText} days left}}",
+  "@planBadgeTrialDaysLeft": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "planBadgeBillingIssue": "Payment issue",
+  "sakkPro": "Sakk Pro",
+  "proCardFreeBody": "Unlimited products, subscriptions and installments, unlimited AI, and your monthly summary.",
+  "proCardRenewsOn": "Renews on {date}",
+  "@proCardRenewsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardEndsOn": "Pro ends on {date}. Your data stays.",
+  "@proCardEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardTrialEndsOn": "Free trial ends on {date}",
+  "@proCardTrialEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardBillingIssueBody": "Google Play couldn't charge your payment method. Update it to keep Pro.",
+  "upgradeToPro": "Upgrade to Pro",
+  "manageSubscription": "Manage subscription",
+  "updatePaymentMethod": "Update payment method",
+  "restorePurchases": "Restore purchases",
+  "restoreSuccess": "Sakk Pro restored",
+  "restoreNothing": "No Sakk Pro purchase found for this Google account",
+  "paywallHeadlineUpgrade": "Get more out of Sakk",
+  "paywallHeadlineScan": "You've used today's free scans",
+  "paywallHeadlineChat": "You've used today's free messages",
+  "paywallHeadlineProducts": "Your free plan is full",
+  "paywallHeadlineSubscriptions": "Track all your subscriptions",
+  "paywallHeadlineInstallments": "Track all your installments",
+  "paywallHeadlineSummary": "See what you'll pay this month",
+  "paywallSubtitle": "No limits on products, subscriptions, installments or AI, plus smart reminders and your monthly summary.",
+  "paywallFeature": "Feature",
+  "paywallFree": "Free",
+  "paywallPro": "Pro",
+  "featureProducts": "Warranty products",
+  "featureSubscriptions": "Tracked subscriptions",
+  "featureInstallments": "Installments",
+  "featureScans": "AI scans",
+  "featureChat": "AI chat messages",
+  "featureReminders": "Reminders",
+  "featureSummary": "Monthly summary",
+  "valuePerDay": "{countText}/day",
+  "@valuePerDay": {
+    "placeholders": {
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "valueUnlimited": "Unlimited",
+  "valueBasic": "Basic",
+  "valueSmart": "Smart",
+  "planMonthly": "Monthly",
+  "planYearly": "Yearly",
+  "bestValue": "Best value",
+  "savePercent": "Save ~{percent}%",
+  "@savePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "freeTrialDays": "{days, plural, =1{1-day free trial} other{{daysText}-day free trial}}",
+  "@freeTrialDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "startFreeTrial": "Start free trial",
+  "subscribe": "Subscribe",
+  "autoRenewTrialDisclosure": "Free for {days} days, then {price}. Cancel before the trial ends and you won't be charged.",
+  "@autoRenewTrialDisclosure": {
+    "description": "days is the trial length in the app's digits; price is e.g. \"EGP 29.00 / month\".",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "autoRenewDisclosure": "Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.",
+  "purchaseSuccess": "Welcome to Sakk Pro!",
+  "purchaseFailed": "The purchase didn't go through. Please try again.",
+  "purchasesUnavailable": "Subscriptions aren't available right now. Please try again later.",
+  "alreadyPro": "You're on Sakk Pro",
+  "monthlySummary": "This month",
+  "monthlySummaryTotal": "Left to pay this month",
+  "monthlySummaryTotalHint": "Subscription renewals and unpaid installments from today to the end of the month, overdue ones included.",
+  "monthlySummaryUpcoming": "Upcoming payments",
+  "monthlySummaryNothingDue": "Nothing left to pay this month.",
+  "monthlySummaryWarranties": "Warranties ending soon",
+  "monthlySummaryNoWarranties": "No warranties end in the next 60 days.",
+  "monthlySummaryOverdue": "Overdue",
+  "summaryRenewal": "Renewal",
+  "summaryInstallment": "Installment",
+  "reminderCustomTitle": "Earlier reminder",
+  "reminderCustomHint": "One more reminder, this many days before",
+  "reminderCustomOff": "Off",
+  "reminderCustomDays": "{days, plural, other{{daysText} days}}",
+  "@reminderCustomDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderCustomProOnly": "Sakk Pro",
+  "backupExport": "Export backup (JSON)",
+  "backupFailed": "Couldn't create the backup. Please try again.",
+  "paywallHeadlineBackup": "Keep a copy of everything",
+  "featureBackup": "Backup export",
+  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again."
 }

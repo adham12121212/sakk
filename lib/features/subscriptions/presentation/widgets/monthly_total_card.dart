@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constant/app_colors.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/brand_gradient_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../util/subscription_format.dart';
 
@@ -29,24 +29,7 @@ class MonthlyTotalCard extends StatelessWidget {
     final mainAmount = totals[main] ?? 0;
     final others = totals.entries.where((e) => e.key != main).toList();
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: AppColors.brandGradientColors,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x404A5CFA),
-            blurRadius: 24,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
+    return BrandGradientCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

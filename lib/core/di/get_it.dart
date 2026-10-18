@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,6 +35,11 @@ import '../../features/household/data/household_data_source.dart';
 import '../../features/household/data/household_repo.dart';
 import '../../features/household/presentation/cubit/household_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
+import '../../features/pro/data/backup_data_source.dart';
+import '../../features/pro/data/pro_status_data_source.dart';
+import '../../features/pro/data/purchases_gateway.dart';
+import '../../features/pro/presentation/cubit/paywall_cubit.dart';
+import '../../features/pro/presentation/cubit/pro_cubit.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/products/data/product_data_source/product_local_data_source.dart';
 import '../../features/products/data/product_repo_impl/product_repo_impl.dart';
@@ -46,6 +52,20 @@ import '../../features/products/domain/usecase/product_extras_usecases.dart';
 import '../../features/products/domain/usecase/scan_receipt_usecase.dart';
 import '../../features/products/domain/usecase/update_product_usecase.dart';
 import '../../features/products/presentation/cubit/product_cubit.dart';
+import '../../features/installments/data/installment_data_source/installment_data_source.dart';
+import '../../features/installments/data/installment_data_source/installment_local_data_source.dart';
+import '../../features/installments/data/installment_repo_impl/installment_repo_impl.dart';
+import '../../features/installments/domain/installment_repo/installment_repo.dart';
+import '../../features/installments/domain/usecase/add_installment_plan_usecase.dart';
+import '../../features/installments/domain/usecase/clear_cached_installments_usecase.dart';
+import '../../features/installments/domain/usecase/delete_installment_plan_usecase.dart';
+import '../../features/installments/domain/usecase/extract_installment_usecase.dart';
+import '../../features/installments/domain/usecase/get_installment_plans_usecase.dart';
+import '../../features/installments/domain/usecase/set_payment_paid_usecase.dart';
+import '../../features/installments/domain/usecase/update_installment_plan_usecase.dart';
+import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
+import '../../features/installments/presentation/cubit/installments_cubit.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
 import '../../features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
@@ -73,9 +93,11 @@ import '../service/notification_service.dart';
 import '../service/onboarding_service.dart';
 import '../service/password_recovery_service.dart';
 import '../service/reminder_controller.dart';
+import '../service/reminder_settings.dart';
 import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
+import '../service/installment_reminder_service.dart';
 import '../service/subscription_reminder_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
@@ -143,6 +165,7 @@ void setupLocator() {
   // ---- Settings ----
   getIt.registerLazySingleton<ThemeController>(() => ThemeController());
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
+  getIt.registerLazySingleton<ReminderSettings>(() => ReminderSettings());
   getIt.registerLazySingleton<ReviewPrompter>(() => ReviewPrompter());
   getIt.registerLazySingleton<AmountVisibilityController>(() => AmountVisibilityController());
   getIt.registerLazySingleton<HomeWidgetSync>(
@@ -234,6 +257,7 @@ void setupLocator() {
       localNotifications: getIt<NotificationService>(),
       logger: getIt<AppLogger>(),
       locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
     ),
   );
   getIt.registerLazySingleton<SubscriptionsCubit>(
@@ -251,6 +275,66 @@ void setupLocator() {
       getIt<UpdateSubscriptionUseCase>(),
       getIt<DeleteSubscriptionUseCase>(),
       getIt<SubscriptionsCubit>(),
+    ),
+  );
+
+  // ---- Installments ----
+  getIt.registerLazySingleton<InstallmentDataSource>(
+        () => InstallmentDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
+  );
+  getIt.registerLazySingleton<InstallmentLocalDataSource>(
+        () => InstallmentLocalDataSourceImpl(getIt<SupabaseService>()),
+  );
+  getIt.registerLazySingleton<InstallmentRepo>(
+        () => InstallmentRepoImpl(getIt<InstallmentDataSource>(), getIt<InstallmentLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+  );
+  getIt.registerLazySingleton<GetInstallmentPlansUseCase>(
+        () => GetInstallmentPlansUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<AddInstallmentPlanUseCase>(
+        () => AddInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<UpdateInstallmentPlanUseCase>(
+        () => UpdateInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<DeleteInstallmentPlanUseCase>(
+        () => DeleteInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<SetPaymentPaidUseCase>(
+        () => SetPaymentPaidUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerLazySingleton<ExtractInstallmentUseCase>(
+        () => ExtractInstallmentUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  getIt.registerFactory<InstallmentSmartAddCubit>(() => InstallmentSmartAddCubit(getIt<ExtractInstallmentUseCase>()));
+  getIt.registerLazySingleton<ClearCachedInstallmentsUseCase>(
+        () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
+  );
+  // Singleton: Home, the Installments screens, product details and Analytics share its list.
+  getIt.registerLazySingleton<InstallmentReminderService>(
+        () => InstallmentReminderService(
+      getUserUseCase: getIt<GetUserUseCase>(),
+      addNotificationUseCase: getIt<AddNotificationUseCase>(),
+      tracker: getIt<NotifiedWarrantiesTracker>(),
+      localNotifications: getIt<NotificationService>(),
+      logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
+    ),
+  );
+  getIt.registerLazySingleton<InstallmentsCubit>(
+        () => InstallmentsCubit(
+      getIt<GetInstallmentPlansUseCase>(),
+      getIt<SetPaymentPaidUseCase>(),
+      reminders: getIt<InstallmentReminderService>(),
+    ),
+  );
+  getIt.registerFactory<InstallmentFormCubit>(
+        () => InstallmentFormCubit(
+      getIt<AddInstallmentPlanUseCase>(),
+      getIt<UpdateInstallmentPlanUseCase>(),
+      getIt<DeleteInstallmentPlanUseCase>(),
+      getIt<InstallmentsCubit>(),
     ),
   );
 
@@ -304,6 +388,7 @@ void setupLocator() {
       reminders: getIt<ReminderController>(),
       logger: getIt<AppLogger>(),
       locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
     ),
   );
 
@@ -332,6 +417,35 @@ void setupLocator() {
     ),
   );
 
+  // ---- Sakk Pro ----
+  // RevenueCat's public SDK keys (not secrets). Without them the app runs
+  // on the free plan and the paywall says purchases aren't available.
+  getIt.registerLazySingleton<PurchasesGateway>(
+        () => RevenueCatGateway(
+      androidApiKey: dotenv.env['REVENUECAT_ANDROID_KEY'],
+      iosApiKey: dotenv.env['REVENUECAT_IOS_KEY'],
+      packageName: 'com.sakk.app',
+    ),
+  );
+  getIt.registerLazySingleton<BackupDataSource>(
+        () => BackupDataSourceImpl(Supabase.instance.client),
+  );
+  getIt.registerLazySingleton<ProStatusDataSource>(
+        () => ProStatusDataSourceImpl(Supabase.instance.client),
+  );
+  // Singleton: the badge, counters, paywall and add buttons share it.
+  getIt.registerLazySingleton<ProCubit>(
+        () => ProCubit(
+      getIt<ProStatusDataSource>(),
+      getIt<PurchasesGateway>(),
+      userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+      logger: getIt<AppLogger>(),
+    ),
+  );
+  getIt.registerFactory<PaywallCubit>(
+        () => PaywallCubit(getIt<PurchasesGateway>(), getIt<ProCubit>(), getIt<AppLogger>()),
+  );
+
   // ---- Chat ----
   getIt.registerLazySingleton<ChatDataSource>(
         () => ChatDataSourceImpl(Supabase.instance.client),
@@ -342,12 +456,16 @@ void setupLocator() {
   getIt.registerLazySingleton<SendMessageUseCase>(
         () => SendMessageUseCaseImpl(getIt<ChatRepo>()),
   );
+  getIt.registerLazySingleton<GetChatHistoryUseCase>(
+        () => GetChatHistoryUseCaseImpl(getIt<ChatRepo>()),
+  );
 
 
   getIt.registerLazySingleton<ChatCubit>(
         () => ChatCubit(
           getIt<SendMessageUseCase>(),
           Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+          getHistoryUseCase: getIt<GetChatHistoryUseCase>(),
         ),
   );
 

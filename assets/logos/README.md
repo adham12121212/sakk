@@ -9,5 +9,6 @@ one before `logo_url`, the site's favicon or the first letter.
 - Logos are drawn whole on a white tile with a margin, so any shape works and
   dark text stays readable in dark mode. Square, icon-style logos fill the
   tile best; wide wordmarks come out small.
-- Keep bitmaps at most 512px on the longest side.
+- Prefer `.webp`, at most 264px wide: the tile is 44dp, decoded at up to 2x
+  its width at 3x density. Wider files only add download size.
 - New or changed files need a full rebuild (`flutter run`), not a hot restart.

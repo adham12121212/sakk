@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/pro/domain/pro_limit.dart';
 import '../error/exceptions.dart';
 
 /// A photo uploaded for the AI to read.
@@ -54,15 +55,23 @@ class ReceiptAiClient {
   }
 
   /// Calls the edge function with [body] and returns its JSON answer.
-  /// Throws [ServerException] with [unreadable] or [aiBusy] for those cases.
+  /// Throws [ServerException] with [unreadable] or [aiBusy] for those cases,
+  /// and with a [ProLimit] code when today's scans are used up.
+  ///
+  /// Each call is one scan from the daily quota (given back by the function
+  /// if it fails on its side), so the plan status re-reads its counter.
   Future<Map<String, dynamic>> extract(Map<String, dynamic> body) async {
     try {
       final response = await _client.functions.invoke(_functionName, body: body);
       return response.data as Map<String, dynamic>;
     } on FunctionException catch (e) {
+      final limit = ProLimit.codeFor(e);
+      if (limit != null) throw ServerException(limit);
       if (e.status == 422) throw ServerException(unreadable);
       if (e.status == 503) throw ServerException(aiBusy);
       rethrow;
+    } finally {
+      ProLimit.notifyUsageChanged();
     }
   }
 
