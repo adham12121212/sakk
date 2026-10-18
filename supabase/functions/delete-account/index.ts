@@ -15,7 +15,7 @@ const BUCKETS = ["avatars", "receipts"];
 // installment_payments goes before installment_plans, and plans before
 // products. (Rows with user_id also cascade when the auth user is deleted;
 // listing them here makes the cleanup not depend on that.)
-const TABLES = ["notifications", "installment_payments", "installment_plans", "products"];
+const TABLES = ["notifications", "chat_messages", "installment_payments", "installment_plans", "products"];
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
