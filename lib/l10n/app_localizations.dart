@@ -3767,6 +3767,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backup export'**
   String get featureBackup;
+
+  /// No description provided for @proStatusLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your plan. Check your connection and try again.'**
+  String get proStatusLoadFailed;
 }
 
 class _AppLocalizationsDelegate

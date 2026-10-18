@@ -10,17 +10,21 @@ import '../../domain/entities/pro_status.dart';
 import '../../domain/pro_limit.dart';
 
 class ProState extends Equatable {
-  const ProState({this.status = ProStatus.unknown, this.hasLoadedOnce = false});
+  const ProState({this.status = ProStatus.unknown, this.hasLoadedOnce = false, this.loadFailed = false});
 
   final ProStatus status;
 
   /// The server's status has been read at least once for this account.
   final bool hasLoadedOnce;
 
+  /// The last read failed (offline, server down); what's shown is older or
+  /// unknown. Screens offer a retry instead of loading forever.
+  final bool loadFailed;
+
   bool get isPro => status.isPro;
 
   @override
-  List<Object?> get props => [status, hasLoadedOnce];
+  List<Object?> get props => [status, hasLoadedOnce, loadFailed];
 }
 
 /// The signed-in user's plan: Pro or free, today's AI use and item counts
@@ -115,8 +119,10 @@ class ProCubit extends Cubit<ProState> {
         hasLoadedOnce: true,
       ));
     } catch (e) {
-      // Offline or the server is down: keep what's shown.
+      // Offline or the server is down: keep what's shown, and say so.
       _logger.warning('Loading the plan status failed', data: {'error': '$e'});
+      if (generation != _generation) return;
+      _safeEmit(ProState(status: state.status, hasLoadedOnce: state.hasLoadedOnce, loadFailed: true));
     }
   }
 
@@ -131,6 +137,7 @@ class ProCubit extends Cubit<ProState> {
     _safeEmit(ProState(
       status: state.status.withStoreEntitlement(entitlement),
       hasLoadedOnce: state.hasLoadedOnce,
+      loadFailed: state.loadFailed,
     ));
   }
 

@@ -24,9 +24,13 @@ class _Server implements ProStatusDataSource {
   ProStatus status = _free;
   int calls = 0;
 
+  /// Fails like a missing function or no connection.
+  bool fail = false;
+
   @override
   Future<ProStatus> getStatus() async {
     calls++;
+    if (fail) throw Exception('PGRST202');
     return status;
   }
 }
@@ -144,6 +148,21 @@ void main() {
     server.status = _pro;
     await cubit.applyPurchase(const ProEntitlement(isActive: true, productId: 'sakk_pro:monthly'));
     expect(cubit.state.status, _pro);
+  });
+
+  test('a failed load is reported instead of loading forever, and a retry recovers', () async {
+    server.fail = true;
+    users.add('user-1');
+    await settle();
+    expect(cubit.state.hasLoadedOnce, isFalse);
+    expect(cubit.state.loadFailed, isTrue);
+    // Nothing is blocked on the client while the plan is unknown.
+    expect(cubit.canAdd(LimitedItem.products), isTrue);
+
+    server.fail = false;
+    await cubit.refresh();
+    expect(cubit.state.hasLoadedOnce, isTrue);
+    expect(cubit.state.loadFailed, isFalse);
   });
 
   test('usage changes re-read the counters', () async {

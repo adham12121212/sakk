@@ -2340,4 +2340,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get featureBackup => 'نسخة احتياطية';
+
+  @override
+  String get proStatusLoadFailed =>
+      'معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني.';
 }

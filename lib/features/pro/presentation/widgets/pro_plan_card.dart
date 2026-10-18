@@ -42,6 +42,35 @@ class ProPlanCard extends StatelessWidget {
           _ => e!.willRenew ? l10n.proCardRenewsOn(date) : l10n.proCardEndsOn(date),
         };
 
+        // Never read (offline, server down): say so instead of loading forever.
+        if (!state.hasLoadedOnce && !state.isPro && state.loadFailed) {
+          return AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    const Icon(AppIcons.pro, color: Color(0xFFF2A900)),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(l10n.sakkPro, style: textTheme.titleMedium)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.proStatusLoadFailed,
+                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: ProActions.cubit.refresh,
+                  icon: const Icon(AppIcons.retry, size: 18),
+                  label: Text(l10n.retry),
+                ),
+              ],
+            ),
+          );
+        }
+
         return Skeletonizer(
           enabled: !state.hasLoadedOnce && !state.isPro,
           child: AppCard(

@@ -2285,4 +2285,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureBackup => 'Backup export';
+
+  @override
+  String get proStatusLoadFailed =>
+      'Couldn\'t load your plan. Check your connection and try again.';
 }

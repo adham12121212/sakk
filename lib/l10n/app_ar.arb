@@ -610,5 +610,6 @@
   "backupExport": "تصدير نسخة احتياطية (JSON)",
   "backupFailed": "معرفناش نعمل النسخة الاحتياطية. جرّب تاني.",
   "paywallHeadlineBackup": "خلّي معاك نسخة من كل حاجة",
-  "featureBackup": "نسخة احتياطية"
+  "featureBackup": "نسخة احتياطية",
+  "proStatusLoadFailed": "معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني."
 }

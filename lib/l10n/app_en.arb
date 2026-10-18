@@ -1036,5 +1036,6 @@
   "backupExport": "Export backup (JSON)",
   "backupFailed": "Couldn't create the backup. Please try again.",
   "paywallHeadlineBackup": "Keep a copy of everything",
-  "featureBackup": "Backup export"
+  "featureBackup": "Backup export",
+  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again."
 }
