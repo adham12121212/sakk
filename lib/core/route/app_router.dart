@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakk/features/auth/presentation/views/signin_view.dart';
@@ -37,6 +38,11 @@ import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart
 import '../../features/subscriptions/presentation/views/catalog_picker_view.dart';
 import '../../features/subscriptions/presentation/views/subscription_form_view.dart';
 import '../../features/subscriptions/presentation/views/subscriptions_view.dart';
+import '../../features/pro/domain/pro_limit.dart';
+import '../../features/pro/presentation/cubit/paywall_cubit.dart';
+import '../../features/pro/presentation/cubit/pro_cubit.dart';
+import '../../features/pro/presentation/views/monthly_summary_view.dart';
+import '../../features/pro/presentation/views/paywall_view.dart';
 import '../di/get_it.dart';
 
 
@@ -64,6 +70,8 @@ class AppRoutes {
   static const installments = '/installments';
   static const installmentForm = '/installments/form';
   static const installmentDetails = '/installments/plan';
+  static const paywall = '/pro';
+  static const monthlySummary = '/pro/monthly-summary';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -209,6 +217,36 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
+    GoRoute(
+      path: AppRoutes.paywall,
+      // Opened with a PaywallReason as `extra`; a general upgrade without one.
+      pageBuilder: (context, state) => MaterialPage(
+        fullscreenDialog: true,
+        child: BlocProvider(
+          create: (_) => getIt<PaywallCubit>(),
+          child: PaywallView(
+            reason: state.extra is PaywallReason ? state.extra as PaywallReason : PaywallReason.upgrade,
+          ),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.monthlySummary,
+      // Pro only: free users get the paywall in its place.
+      builder: (context, state) => getIt<ProCubit>().isPro
+          ? MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: getIt<SubscriptionsCubit>()),
+                BlocProvider.value(value: getIt<InstallmentsCubit>()),
+                BlocProvider.value(value: getIt<ProductsCubit>()),
+              ],
+              child: const MonthlySummaryView(),
+            )
+          : BlocProvider(
+              create: (_) => getIt<PaywallCubit>(),
+              child: const PaywallView(reason: PaywallReason.monthlySummary),
+            ),
+    ),
     GoRoute(
       path: AppRoutes.reminders,
       builder: (context, state) => const ReminderSettingsView(),

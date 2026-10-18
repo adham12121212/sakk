@@ -22,6 +22,8 @@ import '../util/subscription_category_ui.dart';
 import '../util/subscription_format.dart';
 import '../widgets/subscription_logo.dart';
 import 'subscription_form_view.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// Add flow, step 1: search the catalog and pick a service (then a plan), or
 /// choose to enter a custom subscription.
@@ -71,6 +73,8 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
   /// Smart add: pick a source, read it with the AI, then open the form
   /// (handled by the listener in [build]).
   Future<void> _smartAdd() async {
+    // Reading it with the AI is a scan.
+    if (!ProActions.ensureCanUse(context, QuotaType.scan)) return;
     final source = await showSmartAddSourceSheet(context);
     if (source == null || !mounted) return;
 

@@ -1,4 +1,6 @@
+import '../../features/chat/data/chat_data_source/chat_data_source.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
+import '../../features/pro/domain/pro_limit.dart';
 import '../../features/household/data/household_data_source.dart';
 import '../../features/installments/data/installment_data_source/installment_data_source.dart';
 import '../../features/installments/domain/usecase/update_installment_plan_usecase.dart';
@@ -23,5 +25,20 @@ String userFacingError(AppLocalizations l10n, String? message) {
   if (message == HouseholdDataSource.householdFull) return l10n.householdFull;
   if (message == InstallmentDataSourceImpl.unreadableInstallment) return l10n.installmentScanUnreadable;
   if (message == UpdateInstallmentPlanUseCase.tooFewInstallments) return l10n.installmentsCountBelowPaidGeneric;
+  if (message == ChatDataSourceImpl.aiBusy) return l10n.chatBusy;
+  final limit = ProLimit.kindOf(message);
+  if (limit != null) return _limitMessage(l10n, limit);
   return l10n.errorGeneric;
+}
+
+/// The free plan's limit for [kind] was reached (the paywall opens too).
+String _limitMessage(AppLocalizations l10n, String kind) {
+  return switch (kind) {
+    'products' => l10n.limitReachedProducts,
+    'subscriptions' => l10n.limitReachedSubscriptions,
+    'installments' => l10n.limitReachedInstallments,
+    'scan' => l10n.limitReachedScan,
+    'chat' => l10n.limitReachedChat,
+    _ => l10n.limitReachedFairUse,
+  };
 }

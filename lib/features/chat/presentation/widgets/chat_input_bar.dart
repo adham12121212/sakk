@@ -6,10 +6,13 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class ChatInputBar extends StatefulWidget {
-  const ChatInputBar({super.key, required this.onSend, required this.isSending});
+  const ChatInputBar({super.key, required this.onSend, required this.isSending, this.canSend});
 
   final ValueChanged<String> onSend;
   final bool isSending;
+
+  /// Asked before sending; false keeps the text (e.g. the paywall opened).
+  final bool Function()? canSend;
 
   @override
   State<ChatInputBar> createState() => _ChatInputBarState();
@@ -27,6 +30,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
   void _submit() {
     final text = _controller.text.trim();
     if (text.isEmpty || widget.isSending) return;
+    if (widget.canSend != null && !widget.canSend!()) return;
     widget.onSend(text);
     _controller.clear();
   }

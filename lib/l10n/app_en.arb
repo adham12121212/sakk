@@ -852,5 +852,189 @@
   "reminderThreeDaysBefore": "3 days before",
   "reminderDayBefore": "The day before",
   "reminderDayAfterCheckCharge": "The day after, to check the charge",
-  "reminderOnDueDay": "On the due day"
+  "reminderOnDueDay": "On the due day",
+  "limitReachedProducts": "You've reached the free plan's product limit. Upgrade to Sakk Pro to add more.",
+  "limitReachedSubscriptions": "You've reached the free plan's subscription limit. Upgrade to Sakk Pro to track more.",
+  "limitReachedInstallments": "The free plan tracks one running installment plan. Upgrade to Sakk Pro to add more.",
+  "limitReachedScan": "You've used today's free scans. Upgrade to Sakk Pro for unlimited scans, or try again tomorrow.",
+  "limitReachedChat": "You've used today's free messages. Upgrade to Sakk Pro, or come back tomorrow.",
+  "limitReachedFairUse": "You've reached today's limit. Please try again tomorrow.",
+  "chatBusy": "The assistant is busy right now. Please try again in a minute.",
+  "scanNeedsInternet": "Scanning needs an internet connection. You can still enter the details yourself.",
+  "chatNeedsInternet": "The assistant needs an internet connection.",
+  "scansLeftToday": "{count, plural, =0{No free scans left today} =1{1 scan left today} other{{countText} scans left today}}",
+  "@scansLeftToday": {
+    "description": "countText is the number in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "chatMessagesLeftToday": "{count, plural, =0{No free messages left today} =1{1 message left today} other{{countText} messages left today}}",
+  "@chatMessagesLeftToday": {
+    "description": "countText is the number in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "planBadgeFree": "Free",
+  "planBadgePro": "Sakk Pro",
+  "planBadgeYearly": "Pro ⭐ Yearly",
+  "planBadgeTrial": "Pro – Trial",
+  "planBadgeTrialDaysLeft": "{days, plural, =0{ends today} =1{1 day left} other{{daysText} days left}}",
+  "@planBadgeTrialDaysLeft": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "planBadgeBillingIssue": "Payment issue",
+  "sakkPro": "Sakk Pro",
+  "proCardFreeBody": "Unlimited products, subscriptions and installments, unlimited AI, and your monthly summary.",
+  "proCardRenewsOn": "Renews on {date}",
+  "@proCardRenewsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardEndsOn": "Pro ends on {date}. Your data stays.",
+  "@proCardEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardTrialEndsOn": "Free trial ends on {date}",
+  "@proCardTrialEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proCardBillingIssueBody": "Google Play couldn't charge your payment method. Update it to keep Pro.",
+  "upgradeToPro": "Upgrade to Pro",
+  "manageSubscription": "Manage subscription",
+  "updatePaymentMethod": "Update payment method",
+  "restorePurchases": "Restore purchases",
+  "restoreSuccess": "Sakk Pro restored",
+  "restoreNothing": "No Sakk Pro purchase found for this Google account",
+  "paywallHeadlineUpgrade": "Get more out of Sakk",
+  "paywallHeadlineScan": "You've used today's free scans",
+  "paywallHeadlineChat": "You've used today's free messages",
+  "paywallHeadlineProducts": "Your free plan is full",
+  "paywallHeadlineSubscriptions": "Track all your subscriptions",
+  "paywallHeadlineInstallments": "Track all your installments",
+  "paywallHeadlineSummary": "See what you'll pay this month",
+  "paywallSubtitle": "No limits on products, subscriptions, installments or AI, plus smart reminders and your monthly summary.",
+  "paywallFeature": "Feature",
+  "paywallFree": "Free",
+  "paywallPro": "Pro",
+  "featureProducts": "Warranty products",
+  "featureSubscriptions": "Tracked subscriptions",
+  "featureInstallments": "Installments",
+  "featureScans": "AI scans",
+  "featureChat": "AI chat messages",
+  "featureReminders": "Reminders",
+  "featureSummary": "Monthly summary",
+  "valuePerDay": "{countText}/day",
+  "@valuePerDay": {
+    "placeholders": {
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "valueUnlimited": "Unlimited",
+  "valueBasic": "Basic",
+  "valueSmart": "Smart",
+  "planMonthly": "Monthly",
+  "planYearly": "Yearly",
+  "bestValue": "Best value",
+  "savePercent": "Save ~{percent}%",
+  "@savePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "freeTrialDays": "{days, plural, =1{1-day free trial} other{{daysText}-day free trial}}",
+  "@freeTrialDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "startFreeTrial": "Start free trial",
+  "subscribe": "Subscribe",
+  "autoRenewTrialDisclosure": "Free for {days} days, then {price}. Cancel before the trial ends and you won't be charged.",
+  "@autoRenewTrialDisclosure": {
+    "description": "days is the trial length in the app's digits; price is e.g. \"EGP 29.00 / month\".",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "autoRenewDisclosure": "Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.",
+  "purchaseSuccess": "Welcome to Sakk Pro!",
+  "purchaseFailed": "The purchase didn't go through. Please try again.",
+  "purchasesUnavailable": "Subscriptions aren't available right now. Please try again later.",
+  "alreadyPro": "You're on Sakk Pro",
+  "monthlySummary": "This month",
+  "monthlySummaryTotal": "Left to pay this month",
+  "monthlySummaryTotalHint": "Subscription renewals and unpaid installments from today to the end of the month, overdue ones included.",
+  "monthlySummaryUpcoming": "Upcoming payments",
+  "monthlySummaryNothingDue": "Nothing left to pay this month.",
+  "monthlySummaryWarranties": "Warranties ending soon",
+  "monthlySummaryNoWarranties": "No warranties end in the next 60 days.",
+  "monthlySummaryOverdue": "Overdue",
+  "summaryRenewal": "Renewal",
+  "summaryInstallment": "Installment",
+  "reminderCustomTitle": "Earlier reminder",
+  "reminderCustomHint": "One more reminder, this many days before",
+  "reminderCustomOff": "Off",
+  "reminderCustomDays": "{days, plural, other{{daysText} days}}",
+  "@reminderCustomDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderCustomProOnly": "Sakk Pro",
+  "backupExport": "Export backup (JSON)",
+  "backupFailed": "Couldn't create the backup. Please try again.",
+  "paywallHeadlineBackup": "Keep a copy of everything",
+  "featureBackup": "Backup export"
 }

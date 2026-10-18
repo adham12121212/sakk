@@ -16,6 +16,8 @@ import '../cubit/subscriptions_state.dart';
 import '../widgets/monthly_total_card.dart';
 import '../widgets/subscription_tile.dart';
 import 'subscription_form_view.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// The user's subscriptions: monthly total, then the list by nearest renewal.
 class SubscriptionsView extends StatefulWidget {
@@ -32,7 +34,10 @@ class _SubscriptionsViewState extends State<SubscriptionsView> {
     context.read<SubscriptionsCubit>().loadIfNeeded();
   }
 
-  void _add() => context.push(AppRoutes.subscriptionCatalog);
+  void _add() {
+    if (!ProActions.ensureCanAdd(context, LimitedItem.subscriptions)) return;
+    context.push(AppRoutes.subscriptionCatalog);
+  }
 
   void _edit(UserSubscription subscription) {
     context.push(

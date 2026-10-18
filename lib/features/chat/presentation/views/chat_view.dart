@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
+import '../../../pro/presentation/widgets/quota_hint.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/chat_bubble.dart';
@@ -21,6 +25,19 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ChatCubit>().loadHistoryIfNeeded();
+  }
+
+  /// Today's free messages are used up: the paywall instead of a refused send.
+  bool _canSend() => ProActions.ensureCanUse(context, QuotaType.chat);
+
+  void _send(String text) {
+    if (_canSend()) context.read<ChatCubit>().sendMessage(text);
+  }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -56,7 +73,9 @@ class _ChatViewState extends State<ChatView> {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(
-                content: Text(userFacingError(l10n, state.error)),
+                content: Text(state.error == NetworkFailure.noConnectionMessage
+                    ? l10n.chatNeedsInternet
+                    : userFacingError(l10n, state.error)),
                 backgroundColor: AppColors.error,
               ));
           }
@@ -68,8 +87,7 @@ class _ChatViewState extends State<ChatView> {
                 child: state.messages.isEmpty
                     ? ChatEmptyState(
                   l10n: l10n,
-                  onSuggestionTap: (text) =>
-                      context.read<ChatCubit>().sendMessage(text),
+                  onSuggestionTap: _send,
                 )
                     : ListView.separated(
                   controller: _scrollController,
@@ -90,8 +108,10 @@ class _ChatViewState extends State<ChatView> {
                   },
                 ),
               ),
+              const QuotaHint(type: QuotaType.chat),
               ChatInputBar(
                 isSending: state.isSending,
+                canSend: _canSend,
                 onSend: (text) => context.read<ChatCubit>().sendMessage(text),
               ),
             ],

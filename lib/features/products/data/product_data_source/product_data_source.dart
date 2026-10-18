@@ -7,6 +7,7 @@ import '../../../../core/service/receipt_ai_client.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../domain/entities/scanned_receipt.dart';
 import '../models/product_model.dart';
+import '../../../pro/domain/pro_limit.dart';
 
 abstract class ProductDataSource {
 
@@ -117,9 +118,10 @@ class ProductDataSourceImpl implements ProductDataSource {
           .insert(insertJson)
           .select(ProductModel.selectColumns)
           .single();
+      ProLimit.notifyUsageChanged();
       return ProductModel.fromJson(row);
     } catch (e) {
-      throw ServerException('Failed to save product: $e');
+      throw ProLimit.exceptionFor(e, 'Failed to save product: $e');
     }
   }
 
@@ -158,6 +160,7 @@ class ProductDataSourceImpl implements ProductDataSource {
                 (d as Map<String, dynamic>)['file_path'] as String?,
             }.whereType<String>().toList();
       await _client.from('products').delete().eq('id', id);
+      ProLimit.notifyUsageChanged();
     } catch (e) {
       throw ServerException('Failed to delete product: $e');
     }

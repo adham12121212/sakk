@@ -436,4 +436,26 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // circle
+
+  // Sakk Pro.
+  static const pro = IconData(
+    0xe614,
+    fontFamily: 'PhosphorFill',
+    fontPackage: 'phosphor_flutter',
+  ); // crown
+  static const proYearly = IconData(
+    0xe46a,
+    fontFamily: 'PhosphorFill',
+    fontPackage: 'phosphor_flutter',
+  ); // star
+  static const locked = IconData(
+    0xe2fa,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // lock
+  static const monthlySummary = IconData(
+    0xe712,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // calendarCheck
 }

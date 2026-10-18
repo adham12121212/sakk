@@ -14,6 +14,7 @@ import '../logger/app_logger.dart';
 import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
+import 'installment_reminder_service.dart' show InstallmentReminderPayload;
 import 'notification_service.dart';
 import 'reminder_settings.dart';
 
@@ -27,6 +28,9 @@ enum RenewalReminder {
 
   /// "Renewed yesterday: check the charge".
   dayAfter,
+
+  /// Sakk Pro: "Renews in N days", N chosen on the Reminders screen.
+  custom,
 }
 
 /// Reminds the user around each subscription renewal: 3 days before, the
@@ -59,7 +63,9 @@ class SubscriptionReminderService {
 
   /// Which reminders the user wants (Reminders screen); all when null.
   final ReminderSettings? _settings;
-  bool _wants(RenewalReminder kind) => _settings?.wantsSubscription(kind) ?? true;
+  bool _wants(RenewalReminder kind) => kind == RenewalReminder.custom
+      ? _customDays != null && (_settings?.wantsSubscription(kind) ?? false)
+      : _settings?.wantsSubscription(kind) ?? true;
 
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
@@ -70,12 +76,17 @@ class SubscriptionReminderService {
   Locale get _currentLocale => _locale?.value ?? const Locale('en');
   AppLocalizations get _l10n => lookupAppLocalizations(_currentLocale);
 
-  /// When [kind]'s push for the renewal on [renewal] is due.
-  static DateTime reminderTime(RenewalReminder kind, DateTime renewal) {
+  /// The Pro reminder's days ahead now, or null (off, or not Pro).
+  int? get _customDays => _settings?.activeSubscriptionCustomDays;
+
+  /// When [kind]'s push for the renewal on [renewal] is due. [customDays]
+  /// is how many days ahead [RenewalReminder.custom] comes.
+  static DateTime reminderTime(RenewalReminder kind, DateTime renewal, {int customDays = 0}) {
     final offset = switch (kind) {
       RenewalReminder.threeDaysBefore => -3,
       RenewalReminder.dayBefore => -1,
       RenewalReminder.dayAfter => 1,
+      RenewalReminder.custom => -customDays,
     };
     return DateTime(renewal.year, renewal.month, renewal.day + offset, _reminderHour);
   }
@@ -90,7 +101,8 @@ class SubscriptionReminderService {
   }
 
   /// Slot 5 "in 3 days", 6 "tomorrow", 7 "renewed" for the next renewal,
-  /// 8 "renewed" for the previous one; see [reminderNotificationId]. The
+  /// 8 "renewed" for the previous one, 9 the Pro reminder (shared with
+  /// installments; see [ownsPending]); see [reminderNotificationId]. The
   /// previous renewal has its own slot so its reminder survives the next
   /// one being scheduled when the date moves on.
   static int notificationId(String subscriptionId, RenewalReminder kind, {bool previous = false}) {
@@ -98,8 +110,17 @@ class SubscriptionReminderService {
       RenewalReminder.threeDaysBefore => 5,
       RenewalReminder.dayBefore => 6,
       RenewalReminder.dayAfter => previous ? 8 : 7,
+      RenewalReminder.custom => customReminderSlot,
     };
     return reminderNotificationId(subscriptionId, slot);
+  }
+
+  /// Whether a pending notification is one of this service's: its slots,
+  /// or the shared Pro slot without an installment's payload.
+  static bool ownsPending(int id, String? payload) {
+    final slot = reminderSlot(id);
+    if (slot == customReminderSlot) return InstallmentReminderPayload.tryParse(payload) == null;
+    return subscriptionReminderSlots.contains(slot);
   }
 
   /// Tracker keys: one per reminder per renewal, so the next cycle reminds
@@ -113,6 +134,7 @@ class SubscriptionReminderService {
         RenewalReminder.threeDaysBefore => 'renewal',
         RenewalReminder.dayBefore => 'renewal-1d',
         RenewalReminder.dayAfter => 'renewed',
+        RenewalReminder.custom => 'renewal-custom',
       };
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
@@ -145,7 +167,7 @@ class SubscriptionReminderService {
     final wantedIds = {for (final r in wanted) r.id};
 
     for (final pending in await _localNotifications.pendingNotifications()) {
-      if (!subscriptionReminderSlots.contains(reminderSlot(pending.id))) continue;
+      if (!ownsPending(pending.id, pending.payload)) continue;
       if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
     }
     for (final r in wanted) {
@@ -164,7 +186,9 @@ class SubscriptionReminderService {
   List<_Reminder> _remindersFor(UserSubscription s) {
     final next = s.nextRenewalDate;
     final previous = previousRenewal(s);
+    final customDays = _customDays;
     return [
+      if (customDays != null) _reminder(s, RenewalReminder.custom, next, days: customDays),
       _reminder(s, RenewalReminder.threeDaysBefore, next, days: 3),
       _reminder(s, RenewalReminder.dayBefore, next, days: 1),
       _reminder(s, RenewalReminder.dayAfter, next, days: 1),
@@ -186,7 +210,7 @@ class SubscriptionReminderService {
       renewal: renewal,
       title: _title(kind),
       body: _body(s, kind, days),
-      dateTime: reminderTime(kind, renewal),
+      dateTime: reminderTime(kind, renewal, customDays: days),
     );
   }
 
@@ -201,8 +225,13 @@ class SubscriptionReminderService {
     if (user == null) return;
     final day = today ?? DateTime.now();
 
+    final customDays = _customDays;
     for (final s in subscriptions) {
       final daysLeft = s.daysLeft(day);
+      // The Pro reminder, opened on its day or the day after.
+      if (customDays != null && daysLeft <= customDays && daysLeft >= customDays - 1 && daysLeft > 3) {
+        await _notifyNow(s, RenewalReminder.custom, s.nextRenewalDate, daysLeft, user.id);
+      }
       if (daysLeft >= 2 && daysLeft <= 3) {
         await _notifyNow(s, RenewalReminder.threeDaysBefore, s.nextRenewalDate, daysLeft, user.id);
       } else if (daysLeft >= 0 && daysLeft <= 1) {

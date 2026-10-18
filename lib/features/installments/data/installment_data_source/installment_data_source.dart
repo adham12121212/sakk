@@ -6,6 +6,7 @@ import '../../../../core/util/pii_masker.dart';
 import '../../domain/entities/scanned_installment.dart';
 import '../models/installment_payment_model.dart';
 import '../models/installment_plan_model.dart';
+import '../../../pro/domain/pro_limit.dart';
 
 abstract class InstallmentDataSource {
   Future<List<InstallmentPlanModel>> getPlans();
@@ -85,9 +86,10 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
           .select(InstallmentPlanModel.selectColumns)
           .eq('id', (saved as Map<String, dynamic>)['id'] as String)
           .single();
+      ProLimit.notifyUsageChanged();
       return InstallmentPlanModel.fromJson(row);
     } catch (e) {
-      throw ServerException('Failed to save installment plan: $e');
+      throw ProLimit.exceptionFor(e, 'Failed to save installment plan: $e');
     }
   }
 
@@ -96,6 +98,7 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
     try {
       // Its payments go with it (on delete cascade).
       await _client.from(_table).delete().eq('id', id);
+      ProLimit.notifyUsageChanged();
     } catch (e) {
       throw ServerException('Failed to delete installment plan: $e');
     }
@@ -113,6 +116,8 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
           .eq('id', paymentId)
           .select()
           .single();
+      // Paying the last one finishes the plan, which frees its slot.
+      ProLimit.notifyUsageChanged();
       return InstallmentPaymentModel.fromJson(row);
     } catch (e) {
       throw ServerException('Failed to update the installment payment: $e');

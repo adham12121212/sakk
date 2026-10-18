@@ -1965,4 +1965,324 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderOnDueDay => 'On the due day';
+
+  @override
+  String get limitReachedProducts =>
+      'You\'ve reached the free plan\'s product limit. Upgrade to Sakk Pro to add more.';
+
+  @override
+  String get limitReachedSubscriptions =>
+      'You\'ve reached the free plan\'s subscription limit. Upgrade to Sakk Pro to track more.';
+
+  @override
+  String get limitReachedInstallments =>
+      'The free plan tracks one running installment plan. Upgrade to Sakk Pro to add more.';
+
+  @override
+  String get limitReachedScan =>
+      'You\'ve used today\'s free scans. Upgrade to Sakk Pro for unlimited scans, or try again tomorrow.';
+
+  @override
+  String get limitReachedChat =>
+      'You\'ve used today\'s free messages. Upgrade to Sakk Pro, or come back tomorrow.';
+
+  @override
+  String get limitReachedFairUse =>
+      'You\'ve reached today\'s limit. Please try again tomorrow.';
+
+  @override
+  String get chatBusy =>
+      'The assistant is busy right now. Please try again in a minute.';
+
+  @override
+  String get scanNeedsInternet =>
+      'Scanning needs an internet connection. You can still enter the details yourself.';
+
+  @override
+  String get chatNeedsInternet => 'The assistant needs an internet connection.';
+
+  @override
+  String scansLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText scans left today',
+      one: '1 scan left today',
+      zero: 'No free scans left today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chatMessagesLeftToday(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText messages left today',
+      one: '1 message left today',
+      zero: 'No free messages left today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeFree => 'Free';
+
+  @override
+  String get planBadgePro => 'Sakk Pro';
+
+  @override
+  String get planBadgeYearly => 'Pro ⭐ Yearly';
+
+  @override
+  String get planBadgeTrial => 'Pro – Trial';
+
+  @override
+  String planBadgeTrialDaysLeft(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText days left',
+      one: '1 day left',
+      zero: 'ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planBadgeBillingIssue => 'Payment issue';
+
+  @override
+  String get sakkPro => 'Sakk Pro';
+
+  @override
+  String get proCardFreeBody =>
+      'Unlimited products, subscriptions and installments, unlimited AI, and your monthly summary.';
+
+  @override
+  String proCardRenewsOn(String date) {
+    return 'Renews on $date';
+  }
+
+  @override
+  String proCardEndsOn(String date) {
+    return 'Pro ends on $date. Your data stays.';
+  }
+
+  @override
+  String proCardTrialEndsOn(String date) {
+    return 'Free trial ends on $date';
+  }
+
+  @override
+  String get proCardBillingIssueBody =>
+      'Google Play couldn\'t charge your payment method. Update it to keep Pro.';
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro';
+
+  @override
+  String get manageSubscription => 'Manage subscription';
+
+  @override
+  String get updatePaymentMethod => 'Update payment method';
+
+  @override
+  String get restorePurchases => 'Restore purchases';
+
+  @override
+  String get restoreSuccess => 'Sakk Pro restored';
+
+  @override
+  String get restoreNothing =>
+      'No Sakk Pro purchase found for this Google account';
+
+  @override
+  String get paywallHeadlineUpgrade => 'Get more out of Sakk';
+
+  @override
+  String get paywallHeadlineScan => 'You\'ve used today\'s free scans';
+
+  @override
+  String get paywallHeadlineChat => 'You\'ve used today\'s free messages';
+
+  @override
+  String get paywallHeadlineProducts => 'Your free plan is full';
+
+  @override
+  String get paywallHeadlineSubscriptions => 'Track all your subscriptions';
+
+  @override
+  String get paywallHeadlineInstallments => 'Track all your installments';
+
+  @override
+  String get paywallHeadlineSummary => 'See what you\'ll pay this month';
+
+  @override
+  String get paywallSubtitle =>
+      'No limits on products, subscriptions, installments or AI, plus smart reminders and your monthly summary.';
+
+  @override
+  String get paywallFeature => 'Feature';
+
+  @override
+  String get paywallFree => 'Free';
+
+  @override
+  String get paywallPro => 'Pro';
+
+  @override
+  String get featureProducts => 'Warranty products';
+
+  @override
+  String get featureSubscriptions => 'Tracked subscriptions';
+
+  @override
+  String get featureInstallments => 'Installments';
+
+  @override
+  String get featureScans => 'AI scans';
+
+  @override
+  String get featureChat => 'AI chat messages';
+
+  @override
+  String get featureReminders => 'Reminders';
+
+  @override
+  String get featureSummary => 'Monthly summary';
+
+  @override
+  String valuePerDay(String countText) {
+    return '$countText/day';
+  }
+
+  @override
+  String get valueUnlimited => 'Unlimited';
+
+  @override
+  String get valueBasic => 'Basic';
+
+  @override
+  String get valueSmart => 'Smart';
+
+  @override
+  String get planMonthly => 'Monthly';
+
+  @override
+  String get planYearly => 'Yearly';
+
+  @override
+  String get bestValue => 'Best value';
+
+  @override
+  String savePercent(String percent) {
+    return 'Save ~$percent%';
+  }
+
+  @override
+  String freeTrialDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText-day free trial',
+      one: '1-day free trial',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get startFreeTrial => 'Start free trial';
+
+  @override
+  String get subscribe => 'Subscribe';
+
+  @override
+  String autoRenewTrialDisclosure(String days, String price) {
+    return 'Free for $days days, then $price. Cancel before the trial ends and you won\'t be charged.';
+  }
+
+  @override
+  String get autoRenewDisclosure =>
+      'Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.';
+
+  @override
+  String get purchaseSuccess => 'Welcome to Sakk Pro!';
+
+  @override
+  String get purchaseFailed =>
+      'The purchase didn\'t go through. Please try again.';
+
+  @override
+  String get purchasesUnavailable =>
+      'Subscriptions aren\'t available right now. Please try again later.';
+
+  @override
+  String get alreadyPro => 'You\'re on Sakk Pro';
+
+  @override
+  String get monthlySummary => 'This month';
+
+  @override
+  String get monthlySummaryTotal => 'Left to pay this month';
+
+  @override
+  String get monthlySummaryTotalHint =>
+      'Subscription renewals and unpaid installments from today to the end of the month, overdue ones included.';
+
+  @override
+  String get monthlySummaryUpcoming => 'Upcoming payments';
+
+  @override
+  String get monthlySummaryNothingDue => 'Nothing left to pay this month.';
+
+  @override
+  String get monthlySummaryWarranties => 'Warranties ending soon';
+
+  @override
+  String get monthlySummaryNoWarranties =>
+      'No warranties end in the next 60 days.';
+
+  @override
+  String get monthlySummaryOverdue => 'Overdue';
+
+  @override
+  String get summaryRenewal => 'Renewal';
+
+  @override
+  String get summaryInstallment => 'Installment';
+
+  @override
+  String get reminderCustomTitle => 'Earlier reminder';
+
+  @override
+  String get reminderCustomHint => 'One more reminder, this many days before';
+
+  @override
+  String get reminderCustomOff => 'Off';
+
+  @override
+  String reminderCustomDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$daysText days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderCustomProOnly => 'Sakk Pro';
+
+  @override
+  String get backupExport => 'Export backup (JSON)';
+
+  @override
+  String get backupFailed => 'Couldn\'t create the backup. Please try again.';
+
+  @override
+  String get paywallHeadlineBackup => 'Keep a copy of everything';
+
+  @override
+  String get featureBackup => 'Backup export';
 }

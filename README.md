@@ -62,7 +62,8 @@ android/app/src/main/kotlin/com/sakk/app/
 ios/SakkWarrantyWidget/       iOS home screen widget (WidgetKit)
 supabase/
   migrations/            database schema
-  functions/             edge functions: ai-chat, extract-receipt, delete-account
+  functions/             edge functions: ai-chat, extract-receipt, delete-account,
+                         revenuecat-webhook (+ _shared/quota.ts)
 test/                    unit and widget tests, mirroring lib/core and lib/features
 ```
 
@@ -97,7 +98,10 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 GOOGLE_WEB_CLIENT_ID=
 GOOGLE_IOS_CLIENT_ID=
+REVENUECAT_ANDROID_KEY=
 ```
+
+`REVENUECAT_ANDROID_KEY` is RevenueCat's public Android SDK key (`goog_...`), not a secret. Without it the app runs on the free plan and the paywall says subscriptions aren't available.
 
 The Firebase config (`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`) is committed, so Crashlytics works without extra setup.
 
@@ -150,6 +154,20 @@ The Play App Signing SHA-1 is in Play Console → Setup → App integrity.
 
 ## Release builds (Android)
 
+Build the Play bundle obfuscated, with the Dart symbols kept apart:
+
+```
+flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+```
+
+`build/symbols` is git-ignored, and `flutter clean` deletes it: copy it somewhere safe for every version you upload (e.g. `symbols/1.0.0+2/`). Without that version's symbols, its obfuscated crash reports can't be read (`flutter symbolize`). R8 keep rules are in `android/app/proguard-rules.pro`.
+
+To send a test build outside Play, build per-ABI APKs and send `app-arm64-v8a-release.apk` (nearly all current phones):
+
+```
+flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/symbols
+```
+
 Release signing reads `android/key.properties` (git-ignored):
 
 ```
@@ -170,6 +188,7 @@ supabase db push
 supabase functions deploy ai-chat
 supabase functions deploy extract-receipt
 supabase functions deploy delete-account
+supabase functions deploy revenuecat-webhook --no-verify-jwt
 ```
 
 The AI functions need a `GROQ_API_KEY` secret:
@@ -177,3 +196,20 @@ The AI functions need a `GROQ_API_KEY` secret:
 ```
 supabase secrets set GROQ_API_KEY=...
 ```
+
+The RevenueCat webhook needs the Authorization value you set in RevenueCat, and optionally a secret REST API key (`sk_...`) so each event re-reads the subscriber from RevenueCat:
+
+```
+supabase secrets set REVENUECAT_WEBHOOK_SECRET=... REVENUECAT_API_KEY=...
+```
+
+## Sakk Pro (free plan limits)
+
+- Limits live in the `app_config` table (key `limits`), read by the database and shown by the app. Change them in the SQL editor, no release needed; `null` means unlimited:
+  ```sql
+  update app_config set value = jsonb_set(value, '{free,scan_per_day}', '5') where key = 'limits';
+  ```
+- Enforced on the server: `BEFORE INSERT` triggers on `products`, `user_subscriptions` and `installment_plans` raise `LIMIT_REACHED:<item>`, and the AI functions (`extract-receipt`, `ai-chat`) take one from `consume_quota` before calling Groq and answer 402 when none are left. Days start at midnight Cairo time.
+- Pro is `pro_subscriptions.active_until > now()`, kept up to date by `revenuecat-webhook`. When Pro ends nothing is deleted or hidden; only new items above the free limits are refused.
+- The app logs in to RevenueCat with the Supabase user id, so RevenueCat's `app_user_id` is the user's id.
+- Pro-only in the app: the monthly summary, an earlier reminder for subscriptions and installments (5, 7, 10 or 14 days ahead, on the Reminders screen; notification slot 9, shared and told apart by payload), and the JSON backup export from Profile (the user's own products, subscriptions and installment plans, with 7-day links to their documents). Free users keep every reminder they had.

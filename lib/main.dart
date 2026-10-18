@@ -17,6 +17,7 @@ import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
 import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
+import 'core/service/reminder_settings.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/widgets/route_aware_connectivity_banner.dart';
@@ -26,6 +27,9 @@ import 'core/widgets/sakk_logo.dart';
 import 'features/auth/domain/usecase/get_user_usecase.dart';
 import 'features/installments/presentation/cubit/installments_cubit.dart';
 import 'features/notification/presentation/cubit/notification_cubit.dart';
+import 'features/pro/data/purchases_gateway.dart';
+import 'features/pro/presentation/cubit/pro_cubit.dart';
+import 'features/pro/presentation/widgets/pro_limit_listener.dart';
 import 'features/products/presentation/cubit/product_cubit.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
@@ -73,6 +77,18 @@ Future<void> _bootstrap() async {
   }
 
   try {
+    await getIt<PurchasesGateway>().init();
+  } catch (e, stackTrace) {
+    // The app works without the store (free plan; the paywall says so).
+    getIt<AppLogger>().error('RevenueCat setup failed', error: e, stackTrace: stackTrace);
+  }
+  // Created now so it logs in to RevenueCat with the restored session and
+  // loads the plan before any screen asks. The Pro reminders follow it.
+  final pro = getIt<ProCubit>();
+  final reminderSettings = getIt<ReminderSettings>();
+  pro.stream.listen((state) => reminderSettings.setProActive(state.isPro));
+
+  try {
     await SakkLogo.precache();
   } catch (e, stackTrace) {
     getIt<AppLogger>().error('Splash logo precache failed', error: e, stackTrace: stackTrace);
@@ -95,6 +111,7 @@ void _reloadAfterReconnect() {
     products.refresh();
   }
   getIt<NotificationCubit>().refresh();
+  getIt<ProCubit>().refresh();
 }
 
 /// [coldStart]: the notification launched the app, and the splash screen
@@ -166,7 +183,11 @@ class MyApp extends StatelessWidget {
                       appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
                   networkInfo: getIt<NetworkInfo>(),
                   onReconnected: _reloadAfterReconnect,
-                  child: child ?? const SizedBox.shrink(),
+                  // A free-plan limit hit anywhere opens the paywall.
+                  child: ProLimitListener(
+                    router: appRouter,
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 ),
               ),
 

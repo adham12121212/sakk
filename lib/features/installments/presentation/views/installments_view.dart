@@ -18,6 +18,8 @@ import '../cubit/installments_state.dart';
 import '../widgets/installment_tile.dart';
 import '../widgets/remaining_total_card.dart';
 import 'installment_form_view.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// The user's installment plans: what's left to pay, then the plans by next
 /// due date.
@@ -35,10 +37,10 @@ class _InstallmentsViewState extends State<InstallmentsView> {
     context.read<InstallmentsCubit>().loadIfNeeded();
   }
 
-  void _add() => context.push(
-    AppRoutes.installmentForm,
-    extra: const InstallmentFormArgs.add(),
-  );
+  void _add() {
+    if (!ProActions.ensureCanAdd(context, LimitedItem.installments)) return;
+    context.push(AppRoutes.installmentForm, extra: const InstallmentFormArgs.add());
+  }
 
   void _open(InstallmentPlan plan) =>
       context.push(AppRoutes.installmentDetails, extra: plan.id);

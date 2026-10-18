@@ -22,3 +22,15 @@ class SendMessageUseCaseImpl implements SendMessageUseCase {
     return _repository.sendMessage(content: content, history: history);
   }
 }
+
+abstract class GetChatHistoryUseCase {
+  Future<Either<Failure, List<ChatMessageEntity>>> call();
+}
+
+class GetChatHistoryUseCaseImpl implements GetChatHistoryUseCase {
+  final ChatRepo _repository;
+  GetChatHistoryUseCaseImpl(this._repository);
+
+  @override
+  Future<Either<Failure, List<ChatMessageEntity>>> call() => _repository.getHistory();
+}

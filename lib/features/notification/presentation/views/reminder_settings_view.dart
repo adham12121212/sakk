@@ -7,9 +7,11 @@ import '../../../../core/service/reminder_settings.dart';
 import '../../../../core/service/subscription_reminder_service.dart';
 import '../../../../core/service/warranty_notification_service.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/widgets/segmented_toggle.dart';
+import '../../../pro/presentation/pro_actions.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 
 /// Reminders, opened from Profile: warranties, subscriptions and
@@ -88,14 +90,24 @@ class ReminderSettingsView extends StatelessWidget {
                 subtitle: l10n.reminderSubscriptionsHint,
                 enabled: settings.subscriptionsEnabled,
                 onEnabled: settings.setSubscriptionsEnabled,
-                child: _KindChoices<RenewalReminder>(
-                  options: {
-                    RenewalReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
-                    RenewalReminder.dayBefore: l10n.reminderDayBefore,
-                    RenewalReminder.dayAfter: l10n.reminderDayAfterCheckCharge,
-                  },
-                  selected: settings.subscriptionKinds,
-                  onChanged: settings.setSubscriptionKind,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _KindChoices<RenewalReminder>(
+                      options: {
+                        RenewalReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
+                        RenewalReminder.dayBefore: l10n.reminderDayBefore,
+                        RenewalReminder.dayAfter: l10n.reminderDayAfterCheckCharge,
+                      },
+                      selected: settings.subscriptionKinds,
+                      onChanged: settings.setSubscriptionKind,
+                    ),
+                    _ProLeadTime(
+                      days: settings.subscriptionCustomDays,
+                      proActive: settings.proActive,
+                      onChanged: settings.setSubscriptionCustomDays,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -105,13 +117,23 @@ class ReminderSettingsView extends StatelessWidget {
                 subtitle: l10n.reminderInstallmentsHint,
                 enabled: settings.installmentsEnabled,
                 onEnabled: settings.setInstallmentsEnabled,
-                child: _KindChoices<InstallmentReminder>(
-                  options: {
-                    InstallmentReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
-                    InstallmentReminder.dueDay: l10n.reminderOnDueDay,
-                  },
-                  selected: settings.installmentKinds,
-                  onChanged: settings.setInstallmentKind,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _KindChoices<InstallmentReminder>(
+                      options: {
+                        InstallmentReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
+                        InstallmentReminder.dueDay: l10n.reminderOnDueDay,
+                      },
+                      selected: settings.installmentKinds,
+                      onChanged: settings.setInstallmentKind,
+                    ),
+                    _ProLeadTime(
+                      days: settings.installmentCustomDays,
+                      proActive: settings.proActive,
+                      onChanged: settings.setInstallmentCustomDays,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -215,6 +237,71 @@ class _KindChoices<T> extends StatelessWidget {
                 : (on) => onChanged(kind, on ?? false),
           ),
       ],
+    );
+  }
+}
+
+/// Sakk Pro's extra reminder: off, or a number of days ahead. Free users
+/// see the choices locked (on "Off"); picking one opens the paywall. A
+/// choice made while Pro is saved, and comes back if Pro does.
+class _ProLeadTime extends StatelessWidget {
+  const _ProLeadTime({required this.days, required this.proActive, required this.onChanged});
+
+  final int? days;
+  final bool proActive;
+  final ValueChanged<int?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context);
+
+    void pick(int? value) {
+      if (!proActive) {
+        ProActions.openPaywall(context);
+        return;
+      }
+      onChanged(value);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(l10n.reminderCustomTitle, style: textTheme.bodyMedium)),
+              if (!proActive) ...[
+                Icon(AppIcons.locked, size: 14, color: colorScheme.onSurfaceVariant),
+                const SizedBox(width: 4),
+                Text(l10n.reminderCustomProOnly, style: textTheme.labelMedium),
+              ],
+            ],
+          ),
+          Text(l10n.reminderCustomHint, style: textTheme.bodySmall),
+          const SizedBox(height: 8),
+          Opacity(
+            opacity: proActive ? 1 : 0.6,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final value in [null, ...ReminderSettings.customDayOptions])
+                  ChoiceChip(
+                    label: Text(value == null
+                        ? l10n.reminderCustomOff
+                        : l10n.reminderCustomDays(value, formatLocalizedInt(locale, value))),
+                    selected: proActive ? days == value : value == null,
+                    onSelected: (_) => pick(value),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

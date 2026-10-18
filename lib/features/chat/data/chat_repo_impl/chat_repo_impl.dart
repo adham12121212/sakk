@@ -41,4 +41,17 @@ class ChatRepoImpl implements ChatRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<ChatMessageEntity>>> getHistory() async {
+    if (!await _networkInfo.isConnected) {
+      return const Left(NetworkFailure(NetworkFailure.noConnectionMessage));
+    }
+    try {
+      return Right(await _dataSource.getHistory());
+    } on ServerException catch (e, st) {
+      _logger.error('Loading chat history failed', error: e, stackTrace: st);
+      return Left(ServerFailure(e.message));
+    }
+  }
 }

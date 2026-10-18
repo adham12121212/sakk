@@ -5,7 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sakk/core/route/app_router.dart';
 
+import '../../../../core/di/get_it.dart';
+import '../../../../core/error/network_info.dart';
+import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
+import '../../../pro/presentation/widgets/quota_hint.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/scan_source_button.dart';
 import 'reviewproduct_view.dart';
@@ -23,7 +29,21 @@ class ScanView extends StatefulWidget {
 class ScanViewState extends State<ScanView> {
   final picker = ImagePicker();
 
+  /// Before an AI scan: room for one more product, a scan left today and
+  /// a connection (otherwise the paywall, or an offline message instead of
+  /// a failed upload). The server checks the limits again.
+  Future<bool> _canScan() async {
+    if (!ProActions.ensureCanAdd(context, LimitedItem.products)) return false;
+    if (!ProActions.ensureCanUse(context, QuotaType.scan)) return false;
+    if (getIt.isRegistered<NetworkInfo>() && !await getIt<NetworkInfo>().isConnected) {
+      if (mounted) AppSnackBar.error(context, AppLocalizations.of(context)!.scanNeedsInternet);
+      return false;
+    }
+    return mounted;
+  }
+
   Future<void> pickAndScan(ImageSource source) async {
+    if (!await _canScan()) return;
     // ~2000px keeps receipt text sharp while cutting a 4-8 MB camera photo
     // to a few hundred KB: faster uploads and scans on mobile data.
     final picked = await picker.pickImage(
@@ -48,6 +68,7 @@ class ScanViewState extends State<ScanView> {
 
   /// PDF invoices, e.g. the ones online stores email.
   Future<void> pickPdf() async {
+    if (!await _canScan()) return;
     final List<PlatformFile> files;
     try {
       files = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
@@ -72,6 +93,7 @@ class ScanViewState extends State<ScanView> {
   /// For products without a receipt (lost, or bought online): straight to
   /// the review form with empty fields.
   void enterManually() {
+    if (!ProActions.ensureCanAdd(context, LimitedItem.products)) return;
     final cubit = ScanCubit()..startManualEntry();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -148,7 +170,9 @@ class ScanViewState extends State<ScanView> {
                   textAlign: TextAlign.center,
                   style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
-                const SizedBox(height: 36),
+                const SizedBox(height: 16),
+                const QuotaHint(type: QuotaType.scan),
+                const SizedBox(height: 16),
                 ScanSourceButton.filled(
                   icon: AppIcons.camera,
                   label: l10n.takePhoto,

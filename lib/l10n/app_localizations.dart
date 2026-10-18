@@ -3269,6 +3269,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'On the due day'**
   String get reminderOnDueDay;
+
+  /// No description provided for @limitReachedProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the free plan\'s product limit. Upgrade to Sakk Pro to add more.'**
+  String get limitReachedProducts;
+
+  /// No description provided for @limitReachedSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the free plan\'s subscription limit. Upgrade to Sakk Pro to track more.'**
+  String get limitReachedSubscriptions;
+
+  /// No description provided for @limitReachedInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'The free plan tracks one running installment plan. Upgrade to Sakk Pro to add more.'**
+  String get limitReachedInstallments;
+
+  /// No description provided for @limitReachedScan.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free scans. Upgrade to Sakk Pro for unlimited scans, or try again tomorrow.'**
+  String get limitReachedScan;
+
+  /// No description provided for @limitReachedChat.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free messages. Upgrade to Sakk Pro, or come back tomorrow.'**
+  String get limitReachedChat;
+
+  /// No description provided for @limitReachedFairUse.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached today\'s limit. Please try again tomorrow.'**
+  String get limitReachedFairUse;
+
+  /// No description provided for @chatBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'The assistant is busy right now. Please try again in a minute.'**
+  String get chatBusy;
+
+  /// No description provided for @scanNeedsInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning needs an internet connection. You can still enter the details yourself.'**
+  String get scanNeedsInternet;
+
+  /// No description provided for @chatNeedsInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'The assistant needs an internet connection.'**
+  String get chatNeedsInternet;
+
+  /// countText is the number in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No free scans left today} =1{1 scan left today} other{{countText} scans left today}}'**
+  String scansLeftToday(int count, String countText);
+
+  /// countText is the number in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No free messages left today} =1{1 message left today} other{{countText} messages left today}}'**
+  String chatMessagesLeftToday(int count, String countText);
+
+  /// No description provided for @planBadgeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get planBadgeFree;
+
+  /// No description provided for @planBadgePro.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro'**
+  String get planBadgePro;
+
+  /// No description provided for @planBadgeYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro ⭐ Yearly'**
+  String get planBadgeYearly;
+
+  /// No description provided for @planBadgeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro – Trial'**
+  String get planBadgeTrial;
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{ends today} =1{1 day left} other{{daysText} days left}}'**
+  String planBadgeTrialDaysLeft(int days, String daysText);
+
+  /// No description provided for @planBadgeBillingIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment issue'**
+  String get planBadgeBillingIssue;
+
+  /// No description provided for @sakkPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro'**
+  String get sakkPro;
+
+  /// No description provided for @proCardFreeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited products, subscriptions and installments, unlimited AI, and your monthly summary.'**
+  String get proCardFreeBody;
+
+  /// No description provided for @proCardRenewsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews on {date}'**
+  String proCardRenewsOn(String date);
+
+  /// No description provided for @proCardEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro ends on {date}. Your data stays.'**
+  String proCardEndsOn(String date);
+
+  /// No description provided for @proCardTrialEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial ends on {date}'**
+  String proCardTrialEndsOn(String date);
+
+  /// No description provided for @proCardBillingIssueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play couldn\'t charge your payment method. Update it to keep Pro.'**
+  String get proCardBillingIssueBody;
+
+  /// No description provided for @upgradeToPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get upgradeToPro;
+
+  /// No description provided for @manageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get manageSubscription;
+
+  /// No description provided for @updatePaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Update payment method'**
+  String get updatePaymentMethod;
+
+  /// No description provided for @restorePurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get restorePurchases;
+
+  /// No description provided for @restoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro restored'**
+  String get restoreSuccess;
+
+  /// No description provided for @restoreNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Sakk Pro purchase found for this Google account'**
+  String get restoreNothing;
+
+  /// No description provided for @paywallHeadlineUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Get more out of Sakk'**
+  String get paywallHeadlineUpgrade;
+
+  /// No description provided for @paywallHeadlineScan.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free scans'**
+  String get paywallHeadlineScan;
+
+  /// No description provided for @paywallHeadlineChat.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free messages'**
+  String get paywallHeadlineChat;
+
+  /// No description provided for @paywallHeadlineProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Your free plan is full'**
+  String get paywallHeadlineProducts;
+
+  /// No description provided for @paywallHeadlineSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Track all your subscriptions'**
+  String get paywallHeadlineSubscriptions;
+
+  /// No description provided for @paywallHeadlineInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Track all your installments'**
+  String get paywallHeadlineInstallments;
+
+  /// No description provided for @paywallHeadlineSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'See what you\'ll pay this month'**
+  String get paywallHeadlineSummary;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No limits on products, subscriptions, installments or AI, plus smart reminders and your monthly summary.'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature'**
+  String get paywallFeature;
+
+  /// No description provided for @paywallFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get paywallFree;
+
+  /// No description provided for @paywallPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get paywallPro;
+
+  /// No description provided for @featureProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty products'**
+  String get featureProducts;
+
+  /// No description provided for @featureSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked subscriptions'**
+  String get featureSubscriptions;
+
+  /// No description provided for @featureInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments'**
+  String get featureInstallments;
+
+  /// No description provided for @featureScans.
+  ///
+  /// In en, this message translates to:
+  /// **'AI scans'**
+  String get featureScans;
+
+  /// No description provided for @featureChat.
+  ///
+  /// In en, this message translates to:
+  /// **'AI chat messages'**
+  String get featureChat;
+
+  /// No description provided for @featureReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get featureReminders;
+
+  /// No description provided for @featureSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly summary'**
+  String get featureSummary;
+
+  /// No description provided for @valuePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{countText}/day'**
+  String valuePerDay(String countText);
+
+  /// No description provided for @valueUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get valueUnlimited;
+
+  /// No description provided for @valueBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get valueBasic;
+
+  /// No description provided for @valueSmart.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart'**
+  String get valueSmart;
+
+  /// No description provided for @planMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get planMonthly;
+
+  /// No description provided for @planYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get planYearly;
+
+  /// No description provided for @bestValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Best value'**
+  String get bestValue;
+
+  /// No description provided for @savePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save ~{percent}%'**
+  String savePercent(String percent);
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1-day free trial} other{{daysText}-day free trial}}'**
+  String freeTrialDays(int days, String daysText);
+
+  /// No description provided for @startFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Start free trial'**
+  String get startFreeTrial;
+
+  /// No description provided for @subscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get subscribe;
+
+  /// days is the trial length in the app's digits; price is e.g. "EGP 29.00 / month".
+  ///
+  /// In en, this message translates to:
+  /// **'Free for {days} days, then {price}. Cancel before the trial ends and you won\'t be charged.'**
+  String autoRenewTrialDisclosure(String days, String price);
+
+  /// No description provided for @autoRenewDisclosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.'**
+  String get autoRenewDisclosure;
+
+  /// No description provided for @purchaseSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Sakk Pro!'**
+  String get purchaseSuccess;
+
+  /// No description provided for @purchaseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase didn\'t go through. Please try again.'**
+  String get purchaseFailed;
+
+  /// No description provided for @purchasesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions aren\'t available right now. Please try again later.'**
+  String get purchasesUnavailable;
+
+  /// No description provided for @alreadyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re on Sakk Pro'**
+  String get alreadyPro;
+
+  /// No description provided for @monthlySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get monthlySummary;
+
+  /// No description provided for @monthlySummaryTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to pay this month'**
+  String get monthlySummaryTotal;
+
+  /// No description provided for @monthlySummaryTotalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription renewals and unpaid installments from today to the end of the month, overdue ones included.'**
+  String get monthlySummaryTotalHint;
+
+  /// No description provided for @monthlySummaryUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming payments'**
+  String get monthlySummaryUpcoming;
+
+  /// No description provided for @monthlySummaryNothingDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing left to pay this month.'**
+  String get monthlySummaryNothingDue;
+
+  /// No description provided for @monthlySummaryWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranties ending soon'**
+  String get monthlySummaryWarranties;
+
+  /// No description provided for @monthlySummaryNoWarranties.
+  ///
+  /// In en, this message translates to:
+  /// **'No warranties end in the next 60 days.'**
+  String get monthlySummaryNoWarranties;
+
+  /// No description provided for @monthlySummaryOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get monthlySummaryOverdue;
+
+  /// No description provided for @summaryRenewal.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewal'**
+  String get summaryRenewal;
+
+  /// No description provided for @summaryInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment'**
+  String get summaryInstallment;
+
+  /// No description provided for @reminderCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier reminder'**
+  String get reminderCustomTitle;
+
+  /// No description provided for @reminderCustomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One more reminder, this many days before'**
+  String get reminderCustomHint;
+
+  /// No description provided for @reminderCustomOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get reminderCustomOff;
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, other{{daysText} days}}'**
+  String reminderCustomDays(int days, String daysText);
+
+  /// No description provided for @reminderCustomProOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro'**
+  String get reminderCustomProOnly;
+
+  /// No description provided for @backupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup (JSON)'**
+  String get backupExport;
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the backup. Please try again.'**
+  String get backupFailed;
+
+  /// No description provided for @paywallHeadlineBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a copy of everything'**
+  String get paywallHeadlineBackup;
+
+  /// No description provided for @featureBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup export'**
+  String get featureBackup;
 }
 
 class _AppLocalizationsDelegate

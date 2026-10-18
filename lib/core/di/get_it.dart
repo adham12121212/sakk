@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,6 +35,11 @@ import '../../features/household/data/household_data_source.dart';
 import '../../features/household/data/household_repo.dart';
 import '../../features/household/presentation/cubit/household_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
+import '../../features/pro/data/backup_data_source.dart';
+import '../../features/pro/data/pro_status_data_source.dart';
+import '../../features/pro/data/purchases_gateway.dart';
+import '../../features/pro/presentation/cubit/paywall_cubit.dart';
+import '../../features/pro/presentation/cubit/pro_cubit.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/products/data/product_data_source/product_local_data_source.dart';
 import '../../features/products/data/product_repo_impl/product_repo_impl.dart';
@@ -411,6 +417,35 @@ void setupLocator() {
     ),
   );
 
+  // ---- Sakk Pro ----
+  // RevenueCat's public SDK keys (not secrets). Without them the app runs
+  // on the free plan and the paywall says purchases aren't available.
+  getIt.registerLazySingleton<PurchasesGateway>(
+        () => RevenueCatGateway(
+      androidApiKey: dotenv.env['REVENUECAT_ANDROID_KEY'],
+      iosApiKey: dotenv.env['REVENUECAT_IOS_KEY'],
+      packageName: 'com.sakk.app',
+    ),
+  );
+  getIt.registerLazySingleton<BackupDataSource>(
+        () => BackupDataSourceImpl(Supabase.instance.client),
+  );
+  getIt.registerLazySingleton<ProStatusDataSource>(
+        () => ProStatusDataSourceImpl(Supabase.instance.client),
+  );
+  // Singleton: the badge, counters, paywall and add buttons share it.
+  getIt.registerLazySingleton<ProCubit>(
+        () => ProCubit(
+      getIt<ProStatusDataSource>(),
+      getIt<PurchasesGateway>(),
+      userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+      logger: getIt<AppLogger>(),
+    ),
+  );
+  getIt.registerFactory<PaywallCubit>(
+        () => PaywallCubit(getIt<PurchasesGateway>(), getIt<ProCubit>(), getIt<AppLogger>()),
+  );
+
   // ---- Chat ----
   getIt.registerLazySingleton<ChatDataSource>(
         () => ChatDataSourceImpl(Supabase.instance.client),
@@ -421,12 +456,16 @@ void setupLocator() {
   getIt.registerLazySingleton<SendMessageUseCase>(
         () => SendMessageUseCaseImpl(getIt<ChatRepo>()),
   );
+  getIt.registerLazySingleton<GetChatHistoryUseCase>(
+        () => GetChatHistoryUseCaseImpl(getIt<ChatRepo>()),
+  );
 
 
   getIt.registerLazySingleton<ChatCubit>(
         () => ChatCubit(
           getIt<SendMessageUseCase>(),
           Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+          getHistoryUseCase: getIt<GetChatHistoryUseCase>(),
         ),
   );
 

@@ -30,6 +30,8 @@ import '../cubit/installment_smart_add_cubit.dart';
 import '../util/installment_format.dart';
 import '../widgets/product_picker_sheet.dart';
 import '../widgets/schedule_preview.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// What the form opens with: nothing, a product to link (from product
 /// details), or a plan to edit.
@@ -303,6 +305,8 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
   /// Smart add: pick a source, read it with the AI, then fill the form
   /// (handled by the listener in [build]). The user still reviews and saves.
   Future<void> _smartAdd() async {
+    // Reading it with the AI is a scan.
+    if (!ProActions.ensureCanUse(context, QuotaType.scan)) return;
     final smartAdd = context.read<InstallmentSmartAddCubit>();
     final source = await showSmartAddSourceSheet(context, allowPdf: true);
     if (source == null || !mounted) return;

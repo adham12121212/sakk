@@ -7,6 +7,9 @@
 ///   3, 4        installment: due in 3 days, due today
 ///   5, 6, 7, 8  subscription: renews in 3 days, renews tomorrow, renewed
 ///               (next renewal), renewed (the one that just passed)
+///   9           Sakk Pro's "N days before", for subscriptions and
+///               installments alike; told apart by the payload (an
+///               installment's starts with "installment|")
 /// Each service only touches its own slots, so syncing one never cancels the
 /// other's reminders.
 ///
@@ -29,3 +32,4 @@ int reminderSlot(int id) => id % 10;
 const warrantyReminderSlots = {0, 1, 2};
 const subscriptionReminderSlots = {5, 6, 7, 8};
 const installmentReminderSlots = {3, 4};
+const customReminderSlot = 9;

@@ -14,6 +14,8 @@ import '../cubit/installments_state.dart';
 import '../util/installment_format.dart';
 import '../views/installment_form_view.dart';
 import 'installment_progress.dart';
+import '../../../pro/domain/pro_limit.dart';
+import '../../../pro/presentation/pro_actions.dart';
 
 /// Installments on the product details screen (the user's own products
 /// only): each linked plan's status, and "Add installment".
@@ -35,10 +37,10 @@ class _ProductInstallmentsSectionState extends State<ProductInstallmentsSection>
     _cubit.loadIfNeeded();
   }
 
-  void _add() => context.push(
-    AppRoutes.installmentForm,
-    extra: InstallmentFormArgs.add(product: widget.product),
-  );
+  void _add() {
+    if (!ProActions.ensureCanAdd(context, LimitedItem.installments)) return;
+    context.push(AppRoutes.installmentForm, extra: InstallmentFormArgs.add(product: widget.product));
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../household/presentation/widgets/household_card.dart';
+import '../../../pro/presentation/widgets/pro_plan_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -96,6 +97,10 @@ class ProfileView extends StatelessWidget {
                         children: [
                           const ProfileStatsSection(),
                           AppSpacing.h32,
+                          SectionLabel(l10n.sakkPro),
+                          AppSpacing.h12,
+                          const ProPlanCard(),
+                          AppSpacing.h24,
                           SectionLabel(l10n.preferences,
                           ),
                           AppSpacing.h12,

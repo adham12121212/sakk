@@ -8,4 +8,7 @@ abstract class ChatRepo {
     required String content,
     required List<ChatMessageEntity> history,
   });
+
+  /// The conversation saved on the server, oldest first.
+  Future<Either<Failure, List<ChatMessageEntity>>> getHistory();
 }

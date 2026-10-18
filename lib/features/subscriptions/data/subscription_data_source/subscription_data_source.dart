@@ -8,6 +8,7 @@ import '../../domain/entities/scanned_subscription.dart';
 import '../../domain/entities/subscription_category.dart';
 import '../models/catalog_service_model.dart';
 import '../models/user_subscription_model.dart';
+import '../../../pro/domain/pro_limit.dart';
 
 abstract class SubscriptionDataSource {
   Future<List<CatalogServiceModel>> getCatalog();
@@ -98,9 +99,10 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
           .insert(insertJson)
           .select(UserSubscriptionModel.selectColumns)
           .single();
+      ProLimit.notifyUsageChanged();
       return UserSubscriptionModel.fromJson(row);
     } catch (e) {
-      throw ServerException('Failed to save subscription: $e');
+      throw ProLimit.exceptionFor(e, 'Failed to save subscription: $e');
     }
   }
 
@@ -126,6 +128,7 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
   Future<void> deleteSubscription(String id) async {
     try {
       await _client.from(_table).delete().eq('id', id);
+      ProLimit.notifyUsageChanged();
     } catch (e) {
       throw ServerException('Failed to delete subscription: $e');
     }

@@ -5,6 +5,7 @@ import '../../../../core/constant/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../splash/presentation/widgets/blob.dart';
+import '../../../pro/presentation/widgets/plan_badge.dart';
 import 'profile_avatar.dart';
 import '../../../../core/theme/app_icons.dart';
 
@@ -98,6 +99,8 @@ class ProfileHeader extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(height: 6.h),
+                    PlanBadge.live(size: PlanBadgeSize.small),
                     SizedBox(height: 6.h),
                     Text(
                       displayEmail,
