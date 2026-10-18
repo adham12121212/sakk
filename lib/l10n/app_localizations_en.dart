@@ -1523,4 +1523,354 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountActionsHint => 'Log out or delete your account';
+
+  @override
+  String get installments => 'Installments';
+
+  @override
+  String get addInstallment => 'Add installment';
+
+  @override
+  String get editInstallment => 'Edit installment plan';
+
+  @override
+  String get installmentsLeftToPay => 'Left to pay';
+
+  @override
+  String get installmentsHomeEmpty => 'Track Valu, bank and store installments';
+
+  @override
+  String get noInstallmentsYet => 'No installments yet';
+
+  @override
+  String get noInstallmentsBody =>
+      'Add what you\'re paying off with Valu, your bank or a store to see what\'s left and get reminded before each due date.';
+
+  @override
+  String installmentsActiveCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText active plans',
+      one: '1 active plan',
+      zero: 'No active plans',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsDueThisMonth(String amount) {
+    return '$amount due this month';
+  }
+
+  @override
+  String installmentsOverdueTotal(String amount) {
+    return '$amount overdue';
+  }
+
+  @override
+  String installmentsOverdueBanner(int count, String countText, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText installments are overdue ($amount)',
+      one: '1 installment is overdue ($amount)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsPaidOf(String paid, String total) {
+    return '$paid of $total paid';
+  }
+
+  @override
+  String get installmentDueToday => 'Due today';
+
+  @override
+  String get installmentDueTomorrow => 'Due tomorrow';
+
+  @override
+  String installmentDueInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Due in $daysText days',
+      one: 'Due in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentOverdueBy(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Overdue by $daysText days',
+      one: 'Overdue by 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentPaidOff => 'Paid off';
+
+  @override
+  String get installmentCancelled => 'Cancelled';
+
+  @override
+  String installmentOfTotal(String amount) {
+    return 'of $amount';
+  }
+
+  @override
+  String get nextInstallment => 'Next installment';
+
+  @override
+  String nextInstallmentDue(String amount, String when) {
+    return 'Next $amount · $when';
+  }
+
+  @override
+  String get markAsPaid => 'Mark as paid';
+
+  @override
+  String get markUnpaid => 'Mark as unpaid';
+
+  @override
+  String get markUnpaidQuestion => 'Mark as unpaid?';
+
+  @override
+  String markUnpaidBody(String date) {
+    return 'The installment due $date will show as unpaid again.';
+  }
+
+  @override
+  String get installmentMarkedPaid => 'Marked as paid';
+
+  @override
+  String paidOn(String date) {
+    return 'Paid $date';
+  }
+
+  @override
+  String get paymentSchedule => 'Payment schedule';
+
+  @override
+  String get linkedProduct => 'Product';
+
+  @override
+  String get installmentProvider => 'Provider';
+
+  @override
+  String get installmentProviderOptional => 'Provider (optional)';
+
+  @override
+  String get providerBank => 'Bank';
+
+  @override
+  String get providerStore => 'Store';
+
+  @override
+  String get downPayment => 'Down payment';
+
+  @override
+  String get downPaymentOptional => 'Down payment (optional)';
+
+  @override
+  String get downPaymentTooHigh => 'More than the total price';
+
+  @override
+  String get interestOrFees => 'Interest or fees';
+
+  @override
+  String get interestOrFeesOptional => 'Interest / fees (optional)';
+
+  @override
+  String get installmentAmount => 'Installments';
+
+  @override
+  String installmentsTimesAmount(String count, String amount) {
+    return '$count × $amount';
+  }
+
+  @override
+  String get installmentAmountPerMonth => 'Monthly installment';
+
+  @override
+  String get installmentAmountAuto =>
+      'Worked out from the total, down payment and fees.';
+
+  @override
+  String get installmentAmountCustom => 'Your own amount.';
+
+  @override
+  String get useEvenSplit => 'Split evenly';
+
+  @override
+  String get nothingLeftToFinance => 'The down payment covers the whole price';
+
+  @override
+  String get installmentsCountLabel => 'Number of installments';
+
+  @override
+  String get installmentsCountInvalid => 'Enter a whole number from 1 to 360';
+
+  @override
+  String installmentsCountBelowPaid(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'At least $countText: that many are already paid',
+      one: 'At least 1: one is already paid',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentsCountBelowPaidGeneric =>
+      'The number of installments can\'t be less than those already paid.';
+
+  @override
+  String monthsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get firstInstallmentDate => 'First installment';
+
+  @override
+  String get dueDayOfMonth => 'Due day';
+
+  @override
+  String dueDayValue(String day) {
+    return 'Day $day of each month';
+  }
+
+  @override
+  String get dueDayShortMonthsHint =>
+      'In shorter months it\'s due on the last day.';
+
+  @override
+  String get installmentFor => 'What are you paying for?';
+
+  @override
+  String get installmentForProduct => 'One of my products';
+
+  @override
+  String get installmentForOther => 'Something else';
+
+  @override
+  String get installmentTitle => 'What did you buy?';
+
+  @override
+  String get installmentTitleRequired => 'Enter what you bought';
+
+  @override
+  String get chooseProduct => 'Choose a product';
+
+  @override
+  String get chooseProductRequired =>
+      'Choose a product, or pick \"Something else\"';
+
+  @override
+  String get searchProducts => 'Search your products';
+
+  @override
+  String get noProductsMatch => 'No products match.';
+
+  @override
+  String get noProductsToLink =>
+      'You have no products yet. Add one first, or pick \"Something else\".';
+
+  @override
+  String editPaidInstallmentsNote(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$countText installments are already paid and stay as they are. Changes apply to the rest.',
+      one:
+          '1 installment is already paid and stays as it is. Changes apply to the rest.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get schedulePreview => 'Schedule preview';
+
+  @override
+  String get schedulePreviewEmpty =>
+      'Enter the total price and number of installments to see the schedule.';
+
+  @override
+  String schedulePreviewSummary(
+    int count,
+    String countText,
+    String total,
+    String lastDate,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText installments · $total in total · last on $lastDate',
+      one: '1 installment · $total in total · last on $lastDate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showAllInstallments(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show all $countText',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get showLess => 'Show less';
+
+  @override
+  String get installmentSaved => 'Installment plan saved';
+
+  @override
+  String get installmentDeleted => 'Installment plan deleted';
+
+  @override
+  String get deleteInstallmentQuestion => 'Delete installment plan?';
+
+  @override
+  String deleteInstallmentBody(String name) {
+    return '$name, its payment schedule and reminders will be removed.';
+  }
+
+  @override
+  String get cancelInstallmentPlan => 'Cancel plan';
+
+  @override
+  String get reactivateInstallmentPlan => 'Make active again';
+
+  @override
+  String get installmentPlanCancelled => 'Plan cancelled';
+
+  @override
+  String get installmentPlanReactivated => 'Plan active again';
+
+  @override
+  String get installmentNotFound => 'Plan not found';
+
+  @override
+  String get installmentNotFoundBody => 'It may have been deleted.';
+
+  @override
+  String get productInstallmentsHint =>
+      'Paying for this in installments? Track what\'s left and get reminded before each due date.';
 }

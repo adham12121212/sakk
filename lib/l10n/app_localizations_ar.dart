@@ -1547,4 +1547,379 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountActionsHint => 'تسجيل الخروج أو حذف الحساب';
+
+  @override
+  String get installments => 'الأقساط';
+
+  @override
+  String get addInstallment => 'إضافة تقسيط';
+
+  @override
+  String get editInstallment => 'تعديل خطة التقسيط';
+
+  @override
+  String get installmentsLeftToPay => 'المتبقي للسداد';
+
+  @override
+  String get installmentsHomeEmpty => 'تابع أقساط فاليو والبنك والمحلات';
+
+  @override
+  String get noInstallmentsYet => 'لا توجد أقساط بعد';
+
+  @override
+  String get noInstallmentsBody =>
+      'أضف ما تقسّطه مع فاليو أو البنك أو المحل لتعرف المتبقي ويصلك تذكير قبل كل قسط.';
+
+  @override
+  String installmentsActiveCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText خطة نشطة',
+      many: '$countText خطة نشطة',
+      few: '$countText خطط نشطة',
+      two: 'خطتان نشطتان',
+      one: 'خطة نشطة واحدة',
+      zero: 'لا توجد خطط نشطة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsDueThisMonth(String amount) {
+    return 'مستحق هذا الشهر: $amount';
+  }
+
+  @override
+  String installmentsOverdueTotal(String amount) {
+    return 'متأخر: $amount';
+  }
+
+  @override
+  String installmentsOverdueBanner(int count, String countText, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText قسط متأخر ($amount)',
+      many: '$countText قسطًا متأخرًا ($amount)',
+      few: '$countText أقساط متأخرة ($amount)',
+      two: 'قسطان متأخران ($amount)',
+      one: 'قسط واحد متأخر ($amount)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentsPaidOf(String paid, String total) {
+    return 'تم دفع $paid من $total';
+  }
+
+  @override
+  String get installmentDueToday => 'مستحق اليوم';
+
+  @override
+  String get installmentDueTomorrow => 'مستحق غدًا';
+
+  @override
+  String installmentDueInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'مستحق خلال $daysText يوم',
+      many: 'مستحق خلال $daysText يومًا',
+      few: 'مستحق خلال $daysText أيام',
+      two: 'مستحق خلال يومين',
+      one: 'مستحق خلال يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String installmentOverdueBy(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'متأخر $daysText يوم',
+      many: 'متأخر $daysText يومًا',
+      few: 'متأخر $daysText أيام',
+      two: 'متأخر يومين',
+      one: 'متأخر يومًا واحدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentPaidOff => 'تم السداد';
+
+  @override
+  String get installmentCancelled => 'ملغاة';
+
+  @override
+  String installmentOfTotal(String amount) {
+    return 'من $amount';
+  }
+
+  @override
+  String get nextInstallment => 'القسط القادم';
+
+  @override
+  String nextInstallmentDue(String amount, String when) {
+    return 'القسط القادم $amount · $when';
+  }
+
+  @override
+  String get markAsPaid => 'تسجيل كمدفوع';
+
+  @override
+  String get markUnpaid => 'تسجيل كغير مدفوع';
+
+  @override
+  String get markUnpaidQuestion => 'تسجيل كغير مدفوع؟';
+
+  @override
+  String markUnpaidBody(String date) {
+    return 'سيظهر قسط $date كغير مدفوع مرة أخرى.';
+  }
+
+  @override
+  String get installmentMarkedPaid => 'تم تسجيل القسط كمدفوع';
+
+  @override
+  String paidOn(String date) {
+    return 'دُفع في $date';
+  }
+
+  @override
+  String get paymentSchedule => 'جدول الأقساط';
+
+  @override
+  String get linkedProduct => 'المنتج';
+
+  @override
+  String get installmentProvider => 'جهة التقسيط';
+
+  @override
+  String get installmentProviderOptional => 'جهة التقسيط (اختياري)';
+
+  @override
+  String get providerBank => 'بنك';
+
+  @override
+  String get providerStore => 'المحل';
+
+  @override
+  String get downPayment => 'المقدم';
+
+  @override
+  String get downPaymentOptional => 'المقدم (اختياري)';
+
+  @override
+  String get downPaymentTooHigh => 'أكبر من السعر الإجمالي';
+
+  @override
+  String get interestOrFees => 'الفوائد أو المصاريف';
+
+  @override
+  String get interestOrFeesOptional => 'فوائد / مصاريف (اختياري)';
+
+  @override
+  String get installmentAmount => 'الأقساط';
+
+  @override
+  String installmentsTimesAmount(String count, String amount) {
+    return '$count × $amount';
+  }
+
+  @override
+  String get installmentAmountPerMonth => 'القسط الشهري';
+
+  @override
+  String get installmentAmountAuto => 'محسوب من الإجمالي والمقدم والمصاريف.';
+
+  @override
+  String get installmentAmountCustom => 'مبلغ أدخلته بنفسك.';
+
+  @override
+  String get useEvenSplit => 'تقسيم بالتساوي';
+
+  @override
+  String get nothingLeftToFinance => 'المقدم يغطي السعر بالكامل';
+
+  @override
+  String get installmentsCountLabel => 'عدد الأقساط';
+
+  @override
+  String get installmentsCountInvalid => 'أدخل رقمًا صحيحًا من ١ إلى ٣٦٠';
+
+  @override
+  String installmentsCountBelowPaid(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لا يقل عن $countText، فهناك $countText قسط مدفوع',
+      many: 'لا يقل عن $countText، فهناك $countText قسطًا مدفوعًا',
+      few: 'لا يقل عن $countText، فهناك $countText أقساط مدفوعة',
+      two: 'لا يقل عن $countText، فهناك قسطان مدفوعان',
+      one: 'لا يقل عن ١، فهناك قسط مدفوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get installmentsCountBelowPaidGeneric =>
+      'لا يمكن أن يقل عدد الأقساط عن المدفوع منها.';
+
+  @override
+  String monthsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText شهر',
+      many: '$countText شهرًا',
+      few: '$countText أشهر',
+      two: 'شهران',
+      one: 'شهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get firstInstallmentDate => 'أول قسط';
+
+  @override
+  String get dueDayOfMonth => 'يوم الاستحقاق';
+
+  @override
+  String dueDayValue(String day) {
+    return 'يوم $day من كل شهر';
+  }
+
+  @override
+  String get dueDayShortMonthsHint =>
+      'في الشهور الأقصر يُستحق في آخر يوم من الشهر.';
+
+  @override
+  String get installmentFor => 'ماذا تقسّط؟';
+
+  @override
+  String get installmentForProduct => 'منتج من منتجاتي';
+
+  @override
+  String get installmentForOther => 'شيء آخر';
+
+  @override
+  String get installmentTitle => 'ماذا اشتريت؟';
+
+  @override
+  String get installmentTitleRequired => 'أدخل ما اشتريته';
+
+  @override
+  String get chooseProduct => 'اختر منتجًا';
+
+  @override
+  String get chooseProductRequired => 'اختر منتجًا أو اختر \"شيء آخر\"';
+
+  @override
+  String get searchProducts => 'ابحث في منتجاتك';
+
+  @override
+  String get noProductsMatch => 'لا توجد منتجات مطابقة.';
+
+  @override
+  String get noProductsToLink =>
+      'لا توجد منتجات بعد. أضف منتجًا أولًا أو اختر \"شيء آخر\".';
+
+  @override
+  String editPaidInstallmentsNote(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$countText قسط مدفوع بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      many:
+          '$countText قسطًا مدفوعًا بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      few:
+          '$countText أقساط مدفوعة بالفعل وستبقى كما هي. التعديلات تسري على باقي الأقساط.',
+      two:
+          'قسطان مدفوعان بالفعل وسيبقيان كما هما. التعديلات تسري على باقي الأقساط.',
+      one:
+          'قسط واحد مدفوع بالفعل وسيبقى كما هو. التعديلات تسري على باقي الأقساط.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get schedulePreview => 'معاينة الجدول';
+
+  @override
+  String get schedulePreviewEmpty =>
+      'أدخل السعر الإجمالي وعدد الأقساط لترى الجدول.';
+
+  @override
+  String schedulePreviewSummary(
+    int count,
+    String countText,
+    String total,
+    String lastDate,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText قسط · الإجمالي $total · آخر قسط $lastDate',
+      many: '$countText قسطًا · الإجمالي $total · آخر قسط $lastDate',
+      few: '$countText أقساط · الإجمالي $total · آخر قسط $lastDate',
+      two: 'قسطان · الإجمالي $total · آخر قسط $lastDate',
+      one: 'قسط واحد · الإجمالي $total · آخر قسط $lastDate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String showAllInstallments(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض الكل ($countText)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get showLess => 'عرض أقل';
+
+  @override
+  String get installmentSaved => 'تم حفظ خطة التقسيط';
+
+  @override
+  String get installmentDeleted => 'تم حذف خطة التقسيط';
+
+  @override
+  String get deleteInstallmentQuestion => 'حذف خطة التقسيط؟';
+
+  @override
+  String deleteInstallmentBody(String name) {
+    return 'سيتم حذف $name مع جدول الأقساط والتذكيرات.';
+  }
+
+  @override
+  String get cancelInstallmentPlan => 'إلغاء الخطة';
+
+  @override
+  String get reactivateInstallmentPlan => 'إعادة تفعيل الخطة';
+
+  @override
+  String get installmentPlanCancelled => 'تم إلغاء الخطة';
+
+  @override
+  String get installmentPlanReactivated => 'تم تفعيل الخطة مرة أخرى';
+
+  @override
+  String get installmentNotFound => 'الخطة غير موجودة';
+
+  @override
+  String get installmentNotFoundBody => 'ربما تم حذفها.';
+
+  @override
+  String get productInstallmentsHint =>
+      'تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط.';
 }

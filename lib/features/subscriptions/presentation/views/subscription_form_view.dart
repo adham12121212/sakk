@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -145,15 +146,7 @@ class _SubscriptionFormViewState extends State<SubscriptionFormView> {
   }
 
   /// Accepts Arabic-Indic digits and the Arabic decimal separator.
-  static double? _parsePrice(String raw) {
-    const arabic = '٠١٢٣٤٥٦٧٨٩';
-    final normalized = raw.trim().split('').map((c) {
-      final i = arabic.indexOf(c);
-      if (i >= 0) return '$i';
-      return c == '٫' || c == ',' ? '.' : c;
-    }).join();
-    return double.tryParse(normalized);
-  }
+  static double? _parsePrice(String raw) => parseLocalizedNumber(raw);
 
   String? _emptyToNull(String value) {
     final trimmed = value.trim();

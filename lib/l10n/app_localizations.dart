@@ -2635,6 +2635,497 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log out or delete your account'**
   String get accountActionsHint;
+
+  /// No description provided for @installments.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments'**
+  String get installments;
+
+  /// No description provided for @addInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add installment'**
+  String get addInstallment;
+
+  /// No description provided for @editInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit installment plan'**
+  String get editInstallment;
+
+  /// No description provided for @installmentsLeftToPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to pay'**
+  String get installmentsLeftToPay;
+
+  /// No description provided for @installmentsHomeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Valu, bank and store installments'**
+  String get installmentsHomeEmpty;
+
+  /// No description provided for @noInstallmentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No installments yet'**
+  String get noInstallmentsYet;
+
+  /// No description provided for @noInstallmentsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add what you\'re paying off with Valu, your bank or a store to see what\'s left and get reminded before each due date.'**
+  String get noInstallmentsBody;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No active plans} one{1 active plan} other{{countText} active plans}}'**
+  String installmentsActiveCount(int count, String countText);
+
+  /// No description provided for @installmentsDueThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} due this month'**
+  String installmentsDueThisMonth(String amount);
+
+  /// No description provided for @installmentsOverdueTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} overdue'**
+  String installmentsOverdueTotal(String amount);
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 installment is overdue ({amount})} other{{countText} installments are overdue ({amount})}}'**
+  String installmentsOverdueBanner(int count, String countText, String amount);
+
+  /// Numbers already in the app's digits.
+  ///
+  /// In en, this message translates to:
+  /// **'{paid} of {total} paid'**
+  String installmentsPaidOf(String paid, String total);
+
+  /// No description provided for @installmentDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get installmentDueToday;
+
+  /// No description provided for @installmentDueTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Due tomorrow'**
+  String get installmentDueTomorrow;
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{Due in 1 day} other{Due in {daysText} days}}'**
+  String installmentDueInDays(int days, String daysText);
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, one{Overdue by 1 day} other{Overdue by {daysText} days}}'**
+  String installmentOverdueBy(int days, String daysText);
+
+  /// No description provided for @installmentPaidOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid off'**
+  String get installmentPaidOff;
+
+  /// No description provided for @installmentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get installmentCancelled;
+
+  /// No description provided for @installmentOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {amount}'**
+  String installmentOfTotal(String amount);
+
+  /// No description provided for @nextInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Next installment'**
+  String get nextInstallment;
+
+  /// No description provided for @nextInstallmentDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next {amount} · {when}'**
+  String nextInstallmentDue(String amount, String when);
+
+  /// No description provided for @markAsPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as paid'**
+  String get markAsPaid;
+
+  /// No description provided for @markUnpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as unpaid'**
+  String get markUnpaid;
+
+  /// No description provided for @markUnpaidQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as unpaid?'**
+  String get markUnpaidQuestion;
+
+  /// No description provided for @markUnpaidBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The installment due {date} will show as unpaid again.'**
+  String markUnpaidBody(String date);
+
+  /// No description provided for @installmentMarkedPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as paid'**
+  String get installmentMarkedPaid;
+
+  /// No description provided for @paidOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid {date}'**
+  String paidOn(String date);
+
+  /// No description provided for @paymentSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment schedule'**
+  String get paymentSchedule;
+
+  /// No description provided for @linkedProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get linkedProduct;
+
+  /// No description provided for @installmentProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get installmentProvider;
+
+  /// No description provided for @installmentProviderOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider (optional)'**
+  String get installmentProviderOptional;
+
+  /// No description provided for @providerBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get providerBank;
+
+  /// No description provided for @providerStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get providerStore;
+
+  /// No description provided for @downPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Down payment'**
+  String get downPayment;
+
+  /// No description provided for @downPaymentOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Down payment (optional)'**
+  String get downPaymentOptional;
+
+  /// No description provided for @downPaymentTooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'More than the total price'**
+  String get downPaymentTooHigh;
+
+  /// No description provided for @interestOrFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest or fees'**
+  String get interestOrFees;
+
+  /// No description provided for @interestOrFeesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest / fees (optional)'**
+  String get interestOrFeesOptional;
+
+  /// No description provided for @installmentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments'**
+  String get installmentAmount;
+
+  /// No description provided for @installmentsTimesAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} × {amount}'**
+  String installmentsTimesAmount(String count, String amount);
+
+  /// No description provided for @installmentAmountPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly installment'**
+  String get installmentAmountPerMonth;
+
+  /// No description provided for @installmentAmountAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Worked out from the total, down payment and fees.'**
+  String get installmentAmountAuto;
+
+  /// No description provided for @installmentAmountCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own amount.'**
+  String get installmentAmountCustom;
+
+  /// No description provided for @useEvenSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Split evenly'**
+  String get useEvenSplit;
+
+  /// No description provided for @nothingLeftToFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'The down payment covers the whole price'**
+  String get nothingLeftToFinance;
+
+  /// No description provided for @installmentsCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of installments'**
+  String get installmentsCountLabel;
+
+  /// No description provided for @installmentsCountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number from 1 to 360'**
+  String get installmentsCountInvalid;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{At least 1: one is already paid} other{At least {countText}: that many are already paid}}'**
+  String installmentsCountBelowPaid(int count, String countText);
+
+  /// No description provided for @installmentsCountBelowPaidGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The number of installments can\'t be less than those already paid.'**
+  String get installmentsCountBelowPaidGeneric;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 month} other{{countText} months}}'**
+  String monthsCount(int count, String countText);
+
+  /// No description provided for @firstInstallmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'First installment'**
+  String get firstInstallmentDate;
+
+  /// No description provided for @dueDayOfMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Due day'**
+  String get dueDayOfMonth;
+
+  /// No description provided for @dueDayValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day} of each month'**
+  String dueDayValue(String day);
+
+  /// No description provided for @dueDayShortMonthsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In shorter months it\'s due on the last day.'**
+  String get dueDayShortMonthsHint;
+
+  /// No description provided for @installmentFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you paying for?'**
+  String get installmentFor;
+
+  /// No description provided for @installmentForProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'One of my products'**
+  String get installmentForProduct;
+
+  /// No description provided for @installmentForOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get installmentForOther;
+
+  /// No description provided for @installmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What did you buy?'**
+  String get installmentTitle;
+
+  /// No description provided for @installmentTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what you bought'**
+  String get installmentTitleRequired;
+
+  /// No description provided for @chooseProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a product'**
+  String get chooseProduct;
+
+  /// No description provided for @chooseProductRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a product, or pick \"Something else\"'**
+  String get chooseProductRequired;
+
+  /// No description provided for @searchProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your products'**
+  String get searchProducts;
+
+  /// No description provided for @noProductsMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match.'**
+  String get noProductsMatch;
+
+  /// No description provided for @noProductsToLink.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no products yet. Add one first, or pick \"Something else\".'**
+  String get noProductsToLink;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 installment is already paid and stays as it is. Changes apply to the rest.} other{{countText} installments are already paid and stay as they are. Changes apply to the rest.}}'**
+  String editPaidInstallmentsNote(int count, String countText);
+
+  /// No description provided for @schedulePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule preview'**
+  String get schedulePreview;
+
+  /// No description provided for @schedulePreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the total price and number of installments to see the schedule.'**
+  String get schedulePreviewEmpty;
+
+  /// total includes the down payment. countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 installment · {total} in total · last on {lastDate}} other{{countText} installments · {total} in total · last on {lastDate}}}'**
+  String schedulePreviewSummary(
+    int count,
+    String countText,
+    String total,
+    String lastDate,
+  );
+
+  /// No description provided for @showAllInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{Show all {countText}}}'**
+  String showAllInstallments(int count, String countText);
+
+  /// No description provided for @showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get showLess;
+
+  /// No description provided for @installmentSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment plan saved'**
+  String get installmentSaved;
+
+  /// No description provided for @installmentDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment plan deleted'**
+  String get installmentDeleted;
+
+  /// No description provided for @deleteInstallmentQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete installment plan?'**
+  String get deleteInstallmentQuestion;
+
+  /// No description provided for @deleteInstallmentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, its payment schedule and reminders will be removed.'**
+  String deleteInstallmentBody(String name);
+
+  /// No description provided for @cancelInstallmentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel plan'**
+  String get cancelInstallmentPlan;
+
+  /// No description provided for @reactivateInstallmentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Make active again'**
+  String get reactivateInstallmentPlan;
+
+  /// No description provided for @installmentPlanCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan cancelled'**
+  String get installmentPlanCancelled;
+
+  /// No description provided for @installmentPlanReactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan active again'**
+  String get installmentPlanReactivated;
+
+  /// No description provided for @installmentNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan not found'**
+  String get installmentNotFound;
+
+  /// No description provided for @installmentNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It may have been deleted.'**
+  String get installmentNotFoundBody;
+
+  /// No description provided for @productInstallmentsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paying for this in installments? Track what\'s left and get reminded before each due date.'**
+  String get productInstallmentsHint;
 }
 
 class _AppLocalizationsDelegate

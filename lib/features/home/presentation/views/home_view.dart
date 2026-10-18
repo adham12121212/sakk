@@ -18,6 +18,8 @@ import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';
+import '../../../installments/presentation/cubit/installments_cubit.dart';
+import '../../../installments/presentation/widgets/installments_home_card.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../../subscriptions/presentation/widgets/subscriptions_home_card.dart';
 import '../widgets/home_header.dart';
@@ -48,12 +50,14 @@ class _HomeContent extends StatefulWidget {
 class _HomeContentState extends State<_HomeContent> {
   final _notificationCubit = getIt<NotificationCubit>();
   final _subscriptionsCubit = getIt<SubscriptionsCubit>();
+  final _installmentsCubit = getIt<InstallmentsCubit>();
 
   @override
   void initState() {
     super.initState();
     context.read<ProductsCubit>().loadIfNeeded();
     _subscriptionsCubit.loadIfNeeded();
+    _installmentsCubit.loadIfNeeded();
     // Member names for "Added by ..." on shared products.
     getIt<HouseholdCubit>().load();
     final userId = getIt<GetUserUseCase>()()?.id;
@@ -146,6 +150,7 @@ class _HomeContentState extends State<_HomeContent> {
                 context.read<ProductsCubit>().refresh(),
                 _notificationCubit.refresh(),
                 _subscriptionsCubit.refresh(),
+                _installmentsCubit.refresh(),
               ]),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -247,6 +252,15 @@ class _HomeContentState extends State<_HomeContent> {
                         value: _subscriptionsCubit,
                         child: SubscriptionsHomeCard(
                           onTap: () => context.push(AppRoutes.subscriptions),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                      child: BlocProvider.value(
+                        value: _installmentsCubit,
+                        child: InstallmentsHomeCard(
+                          onTap: () => context.push(AppRoutes.installments),
                         ),
                       ),
                     ),

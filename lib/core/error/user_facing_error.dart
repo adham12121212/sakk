@@ -1,5 +1,6 @@
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/household/data/household_data_source.dart';
+import '../../features/installments/domain/usecase/update_installment_plan_usecase.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
 import '../../l10n/app_localizations.dart';
 import 'failure.dart';
@@ -19,5 +20,6 @@ String userFacingError(AppLocalizations l10n, String? message) {
   if (message == HouseholdDataSource.invalidInviteCode) return l10n.invalidInviteCode;
   if (message == HouseholdDataSource.alreadyInHousehold) return l10n.alreadyInHousehold;
   if (message == HouseholdDataSource.householdFull) return l10n.householdFull;
+  if (message == UpdateInstallmentPlanUseCase.tooFewInstallments) return l10n.installmentsCountBelowPaidGeneric;
   return l10n.errorGeneric;
 }

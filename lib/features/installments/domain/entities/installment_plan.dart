@@ -90,7 +90,9 @@ class InstallmentPlan extends Equatable {
   double overdueAmount(DateTime today) =>
       overduePayments(today).fold(0.0, (sum, p) => sum + p.amount);
 
-  bool get isCompleted => payments.isNotEmpty && nextPayment == null;
+  /// Nothing left to pay. (A plan always has payments; one without any
+  /// counts as completed so an active plan always has a [nextPayment].)
+  bool get isCompleted => nextPayment == null;
 
   InstallmentPlanStatus get status {
     if (isCancelled) return InstallmentPlanStatus.cancelled;

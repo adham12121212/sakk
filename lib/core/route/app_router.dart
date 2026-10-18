@@ -23,6 +23,11 @@ import '../../features/products/presentation/cubit/product_cubit.dart';
 import '../../features/products/presentation/view/products_view.dart';
 import '../../features/scan/presentation/views/scan_view.dart';
 import '../../features/splash/presentation/views/splash_view.dart';
+import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
+import '../../features/installments/presentation/cubit/installments_cubit.dart';
+import '../../features/installments/presentation/views/installment_details_view.dart';
+import '../../features/installments/presentation/views/installment_form_view.dart';
+import '../../features/installments/presentation/views/installments_view.dart';
 import '../../features/subscriptions/presentation/cubit/catalog_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
@@ -53,6 +58,9 @@ class AppRoutes {
   static const subscriptions = '/subscriptions';
   static const subscriptionCatalog = '/subscriptions/catalog';
   static const subscriptionForm = '/subscriptions/form';
+  static const installments = '/installments';
+  static const installmentForm = '/installments/form';
+  static const installmentDetails = '/installments/plan';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -160,6 +168,38 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<SubscriptionFormCubit>(),
         child: SubscriptionFormView(args: state.extra as SubscriptionFormArgs),
+      ),
+    ),
+
+    GoRoute(
+      path: AppRoutes.installments,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<InstallmentsCubit>(),
+        child: const InstallmentsView(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.installmentForm,
+      // Opened with InstallmentFormArgs as `extra`; same fallback as details.
+      redirect: (context, state) =>
+          state.extra is InstallmentFormArgs ? null : AppRoutes.installments,
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<InstallmentFormCubit>(),
+        child: InstallmentFormView(args: state.extra as InstallmentFormArgs),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.installmentDetails,
+      // Opened with the plan's id as `extra` (from the list, a product or a
+      // reminder); the plan itself is read from the shared cubit.
+      redirect: (context, state) =>
+          state.extra is String ? null : AppRoutes.installments,
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: getIt<InstallmentsCubit>()..loadIfNeeded()),
+          BlocProvider(create: (_) => getIt<InstallmentFormCubit>()),
+        ],
+        child: InstallmentDetailsView(planId: state.extra as String),
       ),
     ),
 

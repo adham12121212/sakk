@@ -534,5 +534,273 @@
     }
   },
   "account": "Account",
-  "accountActionsHint": "Log out or delete your account"
+  "accountActionsHint": "Log out or delete your account",
+  "installments": "Installments",
+  "addInstallment": "Add installment",
+  "editInstallment": "Edit installment plan",
+  "installmentsLeftToPay": "Left to pay",
+  "installmentsHomeEmpty": "Track Valu, bank and store installments",
+  "noInstallmentsYet": "No installments yet",
+  "noInstallmentsBody": "Add what you're paying off with Valu, your bank or a store to see what's left and get reminded before each due date.",
+  "installmentsActiveCount": "{count, plural, =0{No active plans} one{1 active plan} other{{countText} active plans}}",
+  "@installmentsActiveCount": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsDueThisMonth": "{amount} due this month",
+  "@installmentsDueThisMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsOverdueTotal": "{amount} overdue",
+  "@installmentsOverdueTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsOverdueBanner": "{count, plural, one{1 installment is overdue ({amount})} other{{countText} installments are overdue ({amount})}}",
+  "@installmentsOverdueBanner": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsPaidOf": "{paid} of {total} paid",
+  "@installmentsPaidOf": {
+    "description": "Numbers already in the app's digits.",
+    "placeholders": {
+      "paid": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentDueToday": "Due today",
+  "installmentDueTomorrow": "Due tomorrow",
+  "installmentDueInDays": "{days, plural, one{Due in 1 day} other{Due in {daysText} days}}",
+  "@installmentDueInDays": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentOverdueBy": "{days, plural, one{Overdue by 1 day} other{Overdue by {daysText} days}}",
+  "@installmentOverdueBy": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentPaidOff": "Paid off",
+  "installmentCancelled": "Cancelled",
+  "installmentOfTotal": "of {amount}",
+  "@installmentOfTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nextInstallment": "Next installment",
+  "nextInstallmentDue": "Next {amount} · {when}",
+  "@nextInstallmentDue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "markAsPaid": "Mark as paid",
+  "markUnpaid": "Mark as unpaid",
+  "markUnpaidQuestion": "Mark as unpaid?",
+  "markUnpaidBody": "The installment due {date} will show as unpaid again.",
+  "@markUnpaidBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentMarkedPaid": "Marked as paid",
+  "paidOn": "Paid {date}",
+  "@paidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentSchedule": "Payment schedule",
+  "linkedProduct": "Product",
+  "installmentProvider": "Provider",
+  "installmentProviderOptional": "Provider (optional)",
+  "providerBank": "Bank",
+  "providerStore": "Store",
+  "downPayment": "Down payment",
+  "downPaymentOptional": "Down payment (optional)",
+  "downPaymentTooHigh": "More than the total price",
+  "interestOrFees": "Interest or fees",
+  "interestOrFeesOptional": "Interest / fees (optional)",
+  "installmentAmount": "Installments",
+  "installmentsTimesAmount": "{count} × {amount}",
+  "@installmentsTimesAmount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentAmountPerMonth": "Monthly installment",
+  "installmentAmountAuto": "Worked out from the total, down payment and fees.",
+  "installmentAmountCustom": "Your own amount.",
+  "useEvenSplit": "Split evenly",
+  "nothingLeftToFinance": "The down payment covers the whole price",
+  "installmentsCountLabel": "Number of installments",
+  "installmentsCountInvalid": "Enter a whole number from 1 to 360",
+  "installmentsCountBelowPaid": "{count, plural, one{At least 1: one is already paid} other{At least {countText}: that many are already paid}}",
+  "@installmentsCountBelowPaid": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "installmentsCountBelowPaidGeneric": "The number of installments can't be less than those already paid.",
+  "monthsCount": "{count, plural, one{1 month} other{{countText} months}}",
+  "@monthsCount": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "firstInstallmentDate": "First installment",
+  "dueDayOfMonth": "Due day",
+  "dueDayValue": "Day {day} of each month",
+  "@dueDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "dueDayShortMonthsHint": "In shorter months it's due on the last day.",
+  "installmentFor": "What are you paying for?",
+  "installmentForProduct": "One of my products",
+  "installmentForOther": "Something else",
+  "installmentTitle": "What did you buy?",
+  "installmentTitleRequired": "Enter what you bought",
+  "chooseProduct": "Choose a product",
+  "chooseProductRequired": "Choose a product, or pick \"Something else\"",
+  "searchProducts": "Search your products",
+  "noProductsMatch": "No products match.",
+  "noProductsToLink": "You have no products yet. Add one first, or pick \"Something else\".",
+  "editPaidInstallmentsNote": "{count, plural, one{1 installment is already paid and stays as it is. Changes apply to the rest.} other{{countText} installments are already paid and stay as they are. Changes apply to the rest.}}",
+  "@editPaidInstallmentsNote": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "schedulePreview": "Schedule preview",
+  "schedulePreviewEmpty": "Enter the total price and number of installments to see the schedule.",
+  "schedulePreviewSummary": "{count, plural, one{1 installment · {total} in total · last on {lastDate}} other{{countText} installments · {total} in total · last on {lastDate}}}",
+  "@schedulePreviewSummary": {
+    "description": "total includes the down payment. countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "lastDate": {
+        "type": "String"
+      }
+    }
+  },
+  "showAllInstallments": "{count, plural, other{Show all {countText}}}",
+  "@showAllInstallments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "showLess": "Show less",
+  "installmentSaved": "Installment plan saved",
+  "installmentDeleted": "Installment plan deleted",
+  "deleteInstallmentQuestion": "Delete installment plan?",
+  "deleteInstallmentBody": "{name}, its payment schedule and reminders will be removed.",
+  "@deleteInstallmentBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelInstallmentPlan": "Cancel plan",
+  "reactivateInstallmentPlan": "Make active again",
+  "installmentPlanCancelled": "Plan cancelled",
+  "installmentPlanReactivated": "Plan active again",
+  "installmentNotFound": "Plan not found",
+  "installmentNotFoundBody": "It may have been deleted.",
+  "productInstallmentsHint": "Paying for this in installments? Track what's left and get reminded before each due date."
 }

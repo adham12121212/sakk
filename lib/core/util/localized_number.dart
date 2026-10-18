@@ -31,3 +31,15 @@ String formatBadgeCount(Locale locale, int count, {int max = 9}) {
       ? '${formatLocalizedInt(locale, max)}+'
       : formatLocalizedInt(locale, count);
 }
+
+/// Reads a number typed with Latin or Arabic-Indic digits and a "." , ","
+/// or Arabic "٫" decimal separator. Null when it isn't a number.
+double? parseLocalizedNumber(String raw) {
+  const arabic = '٠١٢٣٤٥٦٧٨٩';
+  final normalized = raw.trim().split('').map((c) {
+    final i = arabic.indexOf(c);
+    if (i >= 0) return '$i';
+    return c == '٫' || c == ',' ? '.' : c;
+  }).join();
+  return double.tryParse(normalized);
+}

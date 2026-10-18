@@ -38,3 +38,34 @@ List<InstallmentPlan> plansForProductIn(
   Iterable<InstallmentPlan> plans,
   String productId,
 ) => sortedByNextDue(plans.where((p) => p.productId == productId));
+
+/// Unpaid installments of active plans due in [month] of [year], per
+/// currency.
+Map<String, double> dueInMonthByCurrency(
+  Iterable<InstallmentPlan> plans,
+  int year,
+  int month,
+) {
+  final totals = <String, double>{};
+  for (final plan in plans.where((p) => p.isActive)) {
+    for (final p in plan.unpaidPayments) {
+      if (p.dueDate.year != year || p.dueDate.month != month) continue;
+      totals.update(plan.currency, (sum) => sum + p.amount, ifAbsent: () => p.amount);
+    }
+  }
+  return totals;
+}
+
+/// Unpaid installments of active plans past their due date, per currency.
+Map<String, double> overdueByCurrency(
+  Iterable<InstallmentPlan> plans,
+  DateTime today,
+) {
+  final totals = <String, double>{};
+  for (final plan in plans.where((p) => p.isActive)) {
+    final overdue = plan.overdueAmount(today);
+    if (overdue <= 0) continue;
+    totals.update(plan.currency, (sum) => sum + overdue, ifAbsent: () => overdue);
+  }
+  return totals;
+}

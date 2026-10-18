@@ -424,4 +424,16 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // simCard
+
+  // Installments.
+  static const installments = IconData(
+    0xe78e,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // coins
+  static const unpaid = IconData(
+    0xe18a,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // circle
 }
