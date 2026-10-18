@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @emailHint.
   ///
   /// In en, this message translates to:
-  /// **'example@email.com'**
+  /// **'example@gmail.com'**
   String get emailHint;
 
   /// No description provided for @password.

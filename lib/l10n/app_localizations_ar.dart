@@ -18,7 +18,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailAddress => 'البريد الإلكتروني';
 
   @override
-  String get emailHint => 'example@email.com';
+  String get emailHint => 'example@gmail.com';
 
   @override
   String get password => 'كلمة المرور';
