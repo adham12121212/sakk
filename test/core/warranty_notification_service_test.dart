@@ -55,6 +55,7 @@ class _Notifications implements NotificationService {
     required DateTime dateTime,
     String? payload,
     dynamic matchDateTimeComponents,
+    String? markPaidLabel,
   }) async {
     if (dateTime.isBefore(DateTime.now())) return;
     scheduled[id] = dateTime;

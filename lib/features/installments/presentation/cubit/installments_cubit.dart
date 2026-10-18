@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/service/installment_reminder_service.dart';
 import '../../domain/entities/installment_plan.dart';
 import '../../domain/installment_totals.dart';
 import '../../domain/usecase/get_installment_plans_usecase.dart';
@@ -8,20 +11,39 @@ import 'installments_state.dart';
 
 /// The signed-in user's installment plans. App-wide: the Home card, the
 /// Installments screens, product details and Analytics share it.
+///
+/// Keeps this device's installment reminders in step with the list: every
+/// change (add, edit, delete, paid, unpaid) re-syncs them.
 class InstallmentsCubit extends Cubit<InstallmentsState> {
-  InstallmentsCubit(this._getPlansUseCase, this._setPaymentPaidUseCase)
-    : super(const InstallmentsState());
+  InstallmentsCubit(
+    this._getPlansUseCase,
+    this._setPaymentPaidUseCase, {
+    InstallmentReminderService? reminders,
+    DateTime Function() clock = DateTime.now,
+  }) : _reminders = reminders,
+       _clock = clock,
+       super(const InstallmentsState()) {
+    _reminders?.followLanguage(() => state.plans);
+  }
 
   final GetInstallmentPlansUseCase _getPlansUseCase;
   final SetPaymentPaidUseCase _setPaymentPaidUseCase;
+  final InstallmentReminderService? _reminders;
+  final DateTime Function() _clock;
+
+  void _syncReminders() => unawaited(_reminders?.syncAll(state.plans));
 
   void _safeEmit(InstallmentsState newState) {
     if (isClosed) return;
     emit(newState);
   }
 
-  /// Signed out (or switching accounts): forget the old account's plans.
-  void reset() => _safeEmit(const InstallmentsState());
+  /// Signed out (or switching accounts): forget the old account's plans and
+  /// their reminders.
+  void reset() {
+    _safeEmit(const InstallmentsState());
+    unawaited(_reminders?.syncAll(const []));
+  }
 
   Future<void> loadIfNeeded() {
     if (state.hasLoadedOnce || state.isLoading) return Future.value();
@@ -34,13 +56,17 @@ class InstallmentsCubit extends Cubit<InstallmentsState> {
     result.fold(
       (failure) =>
           _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
-      (plans) => _safeEmit(
-        state.copyWith(
-          plans: sortedByNextDue(plans),
-          isLoading: false,
-          hasLoadedOnce: true,
-        ),
-      ),
+      (plans) {
+        _safeEmit(
+          state.copyWith(
+            plans: sortedByNextDue(plans),
+            isLoading: false,
+            hasLoadedOnce: true,
+          ),
+        );
+        unawaited(_reminders?.checkAndNotify(state.plans, today: _clock()));
+        _syncReminders();
+      },
     );
   }
 
@@ -53,12 +79,14 @@ class InstallmentsCubit extends Cubit<InstallmentsState> {
         clearError: true,
       ),
     );
+    _syncReminders();
   }
 
   void remove(String id) {
     _safeEmit(
       state.copyWith(plans: state.plans.where((p) => p.id != id).toList()),
     );
+    _syncReminders();
   }
 
   /// Marks [paymentId] of [planId] paid, or unpaid again. Returns the
@@ -92,8 +120,25 @@ class InstallmentsCubit extends Cubit<InstallmentsState> {
             updatingPaymentIds: updating,
           ),
         );
+        _syncReminders();
         return null;
       },
     );
+  }
+
+  /// The "Mark as paid" button on a reminder: loads the plans if this is a
+  /// fresh start, then marks the payment paid unless it already is (or is
+  /// gone). Returns the failure message, or null.
+  Future<String?> markPaidFromReminder(String planId, String paymentId) async {
+    // A load already under way (e.g. Home's, on a cold start) has to finish.
+    if (state.isLoading) await stream.firstWhere((s) => !s.isLoading);
+    await loadIfNeeded();
+    final payment = state
+        .planById(planId)
+        ?.payments
+        .where((p) => p.id == paymentId)
+        .firstOrNull;
+    if (payment == null || payment.isPaid) return null;
+    return setPaymentPaid(planId, paymentId, paid: true);
   }
 }

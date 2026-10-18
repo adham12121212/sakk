@@ -1873,4 +1873,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get productInstallmentsHint =>
       'Paying for this in installments? Track what\'s left and get reminded before each due date.';
+
+  @override
+  String get notifInstallmentDueSoonTitle => 'Installment due soon';
+
+  @override
+  String get notifInstallmentDueTodayTitle => 'Installment due today';
+
+  @override
+  String notifInstallmentDueBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name: $price is due in $daysText days',
+      one: '$name: $price is due tomorrow',
+      zero: '$name: $price is due today',
+    );
+    return '$_temp0';
+  }
 }

@@ -802,5 +802,25 @@
   "installmentPlanReactivated": "Plan active again",
   "installmentNotFound": "Plan not found",
   "installmentNotFoundBody": "It may have been deleted.",
-  "productInstallmentsHint": "Paying for this in installments? Track what's left and get reminded before each due date."
+  "productInstallmentsHint": "Paying for this in installments? Track what's left and get reminded before each due date.",
+  "notifInstallmentDueSoonTitle": "Installment due soon",
+  "notifInstallmentDueTodayTitle": "Installment due today",
+  "notifInstallmentDueBody": "{days, plural, =0{{name}: {price} is due today} =1{{name}: {price} is due tomorrow} other{{name}: {price} is due in {daysText} days}}",
+  "@notifInstallmentDueBody": {
+    "description": "daysText is the number in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

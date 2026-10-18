@@ -3126,6 +3126,29 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paying for this in installments? Track what\'s left and get reminded before each due date.'**
   String get productInstallmentsHint;
+
+  /// No description provided for @notifInstallmentDueSoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment due soon'**
+  String get notifInstallmentDueSoonTitle;
+
+  /// No description provided for @notifInstallmentDueTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Installment due today'**
+  String get notifInstallmentDueTodayTitle;
+
+  /// daysText is the number in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{{name}: {price} is due today} =1{{name}: {price} is due tomorrow} other{{name}: {price} is due in {daysText} days}}'**
+  String notifInstallmentDueBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  );
 }
 
 class _AppLocalizationsDelegate

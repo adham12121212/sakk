@@ -24,6 +24,12 @@ class NotificationService {
   static const String _channelDescription =
       'Warranty and product notifications';
 
+  /// The "Mark as paid" button on installment reminders. Both platforms
+  /// open the app to run it (no background isolate), so it reaches
+  /// [onNotificationTap] or [getLaunchResponse] with this as the actionId.
+  static const markPaidActionId = 'mark_paid';
+  static const _installmentCategoryId = 'installment_due';
+
   bool _initialized = false;
 
   /// Last known permission grant result, cached after [requestPermission]
@@ -37,7 +43,10 @@ class NotificationService {
   /// "app was fully closed/terminated" case, see [getLaunchPayload].
   void Function(NotificationResponse response)? onNotificationTap;
 
-  Future<void> init() async {
+  /// [markPaidLabel] titles the iOS "Mark as paid" button. iOS registers it
+  /// once here, so it changes language on the next app start; Android takes
+  /// the title with each notification.
+  Future<void> init({String markPaidLabel = 'Mark as paid'}) async {
     if (_initialized) return;
 
     try {
@@ -72,13 +81,29 @@ class NotificationService {
       // iOS initialization. Alert/badge/sound permission is requested
       // explicitly later via requestPermission(); leaving these false here
       // just avoids a duplicate system prompt at init time.
-      const iosSettings = DarwinInitializationSettings(
+      final iosSettings = DarwinInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
         requestSoundPermission: false,
+        notificationCategories: [
+          DarwinNotificationCategory(
+            _installmentCategoryId,
+            actions: [
+              DarwinNotificationAction.plain(
+                markPaidActionId,
+                markPaidLabel,
+                // Unlocked phone only: it changes the user's data.
+                options: {
+                  DarwinNotificationActionOption.foreground,
+                  DarwinNotificationActionOption.authenticationRequired,
+                },
+              ),
+            ],
+          ),
+        ],
       );
 
-      const settings = InitializationSettings(
+      final settings = InitializationSettings(
         android: androidSettings,
         iOS: iosSettings,
       );
@@ -127,14 +152,19 @@ class NotificationService {
   /// the relevant screen — the normal [onNotificationTap] callback does
   /// NOT fire in this scenario, since there's no running app to deliver it
   /// to at the moment the notification was tapped.
-  Future<String?> getLaunchPayload() async {
+  Future<String?> getLaunchPayload() async =>
+      (await getLaunchResponse())?.payload;
+
+  /// Like [getLaunchPayload], with the button that was pressed, if any
+  /// (see [markPaidActionId]).
+  Future<NotificationResponse?> getLaunchResponse() async {
     try {
       final details = await _notifications.getNotificationAppLaunchDetails();
       if (details != null && details.didNotificationLaunchApp) {
-        return details.notificationResponse?.payload;
+        return details.notificationResponse;
       }
     } catch (e) {
-      developer.log('getLaunchPayload failed: $e');
+      developer.log('getLaunchResponse failed: $e');
     }
     return null;
   }
@@ -237,6 +267,8 @@ class NotificationService {
   /// Set [matchDateTimeComponents] to repeat (e.g.
   /// [DateTimeComponents.dayOfMonthAndTime] for a yearly reminder on
   /// warranty expiry, or [DateTimeComponents.time] for daily).
+  ///
+  /// Set [markPaidLabel] to add a "Mark as paid" button (installments).
   Future<void> scheduleNotification({
     required int id,
     required String title,
@@ -244,6 +276,7 @@ class NotificationService {
     required DateTime dateTime,
     String? payload,
     DateTimeComponents? matchDateTimeComponents,
+    String? markPaidLabel,
   }) async {
     if (dateTime.isBefore(DateTime.now())) {
       developer.log(
@@ -259,22 +292,27 @@ class NotificationService {
       );
     }
 
-    const androidDetails = AndroidNotificationDetails(
+    // With [markPaidLabel], a "Mark as paid" button that opens the app.
+    final androidDetails = AndroidNotificationDetails(
       _channelId,
       _channelName,
       channelDescription: _channelDescription,
       importance: Importance.high,
       priority: Priority.high,
       playSound: true,
+      actions: markPaidLabel == null
+          ? null
+          : [AndroidNotificationAction(markPaidActionId, markPaidLabel, showsUserInterface: true)],
     );
-    const iosDetails = DarwinNotificationDetails(
+    final iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBanner: true,
       presentList: true,
       presentBadge: true,
       presentSound: true,
+      categoryIdentifier: markPaidLabel == null ? null : _installmentCategoryId,
     );
-    const details = NotificationDetails(
+    final details = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );

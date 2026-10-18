@@ -8,18 +8,23 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/get_it.dart';
+import 'core/error/user_facing_error.dart';
 import 'core/error/network_info.dart';
 import 'core/locale_controller/locale_controller.dart';
 import 'core/logger/app_logger.dart';
 import 'core/logger/crash_reporting.dart';
 import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
+import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/widgets/route_aware_connectivity_banner.dart';
 import 'core/widgets/app_skeleton_config.dart';
+import 'core/widgets/app_snackbar.dart';
 import 'core/widgets/sakk_logo.dart';
+import 'features/auth/domain/usecase/get_user_usecase.dart';
+import 'features/installments/presentation/cubit/installments_cubit.dart';
 import 'features/notification/presentation/cubit/notification_cubit.dart';
 import 'features/products/presentation/cubit/product_cubit.dart';
 import 'firebase_options.dart';
@@ -54,7 +59,10 @@ Future<void> _bootstrap() async {
   notificationService.onNotificationTap = _handleNotificationTap;
 
   try {
-    await notificationService.init();
+    // The iOS "Mark as paid" button is titled once, in the saved language.
+    final locale = getIt<LocaleController>();
+    await locale.loaded;
+    await notificationService.init(markPaidLabel: lookupAppLocalizations(locale.value).markAsPaid);
     await notificationService.requestPermission();
   } catch (e, stackTrace) {
     getIt<AppLogger>().error(
@@ -72,10 +80,10 @@ Future<void> _bootstrap() async {
 
   runApp(const MyApp());
 
-  final launchPayload = await notificationService.getLaunchPayload();
-  if (launchPayload != null && launchPayload.isNotEmpty) {
+  final launch = await notificationService.getLaunchResponse();
+  if (launch != null && (launch.payload ?? '').isNotEmpty) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _openNotifications(launchPayload);
+      _handleNotificationTap(launch, coldStart: true);
     });
   }
 }
@@ -89,10 +97,42 @@ void _reloadAfterReconnect() {
   getIt<NotificationCubit>().refresh();
 }
 
-void _handleNotificationTap(NotificationResponse response) {
+/// [coldStart]: the notification launched the app, and the splash screen
+/// is about to replace the stack (with Home or the lock screen), so an
+/// installment reminder's button only marks the payment paid.
+void _handleNotificationTap(NotificationResponse response, {bool coldStart = false}) {
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
+  final installment = InstallmentReminderPayload.tryParse(payload);
+  if (installment != null) {
+    _openInstallment(
+      installment,
+      markPaid: response.actionId == NotificationService.markPaidActionId,
+      navigate: !coldStart,
+    );
+    return;
+  }
   _openNotifications(payload);
+}
+
+Future<void> _openInstallment(
+  InstallmentReminderPayload reminder, {
+  required bool markPaid,
+  required bool navigate,
+}) async {
+  // Another account's reminder (signed out before this device re-synced).
+  if (getIt<GetUserUseCase>()()?.id != reminder.userId) return;
+  if (navigate) appRouter.push(AppRoutes.installmentDetails, extra: reminder.planId);
+  if (!markPaid) return;
+  final error = await getIt<InstallmentsCubit>().markPaidFromReminder(reminder.planId, reminder.paymentId);
+  final context = appRouter.routerDelegate.navigatorKey.currentContext;
+  if (context == null || !context.mounted) return;
+  final l10n = AppLocalizations.of(context)!;
+  if (error == null) {
+    AppSnackBar.success(context, l10n.installmentMarkedPaid);
+  } else {
+    AppSnackBar.error(context, userFacingError(l10n, error));
+  }
 }
 
 void _openNotifications(String userId) {

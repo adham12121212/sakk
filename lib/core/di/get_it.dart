@@ -88,6 +88,7 @@ import '../service/reminder_controller.dart';
 import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
 import '../service/storage_service.dart';
+import '../service/installment_reminder_service.dart';
 import '../service/subscription_reminder_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
@@ -295,8 +296,22 @@ void setupLocator() {
         () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
   );
   // Singleton: Home, the Installments screens, product details and Analytics share its list.
+  getIt.registerLazySingleton<InstallmentReminderService>(
+        () => InstallmentReminderService(
+      getUserUseCase: getIt<GetUserUseCase>(),
+      addNotificationUseCase: getIt<AddNotificationUseCase>(),
+      tracker: getIt<NotifiedWarrantiesTracker>(),
+      localNotifications: getIt<NotificationService>(),
+      logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
+    ),
+  );
   getIt.registerLazySingleton<InstallmentsCubit>(
-        () => InstallmentsCubit(getIt<GetInstallmentPlansUseCase>(), getIt<SetPaymentPaidUseCase>()),
+        () => InstallmentsCubit(
+      getIt<GetInstallmentPlansUseCase>(),
+      getIt<SetPaymentPaidUseCase>(),
+      reminders: getIt<InstallmentReminderService>(),
+    ),
   );
   getIt.registerFactory<InstallmentFormCubit>(
         () => InstallmentFormCubit(

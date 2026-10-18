@@ -504,5 +504,8 @@
   "installmentPlanReactivated": "تم تفعيل الخطة مرة أخرى",
   "installmentNotFound": "الخطة غير موجودة",
   "installmentNotFoundBody": "ربما تم حذفها.",
-  "productInstallmentsHint": "تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط."
+  "productInstallmentsHint": "تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط.",
+  "notifInstallmentDueSoonTitle": "قسط مستحق قريبًا",
+  "notifInstallmentDueTodayTitle": "قسط مستحق اليوم",
+  "notifInstallmentDueBody": "{days, plural, =0{{name}: قسط {price} مستحق اليوم} =1{{name}: قسط {price} مستحق غدًا} =2{{name}: قسط {price} مستحق بعد يومين} few{{name}: قسط {price} مستحق بعد {daysText} أيام} many{{name}: قسط {price} مستحق بعد {daysText} يومًا} other{{name}: قسط {price} مستحق بعد {daysText} يوم}}"
 }

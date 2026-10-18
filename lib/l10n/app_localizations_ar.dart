@@ -1922,4 +1922,30 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get productInstallmentsHint =>
       'تقسّط هذا المنتج؟ تابع المتبقي ويصلك تذكير قبل كل قسط.';
+
+  @override
+  String get notifInstallmentDueSoonTitle => 'قسط مستحق قريبًا';
+
+  @override
+  String get notifInstallmentDueTodayTitle => 'قسط مستحق اليوم';
+
+  @override
+  String notifInstallmentDueBody(
+    int days,
+    String daysText,
+    String name,
+    String price,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name: قسط $price مستحق بعد $daysText يوم',
+      many: '$name: قسط $price مستحق بعد $daysText يومًا',
+      few: '$name: قسط $price مستحق بعد $daysText أيام',
+      two: '$name: قسط $price مستحق بعد يومين',
+      one: '$name: قسط $price مستحق غدًا',
+      zero: '$name: قسط $price مستحق اليوم',
+    );
+    return '$_temp0';
+  }
 }
