@@ -174,7 +174,7 @@ class WarrantyNotificationService {
         id: _notificationIdFor(product.id, 0),
         title: l10n.notifExpiringTitle,
         body: l10n.notifExpiringBody(product.name),
-        dateTime: product.warrantyEndDate.subtract(Duration(days: reminderDays)),
+        dateTime: _daysBefore(product.warrantyEndDate, reminderDays),
       ),
       _Reminder(
         id: _notificationIdFor(product.id, 1),
@@ -187,7 +187,7 @@ class WarrantyNotificationService {
           id: _notificationIdFor(product.id, 2),
           title: l10n.notifReturnTitle,
           body: l10n.notifReturnBody(product.name),
-          dateTime: returnBy.subtract(const Duration(days: _returnReminderDaysBefore)),
+          dateTime: _daysBefore(returnBy, _returnReminderDaysBefore),
         ),
     ];
   }
@@ -201,6 +201,12 @@ class WarrantyNotificationService {
       );
 
   static const _returnReminderDaysBefore = 2;
+
+  /// [days] calendar days before [date], at the same time of day. Not
+  /// `subtract(Duration(days: n))`, which counts 24-hour days and lands an
+  /// hour off when a daylight-saving change falls in between.
+  static DateTime _daysBefore(DateTime date, int days) =>
+      DateTime(date.year, date.month, date.day - days, date.hour, date.minute);
 
   /// Call when a product is deleted, to cancel any pending reminders.
   Future<void> cancelScheduledNotifications(String productId) async {
