@@ -21,6 +21,14 @@ class _BiometricLockViewState extends State<BiometricLockView>
     with WidgetsBindingObserver {
   bool _authenticating = false;
 
+  /// Set once the fingerprint matched, so nothing prompts again while the
+  /// screen is on its way to Home.
+  bool _unlocked = false;
+
+  /// The user left the app (Home button, app switcher) while no prompt was
+  /// showing, so coming back should prompt again.
+  bool _leftApp = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,15 +42,27 @@ class _BiometricLockViewState extends State<BiometricLockView>
     super.dispose();
   }
 
+  // On Android the fingerprint prompt is a system dialog: showing it makes
+  // the app inactive and closing it reports `resumed`. Prompting on every
+  // `resumed` therefore asked twice (and asked again right after a cancel).
+  // Only coming back from actually leaving the app prompts again.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && !_authenticating && mounted) {
-      _unlock();
+    switch (state) {
+      case AppLifecycleState.hidden || AppLifecycleState.paused:
+        if (!_authenticating) _leftApp = true;
+      case AppLifecycleState.resumed:
+        if (_leftApp && !_authenticating && mounted) {
+          _leftApp = false;
+          _unlock();
+        }
+      case AppLifecycleState.inactive || AppLifecycleState.detached:
+        break;
     }
   }
 
   Future<void> _unlock() async {
-    if (_authenticating || !mounted) return;
+    if (_authenticating || _unlocked || !mounted) return;
     setState(() => _authenticating = true);
 
     final l10n = AppLocalizations.of(context)!;
@@ -54,6 +74,7 @@ class _BiometricLockViewState extends State<BiometricLockView>
     setState(() => _authenticating = false);
 
     if (success) {
+      _unlocked = true;
       context.go(AppRoutes.home);
     }
   }
