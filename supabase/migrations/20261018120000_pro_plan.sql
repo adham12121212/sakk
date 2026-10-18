@@ -30,10 +30,20 @@ alter table public.app_config enable row level security;
 create policy "Signed-in users can read app config" on public.app_config
   for select to authenticated using (true);
 
--- null means unlimited. Pro's chat number is a fair-use cap, not a feature.
+-- null means unlimited. Everything starts unlimited, so deploying this
+-- changes nothing for current users (including older app versions, which
+-- can't show the paywall). Turn the free plan on when the release with the
+-- paywall is out:
+--
+--   update public.app_config set value = '{
+--     "free": {"products": 5, "subscriptions": 3, "installments": 1, "scan_per_day": 3, "chat_per_day": 5},
+--     "pro":  {"products": null, "subscriptions": null, "installments": null, "scan_per_day": null, "chat_per_day": 200}
+--   }' where key = 'limits';
+--
+-- Pro's chat number is a fair-use cap, not a feature.
 insert into public.app_config (key, value) values ('limits', '{
-  "free": {"products": 5, "subscriptions": 3, "installments": 1, "scan_per_day": 3, "chat_per_day": 5},
-  "pro":  {"products": null, "subscriptions": null, "installments": null, "scan_per_day": null, "chat_per_day": 200}
+  "free": {"products": null, "subscriptions": null, "installments": null, "scan_per_day": null, "chat_per_day": null},
+  "pro":  {"products": null, "subscriptions": null, "installments": null, "scan_per_day": null, "chat_per_day": null}
 }');
 
 -- The limit for [p_name] on [p_plan] ('free' or 'pro'), or null for no limit.

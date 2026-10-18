@@ -205,7 +205,7 @@ supabase secrets set REVENUECAT_WEBHOOK_SECRET=... REVENUECAT_API_KEY=...
 
 ## Sakk Pro (free plan limits)
 
-- Limits live in the `app_config` table (key `limits`), read by the database and shown by the app. Change them in the SQL editor, no release needed; `null` means unlimited:
+- Limits live in the `app_config` table (key `limits`), read by the database and shown by the app. They start unlimited; switch on the launch values (in the comment in `20261018120000_pro_plan.sql`) once the release with the paywall is out. Change them in the SQL editor, no release needed; `null` means unlimited:
   ```sql
   update app_config set value = jsonb_set(value, '{free,scan_per_day}', '5') where key = 'limits';
   ```

@@ -88,7 +88,7 @@ class _PaywallViewState extends State<PaywallView> {
                 children: [
                   _Hero(reason: widget.reason),
                   const SizedBox(height: 20),
-                  _ComparisonTable(status: pro.status),
+                  _ComparisonTable(status: pro.status, loaded: pro.hasLoadedOnce),
                   const SizedBox(height: 20),
                   if (pro.isPro)
                     _AlreadyPro(onManage: ProActions.manageSubscription)
@@ -176,9 +176,13 @@ class _Hero extends StatelessWidget {
 /// Free vs Pro. The free column shows the limits the server sent, so it
 /// follows app_config without a release.
 class _ComparisonTable extends StatelessWidget {
-  const _ComparisonTable({required this.status});
+  const _ComparisonTable({required this.status, required this.loaded});
 
   final ProStatus status;
+
+  /// The server's limits have been read; until then they're unknown, not
+  /// unlimited.
+  final bool loaded;
 
   @override
   Widget build(BuildContext context) {
@@ -188,10 +192,11 @@ class _ComparisonTable extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     // Pro users get Pro's limits from the server, so the free column only
     // knows the real numbers for free users; '–' until then.
-    final freeKnown = !status.isPro;
+    final freeKnown = !status.isPro && loaded;
 
-    String count(int? n) => n == null ? '–' : formatLocalizedInt(locale, n);
-    String perDay(int? n) => n == null ? '–' : l10n.valuePerDay(formatLocalizedInt(locale, n));
+    // null from the server is unlimited (app_config).
+    String count(int? n) => n == null ? l10n.valueUnlimited : formatLocalizedInt(locale, n);
+    String perDay(int? n) => n == null ? l10n.valueUnlimited : l10n.valuePerDay(formatLocalizedInt(locale, n));
 
     final rows = <(String, String, String)>[
       (l10n.featureProducts, freeKnown ? count(status.item(LimitedItem.products).limit) : '–', l10n.valueUnlimited),
