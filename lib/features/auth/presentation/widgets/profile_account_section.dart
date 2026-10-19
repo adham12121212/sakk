@@ -33,6 +33,7 @@ class _ProfileAccountSectionState extends State<ProfileAccountSection> {
             button: true,
             expanded: _expanded,
             child: InkWell(
+              borderRadius: BorderRadius.circular(18),
               onTap: () => setState(() => _expanded = !_expanded),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
