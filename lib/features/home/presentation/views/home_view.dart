@@ -27,7 +27,6 @@ import '../widgets/recent_product_data.dart';
 import '../widgets/recent_products_section.dart';
 import '../widgets/stat_card.dart';
 import '../../../../core/theme/app_icons.dart';
-import '../../../pro/presentation/widgets/monthly_summary_tile.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -264,10 +263,6 @@ class _HomeContentState extends State<_HomeContent> {
                           onTap: () => context.push(AppRoutes.installments),
                         ),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: MonthlySummaryTile(),
                     ),
                     if (!(state.error != null && state.products.isEmpty))
                       Skeletonizer(
