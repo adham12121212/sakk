@@ -610,6 +610,19 @@
   "backupExport": "تصدير نسخة احتياطية (JSON)",
   "backupFailed": "معرفناش نعمل النسخة الاحتياطية. جرّب تاني.",
   "paywallHeadlineBackup": "خلّي معاك نسخة من كل حاجة",
-  "featureBackup": "نسخة احتياطية",
-  "proStatusLoadFailed": "معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني."
+  "featureBackup": "نسخة احتياطية وتصدير PDF",
+  "proStatusLoadFailed": "معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني.",
+  "pdfReportExport": "تصدير تقرير PDF",
+  "pdfReportFailed": "معرفناش نعمل التقرير. جرّب تاني.",
+  "pdfReportTitle": "تقرير صك",
+  "pdfReportGenerated": "اتعمل يوم {date}",
+  "pdfReportSummary": "ملخص",
+  "pdfReportNone": "مفيش لسه",
+  "pdfReportPage": "صفحة {page} من {total}",
+  "pdfColNextDue": "القسط الجاي",
+  "pdfColPaid": "اتدفع",
+  "pdfColRemaining": "الباقي",
+  "pdfColPlan": "الباقة",
+  "pdfColStatus": "الحالة",
+  "pdfRemainingInstallments": "الأقساط الباقية"
 }

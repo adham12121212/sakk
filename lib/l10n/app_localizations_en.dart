@@ -2284,9 +2284,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paywallHeadlineBackup => 'Keep a copy of everything';
 
   @override
-  String get featureBackup => 'Backup export';
+  String get featureBackup => 'Backup + PDF export';
 
   @override
   String get proStatusLoadFailed =>
       'Couldn\'t load your plan. Check your connection and try again.';
+
+  @override
+  String get pdfReportExport => 'Export PDF report';
+
+  @override
+  String get pdfReportFailed =>
+      'Couldn\'t create the report. Please try again.';
+
+  @override
+  String get pdfReportTitle => 'Sakk report';
+
+  @override
+  String pdfReportGenerated(String date) {
+    return 'Created on $date';
+  }
+
+  @override
+  String get pdfReportSummary => 'Summary';
+
+  @override
+  String get pdfReportNone => 'None yet';
+
+  @override
+  String pdfReportPage(String page, String total) {
+    return 'Page $page of $total';
+  }
+
+  @override
+  String get pdfColNextDue => 'Next payment';
+
+  @override
+  String get pdfColPaid => 'Paid';
+
+  @override
+  String get pdfColRemaining => 'Remaining';
+
+  @override
+  String get pdfColPlan => 'Plan';
+
+  @override
+  String get pdfColStatus => 'Status';
+
+  @override
+  String get pdfRemainingInstallments => 'Installments left to pay';
 }

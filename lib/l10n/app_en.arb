@@ -1036,6 +1036,36 @@
   "backupExport": "Export backup (JSON)",
   "backupFailed": "Couldn't create the backup. Please try again.",
   "paywallHeadlineBackup": "Keep a copy of everything",
-  "featureBackup": "Backup export",
-  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again."
+  "featureBackup": "Backup + PDF export",
+  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again.",
+  "pdfReportExport": "Export PDF report",
+  "pdfReportFailed": "Couldn't create the report. Please try again.",
+  "pdfReportTitle": "Sakk report",
+  "pdfReportGenerated": "Created on {date}",
+  "@pdfReportGenerated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfReportSummary": "Summary",
+  "pdfReportNone": "None yet",
+  "pdfReportPage": "Page {page} of {total}",
+  "@pdfReportPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfColNextDue": "Next payment",
+  "pdfColPaid": "Paid",
+  "pdfColRemaining": "Remaining",
+  "pdfColPlan": "Plan",
+  "pdfColStatus": "Status",
+  "pdfRemainingInstallments": "Installments left to pay"
 }

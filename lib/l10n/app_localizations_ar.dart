@@ -2339,9 +2339,52 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paywallHeadlineBackup => 'خلّي معاك نسخة من كل حاجة';
 
   @override
-  String get featureBackup => 'نسخة احتياطية';
+  String get featureBackup => 'نسخة احتياطية وتصدير PDF';
 
   @override
   String get proStatusLoadFailed =>
       'معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني.';
+
+  @override
+  String get pdfReportExport => 'تصدير تقرير PDF';
+
+  @override
+  String get pdfReportFailed => 'معرفناش نعمل التقرير. جرّب تاني.';
+
+  @override
+  String get pdfReportTitle => 'تقرير صك';
+
+  @override
+  String pdfReportGenerated(String date) {
+    return 'اتعمل يوم $date';
+  }
+
+  @override
+  String get pdfReportSummary => 'ملخص';
+
+  @override
+  String get pdfReportNone => 'مفيش لسه';
+
+  @override
+  String pdfReportPage(String page, String total) {
+    return 'صفحة $page من $total';
+  }
+
+  @override
+  String get pdfColNextDue => 'القسط الجاي';
+
+  @override
+  String get pdfColPaid => 'اتدفع';
+
+  @override
+  String get pdfColRemaining => 'الباقي';
+
+  @override
+  String get pdfColPlan => 'الباقة';
+
+  @override
+  String get pdfColStatus => 'الحالة';
+
+  @override
+  String get pdfRemainingInstallments => 'الأقساط الباقية';
 }

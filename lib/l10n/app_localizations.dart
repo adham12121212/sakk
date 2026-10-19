@@ -3765,7 +3765,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureBackup.
   ///
   /// In en, this message translates to:
-  /// **'Backup export'**
+  /// **'Backup + PDF export'**
   String get featureBackup;
 
   /// No description provided for @proStatusLoadFailed.
@@ -3773,6 +3773,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t load your plan. Check your connection and try again.'**
   String get proStatusLoadFailed;
+
+  /// No description provided for @pdfReportExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF report'**
+  String get pdfReportExport;
+
+  /// No description provided for @pdfReportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the report. Please try again.'**
+  String get pdfReportFailed;
+
+  /// No description provided for @pdfReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk report'**
+  String get pdfReportTitle;
+
+  /// No description provided for @pdfReportGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created on {date}'**
+  String pdfReportGenerated(String date);
+
+  /// No description provided for @pdfReportSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get pdfReportSummary;
+
+  /// No description provided for @pdfReportNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet'**
+  String get pdfReportNone;
+
+  /// No description provided for @pdfReportPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {total}'**
+  String pdfReportPage(String page, String total);
+
+  /// No description provided for @pdfColNextDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next payment'**
+  String get pdfColNextDue;
+
+  /// No description provided for @pdfColPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get pdfColPaid;
+
+  /// No description provided for @pdfColRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get pdfColRemaining;
+
+  /// No description provided for @pdfColPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get pdfColPlan;
+
+  /// No description provided for @pdfColStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get pdfColStatus;
+
+  /// No description provided for @pdfRemainingInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments left to pay'**
+  String get pdfRemainingInstallments;
 }
 
 class _AppLocalizationsDelegate
