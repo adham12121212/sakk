@@ -309,6 +309,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String deleteProductLinkedPlans(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count installment plans are linked to this product. They will be kept, without the link.',
+      one:
+          '1 installment plan is linked to this product. It will be kept, without the link.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete => 'Delete';
 
   @override

@@ -308,6 +308,19 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String deleteProductLinkedPlans(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'هناك $count خطة تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      few: 'هناك $count خطط تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      two: 'هناك خطتا تقسيط مرتبطتان بهذا المنتج. ستبقيان ولكن بدون الربط.',
+      one: 'هناك خطة تقسيط مرتبطة بهذا المنتج. ستبقى الخطة ولكن بدون الربط.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete => 'حذف';
 
   @override

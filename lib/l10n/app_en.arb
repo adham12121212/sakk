@@ -105,6 +105,10 @@
   "productUpdated": "Product updated",
   "deleteProductQuestion": "Delete product?",
   "deleteProductConfirmBody": "\"{productName}\" will be permanently removed. This can't be undone.",
+  "deleteProductLinkedPlans": "{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}",
+  "@deleteProductLinkedPlans": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "delete": "Delete",
   "edit": "Edit",
   "share": "Share",

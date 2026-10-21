@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -210,11 +211,17 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
 
   Future<void> _confirmDelete() async {
     final l10n = AppLocalizations.of(context)!;
+    // Linked plans are kept (the database unlinks them), so say so.
+    final linkedPlans = getIt<InstallmentsCubit>().state.plansForProduct(product.id).length;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.deleteProductQuestion),
-        content: Text(l10n.deleteProductConfirmBody(product.name)),
+        content: Text(
+          linkedPlans == 0
+              ? l10n.deleteProductConfirmBody(product.name)
+              : '${l10n.deleteProductConfirmBody(product.name)}\n\n${l10n.deleteProductLinkedPlans(linkedPlans)}',
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.cancel)),
           TextButton(
@@ -226,7 +233,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     );
 
     if (confirmed != true || !mounted) return;
-    context.read<DetailsCubit>().delete(product.id);
+    final deleted = await context.read<DetailsCubit>().delete(product.id);
+    // Re-read the plans so none still points at the deleted product (saving
+    // a plan with that link would fail).
+    if (deleted && linkedPlans > 0) unawaited(getIt<InstallmentsCubit>().refresh());
   }
 
 

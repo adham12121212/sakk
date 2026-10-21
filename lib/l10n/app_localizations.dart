@@ -686,6 +686,12 @@ abstract class AppLocalizations {
   /// **'\"{productName}\" will be permanently removed. This can\'t be undone.'**
   String deleteProductConfirmBody(Object productName);
 
+  /// No description provided for @deleteProductLinkedPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}'**
+  String deleteProductLinkedPlans(int count);
+
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
