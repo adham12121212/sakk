@@ -120,7 +120,8 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
       ProLimit.notifyUsageChanged();
       return InstallmentPaymentModel.fromJson(row);
     } catch (e) {
-      throw ServerException('Failed to update the installment payment: $e');
+      // Unmarking a payment on a finished plan can hit the free limit.
+      throw ProLimit.exceptionFor(e, 'Failed to update the installment payment: $e');
     }
   }
 
