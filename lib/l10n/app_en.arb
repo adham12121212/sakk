@@ -1013,6 +1013,7 @@
   "purchaseSuccess": "Welcome to Sakk Pro!",
   "purchaseFailed": "The purchase didn't go through. Please try again.",
   "purchasesUnavailable": "Subscriptions aren't available right now. Please try again later.",
+  "proComingSoonIos": "Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.",
   "alreadyPro": "You're on Sakk Pro",
   "monthlySummary": "This month",
   "monthlySummaryTotal": "Left to pay this month",

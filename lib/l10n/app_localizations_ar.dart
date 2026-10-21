@@ -2293,6 +2293,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'الاشتراكات مش متاحة دلوقتي. جرّب تاني بعدين.';
 
   @override
+  String get proComingSoonIos =>
+      'Sakk Pro جاي قريب على الآيفون. تقدر تكمّل على الخطة المجانية لحد ما ينزل.';
+
+  @override
   String get alreadyPro => 'إنت مشترك في Sakk Pro';
 
   @override

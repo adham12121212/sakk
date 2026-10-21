@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -104,5 +105,20 @@ void main() {
     await pump(tester, locale: const Locale('en'));
     expect(find.text(l10n.purchasesUnavailable), findsOneWidget);
     expect(find.text(l10n.startFreeTrial), findsNothing);
+  });
+
+  testWidgets('iOS: shows the plans compared but sells nothing yet', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    await pump(tester, locale: const Locale('en'));
+
+    expect(find.text(l10n.proComingSoonIos), findsOneWidget);
+    expect(find.text(l10n.featurePdfReport), findsOneWidget);
+    expect(find.text(l10n.startFreeTrial), findsNothing);
+    expect(find.text(l10n.subscribe), findsNothing);
+    expect(find.text(l10n.restorePurchases), findsNothing);
+    expect(find.text(l10n.autoRenewDisclosure), findsNothing);
+    expect(find.text(l10n.privacyPolicy), findsOneWidget);
+    debugDefaultTargetPlatformOverride = null;
   });
 }

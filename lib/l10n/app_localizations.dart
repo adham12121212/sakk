@@ -3672,6 +3672,12 @@ abstract class AppLocalizations {
   /// **'Subscriptions aren\'t available right now. Please try again later.'**
   String get purchasesUnavailable;
 
+  /// No description provided for @proComingSoonIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.'**
+  String get proComingSoonIos;
+
   /// No description provided for @alreadyPro.
   ///
   /// In en, this message translates to:

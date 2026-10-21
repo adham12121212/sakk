@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -63,6 +64,9 @@ class _PaywallViewState extends State<PaywallView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Purchases go through Google Play only for now: on iOS the paywall
+    // explains the plans but sells nothing.
+    final sellsHere = defaultTargetPlatform != TargetPlatform.iOS;
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -92,14 +96,16 @@ class _PaywallViewState extends State<PaywallView> {
                   const SizedBox(height: 20),
                   if (pro.isPro)
                     _AlreadyPro(onManage: ProActions.manageSubscription)
+                  else if (!sellsHere)
+                    _Notice(l10n.proComingSoonIos)
                   else
                     _Plans(state: state),
                   const SizedBox(height: 16),
                   _Links(
                     isRestoring: state.isRestoring,
-                    onRestore: context.read<PaywallCubit>().restore,
+                    onRestore: sellsHere ? context.read<PaywallCubit>().restore : null,
                   ),
-                  if (!pro.isPro && !state.isUnavailable) ...[
+                  if (sellsHere && !pro.isPro && !state.isUnavailable) ...[
                     const SizedBox(height: 12),
                     Text(
                       l10n.autoRenewDisclosure,
@@ -255,17 +261,7 @@ class _Plans extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final cubit = context.read<PaywallCubit>();
 
-    if (state.isUnavailable) {
-      return AppCard(
-        child: Row(
-          children: [
-            Icon(AppIcons.info, color: Theme.of(context).colorScheme.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Expanded(child: Text(l10n.purchasesUnavailable)),
-          ],
-        ),
-      );
-    }
+    if (state.isUnavailable) return _Notice(l10n.purchasesUnavailable);
 
     // Placeholder plans shaped like the real ones while prices load.
     const placeholder = ProOffer(
@@ -452,25 +448,50 @@ class _AlreadyPro extends StatelessWidget {
   }
 }
 
+/// An info line in place of the plans (purchases unavailable, or not sold
+/// on this platform yet).
+class _Notice extends StatelessWidget {
+  const _Notice(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Row(
+        children: [
+          Icon(AppIcons.info, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          const SizedBox(width: 12),
+          Expanded(child: Text(text)),
+        ],
+      ),
+    );
+  }
+}
+
 class _Links extends StatelessWidget {
   const _Links({required this.isRestoring, required this.onRestore});
 
   final bool isRestoring;
-  final VoidCallback onRestore;
+
+  /// Null hides the restore button (nothing to restore where nothing is sold).
+  final VoidCallback? onRestore;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final onRestore = this.onRestore;
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        TextButton(
-          onPressed: isRestoring ? null : onRestore,
-          child: isRestoring
-              ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
-              : Text(l10n.restorePurchases),
-        ),
+        if (onRestore != null)
+          TextButton(
+            onPressed: isRestoring ? null : onRestore,
+            child: isRestoring
+                ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                : Text(l10n.restorePurchases),
+          ),
         TextButton(onPressed: () => context.push(AppRoutes.terms), child: Text(l10n.termsOfService)),
         TextButton(onPressed: () => context.push(AppRoutes.privacy), child: Text(l10n.privacyPolicy)),
       ],

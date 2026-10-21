@@ -2241,6 +2241,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Subscriptions aren\'t available right now. Please try again later.';
 
   @override
+  String get proComingSoonIos =>
+      'Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.';
+
+  @override
   String get alreadyPro => 'You\'re on Sakk Pro';
 
   @override
