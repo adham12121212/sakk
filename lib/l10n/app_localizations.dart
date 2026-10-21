@@ -1307,8 +1307,26 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAccountWarning.
   ///
   /// In en, this message translates to:
-  /// **'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.'**
+  /// **'This permanently deletes your account and all its data: products, receipts and documents, subscriptions, installment plans, chat history and notifications. This can\'t be undone.'**
   String get deleteAccountWarning;
+
+  /// No description provided for @deleteAccountProTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Sakk Pro first'**
+  String get deleteAccountProTitle;
+
+  /// No description provided for @deleteAccountProBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account doesn\'t cancel your Sakk Pro subscription in Google Play. Cancel it there first so you aren\'t charged again.'**
+  String get deleteAccountProBody;
+
+  /// No description provided for @deleteAccountProContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete anyway'**
+  String get deleteAccountProContinue;
 
   /// No description provided for @deleteAccountKeyword.
   ///

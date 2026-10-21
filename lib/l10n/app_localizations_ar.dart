@@ -695,7 +695,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteAccountWarning =>
-      'سيتم حذف حسابك وكل منتجاتك وفواتيرك وإشعاراتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.';
+      'سيتم حذف حسابك وكل بياناته نهائيًا: المنتجات والفواتير والمستندات والاشتراكات وخطط التقسيط وسجل المحادثة والإشعارات. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get deleteAccountProTitle => 'ألغِ اشتراك Sakk Pro أولًا';
+
+  @override
+  String get deleteAccountProBody =>
+      'حذف حسابك لا يلغي اشتراكك في Sakk Pro على Google Play. ألغِ الاشتراك من هناك أولًا حتى لا يتم خصم المبلغ مرة أخرى.';
+
+  @override
+  String get deleteAccountProContinue => 'احذف على أي حال';
 
   @override
   String get deleteAccountKeyword => 'حذف';

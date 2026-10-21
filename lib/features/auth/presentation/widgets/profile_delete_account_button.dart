@@ -29,6 +29,8 @@ class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton>
     // cubit returns to AuthInitial, so this context won't be around after.
     final messenger = ScaffoldMessenger.of(context);
 
+    if (!await confirmProBeforeDelete(context)) return;
+    if (!context.mounted) return;
     final confirmed = await showDeleteAccountDialog(context);
     if (!confirmed) return;
 

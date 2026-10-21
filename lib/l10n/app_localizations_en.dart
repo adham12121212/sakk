@@ -692,7 +692,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountWarning =>
-      'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.';
+      'This permanently deletes your account and all its data: products, receipts and documents, subscriptions, installment plans, chat history and notifications. This can\'t be undone.';
+
+  @override
+  String get deleteAccountProTitle => 'Cancel Sakk Pro first';
+
+  @override
+  String get deleteAccountProBody =>
+      'Deleting your account doesn\'t cancel your Sakk Pro subscription in Google Play. Cancel it there first so you aren\'t charged again.';
+
+  @override
+  String get deleteAccountProContinue => 'Delete anyway';
 
   @override
   String get deleteAccountKeyword => 'DELETE';

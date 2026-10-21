@@ -15,7 +15,10 @@ const BUCKETS = ["avatars", "receipts"];
 // installment_payments goes before installment_plans, and plans before
 // products. (Rows with user_id also cascade when the auth user is deleted;
 // listing them here makes the cleanup not depend on that.)
-const TABLES = ["notifications", "chat_messages", "installment_payments", "installment_plans", "products"];
+// household_members goes first: removing the row runs the same trigger as
+// leaving, so an owner's household passes to its longest-standing member
+// (or is deleted if nobody is left).
+const TABLES = ["household_members", "notifications", "chat_messages", "installment_payments", "installment_plans", "products"];
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
