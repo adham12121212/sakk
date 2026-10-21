@@ -96,7 +96,7 @@ void main() {
   // TV: 12 x 1,000 from 2 months ago, first one paid, second overdue.
   // Car: 6 x 5,000 starting in 10 days.
   List<InstallmentPlan> plans() => [
-        plan('car', t: terms(total: 30000, count: 6, start: today.add(const Duration(days: 10)))),
+        plan('car', t: terms(total: 30000, count: 6, start: DateTime(today.year, today.month, today.day + 10))),
         plan('tv', t: terms(total: 12000, count: 12, start: DateTime(today.year, today.month - 1, today.day - 5)), paid: {0}),
       ];
 

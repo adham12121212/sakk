@@ -19,7 +19,7 @@ enum PaywallReason {
   subscriptionsLimit,
   installmentsLimit,
   monthlySummary,
-  backup,
+  pdfReport,
 }
 
 /// The free plan's limit errors, as they travel through the app.

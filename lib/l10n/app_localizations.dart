@@ -3744,29 +3744,17 @@ abstract class AppLocalizations {
   /// **'Sakk Pro'**
   String get reminderCustomProOnly;
 
-  /// No description provided for @backupExport.
+  /// No description provided for @paywallHeadlinePdfReport.
   ///
   /// In en, this message translates to:
-  /// **'Export backup (JSON)'**
-  String get backupExport;
+  /// **'Get everything in one PDF'**
+  String get paywallHeadlinePdfReport;
 
-  /// No description provided for @backupFailed.
+  /// No description provided for @featurePdfReport.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t create the backup. Please try again.'**
-  String get backupFailed;
-
-  /// No description provided for @paywallHeadlineBackup.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep a copy of everything'**
-  String get paywallHeadlineBackup;
-
-  /// No description provided for @featureBackup.
-  ///
-  /// In en, this message translates to:
-  /// **'Backup + PDF export'**
-  String get featureBackup;
+  /// **'PDF report'**
+  String get featurePdfReport;
 
   /// No description provided for @proStatusLoadFailed.
   ///

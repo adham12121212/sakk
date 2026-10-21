@@ -2330,16 +2330,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reminderCustomProOnly => 'مع Sakk Pro';
 
   @override
-  String get backupExport => 'تصدير نسخة احتياطية (JSON)';
+  String get paywallHeadlinePdfReport => 'كل حاجة في ملف PDF واحد';
 
   @override
-  String get backupFailed => 'معرفناش نعمل النسخة الاحتياطية. جرّب تاني.';
-
-  @override
-  String get paywallHeadlineBackup => 'خلّي معاك نسخة من كل حاجة';
-
-  @override
-  String get featureBackup => 'نسخة احتياطية وتصدير PDF';
+  String get featurePdfReport => 'تقرير PDF';
 
   @override
   String get proStatusLoadFailed =>

@@ -36,8 +36,9 @@ class ProState extends Equatable {
 /// moment a purchase completes, before the webhook reaches the server.
 ///
 /// Re-reads the server when the account changes, after a purchase or
-/// restore, and whenever [ProLimit.usageChanged] fires (a scan, a chat
-/// message, an item added or deleted).
+/// restore, whenever [ProLimit.usageChanged] fires (a scan, a chat
+/// message, an item added or deleted), and when the app comes back to the
+/// foreground (a renewal, expiry or limit change made on the server).
 class ProCubit extends Cubit<ProState> {
   ProCubit(
     this._dataSource,
@@ -45,6 +46,7 @@ class ProCubit extends Cubit<ProState> {
     required Stream<String?> userIdChanges,
     required AppLogger logger,
     Stream<void>? usageChanged,
+    Stream<void> appResumed = const Stream.empty(),
     Duration refreshDebounce = const Duration(milliseconds: 400),
     Duration serverCatchUpInterval = const Duration(seconds: 2),
   })  : _logger = logger,
@@ -55,6 +57,7 @@ class ProCubit extends Cubit<ProState> {
       userIdChanges.distinct().listen(_onUserChanged),
       _gateway.entitlementChanges.listen(_applyStore),
       (usageChanged ?? ProLimit.usageChanged).listen((_) => _scheduleRefresh()),
+      appResumed.listen((_) => _scheduleRefresh()),
     ];
   }
 

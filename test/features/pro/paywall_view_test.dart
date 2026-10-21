@@ -78,7 +78,7 @@ void main() {
       expect(find.text(l10n.pricePerMonth('EGP 29')), findsOneWidget);
       expect(find.text(l10n.savePercent('٢٨')), findsOneWidget);
       expect(find.text(l10n.bestValue), findsOneWidget);
-      expect(find.text(l10n.featureBackup), findsOneWidget);
+      expect(find.text(l10n.featurePdfReport), findsOneWidget);
       expect(find.text(l10n.startFreeTrial), findsOneWidget);
 
       expect(find.text(l10n.restorePurchases), findsOneWidget);

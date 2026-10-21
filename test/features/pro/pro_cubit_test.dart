@@ -89,6 +89,7 @@ void main() {
   late FakeStore store;
   late StreamController<String?> users;
   late StreamController<void> usage;
+  late StreamController<void> resumed;
   late ProCubit cubit;
 
   setUp(() {
@@ -96,12 +97,14 @@ void main() {
     store = FakeStore();
     users = StreamController<String?>();
     usage = StreamController<void>.broadcast();
+    resumed = StreamController<void>.broadcast();
     cubit = ProCubit(
       server,
       store,
       userIdChanges: users.stream,
       logger: NoLog(),
       usageChanged: usage.stream,
+      appResumed: resumed.stream,
       refreshDebounce: Duration.zero,
       serverCatchUpInterval: Duration.zero,
     );
@@ -172,6 +175,17 @@ void main() {
     usage.add(null);
     await settle();
     expect(server.calls, before + 1);
+  });
+
+  test('coming back to the app picks up Pro granted on the server', () async {
+    users.add('user-1');
+    await settle();
+    expect(cubit.isPro, isFalse);
+
+    server.status = _pro;
+    resumed.add(null);
+    await settle();
+    expect(cubit.isPro, isTrue);
   });
 
   test('expiry: the server says free again and nothing is kept from before', () async {

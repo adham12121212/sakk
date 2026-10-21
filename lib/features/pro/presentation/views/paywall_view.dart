@@ -136,7 +136,7 @@ class _Hero extends StatelessWidget {
       PaywallReason.subscriptionsLimit => l10n.paywallHeadlineSubscriptions,
       PaywallReason.installmentsLimit => l10n.paywallHeadlineInstallments,
       PaywallReason.monthlySummary => l10n.paywallHeadlineSummary,
-      PaywallReason.backup => l10n.paywallHeadlineBackup,
+      PaywallReason.pdfReport => l10n.paywallHeadlinePdfReport,
     };
     return BrandGradientCard(
       child: Column(
@@ -206,7 +206,7 @@ class _ComparisonTable extends StatelessWidget {
       (l10n.featureChat, freeKnown ? perDay(status.chat.limit) : '–', l10n.valueUnlimited),
       (l10n.featureReminders, l10n.valueBasic, l10n.valueSmart),
       (l10n.featureSummary, '✕', '✓'),
-      (l10n.featureBackup, '✕', '✓'),
+      (l10n.featurePdfReport, '✕', '✓'),
     ];
 
     final header = textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant);

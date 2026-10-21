@@ -2275,16 +2275,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderCustomProOnly => 'Sakk Pro';
 
   @override
-  String get backupExport => 'Export backup (JSON)';
+  String get paywallHeadlinePdfReport => 'Get everything in one PDF';
 
   @override
-  String get backupFailed => 'Couldn\'t create the backup. Please try again.';
-
-  @override
-  String get paywallHeadlineBackup => 'Keep a copy of everything';
-
-  @override
-  String get featureBackup => 'Backup + PDF export';
+  String get featurePdfReport => 'PDF report';
 
   @override
   String get proStatusLoadFailed =>

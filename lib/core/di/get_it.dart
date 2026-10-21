@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -35,7 +38,6 @@ import '../../features/household/data/household_data_source.dart';
 import '../../features/household/data/household_repo.dart';
 import '../../features/household/presentation/cubit/household_cubit.dart';
 import '../../features/notification/presentation/cubit/notification_cubit.dart';
-import '../../features/pro/data/backup_data_source.dart';
 import '../../features/pro/data/pro_status_data_source.dart';
 import '../../features/pro/data/purchases_gateway.dart';
 import '../../features/pro/presentation/cubit/paywall_cubit.dart';
@@ -427,9 +429,6 @@ void setupLocator() {
       packageName: 'com.sakk.app',
     ),
   );
-  getIt.registerLazySingleton<BackupDataSource>(
-        () => BackupDataSourceImpl(Supabase.instance.client),
-  );
   getIt.registerLazySingleton<ProStatusDataSource>(
         () => ProStatusDataSourceImpl(Supabase.instance.client),
   );
@@ -440,6 +439,7 @@ void setupLocator() {
       getIt<PurchasesGateway>(),
       userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
       logger: getIt<AppLogger>(),
+      appResumed: _appResumed(),
     ),
   );
   getIt.registerFactory<PaywallCubit>(
@@ -502,3 +502,11 @@ void setupLocator() {
   );
 }
 
+
+/// Fires each time the app comes back to the foreground. Lives as long as
+/// the app (the cubits that listen are app-wide).
+Stream<void> _appResumed() {
+  final controller = StreamController<void>.broadcast();
+  AppLifecycleListener(onResume: () => controller.add(null));
+  return controller.stream;
+}

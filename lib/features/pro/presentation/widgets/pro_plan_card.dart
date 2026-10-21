@@ -13,12 +13,11 @@ import '../../domain/entities/pro_status.dart';
 import '../cubit/pro_cubit.dart';
 import '../pro_actions.dart';
 import 'plan_badge.dart';
-import '../util/share_backup.dart';
 import '../util/share_pdf_report.dart';
 
 /// Profile's "Sakk Pro" entry: the current plan, when it renews or ends,
 /// and the way to upgrade, manage it on Google Play, see this month's
-/// summary, or export a backup or PDF report.
+/// summary, or export a PDF report.
 class ProPlanCard extends StatelessWidget {
   const ProPlanCard({super.key});
 
@@ -107,12 +106,6 @@ class ProPlanCard extends StatelessWidget {
                     onPressed: () => context.push(AppRoutes.monthlySummary),
                     icon: const Icon(AppIcons.monthlySummary, size: 18),
                     label: Text(l10n.monthlySummary),
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () => shareBackup(context),
-                    icon: const Icon(AppIcons.download, size: 18),
-                    label: Text(l10n.backupExport),
                   ),
                   const SizedBox(height: 8),
                   OutlinedButton.icon(

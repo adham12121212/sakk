@@ -21,7 +21,7 @@ import 'pdf_report.dart';
 /// Sakk Pro's PDF report: builds `sakk-report-<date>.pdf` from the app-wide
 /// lists and opens the share sheet. Free users get the paywall.
 Future<void> sharePdfReport(BuildContext context) async {
-  if (!ProActions.ensurePro(context, PaywallReason.backup)) return;
+  if (!ProActions.ensurePro(context, PaywallReason.pdfReport)) return;
   final l10n = AppLocalizations.of(context)!;
   final locale = Localizations.localeOf(context);
   try {
@@ -39,7 +39,7 @@ Future<void> sharePdfReport(BuildContext context) async {
       throw StateError('A list could not be loaded');
     }
 
-    // The user's own products only, like the backup.
+    // The user's own products only: household members' are theirs to report.
     final me = getIt<GetUserUseCase>()();
     final fonts = await Future.wait([
       rootBundle.load('assets/fonts/Cairo-Regular.ttf'),

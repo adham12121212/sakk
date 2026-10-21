@@ -1033,10 +1033,8 @@
     }
   },
   "reminderCustomProOnly": "Sakk Pro",
-  "backupExport": "Export backup (JSON)",
-  "backupFailed": "Couldn't create the backup. Please try again.",
-  "paywallHeadlineBackup": "Keep a copy of everything",
-  "featureBackup": "Backup + PDF export",
+  "paywallHeadlinePdfReport": "Get everything in one PDF",
+  "featurePdfReport": "PDF report",
   "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again.",
   "pdfReportExport": "Export PDF report",
   "pdfReportFailed": "Couldn't create the report. Please try again.",
