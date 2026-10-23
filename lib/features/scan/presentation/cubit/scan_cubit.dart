@@ -96,6 +96,45 @@ class ScanCubit extends Cubit<ScanState> {
     );
   }
 
+  /// A product the user described out loud (Sakk Pro). Like a scan, but
+  /// with no receipt photo, so nothing is left to delete if they leave.
+  Future<void> processVoice(String audioPath) async {
+    final result = await _scanReceiptUseCase.voice(audioPath: audioPath);
+    if (isClosed) return;
+    result.fold(
+      (failure) => emit(ScanProcessingFailed(failure.message)),
+      (scanned) => emit(ScanEditing(scanned: scanned)),
+    );
+  }
+
+  /// Adds a photo (the receipt, the box, the product) to a product being
+  /// added without one, by voice or by hand; it's saved as the receipt
+  /// image. Replacing a photo deletes the old upload, and leaving without
+  /// saving deletes this one (see [close]).
+  ///
+  /// Returns null on success, or the failure's message to show.
+  Future<String?> attachPhoto(String imagePath) async {
+    final result = await _scanReceiptUseCase.uploadPhoto(imagePath: imagePath);
+    return result.fold((failure) => failure.message, (upload) {
+      final current = state;
+      if (isClosed || current is! ScanLoaded) {
+        unawaited(_scanReceiptUseCase.discard(upload.path));
+        return null;
+      }
+      final previous = current.scanned.receiptPath;
+      if (previous != null) unawaited(_scanReceiptUseCase.discard(previous));
+      emit(
+        ScanEditing(
+          scanned: current.scanned.copyWith(
+            receiptPath: upload.path,
+            receiptImageUrl: upload.signedUrl,
+          ),
+        ),
+      );
+      return null;
+    });
+  }
+
   /// A PDF invoice (e.g. emailed by an online store): its first page becomes
   /// the invoice photo and its text goes to the scanner with it.
   Future<void> processPdf(Uint8List pdfBytes) async {

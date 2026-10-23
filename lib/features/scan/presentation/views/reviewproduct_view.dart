@@ -17,7 +17,9 @@ import '../widgets/confidence_banner.dart';
 import '../widgets/datex.dart';
 import '../widgets/field_label.dart';
 import '../widgets/invoice_preview.dart';
+import '../widgets/transcript_card.dart';
 import '../widgets/invoice_preview_dialog.dart';
+import '../widgets/product_photo_picker.dart';
 import '../widgets/review_header.dart';
 import 'scan_failed_view.dart';
 import '../widgets/scan_skeleton_loader.dart';
@@ -254,7 +256,20 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                             if (!isManual) ...[
                               ConfidenceBanner(confidence: scanned.confidence),
                               SizedBox(height: 20.h),
-
+                            ],
+                            // Added by voice: show what was heard so the
+                            // user can check it. By voice or by hand there's
+                            // no receipt photo, so offer to add one.
+                            if (scanned.transcript case final said?) ...[
+                              TranscriptCard(text: said),
+                              SizedBox(height: 12.h),
+                            ],
+                            if (scanned.transcript != null || isManual)
+                              ProductPhotoPicker(
+                                imageUrl: scanned.receiptImageUrl,
+                                onPicked: context.read<ScanCubit>().attachPhoto,
+                              )
+                            else
                               InvoicePreview(
                                 imageUrl: scanned.receiptImageUrl,
                                 onTap: () => showInvoicePreviewDialog(
@@ -262,8 +277,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                                   scanned.receiptImageUrl,
                                 ),
                               ),
-                              SizedBox(height: 24.h),
-                            ],
+                            SizedBox(height: 24.h),
 
                             FieldLabel(l10n.productName),
                             CapsuleField(

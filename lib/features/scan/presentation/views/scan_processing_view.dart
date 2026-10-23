@@ -5,7 +5,6 @@ import 'package:sakk/features/scan/presentation/views/reviewproduct_view.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_card.dart';
-import '../../../../core/widgets/app_error_view.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entities/scanned_receipt.dart';
 import '../cubit/scan_cubit.dart';
@@ -13,6 +12,7 @@ import '../widgets/processing_field_spec.dart';
 import '../widgets/processing_field_tile.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
+import 'scan_failed_view.dart';
 
 class ScanProcessingView extends StatelessWidget {
   const ScanProcessingView({super.key});
@@ -114,13 +114,12 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
             }
           },
           builder: (context, state) {
+            // With the reason (unreadable, nothing heard, limit, offline...),
+            // not a generic "couldn't load".
             if (state is ScanProcessingFailed) {
-              return AppErrorView(
+              return ScanFailedView(
                 message: state.message,
-                actionLabel: AppLocalizations.of(context)!.back,
-                actionIcon: AppIcons.back,
-                fillRemaining: true,
-                onRetry: () async {
+                onBack: () {
                   context.read<ScanCubit>().close();
                   Navigator.of(context).pop();
                 },

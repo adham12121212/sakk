@@ -3,7 +3,7 @@
 
 import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
-export type QuotaType = "scan" | "chat";
+export type QuotaType = "scan" | "chat" | "voice";
 
 export interface QuotaResult {
   allowed: boolean;

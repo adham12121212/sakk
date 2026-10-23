@@ -2408,4 +2408,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfRemainingInstallments => 'الأقساط الباقية';
+
+  @override
+  String get addByVoice => 'أضف بصوتك';
+
+  @override
+  String get voiceTitle => 'قول لصك اشتريت إيه';
+
+  @override
+  String get voiceExample =>
+      'مثلًا: \"اشتريت تليفزيون سامسونج ٥٥ بوصة من بي تك النهارده بعشرين ألف، وضمانه سنتين.\"';
+
+  @override
+  String get voiceListening => 'بسمعك…';
+
+  @override
+  String get voiceDone => 'تمام';
+
+  @override
+  String get voiceMicDenied =>
+      'صك محتاج الميكروفون عشان تضيف بصوتك. اسمح بيه من إعدادات الموبايل.';
+
+  @override
+  String get voiceRecordFailed => 'معرفناش نسجّل. جرّب تاني.';
+
+  @override
+  String get voiceUnheard =>
+      'مقدرناش نفهم المنتج. جرّب تاني وقول اسم المنتج والمحل والسعر والضمان.';
+
+  @override
+  String get voiceNeedsInternet => 'الإضافة بالصوت محتاجة إنترنت.';
+
+  @override
+  String get voiceYouSaid => 'إنت قلت';
+
+  @override
+  String get paywallHeadlineVoice => 'ضيف منتجاتك بصوتك بس';
+
+  @override
+  String get featureVoice => 'الإضافة بالصوت';
+
+  @override
+  String get limitReachedVoice => 'الإضافة بالصوت متاحة في Sakk Pro.';
+
+  @override
+  String get voiceUnheardTitle => 'مسمعناش كويس';
+
+  @override
+  String get addPhoto => 'ضيف صورة (اختياري)';
+
+  @override
+  String get addPhotoHint => 'الفاتورة أو العلبة أو المنتج نفسه';
+
+  @override
+  String get changePhoto => 'غيّر الصورة';
 }

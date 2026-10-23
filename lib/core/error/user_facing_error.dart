@@ -23,6 +23,7 @@ String userFacingError(AppLocalizations l10n, String? message) {
   }
   if (message == ProductDataSourceImpl.aiBusy) return l10n.scanBusy;
   if (message == ProductDataSourceImpl.pdfUnreadable) return l10n.pdfUnreadable;
+  if (message == ProductDataSourceImpl.voiceUnheard) return l10n.voiceUnheard;
   if (message == SubscriptionDataSourceImpl.unreadableSubscription) {
     return l10n.subscriptionScanUnreadable;
   }
@@ -53,6 +54,7 @@ String _limitMessage(AppLocalizations l10n, String kind) {
     'installments' => l10n.limitReachedInstallments,
     'scan' => l10n.limitReachedScan,
     'chat' => l10n.limitReachedChat,
+    'voice' => l10n.limitReachedVoice,
     _ => l10n.limitReachedFairUse,
   };
 }

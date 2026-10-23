@@ -19,6 +19,7 @@ import '../../../pro/presentation/pro_actions.dart';
 import '../../../pro/presentation/widgets/quota_hint.dart';
 import '../cubit/scan_cubit.dart';
 import '../widgets/scan_source_button.dart';
+import '../widgets/voice_record_sheet.dart';
 import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
 import '../../../../core/theme/app_icons.dart';
@@ -135,6 +136,27 @@ class ScanViewState extends State<ScanView> {
     _openProcessing(ScanCubit()..processPdf(bytes));
   }
 
+  /// Add by voice (Sakk Pro): the user says what they bought and the AI
+  /// fills the form. Free users get the paywall; the server checks too.
+  Future<void> addByVoice() async {
+    if (!ProActions.ensurePro(context, PaywallReason.voice)) return;
+    if (!ProActions.ensureCanAdd(context, LimitedItem.products)) return;
+    if (getIt.isRegistered<NetworkInfo>() &&
+        !await getIt<NetworkInfo>().isConnected) {
+      if (mounted) {
+        AppSnackBar.error(
+          context,
+          AppLocalizations.of(context)!.voiceNeedsInternet,
+        );
+      }
+      return;
+    }
+    if (!mounted) return;
+    final audioPath = await VoiceRecordSheet.show(context);
+    if (audioPath == null || !mounted) return;
+    _openProcessing(ScanCubit()..processVoice(audioPath));
+  }
+
   /// For products without a receipt (lost, or bought online): straight to
   /// the review form with empty fields.
   void enterManually() {
@@ -242,6 +264,13 @@ class ScanViewState extends State<ScanView> {
                   icon: AppIcons.pdf,
                   label: l10n.uploadPdfInvoice,
                   onPressed: pickPdf,
+                ),
+                const SizedBox(height: 12),
+                ScanSourceButton.outlined(
+                  icon: AppIcons.microphone,
+                  label: l10n.addByVoice,
+                  badge: l10n.paywallPro,
+                  onPressed: addByVoice,
                 ),
                 const SizedBox(height: 8),
                 TextButton.icon(

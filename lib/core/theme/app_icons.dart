@@ -232,6 +232,11 @@ abstract final class AppIcons {
     fontFamily: 'PhosphorRegular',
     fontPackage: 'phosphor_flutter',
   ); // filePdf
+  static const microphone = IconData(
+    0xe326,
+    fontFamily: 'PhosphorRegular',
+    fontPackage: 'phosphor_flutter',
+  ); // microphone
   static const household = IconData(
     0xe68e,
     fontFamily: 'PhosphorRegular',

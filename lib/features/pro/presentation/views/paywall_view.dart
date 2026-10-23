@@ -149,6 +149,7 @@ class _Hero extends StatelessWidget {
       PaywallReason.installmentsLimit => l10n.paywallHeadlineInstallments,
       PaywallReason.monthlySummary => l10n.paywallHeadlineSummary,
       PaywallReason.pdfReport => l10n.paywallHeadlinePdfReport,
+      PaywallReason.voice => l10n.paywallHeadlineVoice,
     };
     return BrandGradientCard(
       child: Column(
@@ -254,6 +255,7 @@ class _ComparisonTable extends StatelessWidget {
       (l10n.featureReminders, l10n.valueBasic, l10n.valueSmart),
       (l10n.featureSummary, '✕', '✓'),
       (l10n.featurePdfReport, '✕', '✓'),
+      (l10n.featureVoice, '✕', '✓'),
     ];
 
     final header = textTheme.labelLarge?.copyWith(

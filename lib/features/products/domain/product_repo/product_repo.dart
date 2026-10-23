@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:sakk/core/service/receipt_ai_client.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/features/products/domain/entities/product_entity.dart';
 
@@ -11,6 +12,16 @@ abstract class ProductRepo {
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
     String? pdfText,
+  });
+
+  /// A product the user described out loud (Sakk Pro).
+  Future<Either<Failure, ScannedReceiptData>> scanVoice({
+    required String audioPath,
+  });
+
+  /// Uploads a photo for a product added without a receipt photo.
+  Future<Either<Failure, UploadedReceipt>> uploadReceiptPhoto({
+    required String imagePath,
   });
 
   /// Deletes a scanned receipt photo the user didn't save. Best effort.
