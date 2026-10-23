@@ -208,7 +208,14 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return jsonResponse({ error: "Not authenticated" }, 401);
 
-    const { mode, imageUrl, pdfText, text: messageText, knownServices }: ExtractRequest = await req.json();
+    let body: ExtractRequest;
+    try {
+      body = await req.json();
+      if (typeof body !== "object" || body === null) throw new Error("not an object");
+    } catch {
+      return jsonResponse({ error: "invalid_body" }, 400);
+    }
+    const { mode, imageUrl, pdfText, text: messageText, knownServices } = body;
 
     // Every mode is one scan. Called after the request is validated, right
     // before the AI call. Returns the 402 response when none are left.
@@ -293,13 +300,10 @@ serve(async (req) => {
     if (error instanceof AiBusyError) {
       return jsonResponse({ error: "ai_busy" }, 503);
     }
+    // The details stay in the function logs: they can hold Groq's or the
+    // database's own error text. The app shows its generic message.
     console.error("extract-receipt error:", error);
-    return jsonResponse(
-      {
-        error: error instanceof Error ? error.message : String(error),
-      },
-      500,
-    );
+    return jsonResponse({ error: "internal_error" }, 500);
   }
 });
 
