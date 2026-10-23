@@ -6,7 +6,6 @@ import 'package:sakk/features/scan/presentation/widgets/processing_field_spec.da
 import 'shimmer_shape.dart';
 import '../../../../core/theme/app_icons.dart';
 
-
 class ProcessingFieldTile extends StatelessWidget {
   const ProcessingFieldTile({
     super.key,
@@ -46,10 +45,7 @@ class ProcessingFieldTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  spec.label,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text(spec.label, style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 6),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 280),
@@ -65,19 +61,19 @@ class ProcessingFieldTile extends StatelessWidget {
                   ),
                   child: revealed
                       ? Text(
-                    value ?? '—',
-                    key: const ValueKey('value'),
-                    style:  TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface
-                    ),
-                  )
+                          value ?? '—',
+                          key: const ValueKey('value'),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onSurface,
+                          ),
+                        )
                       : ShimmerBar(
-                    key: const ValueKey('shimmer'),
-                    width: spec.skeletonWidth,
-                    animation: shimmerAnimation,
-                  ),
+                          key: const ValueKey('shimmer'),
+                          width: spec.skeletonWidth,
+                          animation: shimmerAnimation,
+                        ),
                 ),
               ],
             ),
@@ -89,15 +85,15 @@ class ProcessingFieldTile extends StatelessWidget {
                 ScaleTransition(scale: animation, child: child),
             child: revealed
                 ? Icon(
-              AppIcons.successFilled,
-              key: ValueKey('check'),
-              color: palette.success,
-              size: 22,
-            )
+                    AppIcons.successFilled,
+                    key: ValueKey('check'),
+                    color: palette.success,
+                    size: 22,
+                  )
                 : ShimmerCircle(
-              key: const ValueKey('shimmer-icon'),
-              animation: shimmerAnimation,
-            ),
+                    key: const ValueKey('shimmer-icon'),
+                    animation: shimmerAnimation,
+                  ),
           ),
         ],
       ),

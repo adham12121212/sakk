@@ -45,11 +45,11 @@ class _ProductsViewState extends State<ProductsView> {
     var result = switch (_filter) {
       _ProductFilter.all => products,
       _ProductFilter.active =>
-          products.where((p) => p.status == WarrantyStatus.active).toList(),
+        products.where((p) => p.status == WarrantyStatus.active).toList(),
       _ProductFilter.expiring =>
-          products.where((p) => p.status == WarrantyStatus.expiring).toList(),
+        products.where((p) => p.status == WarrantyStatus.expiring).toList(),
       _ProductFilter.expired =>
-          products.where((p) => p.status == WarrantyStatus.expired).toList(),
+        products.where((p) => p.status == WarrantyStatus.expired).toList(),
     };
 
     if (_categoryFilter != null) {
@@ -97,14 +97,17 @@ class _ProductsViewState extends State<ProductsView> {
   // as real data, Skeletonizer paints shimmer bones over it.
   List<ProductEntity> _placeholderProducts() {
     final now = DateTime.now();
-    return List.generate(5, (i) => ProductEntity(
-      id: 'placeholder-$i',
-      name: 'Product name',
-      brand: 'Brand',
-      price: 100,
-      purchaseDate: now.subtract(const Duration(days: 60)),
-      warrantyMonths: 12,
-    ));
+    return List.generate(
+      5,
+      (i) => ProductEntity(
+        id: 'placeholder-$i',
+        name: 'Product name',
+        brand: 'Brand',
+        price: 100,
+        purchaseDate: now.subtract(const Duration(days: 60)),
+        warrantyMonths: 12,
+      ),
+    );
   }
 
   @override
@@ -132,18 +135,18 @@ class _ProductsViewState extends State<ProductsView> {
                           ),
                         ),
                         CircleIconButton(
-                            icon: AppIcons.search,
-                            semanticLabel: l10n.search,
-                            onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider.value(
-                                value: context.read<ProductsCubit>(),
-                                child: const ProductSearchView(),
+                          icon: AppIcons.search,
+                          semanticLabel: l10n.search,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<ProductsCubit>(),
+                                  child: const ProductSearchView(),
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                         const SizedBox(width: 4),
@@ -174,25 +177,29 @@ class _ProductsViewState extends State<ProductsView> {
                         _FilterChip(
                           label: l10n.all,
                           selected: _filter == _ProductFilter.all,
-                          onTap: () => setState(() => _filter = _ProductFilter.all),
+                          onTap: () =>
+                              setState(() => _filter = _ProductFilter.all),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
                           label: l10n.active,
                           selected: _filter == _ProductFilter.active,
-                          onTap: () => setState(() => _filter = _ProductFilter.active),
+                          onTap: () =>
+                              setState(() => _filter = _ProductFilter.active),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
                           label: l10n.expiring,
                           selected: _filter == _ProductFilter.expiring,
-                          onTap: () => setState(() => _filter = _ProductFilter.expiring),
+                          onTap: () =>
+                              setState(() => _filter = _ProductFilter.expiring),
                         ),
                         SizedBox(width: 8.w),
                         _FilterChip(
                           label: l10n.expired,
                           selected: _filter == _ProductFilter.expired,
-                          onTap: () => setState(() => _filter = _ProductFilter.expired),
+                          onTap: () =>
+                              setState(() => _filter = _ProductFilter.expired),
                         ),
                       ],
                     ),
@@ -221,7 +228,11 @@ class _ProductsViewState extends State<ProductsView> {
     );
   }
 
-  Widget _buildBody(BuildContext context, ProductsState state, List<ProductEntity> filtered) {
+  Widget _buildBody(
+    BuildContext context,
+    ProductsState state,
+    List<ProductEntity> filtered,
+  ) {
     final l10n = AppLocalizations.of(context)!;
 
     final isInitialLoading = state.isLoading && state.products.isEmpty;
@@ -235,7 +246,8 @@ class _ProductsViewState extends State<ProductsView> {
           padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
           itemCount: placeholders.length,
           separatorBuilder: (_, _) => SizedBox(height: 12.h),
-          itemBuilder: (context, index) => RecentProductTile(data: placeholders[index]),
+          itemBuilder: (context, index) =>
+              RecentProductTile(data: placeholders[index]),
         ),
       );
     }
@@ -296,7 +308,9 @@ class _FilterChip extends StatelessWidget {
       child: Material(
         color: selected ? AppColors.primary : colorScheme.surface,
         shape: StadiumBorder(
-          side: BorderSide(color: selected ? AppColors.primary : colorScheme.outline),
+          side: BorderSide(
+            color: selected ? AppColors.primary : colorScheme.outline,
+          ),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -358,7 +372,11 @@ class _ActiveCategoryChip extends StatelessWidget {
                   SizedBox(width: 6.w),
                   Text(
                     label,
-                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: color),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: color,
+                    ),
                   ),
                   SizedBox(width: 6.w),
                   Icon(AppIcons.close, size: 14.sp, color: color),

@@ -19,7 +19,7 @@ class NotificationModel extends NotificationEntity {
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
       type: NotificationType.values.firstWhere(
-            (e) => e.name == json['type'],
+        (e) => e.name == json['type'],
         orElse: () => NotificationType.info,
       ),
       createdAt: DateTime.parse(

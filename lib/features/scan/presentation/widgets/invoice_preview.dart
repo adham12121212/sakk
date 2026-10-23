@@ -62,7 +62,11 @@ class _PreviewBadge extends StatelessWidget {
             SizedBox(width: 6.w),
             Text(
               AppLocalizations.of(context)!.invoicePreviewLabel,
-              style: TextStyle(color: Colors.white, fontSize: 13.sp, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -81,7 +85,11 @@ class _Placeholder extends StatelessWidget {
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Center(
-        child: Icon(AppIcons.receipt, size: 40.sp, color: colorScheme.onSurfaceVariant),
+        child: Icon(
+          AppIcons.receipt,
+          size: 40.sp,
+          color: colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }

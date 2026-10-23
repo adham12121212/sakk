@@ -11,7 +11,12 @@ import '../../domain/pro_limit.dart';
 /// chat message or saving a product, subscription or installment plan. The
 /// screen that failed still shows its own error message under it.
 class ProLimitListener extends StatefulWidget {
-  const ProLimitListener({super.key, required this.router, required this.child, this.events});
+  const ProLimitListener({
+    super.key,
+    required this.router,
+    required this.child,
+    this.events,
+  });
 
   final GoRouter router;
   final Widget child;
@@ -35,7 +40,10 @@ class _ProLimitListenerState extends State<ProLimitListener> {
   void _open(PaywallReason reason) {
     final router = widget.router;
     // Already on the paywall (e.g. two refusals in a row): don't stack another.
-    if (router.routerDelegate.currentConfiguration.uri.path == AppRoutes.paywall) return;
+    if (router.routerDelegate.currentConfiguration.uri.path ==
+        AppRoutes.paywall) {
+      return;
+    }
     router.push(AppRoutes.paywall, extra: reason);
   }
 

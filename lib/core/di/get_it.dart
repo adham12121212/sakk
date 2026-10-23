@@ -110,44 +110,45 @@ import '../theme/theme_controller.dart';
 import '../util/notified_warranties_tracker.dart';
 import '../util/shared_preferences.dart';
 
-
 GetIt getIt = GetIt.instance;
 
-
 void setupLocator() {
-
   getIt.registerLazySingleton<AppLogger>(() => ConsoleLogger());
 
   getIt.registerLazySingleton<SupabaseService>(
-        () => SupabaseServiceImpl(Supabase.instance.client),
+    () => SupabaseServiceImpl(Supabase.instance.client),
   );
 
   getIt.registerLazySingleton<StorageService>(
-        () => StorageServiceImpl(Supabase.instance.client),
+    () => StorageServiceImpl(Supabase.instance.client),
   );
 
   getIt.registerLazySingleton<InternetConnection>(() => InternetConnection());
   getIt.registerLazySingleton<NetworkInfo>(
-        () => NetworkInfoImpl(getIt<InternetConnection>()),
+    () => NetworkInfoImpl(getIt<InternetConnection>()),
   );
   getIt.registerLazySingleton<AuthDataSource>(
-        () => AuthDataSourceImpl(getIt<SupabaseService>(), getIt<StorageService>()),
+    () => AuthDataSourceImpl(getIt<SupabaseService>(), getIt<StorageService>()),
   );
   getIt.registerLazySingleton<AuthRepository>(
-        () => AuthRepoImpl(getIt<AuthDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => AuthRepoImpl(
+      getIt<AuthDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
 
   getIt.registerLazySingleton<SignInUseCase>(
-        () => SignInUseCaseImpl(getIt<AuthRepository>()),
+    () => SignInUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerLazySingleton<SignupUsecase>(
-        () => SignupUsecaseImpl(getIt<AuthRepository>()),
+    () => SignupUsecaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerLazySingleton<SignOutUseCase>(
-        () => SignOutUseCaseImpl(getIt<AuthRepository>()),
+    () => SignOutUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerFactory<AuthCubit>(
-        () => AuthCubit(
+    () => AuthCubit(
       getIt<SignupUsecase>(),
       getIt<SignInUseCase>(),
       getIt<SignOutUseCase>(),
@@ -157,11 +158,11 @@ void setupLocator() {
     ),
   );
   getIt.registerLazySingleton<GetUserUseCase>(
-        () => GetUserUseCaseImpl(getIt<AuthRepository>()),
+    () => GetUserUseCaseImpl(getIt<AuthRepository>()),
   );
 
   getIt.registerLazySingleton<UpdateAvatarUseCase>(
-        () => UpdateAvatarUsecaseImpl(getIt<AuthRepository>()),
+    () => UpdateAvatarUsecaseImpl(getIt<AuthRepository>()),
   );
 
   // ---- Settings ----
@@ -169,9 +170,11 @@ void setupLocator() {
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
   getIt.registerLazySingleton<ReminderSettings>(() => ReminderSettings());
   getIt.registerLazySingleton<ReviewPrompter>(() => ReviewPrompter());
-  getIt.registerLazySingleton<AmountVisibilityController>(() => AmountVisibilityController());
+  getIt.registerLazySingleton<AmountVisibilityController>(
+    () => AmountVisibilityController(),
+  );
   getIt.registerLazySingleton<HomeWidgetSync>(
-        () => HomeWidgetSync(getIt<LocaleController>(), getIt<AppLogger>()),
+    () => HomeWidgetSync(getIt<LocaleController>(), getIt<AppLogger>()),
   );
   getIt.registerLazySingleton<LocaleController>(() => LocaleController());
 
@@ -179,80 +182,98 @@ void setupLocator() {
   // BiometricAuthService's doc comment for how this relates to (and does
   // NOT replace) the Supabase session itself.
   getIt.registerLazySingleton<BiometricAuthService>(
-        () => BiometricAuthServiceImpl(),
+    () => BiometricAuthServiceImpl(),
   );
 
   // ---- Products ----
   // Shared by receipt scanning and subscription smart add.
-  getIt.registerLazySingleton<ReceiptAiClient>(() => ReceiptAiClient(Supabase.instance.client));
+  getIt.registerLazySingleton<ReceiptAiClient>(
+    () => ReceiptAiClient(Supabase.instance.client),
+  );
   getIt.registerLazySingleton<ProductDataSource>(
-        () => ProductDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
+    () => ProductDataSourceImpl(
+      Supabase.instance.client,
+      ai: getIt<ReceiptAiClient>(),
+    ),
   );
   getIt.registerLazySingleton<ProductLocalDataSource>(
-        () => ProductLocalDataSourceImpl(getIt<SupabaseService>()),
+    () => ProductLocalDataSourceImpl(getIt<SupabaseService>()),
   );
   getIt.registerLazySingleton<ProductRepo>(
-        () => ProductRepoImpl(getIt<ProductDataSource>(), getIt<ProductLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => ProductRepoImpl(
+      getIt<ProductDataSource>(),
+      getIt<ProductLocalDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
   getIt.registerLazySingleton<ScanReceiptUseCase>(
-        () => ScanReceiptUseCaseImpl(getIt<ProductRepo>()),
+    () => ScanReceiptUseCaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<AddProductUseCase>(
-        () => AddProductUseCaseImpl(getIt<ProductRepo>()),
+    () => AddProductUseCaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<UpdateProductUseCase>(
-        () => UpdateProductUsecaseImpl(getIt<ProductRepo>()),
+    () => UpdateProductUsecaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<DeleteProductUseCase>(
-        () => DeleteProductUsecaseImpl(getIt<ProductRepo>()),
+    () => DeleteProductUsecaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<ClearCachedProductsUseCase>(
-        () => ClearCachedProductsUseCaseImpl(getIt<ProductRepo>()),
+    () => ClearCachedProductsUseCaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<ProductExtrasUseCase>(
-        () => ProductExtrasUseCaseImpl(getIt<ProductRepo>()),
+    () => ProductExtrasUseCaseImpl(getIt<ProductRepo>()),
   );
   getIt.registerLazySingleton<GetProductsUseCase>(
-        () => GetProductsUseCaseImpl(getIt<ProductRepo>()),
+    () => GetProductsUseCaseImpl(getIt<ProductRepo>()),
   );
 
   // ---- Subscriptions ----
   getIt.registerLazySingleton<SubscriptionDataSource>(
-        () => SubscriptionDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
+    () => SubscriptionDataSourceImpl(
+      Supabase.instance.client,
+      ai: getIt<ReceiptAiClient>(),
+    ),
   );
   getIt.registerLazySingleton<SubscriptionLocalDataSource>(
-        () => SubscriptionLocalDataSourceImpl(getIt<SupabaseService>()),
+    () => SubscriptionLocalDataSourceImpl(getIt<SupabaseService>()),
   );
   getIt.registerLazySingleton<SubscriptionRepo>(
-        () => SubscriptionRepoImpl(getIt<SubscriptionDataSource>(), getIt<SubscriptionLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => SubscriptionRepoImpl(
+      getIt<SubscriptionDataSource>(),
+      getIt<SubscriptionLocalDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
   getIt.registerLazySingleton<GetCatalogUseCase>(
-        () => GetCatalogUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => GetCatalogUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<GetSubscriptionsUseCase>(
-        () => GetSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => GetSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<AddSubscriptionUseCase>(
-        () => AddSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => AddSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<UpdateSubscriptionUseCase>(
-        () => UpdateSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => UpdateSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<DeleteSubscriptionUseCase>(
-        () => DeleteSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => DeleteSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<ExtractSubscriptionUseCase>(
-        () => ExtractSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => ExtractSubscriptionUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<ClearCachedSubscriptionsUseCase>(
-        () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => ClearCachedSubscriptionsUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   // Singleton: the Home card and the Subscriptions screen share its list.
   getIt.registerLazySingleton<UpdateRenewalDateUseCase>(
-        () => UpdateRenewalDateUseCaseImpl(getIt<SubscriptionRepo>()),
+    () => UpdateRenewalDateUseCaseImpl(getIt<SubscriptionRepo>()),
   );
   getIt.registerLazySingleton<SubscriptionReminderService>(
-        () => SubscriptionReminderService(
+    () => SubscriptionReminderService(
       getUserUseCase: getIt<GetUserUseCase>(),
       addNotificationUseCase: getIt<AddNotificationUseCase>(),
       tracker: getIt<NotifiedWarrantiesTracker>(),
@@ -263,16 +284,20 @@ void setupLocator() {
     ),
   );
   getIt.registerLazySingleton<SubscriptionsCubit>(
-        () => SubscriptionsCubit(
+    () => SubscriptionsCubit(
       getIt<GetSubscriptionsUseCase>(),
       updateRenewalDateUseCase: getIt<UpdateRenewalDateUseCase>(),
       reminders: getIt<SubscriptionReminderService>(),
     ),
   );
-  getIt.registerFactory<CatalogCubit>(() => CatalogCubit(getIt<GetCatalogUseCase>()));
-  getIt.registerFactory<SmartAddCubit>(() => SmartAddCubit(getIt<ExtractSubscriptionUseCase>()));
+  getIt.registerFactory<CatalogCubit>(
+    () => CatalogCubit(getIt<GetCatalogUseCase>()),
+  );
+  getIt.registerFactory<SmartAddCubit>(
+    () => SmartAddCubit(getIt<ExtractSubscriptionUseCase>()),
+  );
   getIt.registerFactory<SubscriptionFormCubit>(
-        () => SubscriptionFormCubit(
+    () => SubscriptionFormCubit(
       getIt<AddSubscriptionUseCase>(),
       getIt<UpdateSubscriptionUseCase>(),
       getIt<DeleteSubscriptionUseCase>(),
@@ -282,39 +307,49 @@ void setupLocator() {
 
   // ---- Installments ----
   getIt.registerLazySingleton<InstallmentDataSource>(
-        () => InstallmentDataSourceImpl(Supabase.instance.client, ai: getIt<ReceiptAiClient>()),
+    () => InstallmentDataSourceImpl(
+      Supabase.instance.client,
+      ai: getIt<ReceiptAiClient>(),
+    ),
   );
   getIt.registerLazySingleton<InstallmentLocalDataSource>(
-        () => InstallmentLocalDataSourceImpl(getIt<SupabaseService>()),
+    () => InstallmentLocalDataSourceImpl(getIt<SupabaseService>()),
   );
   getIt.registerLazySingleton<InstallmentRepo>(
-        () => InstallmentRepoImpl(getIt<InstallmentDataSource>(), getIt<InstallmentLocalDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => InstallmentRepoImpl(
+      getIt<InstallmentDataSource>(),
+      getIt<InstallmentLocalDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
   getIt.registerLazySingleton<GetInstallmentPlansUseCase>(
-        () => GetInstallmentPlansUseCaseImpl(getIt<InstallmentRepo>()),
+    () => GetInstallmentPlansUseCaseImpl(getIt<InstallmentRepo>()),
   );
   getIt.registerLazySingleton<AddInstallmentPlanUseCase>(
-        () => AddInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+    () => AddInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
   );
   getIt.registerLazySingleton<UpdateInstallmentPlanUseCase>(
-        () => UpdateInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+    () => UpdateInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
   );
   getIt.registerLazySingleton<DeleteInstallmentPlanUseCase>(
-        () => DeleteInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
+    () => DeleteInstallmentPlanUseCaseImpl(getIt<InstallmentRepo>()),
   );
   getIt.registerLazySingleton<SetPaymentPaidUseCase>(
-        () => SetPaymentPaidUseCaseImpl(getIt<InstallmentRepo>()),
+    () => SetPaymentPaidUseCaseImpl(getIt<InstallmentRepo>()),
   );
   getIt.registerLazySingleton<ExtractInstallmentUseCase>(
-        () => ExtractInstallmentUseCaseImpl(getIt<InstallmentRepo>()),
+    () => ExtractInstallmentUseCaseImpl(getIt<InstallmentRepo>()),
   );
-  getIt.registerFactory<InstallmentSmartAddCubit>(() => InstallmentSmartAddCubit(getIt<ExtractInstallmentUseCase>()));
+  getIt.registerFactory<InstallmentSmartAddCubit>(
+    () => InstallmentSmartAddCubit(getIt<ExtractInstallmentUseCase>()),
+  );
   getIt.registerLazySingleton<ClearCachedInstallmentsUseCase>(
-        () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
+    () => ClearCachedInstallmentsUseCaseImpl(getIt<InstallmentRepo>()),
   );
   // Singleton: Home, the Installments screens, product details and Analytics share its list.
   getIt.registerLazySingleton<InstallmentReminderService>(
-        () => InstallmentReminderService(
+    () => InstallmentReminderService(
       getUserUseCase: getIt<GetUserUseCase>(),
       addNotificationUseCase: getIt<AddNotificationUseCase>(),
       tracker: getIt<NotifiedWarrantiesTracker>(),
@@ -325,14 +360,14 @@ void setupLocator() {
     ),
   );
   getIt.registerLazySingleton<InstallmentsCubit>(
-        () => InstallmentsCubit(
+    () => InstallmentsCubit(
       getIt<GetInstallmentPlansUseCase>(),
       getIt<SetPaymentPaidUseCase>(),
       reminders: getIt<InstallmentReminderService>(),
     ),
   );
   getIt.registerFactory<InstallmentFormCubit>(
-        () => InstallmentFormCubit(
+    () => InstallmentFormCubit(
       getIt<AddInstallmentPlanUseCase>(),
       getIt<UpdateInstallmentPlanUseCase>(),
       getIt<DeleteInstallmentPlanUseCase>(),
@@ -340,40 +375,52 @@ void setupLocator() {
     ),
   );
 
-  getIt.registerLazySingleton<SearchHistoryService>(() => SearchHistoryServiceImpl());
+  getIt.registerLazySingleton<SearchHistoryService>(
+    () => SearchHistoryServiceImpl(),
+  );
 
-  getIt.registerLazySingleton<NotificationService>(() => NotificationService.instance);
+  getIt.registerLazySingleton<NotificationService>(
+    () => NotificationService.instance,
+  );
   getIt.registerLazySingleton<NotifiedWarrantiesTracker>(
-        () => NotifiedWarrantiesTrackerImpl(),
+    () => NotifiedWarrantiesTrackerImpl(),
   );
   getIt.registerLazySingleton<NotificationDataSource>(
-        () => NotificationDataSourceImpl(supabaseService: getIt<SupabaseService>()),
+    () => NotificationDataSourceImpl(supabaseService: getIt<SupabaseService>()),
   );
   getIt.registerLazySingleton<NotificationRepo>(
-        () => NotificationRepoImpl(
+    () => NotificationRepoImpl(
       getIt<NotificationDataSource>(),
       getIt<NetworkInfo>(),
       getIt<AppLogger>(),
     ),
   );
   getIt.registerLazySingleton<GetNotificationsUseCase>(
-        () => GetNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+    () =>
+        GetNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
   );
   getIt.registerLazySingleton<MarkNotificationAsReadUseCase>(
-        () => MarkNotificationAsReadUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+    () => MarkNotificationAsReadUseCaseImpl(
+      notificationRepo: getIt<NotificationRepo>(),
+    ),
   );
   getIt.registerLazySingleton<DeleteNotificationUseCase>(
-        () => DeleteNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+    () => DeleteNotificationUseCaseImpl(
+      notificationRepo: getIt<NotificationRepo>(),
+    ),
   );
   getIt.registerLazySingleton<AddNotificationUseCase>(
-        () => AddNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+    () =>
+        AddNotificationUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
   );
   getIt.registerLazySingleton<WatchAddedNotificationsUseCase>(
-        () => WatchAddedNotificationsUseCaseImpl(notificationRepo: getIt<NotificationRepo>()),
+    () => WatchAddedNotificationsUseCaseImpl(
+      notificationRepo: getIt<NotificationRepo>(),
+    ),
   );
   // Singleton: the Home badge and the Notifications screen share its list.
   getIt.registerLazySingleton<NotificationCubit>(
-        () => NotificationCubit(
+    () => NotificationCubit(
       getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
       markNotificationAsReadUseCase: getIt<MarkNotificationAsReadUseCase>(),
       deleteNotificationUseCase: getIt<DeleteNotificationUseCase>(),
@@ -382,7 +429,7 @@ void setupLocator() {
   );
 
   getIt.registerLazySingleton<WarrantyNotificationService>(
-        () => WarrantyNotificationService(
+    () => WarrantyNotificationService(
       getUserUseCase: getIt<GetUserUseCase>(),
       addNotificationUseCase: getIt<AddNotificationUseCase>(),
       tracker: getIt<NotifiedWarrantiesTracker>(),
@@ -395,15 +442,19 @@ void setupLocator() {
   );
 
   getIt.registerLazySingleton<HouseholdRepo>(
-        () => HouseholdRepo(HouseholdDataSource(Supabase.instance.client), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => HouseholdRepo(
+      HouseholdDataSource(Supabase.instance.client),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
   // Singleton: Profile manages it, product screens read member names from it.
   getIt.registerLazySingleton<HouseholdCubit>(
-        () => HouseholdCubit(getIt<HouseholdRepo>(), getIt<ProductsCubit>()),
+    () => HouseholdCubit(getIt<HouseholdRepo>(), getIt<ProductsCubit>()),
   );
 
   getIt.registerLazySingleton<ProductsCubit>(
-        () => ProductsCubit(
+    () => ProductsCubit(
       getIt<GetProductsUseCase>(),
       getIt<DeleteProductUseCase>(),
       getIt<SearchHistoryService>(),
@@ -413,7 +464,7 @@ void setupLocator() {
   );
 
   getIt.registerFactory<DetailsCubit>(
-        () => DetailsCubit(
+    () => DetailsCubit(
       updateProductUseCase: getIt<UpdateProductUseCase>(),
       productsCubit: getIt<ProductsCubit>(),
     ),
@@ -423,65 +474,75 @@ void setupLocator() {
   // RevenueCat's public SDK keys (not secrets). Without them the app runs
   // on the free plan and the paywall says purchases aren't available.
   getIt.registerLazySingleton<PurchasesGateway>(
-        () => RevenueCatGateway(
+    () => RevenueCatGateway(
       androidApiKey: dotenv.env['REVENUECAT_ANDROID_KEY'],
       iosApiKey: dotenv.env['REVENUECAT_IOS_KEY'],
       packageName: 'com.sakk.app',
     ),
   );
   getIt.registerLazySingleton<ProStatusDataSource>(
-        () => ProStatusDataSourceImpl(Supabase.instance.client),
+    () => ProStatusDataSourceImpl(Supabase.instance.client),
   );
   // Singleton: the badge, counters, paywall and add buttons share it.
   getIt.registerLazySingleton<ProCubit>(
-        () => ProCubit(
+    () => ProCubit(
       getIt<ProStatusDataSource>(),
       getIt<PurchasesGateway>(),
-      userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
+      userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map(
+        (auth) => auth.session?.user.id,
+      ),
       logger: getIt<AppLogger>(),
       appResumed: _appResumed(),
     ),
   );
   getIt.registerFactory<PaywallCubit>(
-        () => PaywallCubit(getIt<PurchasesGateway>(), getIt<ProCubit>(), getIt<AppLogger>()),
+    () => PaywallCubit(
+      getIt<PurchasesGateway>(),
+      getIt<ProCubit>(),
+      getIt<AppLogger>(),
+    ),
   );
 
   // ---- Chat ----
   getIt.registerLazySingleton<ChatDataSource>(
-        () => ChatDataSourceImpl(Supabase.instance.client),
+    () => ChatDataSourceImpl(Supabase.instance.client),
   );
   getIt.registerLazySingleton<ChatRepo>(
-        () => ChatRepoImpl(getIt<ChatDataSource>(), getIt<NetworkInfo>(), getIt<AppLogger>()),
+    () => ChatRepoImpl(
+      getIt<ChatDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
   );
   getIt.registerLazySingleton<SendMessageUseCase>(
-        () => SendMessageUseCaseImpl(getIt<ChatRepo>()),
+    () => SendMessageUseCaseImpl(getIt<ChatRepo>()),
   );
   getIt.registerLazySingleton<GetChatHistoryUseCase>(
-        () => GetChatHistoryUseCaseImpl(getIt<ChatRepo>()),
+    () => GetChatHistoryUseCaseImpl(getIt<ChatRepo>()),
   );
-
 
   getIt.registerLazySingleton<ChatCubit>(
-        () => ChatCubit(
-          getIt<SendMessageUseCase>(),
-          Supabase.instance.client.auth.onAuthStateChange.map((auth) => auth.session?.user.id),
-          getHistoryUseCase: getIt<GetChatHistoryUseCase>(),
-        ),
+    () => ChatCubit(
+      getIt<SendMessageUseCase>(),
+      Supabase.instance.client.auth.onAuthStateChange.map(
+        (auth) => auth.session?.user.id,
+      ),
+      getHistoryUseCase: getIt<GetChatHistoryUseCase>(),
+    ),
   );
-
 
   // alongside your other AuthCubit/usecase registrations:
   getIt.registerLazySingleton<SendPasswordResetOtpUseCase>(
-        () => SendPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
+    () => SendPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerLazySingleton<VerifyPasswordResetOtpUseCase>(
-        () => VerifyPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
+    () => VerifyPasswordResetOtpUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerLazySingleton<UpdatePasswordUseCase>(
-        () => UpdatePasswordUseCaseImpl(getIt<AuthRepository>()),
+    () => UpdatePasswordUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerFactory<PasswordResetCubit>(
-        () => PasswordResetCubit(
+    () => PasswordResetCubit(
       getIt<SendPasswordResetOtpUseCase>(),
       getIt<VerifyPasswordResetOtpUseCase>(),
       getIt<UpdatePasswordUseCase>(),
@@ -490,18 +551,18 @@ void setupLocator() {
     ),
   );
 
-
   getIt.registerLazySingleton<OnboardingService>(() => OnboardingServiceImpl());
-  getIt.registerLazySingleton<PasswordRecoveryService>(() => PasswordRecoveryServiceImpl());
+  getIt.registerLazySingleton<PasswordRecoveryService>(
+    () => PasswordRecoveryServiceImpl(),
+  );
 
   getIt.registerLazySingleton<SignInWithGoogleUseCase>(
-        () => SignInWithGoogleUseCaseImpl(getIt<AuthRepository>()),
+    () => SignInWithGoogleUseCaseImpl(getIt<AuthRepository>()),
   );
   getIt.registerLazySingleton<DeleteAccountUseCase>(
-        () => DeleteAccountUseCaseImpl(getIt<AuthRepository>()),
+    () => DeleteAccountUseCaseImpl(getIt<AuthRepository>()),
   );
 }
-
 
 /// Fires each time the app comes back to the foreground. Lives as long as
 /// the app (the cubits that listen are app-wide).

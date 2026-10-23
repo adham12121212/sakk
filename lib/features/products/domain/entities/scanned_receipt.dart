@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../../category/domain/entities/product_category.dart';
 
-
 class ScannedReceiptData extends Equatable {
   final String? productName;
   final String? brand;

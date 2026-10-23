@@ -12,7 +12,11 @@ import 'legend_row.dart';
 
 /// Donut of active / expiring / expired warranties with the total inside.
 class WarrantyStatusCard extends StatelessWidget {
-  const WarrantyStatusCard({super.key, required this.state, required this.l10n});
+  const WarrantyStatusCard({
+    super.key,
+    required this.state,
+    required this.l10n,
+  });
 
   final ProductsState state;
   final AppLocalizations l10n;
@@ -42,7 +46,12 @@ class WarrantyStatusCard extends StatelessWidget {
           if (total == 0)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(l10n.noProductsYet, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
+              child: Text(
+                l10n.noProductsYet,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
             )
           else
             Skeletonizer(
@@ -82,11 +91,23 @@ class WarrantyStatusCard extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        LegendRow(color: palette.success, label: l10n.active, value: n(active)),
+                        LegendRow(
+                          color: palette.success,
+                          label: l10n.active,
+                          value: n(active),
+                        ),
                         const SizedBox(height: 14),
-                        LegendRow(color: palette.warning, label: l10n.expiring, value: n(expiring)),
+                        LegendRow(
+                          color: palette.warning,
+                          label: l10n.expiring,
+                          value: n(expiring),
+                        ),
                         const SizedBox(height: 14),
-                        LegendRow(color: palette.danger, label: l10n.expired, value: n(expired)),
+                        LegendRow(
+                          color: palette.danger,
+                          label: l10n.expired,
+                          value: n(expired),
+                        ),
                       ],
                     ),
                   ),

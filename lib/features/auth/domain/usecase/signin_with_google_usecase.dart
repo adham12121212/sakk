@@ -12,5 +12,6 @@ class SignInWithGoogleUseCaseImpl implements SignInWithGoogleUseCase {
   SignInWithGoogleUseCaseImpl(this._authRepository);
 
   @override
-  Future<Either<Failure, UserEntity>> call() => _authRepository.signInWithGoogle();
+  Future<Either<Failure, UserEntity>> call() =>
+      _authRepository.signInWithGoogle();
 }

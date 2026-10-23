@@ -26,9 +26,13 @@ List<InstallmentPlan> sortedByNextDue(Iterable<InstallmentPlan> plans) {
     final byStatus = rank(a).compareTo(rank(b));
     if (byStatus != 0) return byStatus;
     final aDue = a.nextDueDate, bDue = b.nextDueDate;
-    if (aDue != null && bDue != null && aDue != bDue) return aDue.compareTo(bDue);
+    if (aDue != null && bDue != null && aDue != bDue) {
+      return aDue.compareTo(bDue);
+    }
     final aCreated = a.createdAt, bCreated = b.createdAt;
-    if (aCreated != null && bCreated != null) return bCreated.compareTo(aCreated);
+    if (aCreated != null && bCreated != null) {
+      return bCreated.compareTo(aCreated);
+    }
     return a.id.compareTo(b.id);
   });
 }
@@ -50,7 +54,11 @@ Map<String, double> dueInMonthByCurrency(
   for (final plan in plans.where((p) => p.isActive)) {
     for (final p in plan.unpaidPayments) {
       if (p.dueDate.year != year || p.dueDate.month != month) continue;
-      totals.update(plan.currency, (sum) => sum + p.amount, ifAbsent: () => p.amount);
+      totals.update(
+        plan.currency,
+        (sum) => sum + p.amount,
+        ifAbsent: () => p.amount,
+      );
     }
   }
   return totals;
@@ -65,7 +73,11 @@ Map<String, double> overdueByCurrency(
   for (final plan in plans.where((p) => p.isActive)) {
     final overdue = plan.overdueAmount(today);
     if (overdue <= 0) continue;
-    totals.update(plan.currency, (sum) => sum + overdue, ifAbsent: () => overdue);
+    totals.update(
+      plan.currency,
+      (sum) => sum + overdue,
+      ifAbsent: () => overdue,
+    );
   }
   return totals;
 }
@@ -82,9 +94,12 @@ List<MonthlyDue> dueByMonth(
   String currency = 'EGP',
 }) {
   final totals = List<double>.filled(months, 0);
-  for (final plan in plans.where((p) => !p.isCancelled && p.currency == currency)) {
+  for (final plan in plans.where(
+    (p) => !p.isCancelled && p.currency == currency,
+  )) {
     for (final p in plan.payments) {
-      final index = (p.dueDate.year - from.year) * 12 + p.dueDate.month - from.month;
+      final index =
+          (p.dueDate.year - from.year) * 12 + p.dueDate.month - from.month;
       if (index >= 0 && index < months) totals[index] += p.amount;
     }
   }

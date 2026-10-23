@@ -62,7 +62,7 @@ class _ChatViewState extends State<ChatView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n!.aIAssistant),
-          surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
       ),
@@ -72,12 +72,16 @@ class _ChatViewState extends State<ChatView> {
           if (state.error != null) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(
-                content: Text(state.error == NetworkFailure.noConnectionMessage
-                    ? l10n.chatNeedsInternet
-                    : userFacingError(l10n, state.error)),
-                backgroundColor: AppColors.error,
-              ));
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.error == NetworkFailure.noConnectionMessage
+                        ? l10n.chatNeedsInternet
+                        : userFacingError(l10n, state.error),
+                  ),
+                  backgroundColor: AppColors.error,
+                ),
+              );
           }
         },
         builder: (context, state) {
@@ -85,28 +89,28 @@ class _ChatViewState extends State<ChatView> {
             children: [
               Expanded(
                 child: state.messages.isEmpty
-                    ? ChatEmptyState(
-                  l10n: l10n,
-                  onSuggestionTap: _send,
-                )
+                    ? ChatEmptyState(l10n: l10n, onSuggestionTap: _send)
                     : ListView.separated(
-                  controller: _scrollController,
-                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
-                  itemCount: state.messages.length + (state.isSending ? 1 : 0),
-                  separatorBuilder: (_, _) => SizedBox(height: 12.h),
-                  itemBuilder: (context, index) {
-                    if (index == state.messages.length) {
-                      return const ChatTypingIndicator();
-                    }
-                    final message = state.messages[index];
-                    return ChatBubble(
-                      message: message,
-                      onRetry: message.id == state.failedMessageId && !state.isSending
-                          ? context.read<ChatCubit>().retryFailedMessage
-                          : null,
-                    );
-                  },
-                ),
+                        controller: _scrollController,
+                        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                        itemCount:
+                            state.messages.length + (state.isSending ? 1 : 0),
+                        separatorBuilder: (_, _) => SizedBox(height: 12.h),
+                        itemBuilder: (context, index) {
+                          if (index == state.messages.length) {
+                            return const ChatTypingIndicator();
+                          }
+                          final message = state.messages[index];
+                          return ChatBubble(
+                            message: message,
+                            onRetry:
+                                message.id == state.failedMessageId &&
+                                    !state.isSending
+                                ? context.read<ChatCubit>().retryFailedMessage
+                                : null,
+                          );
+                        },
+                      ),
               ),
               const QuotaHint(type: QuotaType.chat),
               ChatInputBar(

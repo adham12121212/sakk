@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 
 class Dots extends StatefulWidget {
@@ -38,7 +35,10 @@ class _DotsState extends State<Dots> with SingleTickerProviderStateMixin {
               child: Container(
                 width: 6,
                 height: 6,
-                decoration:  BoxDecoration(color: colorScheme.onSurface.withValues(alpha: 0.5), shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
               ),
             );
           }),

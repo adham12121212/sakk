@@ -200,7 +200,10 @@ class _HomeContentState extends State<_HomeContent> {
                                 children: [
                                   _statRow(
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.total),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.total,
+                                      ),
                                       label: l10n.totalProducts,
                                       icon: AppIcons.products,
                                       iconColor: colorScheme.primary,
@@ -212,7 +215,10 @@ class _HomeContentState extends State<_HomeContent> {
                                                 context.go(AppRoutes.products),
                                     ),
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.active),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.active,
+                                      ),
                                       label: l10n.activeWarranties,
                                       icon: AppIcons.warranty,
                                       iconColor: palette.success,
@@ -223,7 +229,10 @@ class _HomeContentState extends State<_HomeContent> {
                                   const SizedBox(height: 12),
                                   _statRow(
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.expiring),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.expiring,
+                                      ),
                                       label: l10n.expiringSoon,
                                       icon: AppIcons.expiring,
                                       iconColor: palette.warning,
@@ -231,7 +240,10 @@ class _HomeContentState extends State<_HomeContent> {
                                           palette.warningContainer,
                                     ),
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.expired),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.expired,
+                                      ),
                                       label: l10n.expired,
                                       icon: AppIcons.error,
                                       iconColor: palette.danger,

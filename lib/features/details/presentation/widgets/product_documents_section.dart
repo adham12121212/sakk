@@ -16,7 +16,8 @@ import '../../../products/domain/entities/product_document.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../cubit/details_cubit.dart';
 
-String documentKindLabel(AppLocalizations l10n, DocumentKind kind) => switch (kind) {
+String documentKindLabel(AppLocalizations l10n, DocumentKind kind) =>
+    switch (kind) {
       DocumentKind.receipt => l10n.documentReceipt,
       DocumentKind.warrantyCard => l10n.documentWarrantyCard,
       DocumentKind.productPhoto => l10n.documentProductPhoto,
@@ -27,7 +28,11 @@ String documentKindLabel(AppLocalizations l10n, DocumentKind kind) => switch (ki
 /// Extra files kept with a product (warranty card, photo, manual...), shown
 /// as thumbnails. Only the product's owner can add or delete them.
 class ProductDocumentsSection extends StatelessWidget {
-  const ProductDocumentsSection({super.key, required this.product, required this.canEdit});
+  const ProductDocumentsSection({
+    super.key,
+    required this.product,
+    required this.canEdit,
+  });
 
   final ProductEntity product;
   final bool canEdit;
@@ -48,7 +53,9 @@ class ProductDocumentsSection extends StatelessWidget {
             Expanded(child: Text(l10n.documents, style: textTheme.titleMedium)),
             if (canEdit)
               TextButton.icon(
-                onPressed: busy ? null : () => _showAddDocumentSheet(context, product),
+                onPressed: busy
+                    ? null
+                    : () => _showAddDocumentSheet(context, product),
                 icon: const Icon(AppIcons.add, size: 18),
                 label: Text(l10n.addDocument),
                 style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
@@ -59,7 +66,9 @@ class ProductDocumentsSection extends StatelessWidget {
         if (product.documents.isEmpty)
           Text(
             canEdit ? l10n.documentsHint : l10n.noDocuments,
-            style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           )
         else
           SizedBox(
@@ -74,7 +83,12 @@ class ProductDocumentsSection extends StatelessWidget {
                   button: true,
                   label: documentKindLabel(l10n, document.kind),
                   child: InkWell(
-                    onTap: () => _openDocument(context, document, product: product, canEdit: canEdit && !busy),
+                    onTap: () => _openDocument(
+                      context,
+                      document,
+                      product: product,
+                      canEdit: canEdit && !busy,
+                    ),
                     borderRadius: BorderRadius.circular(14),
                     child: SizedBox(
                       width: 96,
@@ -91,7 +105,10 @@ class ProductDocumentsSection extends StatelessWidget {
                                 width: 96,
                                 height: 100,
                                 color: colorScheme.surfaceContainerHighest,
-                                child: Icon(AppIcons.brokenImage, color: colorScheme.onSurfaceVariant),
+                                child: Icon(
+                                  AppIcons.brokenImage,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             ),
                           ),
@@ -132,7 +149,9 @@ Future<void> _openDocument(
           Positioned.fill(
             child: InteractiveViewer(
               maxScale: 5,
-              child: Center(child: Image.network(document.url, fit: BoxFit.contain)),
+              child: Center(
+                child: Image.network(document.url, fit: BoxFit.contain),
+              ),
             ),
           ),
           SafeArea(
@@ -146,13 +165,17 @@ Future<void> _openDocument(
                 Expanded(
                   child: Text(
                     documentKindLabel(l10n, document.kind),
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 IconButton(
                   tooltip: l10n.share,
                   icon: const Icon(AppIcons.share, color: Colors.white),
-                  onPressed: () => _shareDocument(dialogContext, document, product),
+                  onPressed: () =>
+                      _shareDocument(dialogContext, document, product),
                 ),
                 if (canEdit)
                   IconButton(
@@ -174,31 +197,49 @@ Future<void> _openDocument(
 
 /// Downloads the document and opens the share sheet with it (e.g. to send a
 /// warranty card on Messenger), captioned with its kind and the product.
-Future<void> _shareDocument(BuildContext context, ProductDocument document, ProductEntity product) async {
+Future<void> _shareDocument(
+  BuildContext context,
+  ProductDocument document,
+  ProductEntity product,
+) async {
   final l10n = AppLocalizations.of(context)!;
   try {
-    final response = await http.get(Uri.parse(document.url)).timeout(const Duration(seconds: 30));
-    if (response.statusCode != 200) throw Exception('HTTP ${response.statusCode}');
+    final response = await http
+        .get(Uri.parse(document.url))
+        .timeout(const Duration(seconds: 30));
+    if (response.statusCode != 200) {
+      throw Exception('HTTP ${response.statusCode}');
+    }
     final isPng = document.path.toLowerCase().endsWith('.png');
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/sakk_document_${DateTime.now().millisecondsSinceEpoch}.${isPng ? 'png' : 'jpg'}');
+    final file = File(
+      '${dir.path}/sakk_document_${DateTime.now().millisecondsSinceEpoch}.${isPng ? 'png' : 'jpg'}',
+    );
     await file.writeAsBytes(response.bodyBytes);
-    await SharePlus.instance.share(ShareParams(
-      files: [XFile(file.path, mimeType: isPng ? 'image/png' : 'image/jpeg')],
-      text: '${documentKindLabel(l10n, document.kind)}: ${product.name}',
-      subject: product.name,
-    ));
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path, mimeType: isPng ? 'image/png' : 'image/jpeg')],
+        text: '${documentKindLabel(l10n, document.kind)}: ${product.name}',
+        subject: product.name,
+      ),
+    );
   } catch (_) {
     if (context.mounted) AppSnackBar.error(context, l10n.couldNotShare);
   }
 }
 
-Future<void> _showAddDocumentSheet(BuildContext context, ProductEntity product) {
+Future<void> _showAddDocumentSheet(
+  BuildContext context,
+  ProductEntity product,
+) {
   final cubit = context.read<DetailsCubit>();
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
-    builder: (_) => BlocProvider.value(value: cubit, child: _AddDocumentSheet(product: product)),
+    builder: (_) => BlocProvider.value(
+      value: cubit,
+      child: _AddDocumentSheet(product: product),
+    ),
   );
 }
 
@@ -232,10 +273,10 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
       return;
     }
     final ok = await context.read<DetailsCubit>().addDocument(
-          productId: widget.product.id,
-          kind: _kind,
-          filePath: path,
-        );
+      productId: widget.product.id,
+      kind: _kind,
+      filePath: path,
+    );
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).pop();
@@ -245,15 +286,25 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
   }
 
   Future<String?> _photo(ImageSource source) async {
-    final picked = await ImagePicker().pickImage(source: source, imageQuality: 85, maxWidth: 2000, maxHeight: 2000);
+    final picked = await ImagePicker().pickImage(
+      source: source,
+      imageQuality: 85,
+      maxWidth: 2000,
+      maxHeight: 2000,
+    );
     return picked?.path;
   }
 
   /// A PDF is kept as an image of its first page, like PDF invoices.
   Future<String?> _pdf() async {
-    final files = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    final files = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
     if (files.isEmpty) return null;
-    final invoice = await PdfInvoiceReader().read(await files.first.xFile.readAsBytes());
+    final invoice = await PdfInvoiceReader().read(
+      await files.first.xFile.readAsBytes(),
+    );
     return invoice.imagePath;
   }
 
@@ -267,7 +318,10 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.addDocument, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              l10n.addDocument,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -277,13 +331,20 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
                   ChoiceChip(
                     label: Text(documentKindLabel(l10n, kind)),
                     selected: _kind == kind,
-                    onSelected: _working ? null : (_) => setState(() => _kind = kind),
+                    onSelected: _working
+                        ? null
+                        : (_) => setState(() => _kind = kind),
                   ),
               ],
             ),
             const SizedBox(height: 16),
             if (_working)
-              const Center(child: Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator()))
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: CircularProgressIndicator(),
+                ),
+              )
             else ...[
               FilledButton.icon(
                 onPressed: () => _add(() => _photo(ImageSource.camera)),

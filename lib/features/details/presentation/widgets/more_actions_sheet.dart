@@ -5,16 +5,18 @@ import '../../../../core/theme/app_icons.dart';
 
 class MoreActionsSheet {
   static Future<void> show(
-      BuildContext context, {
-        required VoidCallback onEdit,
-        required VoidCallback onShare,
-        required VoidCallback onDownload,
-        required VoidCallback onDelete,
-      }) {
+    BuildContext context, {
+    required VoidCallback onEdit,
+    required VoidCallback onShare,
+    required VoidCallback onDownload,
+    required VoidCallback onDelete,
+  }) {
     final l10n = AppLocalizations.of(context)!;
     return showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -45,7 +47,10 @@ class MoreActionsSheet {
             ),
             ListTile(
               leading: Icon(AppIcons.delete, color: AppColors.error),
-              title: Text(l10n.delete, style: TextStyle(color: AppColors.error)),
+              title: Text(
+                l10n.delete,
+                style: TextStyle(color: AppColors.error),
+              ),
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 onDelete();

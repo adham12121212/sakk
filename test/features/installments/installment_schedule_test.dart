@@ -4,7 +4,9 @@ import 'package:sakk/features/installments/domain/installment_schedule.dart';
 
 import 'installment_fixtures.dart';
 
-List<DateTime> dates(List<ScheduledPayment> s) => [for (final p in s) p.dueDate];
+List<DateTime> dates(List<ScheduledPayment> s) => [
+  for (final p in s) p.dueDate,
+];
 List<double> amounts(List<ScheduledPayment> s) => [for (final p in s) p.amount];
 
 void main() {
@@ -16,21 +18,38 @@ void main() {
       expect(installmentDueDate(start, 5, 2), DateTime(2027, 1, 5));
     });
 
-    test('days 29-31 fall on the last day of short months without drifting', () {
-      final schedule = buildSchedule(terms(start: DateTime(2026, 12, 31), count: 4));
-      expect(dates(schedule), [
-        DateTime(2026, 12, 31),
-        DateTime(2027, 1, 31),
-        DateTime(2027, 2, 28),
-        DateTime(2027, 3, 31),
-      ]);
-      expect(installmentDueDate(DateTime(2028, 1, 30), 30, 1), DateTime(2028, 2, 29));
-      expect(installmentDueDate(DateTime(2026, 1, 29), 29, 1), DateTime(2026, 2, 28));
-      expect(installmentDueDate(DateTime(2026, 3, 31), 31, 1), DateTime(2026, 4, 30));
-    });
+    test(
+      'days 29-31 fall on the last day of short months without drifting',
+      () {
+        final schedule = buildSchedule(
+          terms(start: DateTime(2026, 12, 31), count: 4),
+        );
+        expect(dates(schedule), [
+          DateTime(2026, 12, 31),
+          DateTime(2027, 1, 31),
+          DateTime(2027, 2, 28),
+          DateTime(2027, 3, 31),
+        ]);
+        expect(
+          installmentDueDate(DateTime(2028, 1, 30), 30, 1),
+          DateTime(2028, 2, 29),
+        );
+        expect(
+          installmentDueDate(DateTime(2026, 1, 29), 29, 1),
+          DateTime(2026, 2, 28),
+        );
+        expect(
+          installmentDueDate(DateTime(2026, 3, 31), 31, 1),
+          DateTime(2026, 4, 30),
+        );
+      },
+    );
 
     test('ignores the time of day of the start date', () {
-      expect(installmentDueDate(DateTime(2026, 11, 5, 18, 30), 5, 0), DateTime(2026, 11, 5));
+      expect(
+        installmentDueDate(DateTime(2026, 11, 5, 18, 30), 5, 0),
+        DateTime(2026, 11, 5),
+      );
     });
   });
 
@@ -49,7 +68,9 @@ void main() {
     });
 
     test('an amount the user typed is kept as it is', () {
-      final schedule = buildSchedule(terms(total: 10000, count: 3, amount: 3500));
+      final schedule = buildSchedule(
+        terms(total: 10000, count: 3, amount: 3500),
+      );
       expect(amounts(schedule), [3500, 3500, 3500]);
     });
 
@@ -71,14 +92,21 @@ void main() {
     test('new terms move only the unpaid places', () {
       // Paid the 1st and 3rd; the 2nd is still unpaid.
       final p = plan('a', t: terms(count: 4, total: 4000), paid: {0, 2});
-      final edited = terms(count: 4, total: 4000, start: DateTime(2026, 11, 20));
+      final edited = terms(
+        count: 4,
+        total: 4000,
+        start: DateTime(2026, 11, 20),
+      );
       final unpaid = unpaidScheduleForEdit(p, edited);
       expect(dates(unpaid), [DateTime(2026, 12, 20), DateTime(2027, 2, 20)]);
     });
 
     test('more installments add places at the end', () {
       final p = plan('a', t: terms(count: 3, total: 3000), paid: {0});
-      final unpaid = unpaidScheduleForEdit(p, terms(count: 5, total: 3000, amount: 600));
+      final unpaid = unpaidScheduleForEdit(
+        p,
+        terms(count: 5, total: 3000, amount: 600),
+      );
       expect(unpaid.length, 4);
       expect(amounts(unpaid), [600, 600, 600, 600]);
       expect(unpaid.last.dueDate, DateTime(2027, 3, 5));

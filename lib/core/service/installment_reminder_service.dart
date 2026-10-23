@@ -50,8 +50,14 @@ class InstallmentReminderPayload {
   /// Null for any other notification's payload.
   static InstallmentReminderPayload? tryParse(String? payload) {
     final parts = payload?.split('|');
-    if (parts == null || parts.length != 4 || parts.first != _prefix) return null;
-    return InstallmentReminderPayload(userId: parts[1], planId: parts[2], paymentId: parts[3]);
+    if (parts == null || parts.length != 4 || parts.first != _prefix) {
+      return null;
+    }
+    return InstallmentReminderPayload(
+      userId: parts[1],
+      planId: parts[2],
+      paymentId: parts[3],
+    );
   }
 }
 
@@ -74,13 +80,13 @@ class InstallmentReminderService {
     required AppLogger logger,
     ValueListenable<Locale>? locale,
     ReminderSettings? settings,
-  })  : _settings = settings,
-        _getUserUseCase = getUserUseCase,
-        _addNotificationUseCase = addNotificationUseCase,
-        _tracker = tracker,
-        _localNotifications = localNotifications,
-        _logger = logger,
-        _locale = locale;
+  }) : _settings = settings,
+       _getUserUseCase = getUserUseCase,
+       _addNotificationUseCase = addNotificationUseCase,
+       _tracker = tracker,
+       _localNotifications = localNotifications,
+       _logger = logger,
+       _locale = locale;
 
   final GetUserUseCase _getUserUseCase;
   final AddNotificationUseCase _addNotificationUseCase;
@@ -108,41 +114,49 @@ class InstallmentReminderService {
   int? get _customDays => _settings?.activeInstallmentCustomDays;
 
   /// Days before the due date [kind] comes ([customDays] for the Pro one).
-  static int daysBefore(InstallmentReminder kind, {int customDays = 0}) => switch (kind) {
+  static int daysBefore(InstallmentReminder kind, {int customDays = 0}) =>
+      switch (kind) {
         InstallmentReminder.threeDaysBefore => 3,
         InstallmentReminder.dueDay => 0,
         InstallmentReminder.custom => customDays,
       };
 
   /// When [kind]'s push for an installment due on [due] is sent.
-  static DateTime reminderTime(InstallmentReminder kind, DateTime due, {int customDays = 0}) {
+  static DateTime reminderTime(
+    InstallmentReminder kind,
+    DateTime due, {
+    int customDays = 0,
+  }) {
     final offset = -daysBefore(kind, customDays: customDays);
     return DateTime(due.year, due.month, due.day + offset, _reminderHour);
   }
 
   /// Slot 3 "due in 3 days", 4 "due today", 9 the Pro reminder (shared with
   /// subscriptions; see [ownsPending]); see [reminderNotificationId].
-  static int notificationId(String paymentId, InstallmentReminder kind) => reminderNotificationId(
-        paymentId,
-        switch (kind) {
-          InstallmentReminder.threeDaysBefore => 3,
-          InstallmentReminder.dueDay => 4,
-          InstallmentReminder.custom => customReminderSlot,
-        },
-      );
+  static int notificationId(String paymentId, InstallmentReminder kind) =>
+      reminderNotificationId(paymentId, switch (kind) {
+        InstallmentReminder.threeDaysBefore => 3,
+        InstallmentReminder.dueDay => 4,
+        InstallmentReminder.custom => customReminderSlot,
+      });
 
   /// Whether a pending notification is one of this service's: its slots,
   /// or the shared Pro slot with an installment's payload.
   static bool ownsPending(int id, String? payload) {
     final slot = reminderSlot(id);
-    if (slot == customReminderSlot) return InstallmentReminderPayload.tryParse(payload) != null;
+    if (slot == customReminderSlot) {
+      return InstallmentReminderPayload.tryParse(payload) != null;
+    }
     return installmentReminderSlots.contains(slot);
   }
 
   /// The installment of [plan] that reminders are about: the earliest unpaid
   /// one due today or later. Null for a paid-off or cancelled plan. Overdue
   /// ones show in the app instead.
-  static InstallmentPayment? upcomingPayment(InstallmentPlan plan, DateTime today) {
+  static InstallmentPayment? upcomingPayment(
+    InstallmentPlan plan,
+    DateTime today,
+  ) {
     if (!plan.isActive) return null;
     for (final p in plan.unpaidPayments) {
       if (p.daysLeft(today) >= 0) return p;
@@ -153,14 +167,15 @@ class InstallmentReminderService {
   /// Tracker keys: one per reminder per installment (keyed by its due date,
   /// so an edit that moves it reminds again).
   static String _trackerId(String paymentId) => 'installment:$paymentId';
-  static String _notifiedKey(InstallmentReminder kind, DateTime due) => '${_keyPrefix(kind)}-${_isoDate(due)}';
+  static String _notifiedKey(InstallmentReminder kind, DateTime due) =>
+      '${_keyPrefix(kind)}-${_isoDate(due)}';
   static String _scheduledKey(InstallmentReminder kind, DateTime due) =>
       '${_keyPrefix(kind)}-scheduled-${_isoDate(due)}';
   static String _keyPrefix(InstallmentReminder kind) => switch (kind) {
-        InstallmentReminder.threeDaysBefore => 'due-3d',
-        InstallmentReminder.dueDay => 'due-0d',
-        InstallmentReminder.custom => 'due-custom',
-      };
+    InstallmentReminder.threeDaysBefore => 'due-3d',
+    InstallmentReminder.dueDay => 'due-0d',
+    InstallmentReminder.custom => 'due-custom',
+  };
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
   /// Re-schedules reminders when the user switches the language or changes
@@ -175,8 +190,15 @@ class InstallmentReminderService {
   /// whenever the list changes; pass [] on sign-out. Only touches
   /// installment reminders.
   Future<void> syncAll(List<InstallmentPlan> plans) {
-    return _syncQueue = _syncQueue.then((_) => _syncAll(plans)).catchError((Object e, StackTrace st) {
-      _logger.error('Syncing installment reminders failed', error: e, stackTrace: st);
+    return _syncQueue = _syncQueue.then((_) => _syncAll(plans)).catchError((
+      Object e,
+      StackTrace st,
+    ) {
+      _logger.error(
+        'Syncing installment reminders failed',
+        error: e,
+        stackTrace: st,
+      );
     });
   }
 
@@ -199,7 +221,9 @@ class InstallmentReminderService {
 
     for (final pending in await _localNotifications.pendingNotifications()) {
       if (!ownsPending(pending.id, pending.payload)) continue;
-      if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
+      if (!wantedIds.contains(pending.id)) {
+        await _localNotifications.cancelNotification(pending.id);
+      }
     }
     for (final r in wanted) {
       await _localNotifications.scheduleNotification(
@@ -211,7 +235,10 @@ class InstallmentReminderService {
         markPaidLabel: _l10n.markAsPaid,
       );
       // So opening the app inside the window doesn't push a second time.
-      await _tracker.markNotified(_trackerId(r.paymentId), _scheduledKey(r.kind, r.due));
+      await _tracker.markNotified(
+        _trackerId(r.paymentId),
+        _scheduledKey(r.kind, r.due),
+      );
     }
   }
 
@@ -232,7 +259,11 @@ class InstallmentReminderService {
       dateTime: reminderTime(kind, payment.dueDate, customDays: days),
       payload: userId == null
           ? null
-          : InstallmentReminderPayload(userId: userId, planId: plan.id, paymentId: payment.id).encode(),
+          : InstallmentReminderPayload(
+              userId: userId,
+              planId: plan.id,
+              paymentId: payment.id,
+            ).encode(),
     );
   }
 
@@ -242,7 +273,10 @@ class InstallmentReminderService {
   /// pushes right away, but only if this device never scheduled that
   /// reminder ahead (e.g. a plan added the day before it's due), so nobody
   /// gets the same push twice.
-  Future<void> checkAndNotify(List<InstallmentPlan> plans, {DateTime? today}) async {
+  Future<void> checkAndNotify(
+    List<InstallmentPlan> plans, {
+    DateTime? today,
+  }) async {
     final user = _getUserUseCase();
     if (user == null) return;
     final day = dateOnly(today ?? DateTime.now());
@@ -253,11 +287,26 @@ class InstallmentReminderService {
       final daysLeft = payment.daysLeft(day);
       final customDays = _customDays;
       // The Pro reminder, opened on its day or the day after.
-      if (customDays != null && daysLeft <= customDays && daysLeft >= customDays - 1 && daysLeft > 3) {
-        await _notifyNow(plan, payment, InstallmentReminder.custom, daysLeft, user.id);
+      if (customDays != null &&
+          daysLeft <= customDays &&
+          daysLeft >= customDays - 1 &&
+          daysLeft > 3) {
+        await _notifyNow(
+          plan,
+          payment,
+          InstallmentReminder.custom,
+          daysLeft,
+          user.id,
+        );
       }
       if (daysLeft >= 1 && daysLeft <= 3) {
-        await _notifyNow(plan, payment, InstallmentReminder.threeDaysBefore, daysLeft, user.id);
+        await _notifyNow(
+          plan,
+          payment,
+          InstallmentReminder.threeDaysBefore,
+          daysLeft,
+          user.id,
+        );
       } else if (daysLeft == 0) {
         await _notifyNow(plan, payment, InstallmentReminder.dueDay, 0, user.id);
       }
@@ -274,18 +323,30 @@ class InstallmentReminderService {
     await _settings?.ready;
     if (!_wants(kind)) return;
     final trackerId = _trackerId(payment.id);
-    if (await _tracker.hasNotified(trackerId, _notifiedKey(kind, payment.dueDate))) return;
+    if (await _tracker.hasNotified(
+      trackerId,
+      _notifiedKey(kind, payment.dueDate),
+    )) {
+      return;
+    }
 
     final title = _title(kind);
     final body = _body(plan, payment, days);
     try {
-      if (!await _tracker.hasNotified(trackerId, _scheduledKey(kind, payment.dueDate))) {
+      if (!await _tracker.hasNotified(
+        trackerId,
+        _scheduledKey(kind, payment.dueDate),
+      )) {
         await _localNotifications.scheduleNotification(
           id: notificationId(payment.id, kind),
           title: title,
           body: body,
           dateTime: DateTime.now().add(_immediateDelay),
-          payload: InstallmentReminderPayload(userId: userId, planId: plan.id, paymentId: payment.id).encode(),
+          payload: InstallmentReminderPayload(
+            userId: userId,
+            planId: plan.id,
+            paymentId: payment.id,
+          ).encode(),
           markPaidLabel: _l10n.markAsPaid,
         );
       }
@@ -295,21 +356,35 @@ class InstallmentReminderService {
         subtitle: body,
         type: NotificationType.warning,
       );
-      await _tracker.markNotified(trackerId, _notifiedKey(kind, payment.dueDate));
+      await _tracker.markNotified(
+        trackerId,
+        _notifiedKey(kind, payment.dueDate),
+      );
     } catch (e, st) {
-      _logger.error('Failed to send installment reminder', error: e, stackTrace: st);
+      _logger.error(
+        'Failed to send installment reminder',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 
-  String _title(InstallmentReminder kind) =>
-      kind == InstallmentReminder.dueDay ? _l10n.notifInstallmentDueTodayTitle : _l10n.notifInstallmentDueSoonTitle;
+  String _title(InstallmentReminder kind) => kind == InstallmentReminder.dueDay
+      ? _l10n.notifInstallmentDueTodayTitle
+      : _l10n.notifInstallmentDueSoonTitle;
 
   /// [days] is days until the installment is due.
   String _body(InstallmentPlan plan, InstallmentPayment payment, int days) {
     final l10n = _l10n;
     final amount = formatLocalizedAmount(_currentLocale, payment.amount);
-    final price = '$amount ${plan.currency == 'EGP' ? l10n.currencyEgp : plan.currency}';
-    return l10n.notifInstallmentDueBody(days, formatLocalizedInt(_currentLocale, days), plan.name, price);
+    final price =
+        '$amount ${plan.currency == 'EGP' ? l10n.currencyEgp : plan.currency}';
+    return l10n.notifInstallmentDueBody(
+      days,
+      formatLocalizedInt(_currentLocale, days),
+      plan.name,
+      price,
+    );
   }
 }
 

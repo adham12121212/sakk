@@ -11,9 +11,11 @@ class SakkLogo extends StatelessWidget {
   /// The white logo, decoded ahead of time by [precache].
   static PictureInfo? _precachedWhite;
 
-
   static Future<void> precache() async {
-    _precachedWhite ??= await vg.loadPicture(const SvgAssetLoader(_asset), null);
+    _precachedWhite ??= await vg.loadPicture(
+      const SvgAssetLoader(_asset),
+      null,
+    );
   }
 
   final double size;
@@ -63,7 +65,12 @@ class _WhiteToColorMapper extends ColorMapper {
   final Color color;
 
   @override
-  Color substitute(String? id, String elementName, String attributeName, Color color) {
+  Color substitute(
+    String? id,
+    String elementName,
+    String attributeName,
+    Color color,
+  ) {
     // Keep each element's own alpha (the faint ring track is white at 22%).
     if ((color.toARGB32() & 0x00FFFFFF) == 0x00FFFFFF) {
       return this.color.withAlpha((color.a * 255).round());
@@ -73,7 +80,8 @@ class _WhiteToColorMapper extends ColorMapper {
 
   // flutter_svg caches parsed pictures by loader, which includes the mapper.
   @override
-  bool operator ==(Object other) => other is _WhiteToColorMapper && other.color == color;
+  bool operator ==(Object other) =>
+      other is _WhiteToColorMapper && other.color == color;
 
   @override
   int get hashCode => color.hashCode;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OtpBox extends StatelessWidget {
-  const OtpBox({super.key, 
+  const OtpBox({
+    super.key,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
@@ -16,7 +17,6 @@ class OtpBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: 34.w,
       height: 48.h,

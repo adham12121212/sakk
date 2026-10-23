@@ -16,12 +16,19 @@ class SocialLoginButtons extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Divider(color: Theme.of(context).colorScheme.outline)),
+            Expanded(
+              child: Divider(color: Theme.of(context).colorScheme.outline),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: Text(l10n.orContinueWith, style: Theme.of(context).textTheme.bodySmall),
+              child: Text(
+                l10n.orContinueWith,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
-            Expanded(child: Divider(color: Theme.of(context).colorScheme.outline)),
+            Expanded(
+              child: Divider(color: Theme.of(context).colorScheme.outline),
+            ),
           ],
         ),
         SizedBox(height: 24.h),
@@ -35,14 +42,26 @@ class SocialLoginButtons extends StatelessWidget {
               height: 54,
               child: OutlinedButton.icon(
                 // Disabled while any sign-in is running, so it can't fire twice.
-                onPressed: busy ? null : () => context.read<AuthCubit>().signInWithGoogle(),
+                onPressed: busy
+                    ? null
+                    : () => context.read<AuthCubit>().signInWithGoogle(),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: colorScheme.surface,
                   foregroundColor: colorScheme.onSurface,
                   side: BorderSide(color: colorScheme.outline, width: 1.2),
                 ),
-                icon: Image.asset('assets/icons/google.webp', width: 22, height: 22),
-                label: Text(l10n.google, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                icon: Image.asset(
+                  'assets/icons/google.webp',
+                  width: 22,
+                  height: 22,
+                ),
+                label: Text(
+                  l10n.google,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             );
           },

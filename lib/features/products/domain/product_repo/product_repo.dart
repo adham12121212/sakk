@@ -8,8 +8,6 @@ import '../entities/scanned_receipt.dart';
 import '../entities/warranty_claim.dart';
 
 abstract class ProductRepo {
-
-
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
     String? pdfText,
@@ -74,9 +72,15 @@ abstract class ProductRepo {
 
   Future<Either<Failure, void>> deleteExtraWarranty(String id);
 
-  Future<Either<Failure, void>> addClaim({required String productId, required String issue});
+  Future<Either<Failure, void>> addClaim({
+    required String productId,
+    required String issue,
+  });
 
-  Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status);
+  Future<Either<Failure, void>> updateClaimStatus(
+    String id,
+    ClaimStatus status,
+  );
 
   Future<Either<Failure, void>> deleteClaim(String id);
 

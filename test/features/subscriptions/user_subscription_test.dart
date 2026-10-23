@@ -13,18 +13,17 @@ UserSubscription sub({
   String? customName,
   String? catalogName,
   String? planName,
-}) =>
-    UserSubscription(
-      id: id,
-      catalogId: catalogId,
-      customName: customName,
-      catalogName: catalogName,
-      planName: planName,
-      price: price,
-      currency: currency,
-      billingCycle: cycle,
-      nextRenewalDate: renewal ?? DateTime(2026, 11, 1),
-    );
+}) => UserSubscription(
+  id: id,
+  catalogId: catalogId,
+  customName: customName,
+  catalogName: catalogName,
+  planName: planName,
+  price: price,
+  currency: currency,
+  billingCycle: cycle,
+  nextRenewalDate: renewal ?? DateTime(2026, 11, 1),
+);
 
 void main() {
   test('monthlyCost spreads a yearly price over 12 months', () {
@@ -41,12 +40,18 @@ void main() {
 
   test('daysLeft is not thrown off by a daylight saving change', () {
     // Egypt moves clocks back on the last Thursday of October.
-    expect(sub(renewal: DateTime(2026, 11, 2)).daysLeft(DateTime(2026, 10, 28)), 5);
+    expect(
+      sub(renewal: DateTime(2026, 11, 2)).daysLeft(DateTime(2026, 10, 28)),
+      5,
+    );
   });
 
   test('name prefers the custom name, then the catalog service', () {
     expect(sub(customName: 'Gym').name, 'Gym');
-    expect(sub(catalogId: 'c1', catalogName: 'Netflix', planName: 'Premium').name, 'Netflix');
+    expect(
+      sub(catalogId: 'c1', catalogName: 'Netflix', planName: 'Premium').name,
+      'Netflix',
+    );
     expect(sub(catalogId: 'c1', planName: 'Premium').name, 'Premium');
     expect(sub(catalogId: 'c1').isCustom, isFalse);
     expect(sub(customName: 'Gym').isCustom, isTrue);

@@ -14,17 +14,14 @@ import '../widgets/processing_field_tile.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 
-
 class ScanProcessingView extends StatelessWidget {
   const ScanProcessingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return const _ScanProcessingBody();
   }
 }
-
 
 class _ScanProcessingBody extends StatefulWidget {
   const _ScanProcessingBody();
@@ -61,16 +58,17 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
   }
 
   void _startFakeProgress() {
-    _fakeProgressTimer =
-        Timer.periodic(const Duration(milliseconds: 120), (_) {
-          final stillInProgress =
-          context.read<ScanCubit>().state is ScanProcessing;
-          if (!mounted || !stillInProgress) return;
-          setState(() => _progress += (0.9 - _progress) * 0.06);
-        });
+    _fakeProgressTimer = Timer.periodic(const Duration(milliseconds: 120), (_) {
+      final stillInProgress = context.read<ScanCubit>().state is ScanProcessing;
+      if (!mounted || !stillInProgress) return;
+      setState(() => _progress += (0.9 - _progress) * 0.06);
+    });
   }
 
-  Future<void> _revealAndNavigate(ScanCubit cubit, ScannedReceiptData scanned) async {
+  Future<void> _revealAndNavigate(
+    ScanCubit cubit,
+    ScannedReceiptData scanned,
+  ) async {
     if (_navigated) return;
     _navigated = true;
 
@@ -91,10 +89,8 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const ReviewProductView(),
-        ),
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const ReviewProductView()),
       ),
     );
   }
@@ -190,7 +186,11 @@ class _ProcessingBody extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: const [
-                  BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                  BoxShadow(
+                    color: Color(0x404A5CFA),
+                    blurRadius: 28,
+                    offset: Offset(0, 12),
+                  ),
                 ],
               ),
               child: Icon(
@@ -202,7 +202,11 @@ class _ProcessingBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        Text(l10n.aiIsProcessing, textAlign: TextAlign.center, style: textTheme.headlineSmall),
+        Text(
+          l10n.aiIsProcessing,
+          textAlign: TextAlign.center,
+          style: textTheme.headlineSmall,
+        ),
         const SizedBox(height: 6),
         Text(
           _completed ? l10n.extractionComplete : l10n.extractingData,
@@ -218,10 +222,17 @@ class _ProcessingBody extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(l10n.progressLabel, style: textTheme.labelLarge)),
+                  Expanded(
+                    child: Text(
+                      l10n.progressLabel,
+                      style: textTheme.labelLarge,
+                    ),
+                  ),
                   Text(
                     '${formatLocalizedInt(Localizations.localeOf(context), (progress * 100).round())}%',
-                    style: textTheme.labelLarge?.copyWith(color: colorScheme.primary),
+                    style: textTheme.labelLarge?.copyWith(
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ],
               ),

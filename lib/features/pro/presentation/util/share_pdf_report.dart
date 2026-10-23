@@ -35,7 +35,9 @@ Future<void> sharePdfReport(BuildContext context) async {
       if (!subscriptions.state.hasLoadedOnce) subscriptions.refresh(),
       if (!installments.state.hasLoadedOnce) installments.refresh(),
     ]);
-    if (!products.state.hasLoadedOnce || !subscriptions.state.hasLoadedOnce || !installments.state.hasLoadedOnce) {
+    if (!products.state.hasLoadedOnce ||
+        !subscriptions.state.hasLoadedOnce ||
+        !installments.state.hasLoadedOnce) {
       throw StateError('A list could not be loaded');
     }
 
@@ -47,7 +49,9 @@ Future<void> sharePdfReport(BuildContext context) async {
     ]);
     final bytes = await buildPdfReport(
       PdfReportInput(
-        products: products.state.products.where((p) => p.isOwnedBy(me?.id)).toList(),
+        products: products.state.products
+            .where((p) => p.isOwnedBy(me?.id))
+            .toList(),
         subscriptions: subscriptions.state.subscriptions,
         plans: installments.state.plans,
         today: DateTime.now(),
@@ -65,7 +69,10 @@ Future<void> sharePdfReport(BuildContext context) async {
     await file.writeAsBytes(bytes);
     if (!context.mounted) return;
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path, mimeType: 'application/pdf')], subject: l10n.pdfReportTitle),
+      ShareParams(
+        files: [XFile(file.path, mimeType: 'application/pdf')],
+        subject: l10n.pdfReportTitle,
+      ),
     );
   } catch (e, st) {
     getIt<AppLogger>().error('PDF report failed', error: e, stackTrace: st);

@@ -17,12 +17,14 @@ class ForgotPasswordButton extends StatelessWidget {
       alignment: AlignmentDirectional.centerEnd,
       child: TextButton(
         onPressed: () => context.push(AppRoutes.forgotPassword),
-        child: Text(l10n.forgotPassword,
+        child: Text(
+          l10n.forgotPassword,
           style: TextStyle(
             color: AppColors.primary,
             fontSize: 12.sp,
             fontWeight: FontWeight.bold,
-          ),),
+          ),
+        ),
       ),
     );
   }

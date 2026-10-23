@@ -55,8 +55,12 @@ class _EditProductBodyState extends State<_EditProductBody> {
   late final _notesController = TextEditingController(
     text: widget.product.notes ?? '',
   );
-  late final _serialController = TextEditingController(text: widget.product.serialNumber ?? '');
-  late final _invoiceController = TextEditingController(text: widget.product.invoiceNumber ?? '');
+  late final _serialController = TextEditingController(
+    text: widget.product.serialNumber ?? '',
+  );
+  late final _invoiceController = TextEditingController(
+    text: widget.product.invoiceNumber ?? '',
+  );
   late final _returnDaysController = TextEditingController(
     text: widget.product.returnDays?.toString() ?? '',
   );
@@ -231,7 +235,9 @@ class _EditProductBodyState extends State<_EditProductBody> {
                         // Optional: empty means no return window to track.
                         if (v == null || v.trim().isEmpty) return null;
                         final n = int.tryParse(v.trim());
-                        return n == null || n < 1 || n > 365 ? l10n.invalidReturnDays : null;
+                        return n == null || n < 1 || n > 365
+                            ? l10n.invalidReturnDays
+                            : null;
                       },
                     ),
                     SizedBox(height: 20.h),

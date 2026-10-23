@@ -10,7 +10,9 @@ import '../../../pro/presentation/pro_actions.dart';
 /// deletion anyway, `false` if they went to cancel or backed out.
 Future<bool> confirmProBeforeDelete(BuildContext context) async {
   final entitlement = ProActions.maybeCubit?.state.status.entitlement;
-  if (entitlement == null || !entitlement.isActive || !entitlement.willRenew) return true;
+  if (entitlement == null || !entitlement.isActive || !entitlement.willRenew) {
+    return true;
+  }
 
   final l10n = AppLocalizations.of(context)!;
   final result = await showDialog<bool>(
@@ -22,7 +24,10 @@ Future<bool> confirmProBeforeDelete(BuildContext context) async {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(true),
-          child: Text(l10n.deleteAccountProContinue, style: TextStyle(color: AppColors.error)),
+          child: Text(
+            l10n.deleteAccountProContinue,
+            style: TextStyle(color: AppColors.error),
+          ),
         ),
         FilledButton(
           onPressed: () {
@@ -81,13 +86,21 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
         children: [
           Text(l10n.deleteAccountWarning),
           const SizedBox(height: 16),
-          Text(l10n.deleteAccountTypeToConfirm(keyword), style: theme.textTheme.bodySmall),
+          Text(
+            l10n.deleteAccountTypeToConfirm(keyword),
+            style: theme.textTheme.bodySmall,
+          ),
           const SizedBox(height: 8),
           TextField(
             controller: _controller,
             autofocus: true,
-            decoration: InputDecoration(hintText: keyword, border: const OutlineInputBorder()),
-            onChanged: (v) => setState(() => _matches = v.trim().toLowerCase() == keyword.toLowerCase()),
+            decoration: InputDecoration(
+              hintText: keyword,
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: (v) => setState(
+              () => _matches = v.trim().toLowerCase() == keyword.toLowerCase(),
+            ),
           ),
         ],
       ),

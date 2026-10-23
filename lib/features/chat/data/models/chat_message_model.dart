@@ -1,4 +1,3 @@
-
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 
 class ChatMessageModel extends ChatMessageEntity {

@@ -106,7 +106,11 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     final loaded = cubit.state;
     if (loaded is! ScanLoaded) return;
 
-    if (!await _confirmIfDuplicate(loaded.scanned.purchaseDate ?? DateTime.now())) return;
+    if (!await _confirmIfDuplicate(
+      loaded.scanned.purchaseDate ?? DateTime.now(),
+    )) {
+      return;
+    }
     if (!mounted) return;
 
     cubit.save(
@@ -142,7 +146,9 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
 
     final l10n = AppLocalizations.of(context)!;
     final appLocale = Localizations.localeOf(context);
-    final dateLocale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
+    final dateLocale = appLocale.languageCode == 'ar'
+        ? 'ar_EG'
+        : appLocale.toLanguageTag();
     final reason = switch (match.reason) {
       DuplicateReason.sameInvoiceNumber => l10n.duplicateSameInvoice,
       DuplicateReason.sameSerialNumber => l10n.duplicateSameSerial,
@@ -156,8 +162,14 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
           '$reason\n\n${l10n.duplicateExisting(match.product.name, DateFormat.yMMMd(dateLocale).format(match.product.purchaseDate))}',
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.cancel)),
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.saveAnyway)),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.saveAnyway),
+          ),
         ],
       ),
     );

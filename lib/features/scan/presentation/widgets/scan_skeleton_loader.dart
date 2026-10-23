@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class ScanSkeletonLoader extends StatefulWidget {
   const ScanSkeletonLoader({super.key});
 
@@ -110,11 +109,7 @@ class _ScanSkeletonLoaderState extends State<ScanSkeletonLoader>
             stops: const [0.35, 0.5, 0.65],
           ).createShader(bounds);
         },
-        child: Container(
-          width: width,
-          height: height,
-          color: baseColor,
-        ),
+        child: Container(width: width, height: height, color: baseColor),
       ),
     );
   }

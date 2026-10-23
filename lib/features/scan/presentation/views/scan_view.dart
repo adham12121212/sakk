@@ -35,8 +35,14 @@ class ScanViewState extends State<ScanView> {
   Future<bool> _canScan() async {
     if (!ProActions.ensureCanAdd(context, LimitedItem.products)) return false;
     if (!ProActions.ensureCanUse(context, QuotaType.scan)) return false;
-    if (getIt.isRegistered<NetworkInfo>() && !await getIt<NetworkInfo>().isConnected) {
-      if (mounted) AppSnackBar.error(context, AppLocalizations.of(context)!.scanNeedsInternet);
+    if (getIt.isRegistered<NetworkInfo>() &&
+        !await getIt<NetworkInfo>().isConnected) {
+      if (mounted) {
+        AppSnackBar.error(
+          context,
+          AppLocalizations.of(context)!.scanNeedsInternet,
+        );
+      }
       return false;
     }
     return mounted;
@@ -58,10 +64,8 @@ class ScanViewState extends State<ScanView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const ScanProcessingView(),
-        ),
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
       ),
     );
   }
@@ -71,7 +75,10 @@ class ScanViewState extends State<ScanView> {
     if (!await _canScan()) return;
     final List<PlatformFile> files;
     try {
-      files = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+      files = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
     } catch (_) {
       return; // picker unavailable or cancelled by the system
     }
@@ -82,10 +89,8 @@ class ScanViewState extends State<ScanView> {
     final cubit = ScanCubit()..processPdf(bytes);
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const ScanProcessingView(),
-        ),
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
       ),
     );
   }
@@ -97,10 +102,8 @@ class ScanViewState extends State<ScanView> {
     final cubit = ScanCubit()..startManualEntry();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: cubit,
-          child: const ReviewProductView(),
-        ),
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const ReviewProductView()),
       ),
     );
   }
@@ -153,10 +156,18 @@ class ScanViewState extends State<ScanView> {
                     ),
                     borderRadius: BorderRadius.circular(32),
                     boxShadow: const [
-                      BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                      BoxShadow(
+                        color: Color(0x404A5CFA),
+                        blurRadius: 28,
+                        offset: Offset(0, 12),
+                      ),
                     ],
                   ),
-                  child: const Icon(AppIcons.scan, size: 52, color: Colors.white),
+                  child: const Icon(
+                    AppIcons.scan,
+                    size: 52,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 28),
                 Text(
@@ -168,7 +179,9 @@ class ScanViewState extends State<ScanView> {
                 Text(
                   l10n.scanInstructions,
                   textAlign: TextAlign.center,
-                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const QuotaHint(type: QuotaType.scan),

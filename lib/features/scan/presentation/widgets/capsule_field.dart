@@ -16,9 +16,13 @@ class CapsuleShell extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
-        color: isDark ? colorScheme.surfaceContainerHighest : colorScheme.surface,
+        color: isDark
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: isDark ? null : Border.all(color: colorScheme.outline, width: 1.2),
+        border: isDark
+            ? null
+            : Border.all(color: colorScheme.outline, width: 1.2),
       ),
       child: child,
     );
@@ -53,8 +57,13 @@ class CapsuleField extends StatelessWidget {
       validator: validator,
       maxLines: maxLines,
       minLines: minLines,
-      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+      ),
     );
-    return semanticLabel == null ? field : Semantics(label: semanticLabel, textField: true, child: field);
+    return semanticLabel == null
+        ? field
+        : Semantics(label: semanticLabel, textField: true, child: field);
   }
 }

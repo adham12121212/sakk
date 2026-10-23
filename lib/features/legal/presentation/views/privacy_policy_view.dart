@@ -26,19 +26,32 @@ class PrivacyPolicyView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isArabic ? 'آخر تحديث: 21 أكتوبر 2026' : 'Last updated: October 21, 2026',
-                style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                isArabic
+                    ? 'آخر تحديث: 21 أكتوبر 2026'
+                    : 'Last updated: October 21, 2026',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
               ),
               SizedBox(height: 20.h),
               for (final section in sections) ...[
                 Text(
                   section.heading,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 SizedBox(height: 6.h),
                 Text(
                   section.body,
-                  style: TextStyle(fontSize: 14.sp, height: 1.5, color: colorScheme.onSurface.withValues(alpha: 0.8)),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    height: 1.5,
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
                 SizedBox(height: 18.h),
               ],

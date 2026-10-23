@@ -18,16 +18,21 @@ abstract final class ProActions {
 
   /// Null where it isn't set up (widget tests of other screens); the checks
   /// then let everything through and the Pro widgets show nothing.
-  static ProCubit? get maybeCubit => getIt.isRegistered<ProCubit>() ? getIt<ProCubit>() : null;
+  static ProCubit? get maybeCubit =>
+      getIt.isRegistered<ProCubit>() ? getIt<ProCubit>() : null;
 
-  static Future<void> openPaywall(BuildContext context, [PaywallReason reason = PaywallReason.upgrade]) =>
-      context.push(AppRoutes.paywall, extra: reason);
+  static Future<void> openPaywall(
+    BuildContext context, [
+    PaywallReason reason = PaywallReason.upgrade,
+  ]) => context.push(AppRoutes.paywall, extra: reason);
 
   /// Google Play's page for this subscription (cancel, change plan, fix
   /// the payment method).
   static Future<void> manageSubscription() async {
     final productId = cubit.state.status.entitlement?.productId;
-    final uri = await getIt<PurchasesGateway>().managementUri(productId: productId);
+    final uri = await getIt<PurchasesGateway>().managementUri(
+      productId: productId,
+    );
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
@@ -44,7 +49,12 @@ abstract final class ProActions {
     final pro = maybeCubit;
     // A Pro user at the fair-use cap gets the server's "try tomorrow".
     if (pro == null || pro.canUse(type) || pro.isPro) return true;
-    openPaywall(context, type == QuotaType.scan ? PaywallReason.scanLimit : PaywallReason.chatLimit);
+    openPaywall(
+      context,
+      type == QuotaType.scan
+          ? PaywallReason.scanLimit
+          : PaywallReason.chatLimit,
+    );
     return false;
   }
 

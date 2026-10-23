@@ -46,7 +46,8 @@ class _Delete implements DeleteAccountUseCase {
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
 }
 
-Widget app({Locale locale = const Locale('en'), bool dark = false}) => ScreenUtilInit(
+Widget app({Locale locale = const Locale('en'), bool dark = false}) =>
+    ScreenUtilInit(
       designSize: const Size(390, 844),
       builder: (_, _) => MaterialApp(
         locale: locale,
@@ -57,37 +58,54 @@ Widget app({Locale locale = const Locale('en'), bool dark = false}) => ScreenUti
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: BlocProvider(
-            create: (_) => AuthCubit(_Signup(), _SignIn(), _SignOut(), _Avatar(), _Google(), _Delete()),
-            child: const Padding(padding: EdgeInsets.all(20), child: ProfileAccountSection()),
+            create: (_) => AuthCubit(
+              _Signup(),
+              _SignIn(),
+              _SignOut(),
+              _Avatar(),
+              _Google(),
+              _Delete(),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(20),
+              child: ProfileAccountSection(),
+            ),
           ),
         ),
       ),
     );
 
 void main() {
-  testWidgets('closed by default; opens to show log out and delete, and closes again', (tester) async {
-    await tester.pumpWidget(app());
-    expect(find.text('Account'), findsOneWidget);
-    expect(find.byType(ProfileLogoutButton), findsNothing);
-    expect(find.byType(ProfileDeleteAccountButton), findsNothing);
+  testWidgets(
+    'closed by default; opens to show log out and delete, and closes again',
+    (tester) async {
+      await tester.pumpWidget(app());
+      expect(find.text('Account'), findsOneWidget);
+      expect(find.byType(ProfileLogoutButton), findsNothing);
+      expect(find.byType(ProfileDeleteAccountButton), findsNothing);
 
-    await tester.tap(find.text('Account'));
-    await tester.pumpAndSettle();
-    expect(find.text('Log Out'), findsOneWidget);
-    expect(find.text('Delete account'), findsOneWidget);
+      await tester.tap(find.text('Account'));
+      await tester.pumpAndSettle();
+      expect(find.text('Log Out'), findsOneWidget);
+      expect(find.text('Delete account'), findsOneWidget);
 
-    await tester.tap(find.text('Account'));
-    await tester.pumpAndSettle();
-    expect(find.byType(ProfileLogoutButton), findsNothing);
-    expect(find.byType(ProfileDeleteAccountButton), findsNothing);
-  });
+      await tester.tap(find.text('Account'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ProfileLogoutButton), findsNothing);
+      expect(find.byType(ProfileDeleteAccountButton), findsNothing);
+    },
+  );
 
   testWidgets('screen readers hear whether it is open', (tester) async {
     bool? expanded() => tester
-        .widget<Semantics>(find.ancestor(
-          of: find.text('Account'),
-          matching: find.byWidgetPredicate((w) => w is Semantics && w.properties.expanded != null),
-        ))
+        .widget<Semantics>(
+          find.ancestor(
+            of: find.text('Account'),
+            matching: find.byWidgetPredicate(
+              (w) => w is Semantics && w.properties.expanded != null,
+            ),
+          ),
+        )
         .properties
         .expanded;
 

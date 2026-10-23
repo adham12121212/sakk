@@ -17,10 +17,14 @@ class _Repo implements HouseholdRepo {
   String? joinedWith;
 
   @override
-  Future<Either<Failure, (Household?, List<HouseholdMember>)>> load() async => const Right((null, <HouseholdMember>[]));
+  Future<Either<Failure, (Household?, List<HouseholdMember>)>> load() async =>
+      const Right((null, <HouseholdMember>[]));
 
   @override
-  Future<Either<Failure, void>> join({required String inviteCode, required String displayName}) async {
+  Future<Either<Failure, void>> join({
+    required String inviteCode,
+    required String displayName,
+  }) async {
     joinedWith = '$inviteCode/$displayName';
     return const Right(null);
   }
@@ -38,7 +42,8 @@ class _Products implements ProductsCubit {
 
 class _User implements GetUserUseCase {
   @override
-  UserEntity? call() => UserEntity(id: 'me', email: 'mona@example.com', name: 'Mona');
+  UserEntity? call() =>
+      UserEntity(id: 'me', email: 'mona@example.com', name: 'Mona');
 }
 
 void main() {
@@ -52,12 +57,16 @@ void main() {
       ..registerSingleton<GetUserUseCase>(_User())
       ..registerSingleton(HouseholdCubit(repo, _Products()));
 
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.light(),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const Scaffold(body: SingleChildScrollView(child: HouseholdCard())),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: SingleChildScrollView(child: HouseholdCard()),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Join'));

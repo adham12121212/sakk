@@ -6,7 +6,13 @@ import '../../data/purchases_gateway.dart';
 import 'pro_cubit.dart';
 
 /// One-off results the paywall shows as a snackbar.
-enum PaywallMessage { purchased, purchaseFailed, restored, nothingToRestore, unavailable }
+enum PaywallMessage {
+  purchased,
+  purchaseFailed,
+  restored,
+  nothingToRestore,
+  unavailable,
+}
 
 class PaywallState extends Equatable {
   const PaywallState({
@@ -36,7 +42,9 @@ class PaywallState extends Equatable {
   /// Bumped with each [message], so the same message twice still shows.
   final int messageId;
 
-  ProPackage? get selected => yearlySelected ? offer?.yearly ?? offer?.monthly : offer?.monthly ?? offer?.yearly;
+  ProPackage? get selected => yearlySelected
+      ? offer?.yearly ?? offer?.monthly
+      : offer?.monthly ?? offer?.yearly;
   bool get isBusy => isPurchasing || isRestoring;
 
   PaywallState copyWith({
@@ -61,13 +69,23 @@ class PaywallState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [offer, isLoading, isUnavailable, yearlySelected, isPurchasing, isRestoring, message, messageId];
+  List<Object?> get props => [
+    offer,
+    isLoading,
+    isUnavailable,
+    yearlySelected,
+    isPurchasing,
+    isRestoring,
+    message,
+    messageId,
+  ];
 }
 
 /// The paywall: loads the plans and their store prices, buys and restores.
 /// A completed purchase goes to [ProCubit], which unlocks Pro straight away.
 class PaywallCubit extends Cubit<PaywallState> {
-  PaywallCubit(this._gateway, this._pro, this._logger) : super(const PaywallState());
+  PaywallCubit(this._gateway, this._pro, this._logger)
+    : super(const PaywallState());
 
   final PurchasesGateway _gateway;
   final ProCubit _pro;
@@ -81,19 +99,26 @@ class PaywallCubit extends Cubit<PaywallState> {
     try {
       final offer = await _gateway.loadOffer();
       final empty = offer == null || offer.isEmpty;
-      _safeEmit(state.copyWith(
-        offer: offer,
-        isLoading: false,
-        isUnavailable: empty,
-        yearlySelected: offer?.yearly != null,
-      ));
+      _safeEmit(
+        state.copyWith(
+          offer: offer,
+          isLoading: false,
+          isUnavailable: empty,
+          yearlySelected: offer?.yearly != null,
+        ),
+      );
     } catch (e, st) {
-      _logger.error('Loading the Pro offering failed', error: e, stackTrace: st);
+      _logger.error(
+        'Loading the Pro offering failed',
+        error: e,
+        stackTrace: st,
+      );
       _safeEmit(state.copyWith(isLoading: false, isUnavailable: true));
     }
   }
 
-  void select({required bool yearly}) => _safeEmit(state.copyWith(yearlySelected: yearly));
+  void select({required bool yearly}) =>
+      _safeEmit(state.copyWith(yearlySelected: yearly));
 
   Future<void> purchase() async {
     final package = state.selected;
@@ -101,17 +126,26 @@ class PaywallCubit extends Cubit<PaywallState> {
     _safeEmit(state.copyWith(isPurchasing: true));
     try {
       final entitlement = await _gateway.purchase(package);
-      _safeEmit(state.copyWith(
-        isPurchasing: false,
-        message: entitlement.isActive ? PaywallMessage.purchased : PaywallMessage.purchaseFailed,
-      ));
+      _safeEmit(
+        state.copyWith(
+          isPurchasing: false,
+          message: entitlement.isActive
+              ? PaywallMessage.purchased
+              : PaywallMessage.purchaseFailed,
+        ),
+      );
       // Not awaited: it keeps re-reading the server for a few seconds.
       _pro.applyPurchase(entitlement);
     } on PurchaseCancelledException {
       _safeEmit(state.copyWith(isPurchasing: false));
     } catch (e, st) {
       _logger.error('Pro purchase failed', error: e, stackTrace: st);
-      _safeEmit(state.copyWith(isPurchasing: false, message: PaywallMessage.purchaseFailed));
+      _safeEmit(
+        state.copyWith(
+          isPurchasing: false,
+          message: PaywallMessage.purchaseFailed,
+        ),
+      );
     }
   }
 
@@ -124,14 +158,23 @@ class PaywallCubit extends Cubit<PaywallState> {
     _safeEmit(state.copyWith(isRestoring: true));
     try {
       final entitlement = await _gateway.restore();
-      _safeEmit(state.copyWith(
-        isRestoring: false,
-        message: entitlement.isActive ? PaywallMessage.restored : PaywallMessage.nothingToRestore,
-      ));
+      _safeEmit(
+        state.copyWith(
+          isRestoring: false,
+          message: entitlement.isActive
+              ? PaywallMessage.restored
+              : PaywallMessage.nothingToRestore,
+        ),
+      );
       _pro.applyPurchase(entitlement);
     } catch (e, st) {
       _logger.error('Restoring purchases failed', error: e, stackTrace: st);
-      _safeEmit(state.copyWith(isRestoring: false, message: PaywallMessage.purchaseFailed));
+      _safeEmit(
+        state.copyWith(
+          isRestoring: false,
+          message: PaywallMessage.purchaseFailed,
+        ),
+      );
     }
   }
 

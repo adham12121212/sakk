@@ -33,13 +33,18 @@ class ProPlanCard extends StatelessWidget {
         final status = state.status;
         final plan = status.plan;
         final e = status.entitlement;
-        final date = e?.expiresAt == null ? null : formatInstallmentDate(context, e!.expiresAt!);
+        final date = e?.expiresAt == null
+            ? null
+            : formatInstallmentDate(context, e!.expiresAt!);
         final body = switch (plan) {
           PlanKind.free => l10n.proCardFreeBody,
           PlanKind.billingIssue => l10n.proCardBillingIssueBody,
           PlanKind.trial => date == null ? null : l10n.proCardTrialEndsOn(date),
           _ when date == null => null,
-          _ => e!.willRenew ? l10n.proCardRenewsOn(date) : l10n.proCardEndsOn(date),
+          _ =>
+            e!.willRenew
+                ? l10n.proCardRenewsOn(date)
+                : l10n.proCardEndsOn(date),
         };
 
         // Never read (offline, server down): say so instead of loading forever.
@@ -52,13 +57,17 @@ class ProPlanCard extends StatelessWidget {
                   children: [
                     const Icon(AppIcons.pro, color: Color(0xFFF2A900)),
                     const SizedBox(width: 10),
-                    Expanded(child: Text(l10n.sakkPro, style: textTheme.titleMedium)),
+                    Expanded(
+                      child: Text(l10n.sakkPro, style: textTheme.titleMedium),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.proStatusLoadFailed,
-                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
@@ -81,7 +90,9 @@ class ProPlanCard extends StatelessWidget {
                   children: [
                     const Icon(AppIcons.pro, color: Color(0xFFF2A900)),
                     const SizedBox(width: 10),
-                    Expanded(child: Text(l10n.sakkPro, style: textTheme.titleMedium)),
+                    Expanded(
+                      child: Text(l10n.sakkPro, style: textTheme.titleMedium),
+                    ),
                     PlanBadge(status: status, size: PlanBadgeSize.small),
                   ],
                 ),
@@ -90,7 +101,9 @@ class ProPlanCard extends StatelessWidget {
                   Text(
                     body,
                     style: textTheme.bodyMedium?.copyWith(
-                      color: plan == PlanKind.billingIssue ? context.palette.warning : colorScheme.onSurfaceVariant,
+                      color: plan == PlanKind.billingIssue
+                          ? context.palette.warning
+                          : colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -116,7 +129,11 @@ class ProPlanCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: ProActions.manageSubscription,
-                    child: Text(plan == PlanKind.billingIssue ? l10n.updatePaymentMethod : l10n.manageSubscription),
+                    child: Text(
+                      plan == PlanKind.billingIssue
+                          ? l10n.updatePaymentMethod
+                          : l10n.manageSubscription,
+                    ),
                   ),
                 ],
               ],

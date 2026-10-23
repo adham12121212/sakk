@@ -19,18 +19,22 @@ class _FakeGet implements GetSubscriptionsUseCase {
   Future<Either<Failure, List<UserSubscription>>> call() async => result;
 }
 
-Widget app(SubscriptionsCubit cubit, {Locale locale = const Locale('en'), bool dark = false}) => ScreenUtilInit(
-      designSize: const Size(390, 844),
-      builder: (_, _) => MaterialApp(
-        locale: locale,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        themeMode: dark ? ThemeMode.dark : ThemeMode.light,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider.value(value: cubit, child: const SubscriptionsView()),
-      ),
-    );
+Widget app(
+  SubscriptionsCubit cubit, {
+  Locale locale = const Locale('en'),
+  bool dark = false,
+}) => ScreenUtilInit(
+  designSize: const Size(390, 844),
+  builder: (_, _) => MaterialApp(
+    locale: locale,
+    theme: AppTheme.light(),
+    darkTheme: AppTheme.dark(),
+    themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: BlocProvider.value(value: cubit, child: const SubscriptionsView()),
+  ),
+);
 
 void main() {
   final now = DateTime.now();
@@ -62,7 +66,9 @@ void main() {
     ),
   ];
 
-  testWidgets('shows the monthly total and the list, nearest renewal first', (tester) async {
+  testWidgets('shows the monthly total and the list, nearest renewal first', (
+    tester,
+  ) async {
     await tester.pumpWidget(app(SubscriptionsCubit(_FakeGet(Right(subs)))));
     await tester.pumpAndSettle();
 
@@ -77,28 +83,54 @@ void main() {
     expect(netflix < chatGpt && chatGpt < office, isTrue);
     expect(find.textContaining('Renews in 2 days'), findsOneWidget);
     expect(find.text('1,200 EGP / year'), findsOneWidget);
-    expect(find.text('Add subscription'), findsOneWidget); // the floating button
+    expect(
+      find.text('Add subscription'),
+      findsOneWidget,
+    ); // the floating button
   });
 
-  testWidgets('Arabic, dark mode: right-to-left with Arabic digits and no overflow', (tester) async {
-    await tester.pumpWidget(app(SubscriptionsCubit(_FakeGet(Right(subs))), locale: const Locale('ar'), dark: true));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Arabic, dark mode: right-to-left with Arabic digits and no overflow',
+    (tester) async {
+      await tester.pumpWidget(
+        app(
+          SubscriptionsCubit(_FakeGet(Right(subs))),
+          locale: const Locale('ar'),
+          dark: true,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('٣٤٠ ج.م'), findsOneWidget);
-    expect(Directionality.of(tester.element(find.text('Netflix'))), TextDirection.rtl);
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.text('٣٤٠ ج.م'), findsOneWidget);
+      expect(
+        Directionality.of(tester.element(find.text('Netflix'))),
+        TextDirection.rtl,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-  testWidgets('empty list invites to add the first subscription', (tester) async {
+  testWidgets('empty list invites to add the first subscription', (
+    tester,
+  ) async {
     await tester.pumpWidget(app(SubscriptionsCubit(_FakeGet(const Right([])))));
     await tester.pumpAndSettle();
     expect(find.text('No subscriptions yet'), findsOneWidget);
-    expect(find.text('Add subscription'), findsOneWidget); // the empty view's button, no FAB
+    expect(
+      find.text('Add subscription'),
+      findsOneWidget,
+    ); // the empty view's button, no FAB
   });
 
   testWidgets('a failed first load shows the offline error', (tester) async {
     await tester.pumpWidget(
-      app(SubscriptionsCubit(_FakeGet(const Left(NetworkFailure(NetworkFailure.noConnectionMessage))))),
+      app(
+        SubscriptionsCubit(
+          _FakeGet(
+            const Left(NetworkFailure(NetworkFailure.noConnectionMessage)),
+          ),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Try again'), findsOneWidget);

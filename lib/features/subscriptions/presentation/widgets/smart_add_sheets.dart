@@ -30,7 +30,8 @@ Future<SmartAddSource?> showSmartAddSourceSheet(
                 l10n.smartAddChooseScreenshot,
               ),
               (SmartAddSource.camera, AppIcons.camera, l10n.smartAddTakePhoto),
-              if (allowPdf) (SmartAddSource.pdf, AppIcons.pdf, l10n.smartAddChoosePdf),
+              if (allowPdf)
+                (SmartAddSource.pdf, AppIcons.pdf, l10n.smartAddChoosePdf),
               (SmartAddSource.text, AppIcons.chat, l10n.smartAddPasteText),
             ])
               ListTile(

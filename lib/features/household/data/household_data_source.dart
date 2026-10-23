@@ -16,43 +16,65 @@ class HouseholdDataSource {
   static const invalidInviteCode = 'invalid_invite_code';
   static const householdFull = 'household_full';
   static const notAllowed = 'not_allowed';
-  static const _codes = [alreadyInHousehold, invalidInviteCode, householdFull, notAllowed];
+  static const _codes = [
+    alreadyInHousehold,
+    invalidInviteCode,
+    householdFull,
+    notAllowed,
+  ];
 
   Future<(Household?, List<HouseholdMember>)> load() => _guard(() async {
-        final row = await _client.from('households').select().maybeSingle();
-        if (row == null) return (null, const <HouseholdMember>[]);
-        final members = await _client.from('household_members').select().order('joined_at');
-        return (
-          _household(row),
-          [
-            for (final m in members)
-              HouseholdMember(
-                userId: m['user_id'] as String,
-                displayName: m['display_name'] as String,
-                isOwner: m['role'] == 'owner',
-              ),
-          ],
-        );
-      });
+    final row = await _client.from('households').select().maybeSingle();
+    if (row == null) return (null, const <HouseholdMember>[]);
+    final members = await _client
+        .from('household_members')
+        .select()
+        .order('joined_at');
+    return (
+      _household(row),
+      [
+        for (final m in members)
+          HouseholdMember(
+            userId: m['user_id'] as String,
+            displayName: m['display_name'] as String,
+            isOwner: m['role'] == 'owner',
+          ),
+      ],
+    );
+  });
 
-  Future<void> create({required String name, required String displayName}) => _guard(() =>
-      _client.rpc('create_household', params: {'p_name': name, 'p_display_name': displayName}));
+  Future<void> create({required String name, required String displayName}) =>
+      _guard(
+        () => _client.rpc(
+          'create_household',
+          params: {'p_name': name, 'p_display_name': displayName},
+        ),
+      );
 
-  Future<void> join({required String inviteCode, required String displayName}) => _guard(() =>
-      _client.rpc('join_household', params: {'p_invite_code': inviteCode, 'p_display_name': displayName}));
+  Future<void> join({
+    required String inviteCode,
+    required String displayName,
+  }) => _guard(
+    () => _client.rpc(
+      'join_household',
+      params: {'p_invite_code': inviteCode, 'p_display_name': displayName},
+    ),
+  );
 
   Future<void> leave() => _guard(() => _client.rpc('leave_household'));
 
-  Future<void> removeMember(String userId) =>
-      _guard(() => _client.rpc('remove_household_member', params: {'p_user_id': userId}));
+  Future<void> removeMember(String userId) => _guard(
+    () => _client.rpc('remove_household_member', params: {'p_user_id': userId}),
+  );
 
-  Future<void> regenerateInviteCode() => _guard(() => _client.rpc('regenerate_invite_code'));
+  Future<void> regenerateInviteCode() =>
+      _guard(() => _client.rpc('regenerate_invite_code'));
 
   Household _household(Map<String, dynamic> row) => Household(
-        id: row['id'] as String,
-        name: row['name'] as String,
-        inviteCode: row['invite_code'] as String,
-      );
+    id: row['id'] as String,
+    name: row['name'] as String,
+    inviteCode: row['invite_code'] as String,
+  );
 
   Future<T> _guard<T>(Future<T> Function() run) async {
     try {

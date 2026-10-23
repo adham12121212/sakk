@@ -51,13 +51,17 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     final key = _key;
     if (key == null) return;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, jsonEncode([for (final p in products) p.toCacheJson()]));
+    await prefs.setString(
+      key,
+      jsonEncode([for (final p in products) p.toCacheJson()]),
+    );
   }
 
   @override
   Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
-    for (final key in prefs.getKeys().where((k) => k.startsWith(_keyPrefix)).toList()) {
+    for (final key
+        in prefs.getKeys().where((k) => k.startsWith(_keyPrefix)).toList()) {
       await prefs.remove(key);
     }
   }

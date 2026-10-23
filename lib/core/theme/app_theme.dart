@@ -35,26 +35,44 @@ class AppTheme {
       brightness: brightness,
       primary: AppColors.primary,
       onPrimary: Colors.white,
-      primaryContainer: isDark ? const Color(0xFF1E2A4A) : const Color(0xFFE8F0FE),
-      onPrimaryContainer: isDark ? const Color(0xFFBFD3FF) : const Color(0xFF1546B0),
+      primaryContainer: isDark
+          ? const Color(0xFF1E2A4A)
+          : const Color(0xFFE8F0FE),
+      onPrimaryContainer: isDark
+          ? const Color(0xFFBFD3FF)
+          : const Color(0xFF1546B0),
       secondary: AppColors.primary,
       onSecondary: Colors.white,
       error: AppColors.error,
       onError: Colors.white,
       surface: isDark ? const Color(0xFF1A1D23) : Colors.white,
       onSurface: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
-      onSurfaceVariant: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-      surfaceContainerHighest: isDark ? const Color(0xFF262A31) : const Color(0xFFF1F4F9),
-      surfaceContainerHigh: isDark ? const Color(0xFF22262C) : const Color(0xFFF5F7FB),
-      surfaceContainer: isDark ? const Color(0xFF1E2127) : const Color(0xFFF8FAFC),
-      surfaceContainerLow: isDark ? const Color(0xFF181B20) : const Color(0xFFFBFCFE),
+      onSurfaceVariant: isDark
+          ? const Color(0xFF94A3B8)
+          : const Color(0xFF64748B),
+      surfaceContainerHighest: isDark
+          ? const Color(0xFF262A31)
+          : const Color(0xFFF1F4F9),
+      surfaceContainerHigh: isDark
+          ? const Color(0xFF22262C)
+          : const Color(0xFFF5F7FB),
+      surfaceContainer: isDark
+          ? const Color(0xFF1E2127)
+          : const Color(0xFFF8FAFC),
+      surfaceContainerLow: isDark
+          ? const Color(0xFF181B20)
+          : const Color(0xFFFBFCFE),
       surfaceContainerLowest: isDark ? const Color(0xFF13161A) : Colors.white,
       outline: isDark ? const Color(0xFF2E333B) : const Color(0xFFE6E9F0),
-      outlineVariant: isDark ? const Color(0xFF262A31) : const Color(0xFFF0F2F6),
+      outlineVariant: isDark
+          ? const Color(0xFF262A31)
+          : const Color(0xFFF0F2F6),
       shadow: Colors.black,
     );
 
-    final background = isDark ? const Color(0xFF0F1115) : const Color(0xFFF6F7FB);
+    final background = isDark
+        ? const Color(0xFF0F1115)
+        : const Color(0xFFF6F7FB);
     final textTheme = GoogleFonts.cairoTextTheme(_textTheme(colorScheme));
 
     final controlShape = RoundedRectangleBorder(
@@ -95,7 +113,9 @@ class AppTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusCard),
-          side: isDark ? BorderSide(color: colorScheme.outline) : BorderSide.none,
+          side: isDark
+              ? BorderSide(color: colorScheme.outline)
+              : BorderSide.none,
         ),
       ),
 
@@ -140,8 +160,13 @@ class AppTheme {
       // fill would almost vanish there). Dark: filled, which already contrasts.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? colorScheme.surfaceContainerHighest : colorScheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        fillColor: isDark
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.surface,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
         prefixIconColor: colorScheme.onSurfaceVariant,
         suffixIconColor: colorScheme.onSurfaceVariant,
@@ -151,11 +176,15 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusControl),
-          borderSide: isDark ? BorderSide.none : BorderSide(color: colorScheme.outline, width: 1.2),
+          borderSide: isDark
+              ? BorderSide.none
+              : BorderSide(color: colorScheme.outline, width: 1.2),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusControl),
-          borderSide: isDark ? BorderSide.none : BorderSide(color: colorScheme.outlineVariant),
+          borderSide: isDark
+              ? BorderSide.none
+              : BorderSide(color: colorScheme.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusControl),
@@ -185,7 +214,9 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         titleTextStyle: textTheme.titleLarge,
-        contentTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
@@ -198,24 +229,34 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: isDark ? const Color(0xFF2A2F37) : const Color(0xFF1E293B),
-        contentTextStyle: textTheme.bodyMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+        backgroundColor: isDark
+            ? const Color(0xFF2A2F37)
+            : const Color(0xFF1E293B),
+        contentTextStyle: textTheme.bodyMedium!.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       ),
       listTileTheme: ListTileThemeData(
         iconColor: colorScheme.onSurfaceVariant,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusControl)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusControl),
+        ),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? Colors.white : null,
+          (states) =>
+              states.contains(WidgetState.selected) ? Colors.white : null,
         ),
         trackColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? AppColors.primary : null,
+          (states) =>
+              states.contains(WidgetState.selected) ? AppColors.primary : null,
         ),
         trackOutlineColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected) ? Colors.transparent : null,
+          (states) =>
+              states.contains(WidgetState.selected) ? Colors.transparent : null,
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
@@ -223,7 +264,11 @@ class AppTheme {
         linearTrackColor: colorScheme.surfaceContainerHighest,
         circularTrackColor: Colors.transparent,
       ),
-      dividerTheme: DividerThemeData(color: colorScheme.outline, thickness: 1, space: 1),
+      dividerTheme: DividerThemeData(
+        color: colorScheme.outline,
+        thickness: 1,
+        space: 1,
+      ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF2A2F37) : const Color(0xFF1E293B),
@@ -239,16 +284,45 @@ class AppTheme {
     final strong = scheme.onSurface;
     final muted = scheme.onSurfaceVariant;
 
-    TextStyle s(double size, FontWeight weight, Color color, {double height = 1.3, double spacing = 0}) =>
-        TextStyle(fontSize: size, fontWeight: weight, color: color, height: height, letterSpacing: spacing);
+    TextStyle s(
+      double size,
+      FontWeight weight,
+      Color color, {
+      double height = 1.3,
+      double spacing = 0,
+    }) => TextStyle(
+      fontSize: size,
+      fontWeight: weight,
+      color: color,
+      height: height,
+      letterSpacing: spacing,
+    );
 
     return TextTheme(
       displayLarge: s(40, FontWeight.w800, strong, height: 1.15, spacing: -0.8),
-      displayMedium: s(34, FontWeight.w800, strong, height: 1.15, spacing: -0.6),
+      displayMedium: s(
+        34,
+        FontWeight.w800,
+        strong,
+        height: 1.15,
+        spacing: -0.6,
+      ),
       displaySmall: s(30, FontWeight.w700, strong, height: 1.2, spacing: -0.5),
       headlineLarge: s(28, FontWeight.w700, strong, height: 1.2, spacing: -0.4),
-      headlineMedium: s(26, FontWeight.w700, strong, height: 1.2, spacing: -0.3),
-      headlineSmall: s(22, FontWeight.w700, strong, height: 1.25, spacing: -0.2),
+      headlineMedium: s(
+        26,
+        FontWeight.w700,
+        strong,
+        height: 1.2,
+        spacing: -0.3,
+      ),
+      headlineSmall: s(
+        22,
+        FontWeight.w700,
+        strong,
+        height: 1.25,
+        spacing: -0.2,
+      ),
       titleLarge: s(18, FontWeight.w700, strong),
       titleMedium: s(16, FontWeight.w600, strong),
       titleSmall: s(14, FontWeight.w600, strong),

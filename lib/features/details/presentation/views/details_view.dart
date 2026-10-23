@@ -45,7 +45,7 @@ class DetailsView extends StatelessWidget {
       buildWhen: (prev, curr) => prev.products != curr.products,
       builder: (context, state) {
         final current = state.products.firstWhere(
-              (p) => p.id == product.id,
+          (p) => p.id == product.id,
           orElse: () => product,
         );
         return _ProductDetailsBody(product: current);
@@ -95,7 +95,9 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   }
 
   double get _warrantyProgress {
-    final totalDays = product.warrantyEndDate.difference(product.purchaseDate).inDays;
+    final totalDays = product.warrantyEndDate
+        .difference(product.purchaseDate)
+        .inDays;
     if (totalDays <= 0) return 0;
     return (product.daysRemaining / totalDays).clamp(0.0, 1.0);
   }
@@ -115,29 +117,42 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return [
       if (product.store != null) (l10n.store, product.store!),
       if (product.price != null)
-        (l10n.price, '${NumberFormat.decimalPattern(_dateLocale).format(product.price!.round())} $_currencyLabel'),
+        (
+          l10n.price,
+          '${NumberFormat.decimalPattern(_dateLocale).format(product.price!.round())} $_currencyLabel',
+        ),
       (l10n.purchaseDate, date.format(product.purchaseDate)),
       (l10n.warrantyPeriod, '${product.warrantyMonths} ${l10n.months}'),
       (l10n.warrantyEnds, date.format(product.warrantyEndDate)),
-      if (daysToReturn != null && daysToReturn >= 0) (l10n.returnBy, date.format(product.returnByDate!)),
-      if (product.serialNumber != null) (l10n.serialNumber, product.serialNumber!),
-      if (product.invoiceNumber != null) (l10n.invoiceNumber, product.invoiceNumber!),
+      if (daysToReturn != null && daysToReturn >= 0)
+        (l10n.returnBy, date.format(product.returnByDate!)),
+      if (product.serialNumber != null)
+        (l10n.serialNumber, product.serialNumber!),
+      if (product.invoiceNumber != null)
+        (l10n.invoiceNumber, product.invoiceNumber!),
     ];
   }
 
   /// Arabic text reads "ج.م" after the amount; a Latin "EGP" next to Arabic
   /// digits gets reordered by right-to-left layout.
   String get _currencyLabel =>
-      Localizations.localeOf(context).languageCode == 'ar' && product.currency == 'EGP' ? 'ج.م' : product.currency;
+      Localizations.localeOf(context).languageCode == 'ar' &&
+          product.currency == 'EGP'
+      ? 'ج.م'
+      : product.currency;
 
   /// "Samsung · Electronics"
-  String get _shareSubtitle =>
-      [if (product.brand != null) product.brand!, CategoryUi.label(context, product.category)].join(' · ');
+  String get _shareSubtitle => [
+    if (product.brand != null) product.brand!,
+    CategoryUi.label(context, product.category),
+  ].join(' · ');
 
   /// "Active · 412 days left" / "Expired"
   String get _shareStatus {
     final l10n = AppLocalizations.of(context)!;
-    return product.isExpired ? _statusLabel : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining)}';
+    return product.isExpired
+        ? _statusLabel
+        : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining)}';
   }
 
   /// Shares the product as one image: the details card, with the receipt
@@ -156,23 +171,32 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   Future<void> _shareImageCard(String? photoPath) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final photoBytes = photoPath == null ? null : await File(photoPath).readAsBytes();
+      final photoBytes = photoPath == null
+          ? null
+          : await File(photoPath).readAsBytes();
       if (!mounted) return;
-      final cardPath = await composeShareCard(ShareCardData(
-        brandName: l10n.appName,
-        title: product.name,
-        subtitle: _shareSubtitle,
-        statusLabel: _shareStatus,
-        statusColor: _statusColor,
-        rows: _shareRows,
-        receiptLabel: l10n.documentReceipt,
-        footer: l10n.appTagline,
-        textDirection: Directionality.of(context),
-        photoBytes: photoBytes,
-        fontFamily: GoogleFonts.cairo().fontFamily,
-      ));
+      final cardPath = await composeShareCard(
+        ShareCardData(
+          brandName: l10n.appName,
+          title: product.name,
+          subtitle: _shareSubtitle,
+          statusLabel: _shareStatus,
+          statusColor: _statusColor,
+          rows: _shareRows,
+          receiptLabel: l10n.documentReceipt,
+          footer: l10n.appTagline,
+          textDirection: Directionality.of(context),
+          photoBytes: photoBytes,
+          fontFamily: GoogleFonts.cairo().fontFamily,
+        ),
+      );
       if (!mounted) return;
-      await _openShareSheet(ShareParams(files: [XFile(cardPath, mimeType: 'image/png')], subject: product.name));
+      await _openShareSheet(
+        ShareParams(
+          files: [XFile(cardPath, mimeType: 'image/png')],
+          subject: product.name,
+        ),
+      );
     } catch (_) {
       if (mounted) _showSnack(l10n.couldNotShare, isError: true);
     }
@@ -195,7 +219,12 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   void _showSnack(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message), backgroundColor: isError ? AppColors.error : null));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isError ? AppColors.error : null,
+        ),
+      );
   }
 
   Future<void> _editProduct() async {
@@ -212,7 +241,9 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   Future<void> _confirmDelete() async {
     final l10n = AppLocalizations.of(context)!;
     // Linked plans are kept (the database unlinks them), so say so.
-    final linkedPlans = getIt<InstallmentsCubit>().state.plansForProduct(product.id).length;
+    final linkedPlans = getIt<InstallmentsCubit>().state
+        .plansForProduct(product.id)
+        .length;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -223,7 +254,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
               : '${l10n.deleteProductConfirmBody(product.name)}\n\n${l10n.deleteProductLinkedPlans(linkedPlans)}',
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: Text(l10n.delete, style: TextStyle(color: AppColors.error)),
@@ -236,15 +270,18 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     final deleted = await context.read<DetailsCubit>().delete(product.id);
     // Re-read the plans so none still points at the deleted product (saving
     // a plan with that link would fail).
-    if (deleted && linkedPlans > 0) unawaited(getIt<InstallmentsCubit>().refresh());
+    if (deleted && linkedPlans > 0) {
+      unawaited(getIt<InstallmentsCubit>().refresh());
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final imageUrl = product.imageUrl ?? product.receiptUrl;
-    final isBusy = _isSharing || context.watch<DetailsCubit>().state is DetailsActionInProgress;
+    final isBusy =
+        _isSharing ||
+        context.watch<DetailsCubit>().state is DetailsActionInProgress;
 
     return BlocListener<DetailsCubit, DetailsState>(
       listener: (context, state) {
@@ -257,7 +294,9 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             // The server unlinks the product's plans; reload so they show
             // under their own title.
             final installments = getIt<InstallmentsCubit>();
-            if (installments.state.plansForProduct(product.id).isNotEmpty) installments.refresh();
+            if (installments.state.plansForProduct(product.id).isNotEmpty) {
+              installments.refresh();
+            }
             Navigator.of(context).pop();
           case DetailsActionError(:final error):
             final message = switch (error) {
@@ -273,7 +312,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         }
       },
       child: Scaffold(
-          body: CustomScrollView(
+        body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: DetailsHeader(
@@ -284,20 +323,29 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                 warrantyProgress: _warrantyProgress,
                 onBack: () => Navigator.of(context).pop(),
                 onShare: isBusy ? () {} : _share,
-                onDownload: isBusy ? () {} : () => context.read<DetailsCubit>().downloadImageToGallery(product),
+                onDownload: isBusy
+                    ? () {}
+                    : () => context.read<DetailsCubit>().downloadImageToGallery(
+                        product,
+                      ),
               ),
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
-                child: WarrantyBanner(product: product, warrantyProgress: _warrantyProgress),
+                child: WarrantyBanner(
+                  product: product,
+                  warrantyProgress: _warrantyProgress,
+                ),
               ),
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
                 child: SegmentedTabs(
-                    index: _tabIndex, onChanged: (i) => setState(() => _tabIndex = i)),
+                  index: _tabIndex,
+                  onChanged: (i) => setState(() => _tabIndex = i),
+                ),
               ),
             ),
             SliverToBoxAdapter(
@@ -309,13 +357,22 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                         children: [
                           DetailsTab(product: product),
                           CalendarActions(product: product),
-                          ProductDocumentsSection(product: product, canEdit: _isMine),
-                          WarrantyExtrasSection(product: product, canEdit: _isMine),
+                          ProductDocumentsSection(
+                            product: product,
+                            canEdit: _isMine,
+                          ),
+                          WarrantyExtrasSection(
+                            product: product,
+                            canEdit: _isMine,
+                          ),
                           // Plans are private, and only the owner can link one.
-                          if (_isMine) ProductInstallmentsSection(product: product),
+                          if (_isMine)
+                            ProductInstallmentsSection(product: product),
                         ],
                       )
-                    : InvoiceTab(imageUrl: product.receiptUrl ?? product.imageUrl),
+                    : InvoiceTab(
+                        imageUrl: product.receiptUrl ?? product.imageUrl,
+                      ),
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 100.h)),
@@ -323,45 +380,53 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         ),
         // Household members only view each other's products.
         bottomNavigationBar: !_isMine
-            ? _AddedByBar(name: getIt<HouseholdCubit>().state.nameOf(product.ownerId))
+            ? _AddedByBar(
+                name: getIt<HouseholdCubit>().state.nameOf(product.ownerId),
+              )
             : DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            boxShadow: context.palette.cardShadow.isEmpty
-                ? null
-                : const [BoxShadow(color: Color(0x140F172A), blurRadius: 24, offset: Offset(0, -6))],
-          ),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: isBusy ? null : _confirmDelete,
-                      icon: const Icon(AppIcons.delete),
-                      label: Text(l10n.delete),
-                      // Soft red: destructive, but quieter than the main action.
-                      style: FilledButton.styleFrom(
-                        backgroundColor: context.palette.dangerContainer,
-                        foregroundColor: context.palette.danger,
-                      ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  boxShadow: context.palette.cardShadow.isEmpty
+                      ? null
+                      : const [
+                          BoxShadow(
+                            color: Color(0x140F172A),
+                            blurRadius: 24,
+                            offset: Offset(0, -6),
+                          ),
+                        ],
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton.icon(
+                            onPressed: isBusy ? null : _confirmDelete,
+                            icon: const Icon(AppIcons.delete),
+                            label: Text(l10n.delete),
+                            // Soft red: destructive, but quieter than the main action.
+                            style: FilledButton.styleFrom(
+                              backgroundColor: context.palette.dangerContainer,
+                              foregroundColor: context.palette.danger,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: FilledButton.icon(
+                            onPressed: isBusy ? null : _editProduct,
+                            icon: const Icon(AppIcons.edit),
+                            label: Text(l10n.edit),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: isBusy ? null : _editProduct,
-                      icon: const Icon(AppIcons.edit),
-                      label: Text(l10n.edit),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -384,12 +449,20 @@ class _AddedByBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(AppIcons.household, size: 18, color: colorScheme.onSurfaceVariant),
+            Icon(
+              AppIcons.household,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                name == null ? l10n.addedByHouseholdMember : l10n.addedBy(name!),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                name == null
+                    ? l10n.addedByHouseholdMember
+                    : l10n.addedBy(name!),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           ],

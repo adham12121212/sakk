@@ -1,9 +1,7 @@
-
-
 import 'package:equatable/equatable.dart';
 import 'package:sakk/features/chat/domain/entities/chat_message_entity.dart';
 
-class ChatState extends Equatable{
+class ChatState extends Equatable {
   const ChatState({
     this.messages = const [],
     this.isSending = false,
@@ -17,7 +15,6 @@ class ChatState extends Equatable{
   /// Id of the user message whose send failed; the UI offers a retry on it.
   final String? failedMessageId;
 
-
   ChatState copyWith({
     List<ChatMessageEntity>? messages,
     bool? isSending,
@@ -30,11 +27,12 @@ class ChatState extends Equatable{
       messages: messages ?? this.messages,
       isSending: isSending ?? this.isSending,
       error: clearError ? null : error ?? this.error,
-      failedMessageId: clearFailedMessage ? null : failedMessageId ?? this.failedMessageId,
+      failedMessageId: clearFailedMessage
+          ? null
+          : failedMessageId ?? this.failedMessageId,
     );
   }
 
   @override
   List<Object?> get props => [messages, isSending, error, failedMessageId];
-
 }

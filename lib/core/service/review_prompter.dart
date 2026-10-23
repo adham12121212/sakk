@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// (they've seen the app work by then). The store's own popup is used, and
 /// Apple/Google limit how often it can actually appear.
 class ReviewPrompter {
-  ReviewPrompter({InAppReview? inAppReview}) : _inAppReview = inAppReview ?? InAppReview.instance;
+  ReviewPrompter({InAppReview? inAppReview})
+    : _inAppReview = inAppReview ?? InAppReview.instance;
 
   final InAppReview _inAppReview;
 
@@ -20,7 +21,9 @@ class ReviewPrompter {
       if (prefs.getBool(_askedKey) ?? false) return;
       final saved = (prefs.getInt(_savedKey) ?? 0) + 1;
       await prefs.setInt(_savedKey, saved);
-      if (saved < productsBeforeAsking || !await _inAppReview.isAvailable()) return;
+      if (saved < productsBeforeAsking || !await _inAppReview.isAvailable()) {
+        return;
+      }
       await prefs.setBool(_askedKey, true);
       await _inAppReview.requestReview();
     } catch (_) {

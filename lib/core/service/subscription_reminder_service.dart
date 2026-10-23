@@ -46,13 +46,13 @@ class SubscriptionReminderService {
     required AppLogger logger,
     ValueListenable<Locale>? locale,
     ReminderSettings? settings,
-  })  : _settings = settings,
-        _getUserUseCase = getUserUseCase,
-        _addNotificationUseCase = addNotificationUseCase,
-        _tracker = tracker,
-        _localNotifications = localNotifications,
-        _logger = logger,
-        _locale = locale;
+  }) : _settings = settings,
+       _getUserUseCase = getUserUseCase,
+       _addNotificationUseCase = addNotificationUseCase,
+       _tracker = tracker,
+       _localNotifications = localNotifications,
+       _logger = logger,
+       _locale = locale;
 
   final GetUserUseCase _getUserUseCase;
   final AddNotificationUseCase _addNotificationUseCase;
@@ -81,14 +81,23 @@ class SubscriptionReminderService {
 
   /// When [kind]'s push for the renewal on [renewal] is due. [customDays]
   /// is how many days ahead [RenewalReminder.custom] comes.
-  static DateTime reminderTime(RenewalReminder kind, DateTime renewal, {int customDays = 0}) {
+  static DateTime reminderTime(
+    RenewalReminder kind,
+    DateTime renewal, {
+    int customDays = 0,
+  }) {
     final offset = switch (kind) {
       RenewalReminder.threeDaysBefore => -3,
       RenewalReminder.dayBefore => -1,
       RenewalReminder.dayAfter => 1,
       RenewalReminder.custom => -customDays,
     };
-    return DateTime(renewal.year, renewal.month, renewal.day + offset, _reminderHour);
+    return DateTime(
+      renewal.year,
+      renewal.month,
+      renewal.day + offset,
+      _reminderHour,
+    );
   }
 
   /// The renewal before [subscription]'s next one, when the subscription
@@ -96,8 +105,13 @@ class SubscriptionReminderService {
   static DateTime? previousRenewal(UserSubscription subscription) {
     final created = subscription.createdAt?.toLocal();
     if (created == null) return null;
-    final previous = addMonthsClamped(subscription.nextRenewalDate, -subscription.billingCycle.months);
-    return DateTime(created.year, created.month, created.day).isBefore(previous) ? previous : null;
+    final previous = addMonthsClamped(
+      subscription.nextRenewalDate,
+      -subscription.billingCycle.months,
+    );
+    return DateTime(created.year, created.month, created.day).isBefore(previous)
+        ? previous
+        : null;
   }
 
   /// Slot 5 "in 3 days", 6 "tomorrow", 7 "renewed" for the next renewal,
@@ -105,7 +119,11 @@ class SubscriptionReminderService {
   /// installments; see [ownsPending]); see [reminderNotificationId]. The
   /// previous renewal has its own slot so its reminder survives the next
   /// one being scheduled when the date moves on.
-  static int notificationId(String subscriptionId, RenewalReminder kind, {bool previous = false}) {
+  static int notificationId(
+    String subscriptionId,
+    RenewalReminder kind, {
+    bool previous = false,
+  }) {
     final slot = switch (kind) {
       RenewalReminder.threeDaysBefore => 5,
       RenewalReminder.dayBefore => 6,
@@ -119,23 +137,27 @@ class SubscriptionReminderService {
   /// or the shared Pro slot without an installment's payload.
   static bool ownsPending(int id, String? payload) {
     final slot = reminderSlot(id);
-    if (slot == customReminderSlot) return InstallmentReminderPayload.tryParse(payload) == null;
+    if (slot == customReminderSlot) {
+      return InstallmentReminderPayload.tryParse(payload) == null;
+    }
     return subscriptionReminderSlots.contains(slot);
   }
 
   /// Tracker keys: one per reminder per renewal, so the next cycle reminds
   /// again. The 3-day keys keep their original names so reminders already
   /// sent by an older version aren't sent again.
-  static String _trackerId(String subscriptionId) => 'subscription:$subscriptionId';
-  static String _notifiedKey(RenewalReminder kind, DateTime renewal) => '${_keyPrefix(kind)}-${_isoDate(renewal)}';
+  static String _trackerId(String subscriptionId) =>
+      'subscription:$subscriptionId';
+  static String _notifiedKey(RenewalReminder kind, DateTime renewal) =>
+      '${_keyPrefix(kind)}-${_isoDate(renewal)}';
   static String _scheduledKey(RenewalReminder kind, DateTime renewal) =>
       '${_keyPrefix(kind)}-scheduled-${_isoDate(renewal)}';
   static String _keyPrefix(RenewalReminder kind) => switch (kind) {
-        RenewalReminder.threeDaysBefore => 'renewal',
-        RenewalReminder.dayBefore => 'renewal-1d',
-        RenewalReminder.dayAfter => 'renewed',
-        RenewalReminder.custom => 'renewal-custom',
-      };
+    RenewalReminder.threeDaysBefore => 'renewal',
+    RenewalReminder.dayBefore => 'renewal-1d',
+    RenewalReminder.dayAfter => 'renewed',
+    RenewalReminder.custom => 'renewal-custom',
+  };
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 
   /// Re-schedules reminders when the user switches the language or changes
@@ -150,9 +172,15 @@ class SubscriptionReminderService {
   /// whenever the list changes; pass [] on sign-out. Only touches
   /// subscription reminders, never warranty ones.
   Future<void> syncAll(List<UserSubscription> subscriptions) {
-    return _syncQueue = _syncQueue.then((_) => _syncAll(subscriptions)).catchError((Object e, StackTrace st) {
-      _logger.error('Syncing subscription reminders failed', error: e, stackTrace: st);
-    });
+    return _syncQueue = _syncQueue
+        .then((_) => _syncAll(subscriptions))
+        .catchError((Object e, StackTrace st) {
+          _logger.error(
+            'Syncing subscription reminders failed',
+            error: e,
+            stackTrace: st,
+          );
+        });
   }
 
   Future<void> _syncQueue = Future.value();
@@ -162,13 +190,18 @@ class SubscriptionReminderService {
     final now = DateTime.now();
     final userId = _getUserUseCase()?.id;
     final wanted = [
-      for (final s in subscriptions) ..._remindersFor(s).where((r) => _wants(r.kind) && r.dateTime.isAfter(now)),
+      for (final s in subscriptions)
+        ..._remindersFor(
+          s,
+        ).where((r) => _wants(r.kind) && r.dateTime.isAfter(now)),
     ];
     final wantedIds = {for (final r in wanted) r.id};
 
     for (final pending in await _localNotifications.pendingNotifications()) {
       if (!ownsPending(pending.id, pending.payload)) continue;
-      if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
+      if (!wantedIds.contains(pending.id)) {
+        await _localNotifications.cancelNotification(pending.id);
+      }
     }
     for (final r in wanted) {
       await _localNotifications.scheduleNotification(
@@ -179,7 +212,10 @@ class SubscriptionReminderService {
         payload: userId,
       );
       // So opening the app inside the window doesn't push a second time.
-      await _tracker.markNotified(_trackerId(r.subscriptionId), _scheduledKey(r.kind, r.renewal));
+      await _tracker.markNotified(
+        _trackerId(r.subscriptionId),
+        _scheduledKey(r.kind, r.renewal),
+      );
     }
   }
 
@@ -188,11 +224,19 @@ class SubscriptionReminderService {
     final previous = previousRenewal(s);
     final customDays = _customDays;
     return [
-      if (customDays != null) _reminder(s, RenewalReminder.custom, next, days: customDays),
+      if (customDays != null)
+        _reminder(s, RenewalReminder.custom, next, days: customDays),
       _reminder(s, RenewalReminder.threeDaysBefore, next, days: 3),
       _reminder(s, RenewalReminder.dayBefore, next, days: 1),
       _reminder(s, RenewalReminder.dayAfter, next, days: 1),
-      if (previous != null) _reminder(s, RenewalReminder.dayAfter, previous, days: 1, previous: true),
+      if (previous != null)
+        _reminder(
+          s,
+          RenewalReminder.dayAfter,
+          previous,
+          days: 1,
+          previous: true,
+        ),
     ];
   }
 
@@ -220,7 +264,10 @@ class SubscriptionReminderService {
   /// after ("renewed"). It also pushes right away, but only if this device
   /// never scheduled that reminder ahead (e.g. a subscription added the day
   /// before it renews), so nobody gets the same push twice.
-  Future<void> checkAndNotify(List<UserSubscription> subscriptions, {DateTime? today}) async {
+  Future<void> checkAndNotify(
+    List<UserSubscription> subscriptions, {
+    DateTime? today,
+  }) async {
     final user = _getUserUseCase();
     if (user == null) return;
     final day = today ?? DateTime.now();
@@ -229,20 +276,49 @@ class SubscriptionReminderService {
     for (final s in subscriptions) {
       final daysLeft = s.daysLeft(day);
       // The Pro reminder, opened on its day or the day after.
-      if (customDays != null && daysLeft <= customDays && daysLeft >= customDays - 1 && daysLeft > 3) {
-        await _notifyNow(s, RenewalReminder.custom, s.nextRenewalDate, daysLeft, user.id);
+      if (customDays != null &&
+          daysLeft <= customDays &&
+          daysLeft >= customDays - 1 &&
+          daysLeft > 3) {
+        await _notifyNow(
+          s,
+          RenewalReminder.custom,
+          s.nextRenewalDate,
+          daysLeft,
+          user.id,
+        );
       }
       if (daysLeft >= 2 && daysLeft <= 3) {
-        await _notifyNow(s, RenewalReminder.threeDaysBefore, s.nextRenewalDate, daysLeft, user.id);
+        await _notifyNow(
+          s,
+          RenewalReminder.threeDaysBefore,
+          s.nextRenewalDate,
+          daysLeft,
+          user.id,
+        );
       } else if (daysLeft >= 0 && daysLeft <= 1) {
-        await _notifyNow(s, RenewalReminder.dayBefore, s.nextRenewalDate, daysLeft, user.id);
+        await _notifyNow(
+          s,
+          RenewalReminder.dayBefore,
+          s.nextRenewalDate,
+          daysLeft,
+          user.id,
+        );
       }
 
       final previous = previousRenewal(s);
       if (previous != null) {
-        final daysSince = s.copyWith(nextRenewalDate: previous).daysLeft(day) * -1;
+        final daysSince =
+            s.copyWith(nextRenewalDate: previous).daysLeft(day) * -1;
         if (daysSince >= 1 && daysSince <= 2) {
-          await _notifyNow(s, RenewalReminder.dayAfter, previous, daysSince, user.id, previous: true);
+          await _notifyNow(
+            s,
+            RenewalReminder.dayAfter,
+            previous,
+            daysSince,
+            user.id,
+            previous: true,
+          );
         }
       }
     }
@@ -259,12 +335,17 @@ class SubscriptionReminderService {
     await _settings?.ready;
     if (!_wants(kind)) return;
     final trackerId = _trackerId(s.id);
-    if (await _tracker.hasNotified(trackerId, _notifiedKey(kind, renewal))) return;
+    if (await _tracker.hasNotified(trackerId, _notifiedKey(kind, renewal))) {
+      return;
+    }
 
     final title = _title(kind);
     final body = _body(s, kind, days);
     try {
-      if (!await _tracker.hasNotified(trackerId, _scheduledKey(kind, renewal))) {
+      if (!await _tracker.hasNotified(
+        trackerId,
+        _scheduledKey(kind, renewal),
+      )) {
         await _localNotifications.scheduleNotification(
           id: notificationId(s.id, kind, previous: previous),
           title: title,
@@ -277,22 +358,30 @@ class SubscriptionReminderService {
         userId: userId,
         title: title,
         subtitle: body,
-        type: kind == RenewalReminder.dayAfter ? NotificationType.success : NotificationType.warning,
+        type: kind == RenewalReminder.dayAfter
+            ? NotificationType.success
+            : NotificationType.warning,
       );
       await _tracker.markNotified(trackerId, _notifiedKey(kind, renewal));
     } catch (e, st) {
-      _logger.error('Failed to send subscription reminder', error: e, stackTrace: st);
+      _logger.error(
+        'Failed to send subscription reminder',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 
-  String _title(RenewalReminder kind) =>
-      kind == RenewalReminder.dayAfter ? _l10n.notifRenewedTitle : _l10n.notifRenewalTitle;
+  String _title(RenewalReminder kind) => kind == RenewalReminder.dayAfter
+      ? _l10n.notifRenewedTitle
+      : _l10n.notifRenewalTitle;
 
   /// [days] is days until the renewal, or since it for [RenewalReminder.dayAfter].
   String _body(UserSubscription s, RenewalReminder kind, int days) {
     final l10n = _l10n;
     final amount = formatLocalizedAmount(_currentLocale, s.price);
-    final price = '$amount ${s.currency == 'EGP' ? l10n.currencyEgp : s.currency}';
+    final price =
+        '$amount ${s.currency == 'EGP' ? l10n.currencyEgp : s.currency}';
     final daysText = formatLocalizedInt(_currentLocale, days);
     return kind == RenewalReminder.dayAfter
         ? l10n.notifRenewedBody(days, daysText, s.name, price)

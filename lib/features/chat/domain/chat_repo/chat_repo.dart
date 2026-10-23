@@ -4,7 +4,7 @@ import '../../../../core/error/failure.dart';
 import '../entities/chat_message_entity.dart';
 
 abstract class ChatRepo {
-   Future<Either<Failure, ChatMessageEntity>> sendMessage({
+  Future<Either<Failure, ChatMessageEntity>> sendMessage({
     required String content,
     required List<ChatMessageEntity> history,
   });

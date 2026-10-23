@@ -74,7 +74,9 @@ class CrashReporting {
     return {
       for (final entry in data.entries)
         if (!entry.key.toLowerCase().contains('email'))
-          entry.key: entry.value is String ? PiiMasker.scrub(entry.value as String) : entry.value,
+          entry.key: entry.value is String
+              ? PiiMasker.scrub(entry.value as String)
+              : entry.value,
     };
   }
 }
@@ -83,8 +85,8 @@ class CrashReporting {
 /// original type name so issues still group by error type.
 class _ScrubbedError {
   _ScrubbedError(Object error)
-      : _text = PiiMasker.scrub(error.toString()),
-        _type = error.runtimeType.toString();
+    : _text = PiiMasker.scrub(error.toString()),
+      _type = error.runtimeType.toString();
 
   final String _text;
   final String _type;

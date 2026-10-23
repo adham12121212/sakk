@@ -12,7 +12,11 @@ import '../../../../core/theme/app_icons.dart';
 
 /// Extra warranties and warranty claims, shown under the Details tab.
 class WarrantyExtrasSection extends StatelessWidget {
-  const WarrantyExtrasSection({super.key, required this.product, this.canEdit = true});
+  const WarrantyExtrasSection({
+    super.key,
+    required this.product,
+    this.canEdit = true,
+  });
 
   final ProductEntity product;
 
@@ -34,7 +38,9 @@ class WarrantyExtrasSection extends StatelessWidget {
         _SectionHeader(
           title: l10n.extraWarranties,
           actionLabel: l10n.addWarranty,
-          onAction: busy || !canEdit ? null : () => _showAddWarrantySheet(context, product),
+          onAction: busy || !canEdit
+              ? null
+              : () => _showAddWarrantySheet(context, product),
           showAction: canEdit,
         ),
         const SizedBox(height: 8),
@@ -47,18 +53,25 @@ class WarrantyExtrasSection extends StatelessWidget {
               children: [
                 for (final w in product.extraWarranties)
                   ListTile(
-                    leading: Icon(AppIcons.warranty, color: colorScheme.primary),
+                    leading: Icon(
+                      AppIcons.warranty,
+                      color: colorScheme.primary,
+                    ),
                     title: Text(w.provider),
                     subtitle: Text(
                       '${dateFormat.format(w.startDate)} – ${dateFormat.format(w.endDate)}',
                     ),
-                    trailing: !canEdit ? null : IconButton(
-                      tooltip: l10n.delete,
-                      icon: const Icon(AppIcons.delete),
-                      onPressed: busy
-                          ? null
-                          : () => context.read<DetailsCubit>().deleteExtraWarranty(product.id, w.id),
-                    ),
+                    trailing: !canEdit
+                        ? null
+                        : IconButton(
+                            tooltip: l10n.delete,
+                            icon: const Icon(AppIcons.delete),
+                            onPressed: busy
+                                ? null
+                                : () => context
+                                      .read<DetailsCubit>()
+                                      .deleteExtraWarranty(product.id, w.id),
+                          ),
                   ),
               ],
             ),
@@ -67,7 +80,9 @@ class WarrantyExtrasSection extends StatelessWidget {
         _SectionHeader(
           title: l10n.warrantyClaims,
           actionLabel: l10n.startClaim,
-          onAction: busy || !canEdit ? null : () => _showStartClaimSheet(context, product),
+          onAction: busy || !canEdit
+              ? null
+              : () => _showStartClaimSheet(context, product),
           showAction: canEdit,
         ),
         const SizedBox(height: 8),
@@ -80,9 +95,18 @@ class WarrantyExtrasSection extends StatelessWidget {
               children: [
                 for (final c in product.claims)
                   ListTile(
-                    onTap: busy || !canEdit ? null : () => _showClaimStatusSheet(context, c),
-                    title: Text(c.issue, maxLines: 2, overflow: TextOverflow.ellipsis),
-                    subtitle: Text(dateFormat.format(c.createdAt), style: textTheme.bodySmall),
+                    onTap: busy || !canEdit
+                        ? null
+                        : () => _showClaimStatusSheet(context, c),
+                    title: Text(
+                      c.issue,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      dateFormat.format(c.createdAt),
+                      style: textTheme.bodySmall,
+                    ),
                     trailing: _ClaimStatusChip(c.status),
                   ),
               ],
@@ -99,7 +123,8 @@ String _dateLocale(BuildContext context) {
   return appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
 }
 
-String claimStatusLabel(AppLocalizations l10n, ClaimStatus status) => switch (status) {
+String claimStatusLabel(AppLocalizations l10n, ClaimStatus status) =>
+    switch (status) {
       ClaimStatus.submitted => l10n.claimSubmitted,
       ClaimStatus.inRepair => l10n.claimInRepair,
       ClaimStatus.resolved => l10n.claimResolved,
@@ -123,14 +148,16 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+        Expanded(
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        ),
         if (showAction)
           TextButton.icon(
-          onPressed: onAction,
-          icon: const Icon(AppIcons.add, size: 18),
-          label: Text(actionLabel),
-          style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
-        ),
+            onPressed: onAction,
+            icon: const Icon(AppIcons.add, size: 18),
+            label: Text(actionLabel),
+            style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
+          ),
       ],
     );
   }
@@ -146,8 +173,8 @@ class _EmptyHint extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
@@ -161,28 +188,48 @@ class _ClaimStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final (background, foreground) = switch (status) {
-      ClaimStatus.submitted || ClaimStatus.inRepair => (colorScheme.primaryContainer, colorScheme.onPrimaryContainer),
-      ClaimStatus.resolved => (const Color(0xFFDCFCE7), const Color(0xFF166534)),
-      ClaimStatus.rejected => (colorScheme.errorContainer, colorScheme.onErrorContainer),
+      ClaimStatus.submitted || ClaimStatus.inRepair => (
+        colorScheme.primaryContainer,
+        colorScheme.onPrimaryContainer,
+      ),
+      ClaimStatus.resolved => (
+        const Color(0xFFDCFCE7),
+        const Color(0xFF166534),
+      ),
+      ClaimStatus.rejected => (
+        colorScheme.errorContainer,
+        colorScheme.onErrorContainer,
+      ),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Text(
         claimStatusLabel(AppLocalizations.of(context)!, status),
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: foreground),
+        style: Theme.of(
+          context,
+        ).textTheme.labelMedium?.copyWith(color: foreground),
       ),
     );
   }
 }
 
-Future<void> _showAddWarrantySheet(BuildContext context, ProductEntity product) {
+Future<void> _showAddWarrantySheet(
+  BuildContext context,
+  ProductEntity product,
+) {
   final cubit = context.read<DetailsCubit>();
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => BlocProvider.value(value: cubit, child: _AddWarrantySheet(product: product)),
+    builder: (_) => BlocProvider.value(
+      value: cubit,
+      child: _AddWarrantySheet(product: product),
+    ),
   );
 }
 
@@ -225,11 +272,11 @@ class _AddWarrantySheetState extends State<_AddWarrantySheet> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final ok = await context.read<DetailsCubit>().addExtraWarranty(
-          productId: widget.product.id,
-          provider: _providerController.text.trim(),
-          startDate: _startDate,
-          months: int.parse(_monthsController.text.trim()),
-        );
+      productId: widget.product.id,
+      provider: _providerController.text.trim(),
+      startDate: _startDate,
+      months: int.parse(_monthsController.text.trim()),
+    );
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).pop();
@@ -251,8 +298,13 @@ class _AddWarrantySheetState extends State<_AddWarrantySheet> {
             TextFormField(
               controller: _providerController,
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(labelText: l10n.warrantyProvider, hintText: l10n.warrantyProviderHint),
-              validator: (v) => v == null || v.trim().isEmpty ? l10n.warrantyProviderRequired : null,
+              decoration: InputDecoration(
+                labelText: l10n.warrantyProvider,
+                hintText: l10n.warrantyProviderHint,
+              ),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? l10n.warrantyProviderRequired
+                  : null,
             ),
             const SizedBox(height: 12),
             InkWell(
@@ -260,7 +312,9 @@ class _AddWarrantySheetState extends State<_AddWarrantySheet> {
               borderRadius: BorderRadius.circular(12),
               child: InputDecorator(
                 decoration: InputDecoration(labelText: l10n.warrantyStartDate),
-                child: Text(DateFormat.yMMMd(_dateLocale(context)).format(_startDate)),
+                child: Text(
+                  DateFormat.yMMMd(_dateLocale(context)).format(_startDate),
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -270,7 +324,9 @@ class _AddWarrantySheetState extends State<_AddWarrantySheet> {
               decoration: InputDecoration(labelText: l10n.warrantyMonths),
               validator: (v) {
                 final n = int.tryParse(v?.trim() ?? '');
-                return n == null || n < 1 || n > 240 ? l10n.invalidWarrantyMonths : null;
+                return n == null || n < 1 || n > 240
+                    ? l10n.invalidWarrantyMonths
+                    : null;
               },
             ),
             const SizedBox(height: 20),
@@ -291,7 +347,10 @@ Future<void> _showStartClaimSheet(BuildContext context, ProductEntity product) {
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => BlocProvider.value(value: cubit, child: _StartClaimSheet(product: product)),
+    builder: (_) => BlocProvider.value(
+      value: cubit,
+      child: _StartClaimSheet(product: product),
+    ),
   );
 }
 
@@ -321,14 +380,20 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
     final dateFormat = DateFormat.yMMMd(_dateLocale(context));
     final name = p.brand == null ? p.name : '${p.name} (${p.brand})';
     final buffer = StringBuffer()
-      ..writeln(l10n.claimMessageIntro(
-        name,
-        dateFormat.format(p.purchaseDate),
-        dateFormat.format(p.warrantyEndDate),
-      ));
+      ..writeln(
+        l10n.claimMessageIntro(
+          name,
+          dateFormat.format(p.purchaseDate),
+          dateFormat.format(p.warrantyEndDate),
+        ),
+      );
     if (p.store != null) buffer.writeln(l10n.shareStore(p.store!));
-    if (p.serialNumber != null) buffer.writeln('${l10n.serialNumber}: ${p.serialNumber}');
-    if (p.invoiceNumber != null) buffer.writeln('${l10n.invoiceNumber}: ${p.invoiceNumber}');
+    if (p.serialNumber != null) {
+      buffer.writeln('${l10n.serialNumber}: ${p.serialNumber}');
+    }
+    if (p.invoiceNumber != null) {
+      buffer.writeln('${l10n.invoiceNumber}: ${p.invoiceNumber}');
+    }
     buffer.writeln(l10n.claimMessageIssue(issue));
     final invoice = p.receiptUrl ?? p.imageUrl;
     if (invoice != null) buffer.writeln(l10n.shareInvoiceUrl(invoice).trim());
@@ -342,7 +407,10 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
     setState(() => _saving = true);
 
     // Save first, so the claim is recorded even if the user cancels sharing.
-    final ok = await context.read<DetailsCubit>().startClaim(productId: widget.product.id, issue: issue);
+    final ok = await context.read<DetailsCubit>().startClaim(
+      productId: widget.product.id,
+      issue: issue,
+    );
     if (!mounted) return;
     if (!ok) {
       setState(() => _saving = false);
@@ -351,7 +419,12 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
     final message = _claimMessage(l10n, issue);
     Navigator.of(context).pop();
     try {
-      await SharePlus.instance.share(ShareParams(text: message, subject: l10n.claimSubject(widget.product.name)));
+      await SharePlus.instance.share(
+        ShareParams(
+          text: message,
+          subject: l10n.claimSubject(widget.product.name),
+        ),
+      );
     } catch (_) {
       // Sharing is optional; the claim is already saved.
     }
@@ -370,8 +443,8 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
             Text(
               l10n.startClaimExplanation,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -379,13 +452,20 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
               minLines: 3,
               maxLines: 6,
               maxLength: 2000,
-              decoration: InputDecoration(labelText: l10n.claimIssue, hintText: l10n.claimIssueHint),
-              validator: (v) => v == null || v.trim().isEmpty ? l10n.claimIssueRequired : null,
+              decoration: InputDecoration(
+                labelText: l10n.claimIssue,
+                hintText: l10n.claimIssueHint,
+              ),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? l10n.claimIssueRequired
+                  : null,
             ),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: _saving ? null : _sendAndSave,
-              icon: _saving ? const _ButtonSpinner() : const Icon(AppIcons.send),
+              icon: _saving
+                  ? const _ButtonSpinner()
+                  : const Icon(AppIcons.send),
               label: Text(l10n.saveAndSendClaim),
             ),
           ],
@@ -412,7 +492,9 @@ Future<void> _showClaimStatusSheet(BuildContext context, WarrantyClaim claim) {
             groupValue: claim.status,
             onChanged: (status) {
               Navigator.of(sheetContext).pop();
-              if (status != null && status != claim.status) cubit.updateClaimStatus(claim.id, status);
+              if (status != null && status != claim.status) {
+                cubit.updateClaimStatus(claim.id, status);
+              }
             },
             child: Column(
               children: [
@@ -452,7 +534,12 @@ class _SheetBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        0,
+        20,
+        20 + MediaQuery.viewInsetsOf(context).bottom,
+      ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

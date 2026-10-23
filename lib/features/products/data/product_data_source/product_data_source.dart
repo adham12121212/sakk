@@ -10,8 +10,10 @@ import '../models/product_model.dart';
 import '../../../pro/domain/pro_limit.dart';
 
 abstract class ProductDataSource {
-
-  Future<ScannedReceiptData> scanReceipt({required String imagePath, String? pdfText});
+  Future<ScannedReceiptData> scanReceipt({
+    required String imagePath,
+    String? pdfText,
+  });
 
   /// Deletes an uploaded receipt photo that ended up not being saved.
   Future<void> deleteReceiptImage(String path);
@@ -22,7 +24,10 @@ abstract class ProductDataSource {
 
   Future<void> deleteProduct(String id);
 
-  Future<ProductModel> updateProduct(String id, Map<String, dynamic> updateJson);
+  Future<ProductModel> updateProduct(
+    String id,
+    Map<String, dynamic> updateJson,
+  );
 
   Future<void> addExtraWarranty({
     required String productId,
@@ -40,7 +45,11 @@ abstract class ProductDataSource {
   Future<void> deleteClaim(String id);
 
   /// Uploads a photo (or rendered PDF page) and attaches it to the product.
-  Future<void> addDocument({required String productId, required String kind, required String filePath});
+  Future<void> addDocument({
+    required String productId,
+    required String kind,
+    required String filePath,
+  });
 
   Future<void> deleteDocument({required String id, required String path});
 }
@@ -48,7 +57,8 @@ abstract class ProductDataSource {
 class ProductDataSourceImpl implements ProductDataSource {
   final SupabaseClient _client;
   final ReceiptAiClient _ai;
-  ProductDataSourceImpl(this._client, {ReceiptAiClient? ai}) : _ai = ai ?? ReceiptAiClient(_client);
+  ProductDataSourceImpl(this._client, {ReceiptAiClient? ai})
+    : _ai = ai ?? ReceiptAiClient(_client);
 
   static const _receiptsBucket = ReceiptAiClient.bucket;
 
@@ -61,13 +71,19 @@ class ProductDataSourceImpl implements ProductDataSource {
   static const pdfUnreadable = 'pdf_unreadable';
 
   @override
-  Future<ScannedReceiptData> scanReceipt({required String imagePath, String? pdfText}) async {
+  Future<ScannedReceiptData> scanReceipt({
+    required String imagePath,
+    String? pdfText,
+  }) async {
     try {
       final upload = await _ai.upload(imagePath, expiry: _signedUrlExpiry);
 
       final Map<String, dynamic> data;
       try {
-        data = await _ai.extract({'imageUrl': upload.signedUrl, 'pdfText': ?pdfText});
+        data = await _ai.extract({
+          'imageUrl': upload.signedUrl,
+          'pdfText': ?pdfText,
+        });
       } catch (_) {
         // The scan failed, so nothing will reference the photo: don't keep it.
         await _ai.delete(upload.path);
@@ -177,14 +193,22 @@ class ProductDataSourceImpl implements ProductDataSource {
   static String? receiptPathFromUrl(String url) {
     final segments = Uri.tryParse(url)?.pathSegments ?? const [];
     final i = segments.indexOf('sign');
-    if (i < 0 || i + 2 >= segments.length || segments[i + 1] != _receiptsBucket) return null;
+    if (i < 0 ||
+        i + 2 >= segments.length ||
+        segments[i + 1] != _receiptsBucket) {
+      return null;
+    }
     return segments.sublist(i + 2).join('/');
   }
 
   @override
-  Future<ProductModel> updateProduct(String id, Map<String, dynamic> updateJson) async{
-    try{
-      final row = await _client.from('products')
+  Future<ProductModel> updateProduct(
+    String id,
+    Map<String, dynamic> updateJson,
+  ) async {
+    try {
+      final row = await _client
+          .from('products')
           .update(updateJson)
           .eq('id', id)
           .select(ProductModel.selectColumns)
@@ -226,9 +250,15 @@ class ProductDataSourceImpl implements ProductDataSource {
   }
 
   @override
-  Future<void> addClaim({required String productId, required String issue}) async {
+  Future<void> addClaim({
+    required String productId,
+    required String issue,
+  }) async {
     try {
-      await _client.from('warranty_claims').insert({'product_id': productId, 'issue': issue});
+      await _client.from('warranty_claims').insert({
+        'product_id': productId,
+        'issue': issue,
+      });
     } catch (e) {
       throw ServerException('Failed to save claim: $e');
     }
@@ -237,22 +267,34 @@ class ProductDataSourceImpl implements ProductDataSource {
   @override
   Future<void> updateClaimStatus(String id, String status) async {
     try {
-      await _client.from('warranty_claims').update({'status': status}).eq('id', id);
+      await _client
+          .from('warranty_claims')
+          .update({'status': status})
+          .eq('id', id);
     } catch (e) {
       throw ServerException('Failed to update claim: $e');
     }
   }
 
   @override
-  Future<void> addDocument({required String productId, required String kind, required String filePath}) async {
+  Future<void> addDocument({
+    required String productId,
+    required String kind,
+    required String filePath,
+  }) async {
     final userId = _client.auth.currentUser?.id;
-    if (userId == null) throw ServerException('You must be signed in to add a document');
+    if (userId == null) {
+      throw ServerException('You must be signed in to add a document');
+    }
     final extension = filePath.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
     // Own folder: the storage rules and the table's check both require it.
-    final path = '$userId/documents/${DateTime.now().millisecondsSinceEpoch}.$extension';
+    final path =
+        '$userId/documents/${DateTime.now().millisecondsSinceEpoch}.$extension';
     try {
       await _client.storage.from(_receiptsBucket).upload(path, File(filePath));
-      final url = await _client.storage.from(_receiptsBucket).createSignedUrl(path, _signedUrlExpiry.inSeconds);
+      final url = await _client.storage
+          .from(_receiptsBucket)
+          .createSignedUrl(path, _signedUrlExpiry.inSeconds);
       await _client.from('product_documents').insert({
         'product_id': productId,
         'kind': kind,
@@ -266,7 +308,10 @@ class ProductDataSourceImpl implements ProductDataSource {
   }
 
   @override
-  Future<void> deleteDocument({required String id, required String path}) async {
+  Future<void> deleteDocument({
+    required String id,
+    required String path,
+  }) async {
     try {
       await _client.from('product_documents').delete().eq('id', id);
     } catch (e) {
@@ -283,7 +328,4 @@ class ProductDataSourceImpl implements ProductDataSource {
       throw ServerException('Failed to delete claim: $e');
     }
   }
-
-
-
 }

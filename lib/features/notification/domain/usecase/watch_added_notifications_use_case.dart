@@ -5,7 +5,8 @@ abstract class WatchAddedNotificationsUseCase {
   Stream<String> call();
 }
 
-class WatchAddedNotificationsUseCaseImpl implements WatchAddedNotificationsUseCase {
+class WatchAddedNotificationsUseCaseImpl
+    implements WatchAddedNotificationsUseCase {
   final NotificationRepo notificationRepo;
   WatchAddedNotificationsUseCaseImpl({required this.notificationRepo});
 

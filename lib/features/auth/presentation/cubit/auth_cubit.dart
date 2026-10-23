@@ -31,30 +31,24 @@ class AuthCubit extends Cubit<AuthState> {
   final DeleteAccountUseCase _deleteAccountUseCase;
 
   AuthCubit(
-      this._signupUsecase,
-      this._signInUsecase,
-      this._signOutUseCase,
-      this._updateAvatarUseCase,
-      this._signInWithGoogleUseCase,
-      this._deleteAccountUseCase,
-      ) : super(AuthInitial());
+    this._signupUsecase,
+    this._signInUsecase,
+    this._signOutUseCase,
+    this._updateAvatarUseCase,
+    this._signInWithGoogleUseCase,
+    this._deleteAccountUseCase,
+  ) : super(AuthInitial());
 
-
-  Future<void> signin({required String email, required String password}) async{
+  Future<void> signin({required String email, required String password}) async {
     emit(AuthLoading());
     final result = await _signInUsecase.call(email: email, password: password);
-    result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (user) {
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      getIt<ProductsCubit>().reset();
 
-        getIt<ProductsCubit>().reset();
-
-        getIt<SubscriptionsCubit>().reset();
-        getIt<InstallmentsCubit>().reset();
-        emit(AuthSuccess(user));
-      },
-    );
-
+      getIt<SubscriptionsCubit>().reset();
+      getIt<InstallmentsCubit>().reset();
+      emit(AuthSuccess(user));
+    });
   }
 
   Future<void> signup({
@@ -63,16 +57,20 @@ class AuthCubit extends Cubit<AuthState> {
     required String fullName,
   }) async {
     emit(AuthLoading());
-    final result = await _signupUsecase.call(email: email, password: password, fullName: fullName);
+    final result = await _signupUsecase.call(
+      email: email,
+      password: password,
+      fullName: fullName,
+    );
     result.fold(
-          (failure) {
+      (failure) {
         if (failure is EmailConfirmationRequiredFailure) {
           emit(AuthEmailConfirmationRequired());
           return;
         }
         emit(AuthError(failure.message));
       },
-          (user) {
+      (user) {
         getIt<ProductsCubit>().reset();
         getIt<SubscriptionsCubit>().reset();
         getIt<InstallmentsCubit>().reset();
@@ -110,8 +108,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthAvatarUpdating());
     final result = await _updateAvatarUseCase.call(imageFile);
     result.fold(
-          (failure) => emit(AuthError(failure.message)),
-          (user) => emit(AuthAvatarUpdated(user)),
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(AuthAvatarUpdated(user)),
     );
   }
 
@@ -119,32 +117,38 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     final result = await _signInWithGoogleUseCase();
     result.fold(
-          (failure) {
-        if (failure is CancelledFailure) { emit(AuthInitial()); return; }
+      (failure) {
+        if (failure is CancelledFailure) {
+          emit(AuthInitial());
+          return;
+        }
         emit(AuthError(failure.message));
       },
-          (user) { getIt<ProductsCubit>().reset(); getIt<SubscriptionsCubit>().reset(); getIt<InstallmentsCubit>().reset(); emit(AuthSuccess(user)); },
+      (user) {
+        getIt<ProductsCubit>().reset();
+        getIt<SubscriptionsCubit>().reset();
+        getIt<InstallmentsCubit>().reset();
+        emit(AuthSuccess(user));
+      },
     );
   }
 
   Future<void> deleteAccount() async {
     emit(AuthLoading());
     final result = await _deleteAccountUseCase.call();
-    await result.fold(
-          (failure) async => emit(AuthError(failure.message)),
-          (_) async {
-        await getIt<BiometricAuthService>().setEnabled(false);
-        getIt<ProductsCubit>().reset();
-        getIt<SubscriptionsCubit>().reset();
-        getIt<InstallmentsCubit>().reset();
-        getIt<NotificationCubit>().reset();
-        getIt<HouseholdCubit>().reset();
-        await getIt<ClearCachedProductsUseCase>()();
-        await getIt<ClearCachedSubscriptionsUseCase>()();
-        await getIt<ClearCachedInstallmentsUseCase>()();
-        emit(AuthInitial());
-      },
-    );
+    await result.fold((failure) async => emit(AuthError(failure.message)), (
+      _,
+    ) async {
+      await getIt<BiometricAuthService>().setEnabled(false);
+      getIt<ProductsCubit>().reset();
+      getIt<SubscriptionsCubit>().reset();
+      getIt<InstallmentsCubit>().reset();
+      getIt<NotificationCubit>().reset();
+      getIt<HouseholdCubit>().reset();
+      await getIt<ClearCachedProductsUseCase>()();
+      await getIt<ClearCachedSubscriptionsUseCase>()();
+      await getIt<ClearCachedInstallmentsUseCase>()();
+      emit(AuthInitial());
+    });
   }
-
 }

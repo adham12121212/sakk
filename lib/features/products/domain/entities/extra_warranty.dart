@@ -16,7 +16,8 @@ class ExtraWarranty extends Equatable {
   final int months;
 
   /// Same month arithmetic as the manufacturer warranty in ProductEntity.
-  DateTime get endDate => DateTime(startDate.year, startDate.month + months, startDate.day);
+  DateTime get endDate =>
+      DateTime(startDate.year, startDate.month + months, startDate.day);
 
   @override
   List<Object?> get props => [id, provider, startDate, months];

@@ -28,8 +28,7 @@ class InstallmentTerms extends Equatable {
 
   /// What's left to pay in installments: price less the down payment, plus
   /// any interest or fees.
-  double get financedAmount =>
-      totalPrice - downPayment + (interestOrFees ?? 0);
+  double get financedAmount => totalPrice - downPayment + (interestOrFees ?? 0);
 
   @override
   List<Object?> get props => [

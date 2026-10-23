@@ -46,19 +46,24 @@ void main() {
     final router = GoRouter(
       initialLocation: AppRoutes.biometricLock,
       routes: [
-        GoRoute(path: AppRoutes.biometricLock, builder: (_, _) => const BiometricLockView()),
+        GoRoute(
+          path: AppRoutes.biometricLock,
+          builder: (_, _) => const BiometricLockView(),
+        ),
         GoRoute(path: AppRoutes.home, builder: (_, _) => const Text('home')),
       ],
     );
-    await tester.pumpWidget(ScreenUtilInit(
-      designSize: const Size(390, 844),
-      builder: (_, _) => MaterialApp.router(
-        routerConfig: router,
-        theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
+    await tester.pumpWidget(
+      ScreenUtilInit(
+        designSize: const Size(390, 844),
+        builder: (_, _) => MaterialApp.router(
+          routerConfig: router,
+          theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
       ),
-    ));
+    );
     await tester.pump();
   }
 
@@ -96,7 +101,9 @@ void main() {
     expect(find.text('home'), findsOneWidget);
   });
 
-  testWidgets('a cancelled prompt is not shown again by itself', (tester) async {
+  testWidgets('a cancelled prompt is not shown again by itself', (
+    tester,
+  ) async {
     await open(tester);
     biometrics.answer(false);
     await dialogCloses(tester);
@@ -108,7 +115,9 @@ void main() {
     expect(biometrics.prompts, 2);
   });
 
-  testWidgets('asks again after the user left the app and came back', (tester) async {
+  testWidgets('asks again after the user left the app and came back', (
+    tester,
+  ) async {
     await open(tester);
     biometrics.answer(false);
     await dialogCloses(tester);

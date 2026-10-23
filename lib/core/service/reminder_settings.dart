@@ -34,9 +34,12 @@ class ReminderSettings extends ChangeNotifier {
 
   /// The ticked-by-default kinds: all but the Pro one, which is set by
   /// picking a number of days.
-  static final _defaultSubscriptionKinds = RenewalReminder.values.where((k) => k != RenewalReminder.custom).toSet();
-  static final _defaultInstallmentKinds =
-      InstallmentReminder.values.where((k) => k != InstallmentReminder.custom).toSet();
+  static final _defaultSubscriptionKinds = RenewalReminder.values
+      .where((k) => k != RenewalReminder.custom)
+      .toSet();
+  static final _defaultInstallmentKinds = InstallmentReminder.values
+      .where((k) => k != InstallmentReminder.custom)
+      .toSet();
 
   /// The days-ahead choices for the Pro reminder.
   static const customDayOptions = [5, 7, 10, 14];
@@ -47,8 +50,10 @@ class ReminderSettings extends ChangeNotifier {
 
   /// The subscription reminders chosen; kept while the switch is off, so
   /// turning it back on restores them.
-  Set<RenewalReminder> get subscriptionKinds => Set.unmodifiable(_subscriptionKinds);
-  Set<InstallmentReminder> get installmentKinds => Set.unmodifiable(_installmentKinds);
+  Set<RenewalReminder> get subscriptionKinds =>
+      Set.unmodifiable(_subscriptionKinds);
+  Set<InstallmentReminder> get installmentKinds =>
+      Set.unmodifiable(_installmentKinds);
 
   /// The Pro reminder's days ahead as chosen (null: off), whether or not
   /// Pro is active now.
@@ -56,25 +61,32 @@ class ReminderSettings extends ChangeNotifier {
   int? get installmentCustomDays => _installmentCustomDays;
 
   /// The days ahead to use for the Pro reminder right now: null unless Pro.
-  int? get activeSubscriptionCustomDays => _proActive ? _subscriptionCustomDays : null;
-  int? get activeInstallmentCustomDays => _proActive ? _installmentCustomDays : null;
+  int? get activeSubscriptionCustomDays =>
+      _proActive ? _subscriptionCustomDays : null;
+  int? get activeInstallmentCustomDays =>
+      _proActive ? _installmentCustomDays : null;
 
   bool get proActive => _proActive;
 
   /// Whether [kind] should be scheduled and shown right now.
   bool wantsSubscription(RenewalReminder kind) =>
       _subscriptionsEnabled &&
-      (kind == RenewalReminder.custom ? activeSubscriptionCustomDays != null : _subscriptionKinds.contains(kind));
+      (kind == RenewalReminder.custom
+          ? activeSubscriptionCustomDays != null
+          : _subscriptionKinds.contains(kind));
   bool wantsInstallment(InstallmentReminder kind) =>
       _installmentsEnabled &&
-      (kind == InstallmentReminder.custom ? activeInstallmentCustomDays != null : _installmentKinds.contains(kind));
+      (kind == InstallmentReminder.custom
+          ? activeInstallmentCustomDays != null
+          : _installmentKinds.contains(kind));
 
   static const _warrantyKey = 'reminders_warranty_enabled';
   static const _subscriptionsKey = 'reminders_subscriptions_enabled';
   static const _subscriptionKindsKey = 'reminders_subscription_kinds';
   static const _installmentsKey = 'reminders_installments_enabled';
   static const _installmentKindsKey = 'reminders_installment_kinds';
-  static const _subscriptionCustomDaysKey = 'reminders_subscription_custom_days';
+  static const _subscriptionCustomDaysKey =
+      'reminders_subscription_custom_days';
   static const _installmentCustomDaysKey = 'reminders_installment_custom_days';
 
   Future<void> _loadSaved() async {
@@ -82,14 +94,21 @@ class ReminderSettings extends ChangeNotifier {
     _warrantyEnabled = prefs.getBool(_warrantyKey) ?? true;
     _subscriptionsEnabled = prefs.getBool(_subscriptionsKey) ?? true;
     _installmentsEnabled = prefs.getBool(_installmentsKey) ?? true;
-    _subscriptionKinds = _kinds(prefs.getStringList(_subscriptionKindsKey), _defaultSubscriptionKinds);
-    _installmentKinds = _kinds(prefs.getStringList(_installmentKindsKey), _defaultInstallmentKinds);
+    _subscriptionKinds = _kinds(
+      prefs.getStringList(_subscriptionKindsKey),
+      _defaultSubscriptionKinds,
+    );
+    _installmentKinds = _kinds(
+      prefs.getStringList(_installmentKindsKey),
+      _defaultInstallmentKinds,
+    );
     _subscriptionCustomDays = _days(prefs.getInt(_subscriptionCustomDaysKey));
     _installmentCustomDays = _days(prefs.getInt(_installmentCustomDaysKey));
     notifyListeners();
   }
 
-  static int? _days(int? saved) => customDayOptions.contains(saved) ? saved : null;
+  static int? _days(int? saved) =>
+      customDayOptions.contains(saved) ? saved : null;
 
   /// Saved names back to kinds; names an older or newer version wrote that
   /// don't exist here are skipped, and nothing usable means all of them.
@@ -111,24 +130,34 @@ class ReminderSettings extends ChangeNotifier {
 
   /// The Pro reminder for subscriptions, [days] ahead (null: off).
   Future<void> setSubscriptionCustomDays(int? days) => _save(
-        () => _subscriptionCustomDays = days,
-        (p) => days == null ? p.remove(_subscriptionCustomDaysKey) : p.setInt(_subscriptionCustomDaysKey, days),
-      );
+    () => _subscriptionCustomDays = days,
+    (p) => days == null
+        ? p.remove(_subscriptionCustomDaysKey)
+        : p.setInt(_subscriptionCustomDaysKey, days),
+  );
 
   /// The Pro reminder for installments, [days] ahead (null: off).
   Future<void> setInstallmentCustomDays(int? days) => _save(
-        () => _installmentCustomDays = days,
-        (p) => days == null ? p.remove(_installmentCustomDaysKey) : p.setInt(_installmentCustomDaysKey, days),
-      );
+    () => _installmentCustomDays = days,
+    (p) => days == null
+        ? p.remove(_installmentCustomDaysKey)
+        : p.setInt(_installmentCustomDaysKey, days),
+  );
 
-  Future<void> setWarrantyEnabled(bool enabled) =>
-      _save(() => _warrantyEnabled = enabled, (p) => p.setBool(_warrantyKey, enabled));
+  Future<void> setWarrantyEnabled(bool enabled) => _save(
+    () => _warrantyEnabled = enabled,
+    (p) => p.setBool(_warrantyKey, enabled),
+  );
 
-  Future<void> setSubscriptionsEnabled(bool enabled) =>
-      _save(() => _subscriptionsEnabled = enabled, (p) => p.setBool(_subscriptionsKey, enabled));
+  Future<void> setSubscriptionsEnabled(bool enabled) => _save(
+    () => _subscriptionsEnabled = enabled,
+    (p) => p.setBool(_subscriptionsKey, enabled),
+  );
 
-  Future<void> setInstallmentsEnabled(bool enabled) =>
-      _save(() => _installmentsEnabled = enabled, (p) => p.setBool(_installmentsKey, enabled));
+  Future<void> setInstallmentsEnabled(bool enabled) => _save(
+    () => _installmentsEnabled = enabled,
+    (p) => p.setBool(_installmentsKey, enabled),
+  );
 
   /// Turns one subscription reminder on or off. The last one can't be
   /// turned off: the switch is for stopping them all.
@@ -138,7 +167,9 @@ class ReminderSettings extends ChangeNotifier {
     if (next.isEmpty) return;
     await _save(
       () => _subscriptionKinds = next,
-      (p) => p.setStringList(_subscriptionKindsKey, [for (final k in next) k.name]),
+      (p) => p.setStringList(_subscriptionKindsKey, [
+        for (final k in next) k.name,
+      ]),
     );
   }
 
@@ -149,11 +180,15 @@ class ReminderSettings extends ChangeNotifier {
     if (next.isEmpty) return;
     await _save(
       () => _installmentKinds = next,
-      (p) => p.setStringList(_installmentKindsKey, [for (final k in next) k.name]),
+      (p) =>
+          p.setStringList(_installmentKindsKey, [for (final k in next) k.name]),
     );
   }
 
-  Future<void> _save(void Function() apply, Future<bool> Function(SharedPreferences) persist) async {
+  Future<void> _save(
+    void Function() apply,
+    Future<bool> Function(SharedPreferences) persist,
+  ) async {
     apply();
     notifyListeners();
     await persist(await SharedPreferences.getInstance());

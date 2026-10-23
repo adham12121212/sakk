@@ -27,10 +27,12 @@ class RouteAwareConnectivityBanner extends StatefulWidget {
   final Widget child;
 
   @override
-  State<RouteAwareConnectivityBanner> createState() => _RouteAwareConnectivityBannerState();
+  State<RouteAwareConnectivityBanner> createState() =>
+      _RouteAwareConnectivityBannerState();
 }
 
-class _RouteAwareConnectivityBannerState extends State<RouteAwareConnectivityBanner> {
+class _RouteAwareConnectivityBannerState
+    extends State<RouteAwareConnectivityBanner> {
   late bool _suppressed = widget.isSuppressed();
   bool _updateScheduled = false;
 

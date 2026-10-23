@@ -45,7 +45,6 @@ import '../../features/pro/presentation/views/monthly_summary_view.dart';
 import '../../features/pro/presentation/views/paywall_view.dart';
 import '../di/get_it.dart';
 
-
 class AppRoutes {
   static const splash = '/';
   static const onboarding = '/onboarding';
@@ -87,19 +86,17 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.signin,
-      builder: (context, state) =>
-          BlocProvider(
-            create: (_) => getIt<AuthCubit>(),
-            child: const SigninView(),
-          ),
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<AuthCubit>(),
+        child: const SigninView(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.signup,
-      builder: (context, state) =>
-          BlocProvider(
-            create: (_) => getIt<AuthCubit>(),
-            child: const SignupView(),
-          ),
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<AuthCubit>(),
+        child: const SignupView(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.forgotPassword,
@@ -121,14 +118,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const PrivacyPolicyView(),
     ),
 
-    GoRoute(
-      path: AppRoutes.scan,
-      builder: (context, state) => ScanView(),
-    ),
+    GoRoute(path: AppRoutes.scan, builder: (context, state) => ScanView()),
     GoRoute(
       path: AppRoutes.notifications,
       // Opened with the user's id as `extra`; same fallback as details.
-      redirect: (context, state) => state.extra is String ? null : AppRoutes.home,
+      redirect: (context, state) =>
+          state.extra is String ? null : AppRoutes.home,
       builder: (context, state) =>
           // .value: the cubit is app-wide (shared with the Home badge), so
           // leaving this screen must not close it.
@@ -138,13 +133,13 @@ final GoRouter appRouter = GoRouter(
           ),
     ),
 
-
     GoRoute(
       path: AppRoutes.details,
       // Opened with the product as `extra`. If the route is ever rebuilt
       // without it (e.g. Android restoring the app after killing it), the
       // product can't be recovered, so fall back to the list.
-      redirect: (context, state) => state.extra is ProductEntity ? null : AppRoutes.products,
+      redirect: (context, state) =>
+          state.extra is ProductEntity ? null : AppRoutes.products,
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: getIt<ProductsCubit>()),
@@ -225,7 +220,9 @@ final GoRouter appRouter = GoRouter(
         child: BlocProvider(
           create: (_) => getIt<PaywallCubit>(),
           child: PaywallView(
-            reason: state.extra is PaywallReason ? state.extra as PaywallReason : PaywallReason.upgrade,
+            reason: state.extra is PaywallReason
+                ? state.extra as PaywallReason
+                : PaywallReason.upgrade,
           ),
         ),
       ),
@@ -253,11 +250,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.profile,
-      builder: (context, state) =>
-          BlocProvider(
-            create: (_) => getIt<AuthCubit>(),
-            child: const ProfileView(),
-          ),
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<AuthCubit>(),
+        child: const ProfileView(),
+      ),
     ),
 
     StatefulShellRoute.indexedStack(
@@ -276,11 +272,10 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.products,
-              builder: (context, state) =>
-                  BlocProvider.value(
-                    value: getIt<ProductsCubit>(),
-                    child: const ProductsView(),
-                  ),
+              builder: (context, state) => BlocProvider.value(
+                value: getIt<ProductsCubit>(),
+                child: const ProductsView(),
+              ),
             ),
           ],
         ),
@@ -288,11 +283,10 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.analytics,
-              builder: (context, state) =>
-                  BlocProvider.value(
-                    value: getIt<ProductsCubit>(),
-                    child: AnalyticsView(),
-                  ),
+              builder: (context, state) => BlocProvider.value(
+                value: getIt<ProductsCubit>(),
+                child: AnalyticsView(),
+              ),
             ),
           ],
         ),
@@ -300,11 +294,10 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.ai,
-              builder: (context, state) =>
-                  BlocProvider.value(
-                    value: getIt<ChatCubit>(),
-                    child: const ChatView(),
-                  ),
+              builder: (context, state) => BlocProvider.value(
+                value: getIt<ChatCubit>(),
+                child: const ChatView(),
+              ),
             ),
           ],
         ),

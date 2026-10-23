@@ -19,8 +19,14 @@ void main() {
   // The app gets these from flutter_localizations.
   setUpAll(() => initializeDateFormatting());
 
-  final regular = pw.Font.ttf(File('assets/fonts/Cairo-Regular.ttf').readAsBytesSync().buffer.asByteData());
-  final bold = pw.Font.ttf(File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync().buffer.asByteData());
+  final regular = pw.Font.ttf(
+    File(
+      'assets/fonts/Cairo-Regular.ttf',
+    ).readAsBytesSync().buffer.asByteData(),
+  );
+  final bold = pw.Font.ttf(
+    File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync().buffer.asByteData(),
+  );
   final today = DateTime(2026, 10, 19);
 
   final input = PdfReportInput(
@@ -44,7 +50,12 @@ void main() {
         purchaseDate: DateTime(2025, 12, 20),
         warrantyMonths: 12,
       ),
-      ProductEntity(id: '3', name: 'غسالة توشيبا', purchaseDate: DateTime(2024, 1, 5), warrantyMonths: 24),
+      ProductEntity(
+        id: '3',
+        name: 'غسالة توشيبا',
+        purchaseDate: DateTime(2024, 1, 5),
+        warrantyMonths: 24,
+      ),
     ],
     subscriptions: [
       UserSubscription(
@@ -64,14 +75,26 @@ void main() {
         nextRenewalDate: DateTime(2027, 2, 1),
       ),
     ],
-    plans: [plan('موبايل', t: terms(total: 12000, count: 12, start: DateTime(2026, 9, 5)), paid: {0})],
+    plans: [
+      plan(
+        'موبايل',
+        t: terms(total: 12000, count: 12, start: DateTime(2026, 9, 5)),
+        paid: {0},
+      ),
+    ],
   );
 
   for (final lang in ['ar', 'en']) {
     test('$lang: builds a PDF with every section', () async {
       final locale = Locale(lang);
       final l10n = await AppLocalizations.delegate.load(locale);
-      final bytes = await buildPdfReport(input, l10n: l10n, locale: locale, regular: regular, bold: bold);
+      final bytes = await buildPdfReport(
+        input,
+        l10n: l10n,
+        locale: locale,
+        regular: regular,
+        bold: bold,
+      );
       expect(String.fromCharCodes(bytes.take(5)), '%PDF-');
       expect(bytes.length, greaterThan(5000));
       if (_out != null) File('$_out/report_$lang.pdf').writeAsBytesSync(bytes);
@@ -81,7 +104,12 @@ void main() {
   test('empty account: still a valid report', () async {
     final l10n = await AppLocalizations.delegate.load(const Locale('ar'));
     final bytes = await buildPdfReport(
-      PdfReportInput(products: const [], subscriptions: const [], plans: const [], today: today),
+      PdfReportInput(
+        products: const [],
+        subscriptions: const [],
+        plans: const [],
+        today: today,
+      ),
       l10n: l10n,
       locale: const Locale('ar'),
       regular: regular,
@@ -94,10 +122,20 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
     final many = [
       for (var i = 0; i < 300; i++)
-        ProductEntity(id: '$i', name: 'Product $i', purchaseDate: DateTime(2026, 1, 1), warrantyMonths: 12),
+        ProductEntity(
+          id: '$i',
+          name: 'Product $i',
+          purchaseDate: DateTime(2026, 1, 1),
+          warrantyMonths: 12,
+        ),
     ];
     final bytes = await buildPdfReport(
-      PdfReportInput(products: many, subscriptions: const [], plans: const [], today: today),
+      PdfReportInput(
+        products: many,
+        subscriptions: const [],
+        plans: const [],
+        today: today,
+      ),
       l10n: l10n,
       locale: const Locale('en'),
       regular: regular,

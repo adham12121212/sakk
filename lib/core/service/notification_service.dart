@@ -5,10 +5,8 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-
 @pragma('vm:entry-point')
 void notificationTapBackgroundHandler(NotificationResponse response) {
-
   developer.log('Background notification tapped: ${response.payload}');
 }
 
@@ -17,7 +15,7 @@ class NotificationService {
   static final NotificationService instance = NotificationService._();
 
   final FlutterLocalNotificationsPlugin _notifications =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   static const String _channelId = 'sakk_notifications';
   static const String _channelName = 'Sakk Notifications';
@@ -67,9 +65,7 @@ class NotificationService {
       try {
         tz.setLocalLocation(tz.getLocation(timezoneId));
       } catch (e) {
-        developer.log(
-          'Unknown timezone "$timezoneId", defaulting to UTC: $e',
-        );
+        developer.log('Unknown timezone "$timezoneId", defaulting to UTC: $e');
         tz.setLocalLocation(tz.getLocation('UTC'));
       }
 
@@ -112,7 +108,7 @@ class NotificationService {
         settings: settings,
         onDidReceiveNotificationResponse: _onNotificationTap,
         onDidReceiveBackgroundNotificationResponse:
-        notificationTapBackgroundHandler,
+            notificationTapBackgroundHandler,
       );
 
       // Explicitly create the Android channel so its settings (importance,
@@ -127,7 +123,8 @@ class NotificationService {
 
       await _notifications
           .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.createNotificationChannel(androidChannel);
 
       _initialized = true;
@@ -181,12 +178,9 @@ class NotificationService {
     try {
       iosGranted = await _notifications
           .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
     } catch (e) {
       developer.log('iOS permission request failed: $e');
     }
@@ -194,7 +188,8 @@ class NotificationService {
     try {
       androidGranted = await _notifications
           .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.requestNotificationsPermission();
     } catch (e) {
       developer.log('Android notification permission request failed: $e');
@@ -216,9 +211,9 @@ class NotificationService {
     if (!_permissionGranted) {
       developer.log(
         '>>> showNotification SKIPPED-ISH (permission not confirmed granted): '
-            'id=$id title="$title". The call will still be attempted, but the '
-            'OS will most likely display nothing. Check Settings > Notifications '
-            'for this app.',
+        'id=$id title="$title". The call will still be attempted, but the '
+        'OS will most likely display nothing. Check Settings > Notifications '
+        'for this app.',
       );
     }
 
@@ -288,7 +283,7 @@ class NotificationService {
     if (!_permissionGranted) {
       developer.log(
         '>>> scheduleNotification SKIPPED-ISH (permission not confirmed '
-            'granted): id=$id title="$title" for $dateTime.',
+        'granted): id=$id title="$title" for $dateTime.',
       );
     }
 
@@ -302,7 +297,13 @@ class NotificationService {
       playSound: true,
       actions: markPaidLabel == null
           ? null
-          : [AndroidNotificationAction(markPaidActionId, markPaidLabel, showsUserInterface: true)],
+          : [
+              AndroidNotificationAction(
+                markPaidActionId,
+                markPaidLabel,
+                showsUserInterface: true,
+              ),
+            ],
     );
     final iosDetails = DarwinNotificationDetails(
       presentAlert: true,
@@ -333,7 +334,9 @@ class NotificationService {
         payload: payload,
         matchDateTimeComponents: matchDateTimeComponents,
       );
-      developer.log('>>> scheduleNotification CALLED OK: id=$id at $scheduledDate');
+      developer.log(
+        '>>> scheduleNotification CALLED OK: id=$id at $scheduledDate',
+      );
     } catch (e, stack) {
       developer.log('>>> scheduleNotification THREW: $e', stackTrace: stack);
     }

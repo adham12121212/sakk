@@ -1,9 +1,7 @@
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 abstract class BiometricAuthService {
-
   Future<bool> get isAvailable;
 
   Future<bool> get isEnabled;
@@ -52,7 +50,6 @@ class BiometricAuthServiceImpl implements BiometricAuthService {
         ),
       );
     } catch (_) {
-
       return false;
     }
   }

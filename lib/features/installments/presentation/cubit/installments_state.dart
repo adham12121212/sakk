@@ -39,10 +39,8 @@ class InstallmentsState extends Equatable {
       plansForProductIn(plans, productId);
 
   /// Unpaid installments past their due date, across active plans.
-  int overdueCount(DateTime today) => activePlans.fold(
-    0,
-    (sum, p) => sum + p.overduePayments(today).length,
-  );
+  int overdueCount(DateTime today) =>
+      activePlans.fold(0, (sum, p) => sum + p.overduePayments(today).length);
 
   InstallmentsState copyWith({
     List<InstallmentPlan>? plans,

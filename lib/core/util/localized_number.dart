@@ -16,7 +16,10 @@ String formatLocalizedInt(Locale locale, int value) {
 String formatLocalizedAmount(Locale locale, double value) {
   final rounded = (value * 100).round() / 100;
   final digits = rounded == rounded.truncateToDouble() ? 0 : 2;
-  return NumberFormat.decimalPatternDigits(locale: _numberTag(locale), decimalDigits: digits).format(rounded);
+  return NumberFormat.decimalPatternDigits(
+    locale: _numberTag(locale),
+    decimalDigits: digits,
+  ).format(rounded);
 }
 
 String _numberTag(Locale locale) {

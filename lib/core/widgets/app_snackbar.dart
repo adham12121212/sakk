@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import '../constant/app_colors.dart';
 import '../theme/app_icons.dart';
 
-enum SnackBarType {
-  success,
-  error,
-}
+enum SnackBarType { success, error }
 
 class AppSnackBar {
   AppSnackBar._();
 
   static void show(
-      BuildContext context, {
-        required String message,
-        required SnackBarType type,
-      }) {
+    BuildContext context, {
+    required String message,
+    required SnackBarType type,
+  }) {
     final theme = Theme.of(context);
 
     final bool isSuccess = type == SnackBarType.success;
@@ -32,12 +29,8 @@ class AppSnackBar {
           content: _SnackBarContent(
             message: message,
             isSuccess: isSuccess,
-            color: isSuccess
-                ? AppColors.success
-                : AppColors.error,
-            icon: isSuccess
-                ? AppIcons.successFilled
-                : AppIcons.errorFilled,
+            color: isSuccess ? AppColors.success : AppColors.error,
+            icon: isSuccess ? AppIcons.successFilled : AppIcons.errorFilled,
             textStyle: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -47,26 +40,12 @@ class AppSnackBar {
       );
   }
 
-  static void success(
-      BuildContext context,
-      String message,
-      ) {
-    show(
-      context,
-      message: message,
-      type: SnackBarType.success,
-    );
+  static void success(BuildContext context, String message) {
+    show(context, message: message, type: SnackBarType.success);
   }
 
-  static void error(
-      BuildContext context,
-      String message,
-      ) {
-    show(
-      context,
-      message: message,
-      type: SnackBarType.error,
-    );
+  static void error(BuildContext context, String message) {
+    show(context, message: message, type: SnackBarType.error);
   }
 }
 
@@ -88,16 +67,11 @@ class _SnackBarContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 16,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
         color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: color.withValues(alpha: .35),
-        ),
+        border: Border.all(color: color.withValues(alpha: .35)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: .18),
@@ -115,18 +89,10 @@ class _SnackBarContent extends StatelessWidget {
               color: color.withValues(alpha: .15),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: color,
-            ),
+            child: Icon(icon, color: color),
           ),
           const SizedBox(width: 14),
-          Expanded(
-            child: Text(
-              message,
-              style: textStyle,
-            ),
-          ),
+          Expanded(child: Text(message, style: textStyle)),
         ],
       ),
     );

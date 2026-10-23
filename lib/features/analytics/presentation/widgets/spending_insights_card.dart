@@ -13,7 +13,11 @@ import '../../domain/spending_insights.dart';
 /// Spending per year and the top stores, as slim bars. Amounts are blurred
 /// while the total spent is hidden, so this card doesn't give it away.
 class SpendingInsightsCard extends StatelessWidget {
-  const SpendingInsightsCard({super.key, required this.products, required this.l10n});
+  const SpendingInsightsCard({
+    super.key,
+    required this.products,
+    required this.l10n,
+  });
 
   final List<ProductEntity> products;
   final AppLocalizations l10n;
@@ -26,7 +30,9 @@ class SpendingInsightsCard extends StatelessWidget {
 
     final textTheme = Theme.of(context).textTheme;
     final appLocale = Localizations.localeOf(context);
-    final format = NumberFormat.decimalPattern(appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag());
+    final format = NumberFormat.decimalPattern(
+      appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag(),
+    );
 
     return ValueListenableBuilder<bool>(
       valueListenable: getIt<AmountVisibilityController>(),
@@ -41,7 +47,9 @@ class SpendingInsightsCard extends StatelessWidget {
               _BarRow(
                 label: format.format(e.key),
                 amount: '${format.format(e.value.round())} EGP',
-                share: e.value / years.map((y) => y.value).reduce((a, b) => a > b ? a : b),
+                share:
+                    e.value /
+                    years.map((y) => y.value).reduce((a, b) => a > b ? a : b),
                 hidden: hidden,
               ),
             if (stores.isNotEmpty) ...[
@@ -64,7 +72,12 @@ class SpendingInsightsCard extends StatelessWidget {
 }
 
 class _BarRow extends StatelessWidget {
-  const _BarRow({required this.label, required this.amount, required this.share, required this.hidden});
+  const _BarRow({
+    required this.label,
+    required this.amount,
+    required this.share,
+    required this.hidden,
+  });
 
   final String label;
   final String amount;
@@ -82,13 +95,25 @@ class _BarRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(label, style: textTheme.bodyMedium, overflow: TextOverflow.ellipsis)),
+              Expanded(
+                child: Text(
+                  label,
+                  style: textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
               Semantics(
-                label: hidden ? AppLocalizations.of(context)!.totalSpentHidden : null,
+                label: hidden
+                    ? AppLocalizations.of(context)!.totalSpentHidden
+                    : null,
                 excludeSemantics: hidden,
                 child: ImageFiltered(
                   enabled: hidden,
-                  imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8, tileMode: TileMode.decal),
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: 8,
+                    sigmaY: 8,
+                    tileMode: TileMode.decal,
+                  ),
                   child: Text(amount, style: textTheme.labelLarge),
                 ),
               ),

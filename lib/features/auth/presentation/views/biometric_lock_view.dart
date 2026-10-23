@@ -113,10 +113,18 @@ class _BiometricLockViewState extends State<BiometricLockView>
                     ),
                     borderRadius: BorderRadius.circular(32.r),
                     boxShadow: const [
-                      BoxShadow(color: Color(0x404A5CFA), blurRadius: 28, offset: Offset(0, 12)),
+                      BoxShadow(
+                        color: Color(0x404A5CFA),
+                        blurRadius: 28,
+                        offset: Offset(0, 12),
+                      ),
                     ],
                   ),
-                  child: Icon(AppIcons.fingerprint, size: 52.sp, color: Colors.white),
+                  child: Icon(
+                    AppIcons.fingerprint,
+                    size: 52.sp,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(height: 24.h),
                 Text(
@@ -128,7 +136,9 @@ class _BiometricLockViewState extends State<BiometricLockView>
                 Text(
                   l10n.appLockedSubtitle,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 SizedBox(height: 32.h),
                 SizedBox(
@@ -138,10 +148,13 @@ class _BiometricLockViewState extends State<BiometricLockView>
                     onPressed: _authenticating ? null : _unlock,
                     icon: _authenticating
                         ? SizedBox(
-                      width: 18.w,
-                      height: 18.w,
-                      child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                    )
+                            width: 18.w,
+                            height: 18.w,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Icon(AppIcons.fingerprint),
                     label: Text(l10n.unlockButton),
                   ),

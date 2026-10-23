@@ -49,7 +49,9 @@ class _ConnectivityBannerState extends State<ConnectivityBanner> {
   @override
   void initState() {
     super.initState();
-    _subscription = widget.networkInfo.onConnectivityChanged.listen(_onConnectivity);
+    _subscription = widget.networkInfo.onConnectivityChanged.listen(
+      _onConnectivity,
+    );
   }
 
   void _onConnectivity(bool connected) {
@@ -86,14 +88,21 @@ class _ConnectivityBannerState extends State<ConnectivityBanner> {
           curve: Curves.easeOut,
           alignment: Alignment.topCenter,
           child: visible
-              ? _Strip(offline: _state == _BannerState.offline, topInset: topInset)
+              ? _Strip(
+                  offline: _state == _BannerState.offline,
+                  topInset: topInset,
+                )
               : const SizedBox(width: double.infinity),
         ),
         // Same widget either way: swapping the wrapper in and out would
         // rebuild the app's Router from scratch, losing the open screens
         // (and the arguments they were opened with).
         Expanded(
-          child: MediaQuery.removePadding(context: context, removeTop: visible, child: widget.child),
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: visible,
+            child: widget.child,
+          ),
         ),
       ],
     );

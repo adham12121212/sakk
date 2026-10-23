@@ -6,13 +6,15 @@ enum DocumentKind { receipt, warrantyCard, productPhoto, manual, other }
 
 extension DocumentKindX on DocumentKind {
   String get dbValue => switch (this) {
-        DocumentKind.warrantyCard => 'warranty_card',
-        DocumentKind.productPhoto => 'product_photo',
-        _ => name,
-      };
+    DocumentKind.warrantyCard => 'warranty_card',
+    DocumentKind.productPhoto => 'product_photo',
+    _ => name,
+  };
 
-  static DocumentKind fromDb(String? value) =>
-      DocumentKind.values.firstWhere((k) => k.dbValue == value, orElse: () => DocumentKind.other);
+  static DocumentKind fromDb(String? value) => DocumentKind.values.firstWhere(
+    (k) => k.dbValue == value,
+    orElse: () => DocumentKind.other,
+  );
 }
 
 /// A photo (or rendered PDF page) attached to a product.

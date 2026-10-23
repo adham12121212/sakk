@@ -45,10 +45,10 @@ class _AnalyticsViewState extends State<AnalyticsView> {
   }
 
   Future<void> _refresh() => Future.wait([
-        context.read<ProductsCubit>().refresh(),
-        _subscriptionsCubit.refresh(),
-        _installmentsCubit.refresh(),
-      ]);
+    context.read<ProductsCubit>().refresh(),
+    _subscriptionsCubit.refresh(),
+    _installmentsCubit.refresh(),
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +60,17 @@ class _AnalyticsViewState extends State<AnalyticsView> {
           builder: (context, allState) {
             final refresh = _refresh;
             final myId = getIt<GetUserUseCase>()()?.id;
-            final inHousehold = getIt<HouseholdCubit>().state.members.length > 1;
+            final inHousehold =
+                getIt<HouseholdCubit>().state.members.length > 1;
             // Family sharing shows members' products everywhere; totals here
             // are your own unless you choose the whole household.
             final state = inHousehold && _householdScope
                 ? allState
-                : allState.copyWith(products: allState.products.where((p) => p.isOwnedBy(myId)).toList());
+                : allState.copyWith(
+                    products: allState.products
+                        .where((p) => p.isOwnedBy(myId))
+                        .toList(),
+                  );
             return AppRefreshIndicator(
               onRefresh: refresh,
               child: Column(
@@ -77,22 +82,36 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                       height: 48,
                       child: Align(
                         alignment: AlignmentDirectional.centerStart,
-                        child: Text(l10n.analytics, style: Theme.of(context).textTheme.headlineMedium),
+                        child: Text(
+                          l10n.analytics,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
                       ),
                     ),
                   ),
                   Expanded(
-                    child: state.error != null && state.products.isEmpty && !state.isLoading
-                        ? AppErrorView(message: state.error, onRetry: refresh, fillRemaining: true)
+                    child:
+                        state.error != null &&
+                            state.products.isEmpty &&
+                            !state.isLoading
+                        ? AppErrorView(
+                            message: state.error,
+                            onRetry: refresh,
+                            fillRemaining: true,
+                          )
                         : ListView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                             children: [
                               if (inHousehold) ...[
                                 SegmentedToggle<bool>(
-                                  options: {false: l10n.analyticsMine, true: l10n.analyticsHousehold},
+                                  options: {
+                                    false: l10n.analyticsMine,
+                                    true: l10n.analyticsHousehold,
+                                  },
                                   selected: _householdScope,
-                                  onChanged: (v) => setState(() => _householdScope = v),
+                                  onChanged: (v) =>
+                                      setState(() => _householdScope = v),
                                 ),
                                 const SizedBox(height: 16),
                               ],
@@ -100,26 +119,45 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                               const SizedBox(height: 16),
                               WarrantyStatusCard(state: state, l10n: l10n),
                               const SizedBox(height: 16),
-                              CategoryBreakdownCard(products: state.products, isLoading: state.isLoading, l10n: l10n),
+                              CategoryBreakdownCard(
+                                products: state.products,
+                                isLoading: state.isLoading,
+                                l10n: l10n,
+                              ),
                               const SizedBox(height: 16),
-                              SpendingInsightsCard(products: state.products, l10n: l10n),
+                              SpendingInsightsCard(
+                                products: state.products,
+                                l10n: l10n,
+                              ),
                               // Subscriptions and installments are private, so only in "Mine".
                               if (!(inHousehold && _householdScope)) ...[
                                 const SizedBox(height: 16),
-                                BlocBuilder<SubscriptionsCubit, SubscriptionsState>(
+                                BlocBuilder<
+                                  SubscriptionsCubit,
+                                  SubscriptionsState
+                                >(
                                   bloc: _subscriptionsCubit,
-                                  builder: (context, subscriptions) => SubscriptionsAnalyticsCard(
-                                    state: subscriptions,
-                                    onTap: () => context.push(AppRoutes.subscriptions),
-                                  ),
+                                  builder: (context, subscriptions) =>
+                                      SubscriptionsAnalyticsCard(
+                                        state: subscriptions,
+                                        onTap: () => context.push(
+                                          AppRoutes.subscriptions,
+                                        ),
+                                      ),
                                 ),
                                 const SizedBox(height: 16),
-                                BlocBuilder<InstallmentsCubit, InstallmentsState>(
+                                BlocBuilder<
+                                  InstallmentsCubit,
+                                  InstallmentsState
+                                >(
                                   bloc: _installmentsCubit,
-                                  builder: (context, installments) => InstallmentsAnalyticsCard(
-                                    state: installments,
-                                    onTap: () => context.push(AppRoutes.installments),
-                                  ),
+                                  builder: (context, installments) =>
+                                      InstallmentsAnalyticsCard(
+                                        state: installments,
+                                        onTap: () => context.push(
+                                          AppRoutes.installments,
+                                        ),
+                                      ),
                                 ),
                               ],
                             ],

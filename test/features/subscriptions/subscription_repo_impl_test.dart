@@ -32,7 +32,12 @@ class _SilentLogger implements AppLogger {
   @override
   void warning(String message, {Map<String, dynamic>? data}) {}
   @override
-  void error(String message, {Object? error, StackTrace? stackTrace, Map<String, dynamic>? data}) {}
+  void error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, dynamic>? data,
+  }) {}
 }
 
 class _FakeRemote implements SubscriptionDataSource {
@@ -46,21 +51,34 @@ class _FakeRemote implements SubscriptionDataSource {
   }
 
   @override
-  Future<UserSubscriptionModel> addSubscription(Map<String, dynamic> insertJson) async {
+  Future<UserSubscriptionModel> addSubscription(
+    Map<String, dynamic> insertJson,
+  ) async {
     if (fail) throw ServerException('boom');
-    return UserSubscriptionModel.fromJson({...insertJson, 'id': 'new', 'subscription_catalog': null});
+    return UserSubscriptionModel.fromJson({
+      ...insertJson,
+      'id': 'new',
+      'subscription_catalog': null,
+    });
   }
 
   @override
-  Future<UserSubscriptionModel> updateSubscription(String id, Map<String, dynamic> updateJson) async =>
-      UserSubscriptionModel.fromJson({...updateJson, 'id': id, 'subscription_catalog': null});
+  Future<UserSubscriptionModel> updateSubscription(
+    String id,
+    Map<String, dynamic> updateJson,
+  ) async => UserSubscriptionModel.fromJson({
+    ...updateJson,
+    'id': id,
+    'subscription_catalog': null,
+  });
 
   @override
   Future<void> deleteSubscription(String id) async {}
 
   final renewalUpdates = <String, DateTime>{};
   @override
-  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async => renewalUpdates[id] = nextRenewalDate;
+  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async =>
+      renewalUpdates[id] = nextRenewalDate;
 
   @override
   Future<List<CatalogServiceModel>> getCatalog() async => [];
@@ -70,8 +88,7 @@ class _FakeRemote implements SubscriptionDataSource {
     String? imagePath,
     String? text,
     List<String> knownServices = const [],
-  }) async =>
-      const ScannedSubscription();
+  }) async => const ScannedSubscription();
 }
 
 class _MemoryCache implements SubscriptionLocalDataSource {
@@ -79,9 +96,11 @@ class _MemoryCache implements SubscriptionLocalDataSource {
   List<CatalogServiceModel>? catalog;
 
   @override
-  Future<List<UserSubscriptionModel>?> getCachedSubscriptions() async => subscriptions;
+  Future<List<UserSubscriptionModel>?> getCachedSubscriptions() async =>
+      subscriptions;
   @override
-  Future<void> cacheSubscriptions(List<UserSubscriptionModel> s) async => subscriptions = s;
+  Future<void> cacheSubscriptions(List<UserSubscriptionModel> s) async =>
+      subscriptions = s;
   @override
   Future<List<CatalogServiceModel>?> getCachedCatalog() async => catalog;
   @override
@@ -127,67 +146,89 @@ void main() {
   test('offline with no cache is a network failure', () async {
     network.connected = false;
     final result = await repo.getSubscriptions();
-    expect(result, const Left<Failure, List<UserSubscription>>(NetworkFailure(NetworkFailure.noConnectionMessage)));
-  });
-
-  test('a failed load falls back to the cache, or reports the server error', () async {
-    remote.fail = true;
-    expect((await repo.getSubscriptions()).isLeft(), isTrue);
-    cache.subscriptions = [netflix];
-    expect(rightOf(await repo.getSubscriptions()), [netflix]);
-  });
-
-  test('add, update and delete keep the cache in step, nearest renewal first', () async {
-    cache.subscriptions = [netflix]; // renews 2026-11-01
-
-    final added = await repo.addSubscription(
-      customName: 'Gym',
-      category: SubscriptionCategory.other,
-      price: 500,
-      currency: 'EGP',
-      billingCycle: BillingCycle.monthly,
-      nextRenewalDate: DateTime(2026, 12, 1),
+    expect(
+      result,
+      const Left<Failure, List<UserSubscription>>(
+        NetworkFailure(NetworkFailure.noConnectionMessage),
+      ),
     );
-    expect(added.isRight(), isTrue);
-    expect(cache.subscriptions!.map((s) => s.id), ['s1', 'new']);
-
-    await repo.updateSubscription(
-      id: 'new',
-      customName: 'Gym',
-      category: SubscriptionCategory.other,
-      price: 550,
-      currency: 'EGP',
-      billingCycle: BillingCycle.monthly,
-      nextRenewalDate: DateTime(2026, 10, 20),
-    );
-    expect(cache.subscriptions!.map((s) => s.id), ['new', 's1']);
-    expect(cache.subscriptions!.first.price, 550);
-
-    await repo.deleteSubscription('s1');
-    expect(cache.subscriptions!.map((s) => s.id), ['new']);
   });
+
+  test(
+    'a failed load falls back to the cache, or reports the server error',
+    () async {
+      remote.fail = true;
+      expect((await repo.getSubscriptions()).isLeft(), isTrue);
+      cache.subscriptions = [netflix];
+      expect(rightOf(await repo.getSubscriptions()), [netflix]);
+    },
+  );
+
+  test(
+    'add, update and delete keep the cache in step, nearest renewal first',
+    () async {
+      cache.subscriptions = [netflix]; // renews 2026-11-01
+
+      final added = await repo.addSubscription(
+        customName: 'Gym',
+        category: SubscriptionCategory.other,
+        price: 500,
+        currency: 'EGP',
+        billingCycle: BillingCycle.monthly,
+        nextRenewalDate: DateTime(2026, 12, 1),
+      );
+      expect(added.isRight(), isTrue);
+      expect(cache.subscriptions!.map((s) => s.id), ['s1', 'new']);
+
+      await repo.updateSubscription(
+        id: 'new',
+        customName: 'Gym',
+        category: SubscriptionCategory.other,
+        price: 550,
+        currency: 'EGP',
+        billingCycle: BillingCycle.monthly,
+        nextRenewalDate: DateTime(2026, 10, 20),
+      );
+      expect(cache.subscriptions!.map((s) => s.id), ['new', 's1']);
+      expect(cache.subscriptions!.first.price, 550);
+
+      await repo.deleteSubscription('s1');
+      expect(cache.subscriptions!.map((s) => s.id), ['new']);
+    },
+  );
 
   test('writes need a connection', () async {
     network.connected = false;
     final result = await repo.deleteSubscription('s1');
-    expect(result, const Left<Failure, void>(NetworkFailure(NetworkFailure.noConnectionMessage)));
+    expect(
+      result,
+      const Left<Failure, void>(
+        NetworkFailure(NetworkFailure.noConnectionMessage),
+      ),
+    );
   });
 
-  test('a moved renewal date is saved and kept in the cache, in order', () async {
-    final gym = UserSubscriptionModel.fromJson({
-      ...subscriptionRow(),
-      'id': 'gym',
-      'catalog_id': null,
-      'custom_name': 'Gym',
-      'subscription_catalog': null,
-      'next_renewal_date': '2026-11-15',
-    });
-    cache.subscriptions = [netflix, gym]; // Netflix renews 2026-11-01
-    final result = await repo.updateRenewalDate('s1', DateTime(2026, 12, 1));
-    expect(result.isRight(), isTrue);
-    expect(remote.renewalUpdates, {'s1': DateTime(2026, 12, 1)});
-    expect(cache.subscriptions!.map((s) => s.id), ['gym', 's1']);
-    expect(cache.subscriptions!.last.nextRenewalDate, DateTime(2026, 12, 1));
-    expect(cache.subscriptions!.last.name, 'Netflix'); // the rest is untouched
-  });
+  test(
+    'a moved renewal date is saved and kept in the cache, in order',
+    () async {
+      final gym = UserSubscriptionModel.fromJson({
+        ...subscriptionRow(),
+        'id': 'gym',
+        'catalog_id': null,
+        'custom_name': 'Gym',
+        'subscription_catalog': null,
+        'next_renewal_date': '2026-11-15',
+      });
+      cache.subscriptions = [netflix, gym]; // Netflix renews 2026-11-01
+      final result = await repo.updateRenewalDate('s1', DateTime(2026, 12, 1));
+      expect(result.isRight(), isTrue);
+      expect(remote.renewalUpdates, {'s1': DateTime(2026, 12, 1)});
+      expect(cache.subscriptions!.map((s) => s.id), ['gym', 's1']);
+      expect(cache.subscriptions!.last.nextRenewalDate, DateTime(2026, 12, 1));
+      expect(
+        cache.subscriptions!.last.name,
+        'Netflix',
+      ); // the rest is untouched
+    },
+  );
 }

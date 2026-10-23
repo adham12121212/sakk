@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_icons.dart';
 
-
 void showInvoicePreviewDialog(BuildContext context, String? imageUrl) {
   if (imageUrl == null) return;
 

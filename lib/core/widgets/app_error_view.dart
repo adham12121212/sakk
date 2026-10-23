@@ -122,19 +122,30 @@ class _AppErrorViewState extends State<AppErrorView> {
                   onPressed: _retrying ? null : _retry,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
+                    disabledBackgroundColor: AppColors.primary.withValues(
+                      alpha: 0.6,
+                    ),
                     padding: EdgeInsets.symmetric(horizontal: 28.w),
                     shape: const StadiumBorder(),
                   ),
                   icon: _retrying
                       ? const SizedBox.square(
                           dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : Icon(widget.actionIcon ?? AppIcons.retry, color: Colors.white),
+                      : Icon(
+                          widget.actionIcon ?? AppIcons.retry,
+                          color: Colors.white,
+                        ),
                   label: Text(
                     widget.actionLabel ?? l10n.tryAgain,
-                    style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

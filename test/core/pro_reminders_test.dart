@@ -74,8 +74,10 @@ class _Notifications implements NotificationService {
   @override
   Future<void> cancelNotification(int id) async => scheduled.remove(id);
   @override
-  Future<List<PendingNotificationRequest>> pendingNotifications() async =>
-      [for (final id in scheduled.keys) PendingNotificationRequest(id, null, null, payloads[id])];
+  Future<List<PendingNotificationRequest>> pendingNotifications() async => [
+    for (final id in scheduled.keys)
+      PendingNotificationRequest(id, null, null, payloads[id]),
+  ];
   @override
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
@@ -90,7 +92,8 @@ DateTime get today {
   return DateTime(now.year, now.month, now.day);
 }
 
-DateTime at10(DateTime day, int offset) => DateTime(day.year, day.month, day.day + offset, 10);
+DateTime at10(DateTime day, int offset) =>
+    DateTime(day.year, day.month, day.day + offset, 10);
 
 void main() {
   late _Notifications notifications;
@@ -134,53 +137,89 @@ void main() {
     billingCycle: BillingCycle.monthly,
     nextRenewalDate: today.add(const Duration(days: 20)),
   );
-  final tv = plan('tv', t: terms(total: 12000, count: 12, start: today.add(const Duration(days: 20))));
-  final subCustomId = SubscriptionReminderService.notificationId('netflix', RenewalReminder.custom);
-  final instCustomId = InstallmentReminderService.notificationId('tv-p0', InstallmentReminder.custom);
+  final tv = plan(
+    'tv',
+    t: terms(
+      total: 12000,
+      count: 12,
+      start: today.add(const Duration(days: 20)),
+    ),
+  );
+  final subCustomId = SubscriptionReminderService.notificationId(
+    'netflix',
+    RenewalReminder.custom,
+  );
+  final instCustomId = InstallmentReminderService.notificationId(
+    'tv-p0',
+    InstallmentReminder.custom,
+  );
 
   test('free users get no Pro reminder, even with days saved', () async {
     await settings.setSubscriptionCustomDays(7);
     await settings.setInstallmentCustomDays(7);
     await subscriptions.syncAll([netflix]);
     await installments.syncAll([tv]);
-    expect(notifications.scheduled.keys.map(reminderSlot), isNot(contains(customReminderSlot)));
-  });
-
-  test('Pro: N days before at 10:00, with the regular reminders untouched', () async {
-    settings.setProActive(true);
-    await settings.setSubscriptionCustomDays(7);
-    await settings.setInstallmentCustomDays(14);
-    await subscriptions.syncAll([netflix]);
-    await installments.syncAll([tv]);
-
-    expect(notifications.scheduled[subCustomId], at10(netflix.nextRenewalDate, -7));
-    expect(notifications.bodies[subCustomId], 'Netflix renews in 7 days for 240 EGP');
-    expect(notifications.scheduled[instCustomId], at10(tv.payments.first.dueDate, -14));
-    expect(notifications.payloads[instCustomId], startsWith('installment|'));
-    // The 3-day ones are still there.
     expect(
-      notifications.scheduled.containsKey(SubscriptionReminderService.notificationId('netflix', RenewalReminder.threeDaysBefore)),
-      isTrue,
+      notifications.scheduled.keys.map(reminderSlot),
+      isNot(contains(customReminderSlot)),
     );
   });
 
-  test('the shared slot: each service re-syncs without cancelling the other\'s', () async {
-    settings.setProActive(true);
-    await settings.setSubscriptionCustomDays(7);
-    await settings.setInstallmentCustomDays(7);
-    await subscriptions.syncAll([netflix]);
-    await installments.syncAll([tv]);
+  test(
+    'Pro: N days before at 10:00, with the regular reminders untouched',
+    () async {
+      settings.setProActive(true);
+      await settings.setSubscriptionCustomDays(7);
+      await settings.setInstallmentCustomDays(14);
+      await subscriptions.syncAll([netflix]);
+      await installments.syncAll([tv]);
 
-    // Subscriptions emptied (e.g. the last one deleted): only theirs go.
-    await subscriptions.syncAll(const []);
-    expect(notifications.scheduled.containsKey(subCustomId), isFalse);
-    expect(notifications.scheduled.containsKey(instCustomId), isTrue);
+      expect(
+        notifications.scheduled[subCustomId],
+        at10(netflix.nextRenewalDate, -7),
+      );
+      expect(
+        notifications.bodies[subCustomId],
+        'Netflix renews in 7 days for 240 EGP',
+      );
+      expect(
+        notifications.scheduled[instCustomId],
+        at10(tv.payments.first.dueDate, -14),
+      );
+      expect(notifications.payloads[instCustomId], startsWith('installment|'));
+      // The 3-day ones are still there.
+      expect(
+        notifications.scheduled.containsKey(
+          SubscriptionReminderService.notificationId(
+            'netflix',
+            RenewalReminder.threeDaysBefore,
+          ),
+        ),
+        isTrue,
+      );
+    },
+  );
 
-    await subscriptions.syncAll([netflix]);
-    await installments.syncAll(const []);
-    expect(notifications.scheduled.containsKey(instCustomId), isFalse);
-    expect(notifications.scheduled.containsKey(subCustomId), isTrue);
-  });
+  test(
+    'the shared slot: each service re-syncs without cancelling the other\'s',
+    () async {
+      settings.setProActive(true);
+      await settings.setSubscriptionCustomDays(7);
+      await settings.setInstallmentCustomDays(7);
+      await subscriptions.syncAll([netflix]);
+      await installments.syncAll([tv]);
+
+      // Subscriptions emptied (e.g. the last one deleted): only theirs go.
+      await subscriptions.syncAll(const []);
+      expect(notifications.scheduled.containsKey(subCustomId), isFalse);
+      expect(notifications.scheduled.containsKey(instCustomId), isTrue);
+
+      await subscriptions.syncAll([netflix]);
+      await installments.syncAll(const []);
+      expect(notifications.scheduled.containsKey(instCustomId), isFalse);
+      expect(notifications.scheduled.containsKey(subCustomId), isTrue);
+    },
+  );
 
   test('Pro ending stops the Pro reminders and keeps the choice', () async {
     settings.setProActive(true);
@@ -194,14 +233,20 @@ void main() {
     expect(settings.subscriptionCustomDays, 10);
   });
 
-  test('opening the app on the day adds the in-app notification once', () async {
-    settings.setProActive(true);
-    await settings.setInstallmentCustomDays(5);
-    final soon = plan('fridge', t: terms(start: today.add(const Duration(days: 5))));
-    await installments.checkAndNotify([soon], today: today);
-    await installments.checkAndNotify([soon], today: today);
-    expect(added.added, ['fridge: 1,000 EGP is due in 5 days']);
-  });
+  test(
+    'opening the app on the day adds the in-app notification once',
+    () async {
+      settings.setProActive(true);
+      await settings.setInstallmentCustomDays(5);
+      final soon = plan(
+        'fridge',
+        t: terms(start: today.add(const Duration(days: 5))),
+      );
+      await installments.checkAndNotify([soon], today: today);
+      await installments.checkAndNotify([soon], today: today);
+      expect(added.added, ['fridge: 1,000 EGP is due in 5 days']);
+    },
+  );
 
   test('the saved choice survives a restart; bad values are ignored', () async {
     await settings.setSubscriptionCustomDays(14);
@@ -210,7 +255,9 @@ void main() {
     expect(reloaded.subscriptionCustomDays, 14);
     expect(reloaded.activeSubscriptionCustomDays, isNull);
 
-    SharedPreferences.setMockInitialValues({'reminders_installment_custom_days': 3});
+    SharedPreferences.setMockInitialValues({
+      'reminders_installment_custom_days': 3,
+    });
     final bad = ReminderSettings();
     await bad.ready;
     expect(bad.installmentCustomDays, isNull);

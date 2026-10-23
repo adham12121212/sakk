@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/app_card.dart';
@@ -9,7 +7,8 @@ import 'category_ui.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({super.key, 
+  const CategoryCard({
+    super.key,
     required this.category,
     required this.count,
     required this.isSelected,
@@ -26,7 +25,6 @@ class CategoryCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final color = CategoryUi.color(category);
     final colorScheme = Theme.of(context).colorScheme;
-
 
     final textTheme = Theme.of(context).textTheme;
     final shape = BorderRadius.circular(20);
@@ -58,10 +56,19 @@ class CategoryCard extends StatelessWidget {
                       color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Icon(CategoryUi.icon(category), color: color, size: 22),
+                    child: Icon(
+                      CategoryUi.icon(category),
+                      color: color,
+                      size: 22,
+                    ),
                   ),
                   const Spacer(),
-                  if (isSelected) Icon(AppIcons.successFilled, color: colorScheme.primary, size: 22),
+                  if (isSelected)
+                    Icon(
+                      AppIcons.successFilled,
+                      color: colorScheme.primary,
+                      size: 22,
+                    ),
                 ],
               ),
               const SizedBox(height: 16),

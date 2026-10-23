@@ -77,8 +77,11 @@ class _SignupFormState extends State<SignupForm> {
             prefixIcon: AppIcons.person,
             textInputAction: TextInputAction.next,
             enabled: !widget.isLoading,
-            validator: (v) =>
-                AppValidators.requiredField(context, v, fieldName: l10n.fullNameRequired),
+            validator: (v) => AppValidators.requiredField(
+              context,
+              v,
+              fieldName: l10n.fullNameRequired,
+            ),
           ),
           AppSpacing.h20,
 
@@ -92,7 +95,8 @@ class _SignupFormState extends State<SignupForm> {
           PasswordTextField(
             controller: _passwordController,
             obscureText: _obscurePassword,
-            onToggleVisibility: () => setState(() => _obscurePassword = !_obscurePassword),
+            onToggleVisibility: () =>
+                setState(() => _obscurePassword = !_obscurePassword),
             textInputAction: TextInputAction.next,
             enabled: !widget.isLoading,
           ),
@@ -109,8 +113,9 @@ class _SignupFormState extends State<SignupForm> {
           PasswordTextField(
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
-            onToggleVisibility: () =>
-                setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+            onToggleVisibility: () => setState(
+              () => _obscureConfirmPassword = !_obscureConfirmPassword,
+            ),
             label: l10n.confirmPassword,
             hint: l10n.confirmPasswordHint,
             textInputAction: TextInputAction.done,
@@ -133,9 +138,9 @@ class _SignupFormState extends State<SignupForm> {
                 onChanged: widget.isLoading
                     ? null
                     : (v) => setState(() {
-                  _agreedToTerms = v ?? false;
-                  if (_agreedToTerms) _showTermsError = false;
-                }),
+                        _agreedToTerms = v ?? false;
+                        if (_agreedToTerms) _showTermsError = false;
+                      }),
               ),
               Expanded(
                 child: Padding(
@@ -143,7 +148,10 @@ class _SignupFormState extends State<SignupForm> {
                   // Text.rich (not RichText) so it inherits the app font.
                   child: Text.rich(
                     TextSpan(
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13.sp),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 13.sp,
+                      ),
                       children: [
                         TextSpan(text: l10n.agreeToTermsPrefix),
                         TextSpan(

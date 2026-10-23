@@ -1,4 +1,3 @@
-
 enum ProductCategory {
   electronics,
   appliances,
@@ -9,10 +8,9 @@ enum ProductCategory {
 }
 
 extension ProductCategoryX on ProductCategory {
-
   static ProductCategory fromName(String? raw) {
     return ProductCategory.values.firstWhere(
-          (c) => c.name == raw,
+      (c) => c.name == raw,
       orElse: () => ProductCategory.other,
     );
   }

@@ -22,13 +22,10 @@ class SigninViewConsumerBody extends StatelessWidget {
               context,
               welcomeMessage(AppLocalizations.of(context)!, user),
             );
-           context.go(AppRoutes.home);
+            context.go(AppRoutes.home);
             break;
           case AuthError():
-            AppSnackBar.error(
-              context,
-              state.message,
-            );
+            AppSnackBar.error(context, state.message);
             break;
 
           default:
@@ -36,9 +33,7 @@ class SigninViewConsumerBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return SigninViewBody(
-          isLoading: state is AuthLoading,
-        );
+        return SigninViewBody(isLoading: state is AuthLoading);
       },
     );
   }

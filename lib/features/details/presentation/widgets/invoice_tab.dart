@@ -17,16 +17,24 @@ class InvoiceTab extends StatelessWidget {
       return Container(
         padding: EdgeInsets.symmetric(vertical: 48.h),
         decoration: BoxDecoration(
-            color:  colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(AppRadius.lg)),
+          color: colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
         child: Center(
           child: Column(
             children: [
-              Icon(AppIcons.receipt, size: 40.sp, color: colorScheme.onSurface.withValues(alpha: 0.4)),
+              Icon(
+                AppIcons.receipt,
+                size: 40.sp,
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
               SizedBox(height: 8.h),
               Text(
                 AppLocalizations.of(context)!.noInvoiceAvailable,
-                style: TextStyle(fontSize: 14.sp, color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
             ],
           ),
@@ -43,9 +51,14 @@ class InvoiceTab extends StatelessWidget {
           fit: BoxFit.contain,
           errorBuilder: (_, _, _) => Container(
             height: 240.h,
-            color:  colorScheme.surfaceContainerHighest,
-            child: Center(child: Icon(AppIcons.brokenImage,
-                size: 40.sp, color: colorScheme.onSurface.withValues(alpha: 0.4))),
+            color: colorScheme.surfaceContainerHighest,
+            child: Center(
+              child: Icon(
+                AppIcons.brokenImage,
+                size: 40.sp,
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
+            ),
           ),
         ),
       ),

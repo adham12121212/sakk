@@ -13,12 +13,17 @@ class ProductPickerSheet extends StatefulWidget {
 
   final List<ProductEntity> products;
 
-  static Future<ProductEntity?> show(BuildContext context, List<ProductEntity> products) {
+  static Future<ProductEntity?> show(
+    BuildContext context,
+    List<ProductEntity> products,
+  ) {
     return showModalBottomSheet<ProductEntity>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (_) => ProductPickerSheet(products: products),
     );
   }
@@ -34,7 +39,13 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return widget.products;
     return widget.products
-        .where((p) => [p.name, p.brand, p.store].any((s) => s != null && s.toLowerCase().contains(q)))
+        .where(
+          (p) => [
+            p.name,
+            p.brand,
+            p.store,
+          ].any((s) => s != null && s.toLowerCase().contains(q)),
+        )
         .toList();
   }
 
@@ -47,9 +58,13 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
 
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.75),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,9 +89,13 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(
-                    widget.products.isEmpty ? l10n.noProductsToLink : l10n.noProductsMatch,
+                    widget.products.isEmpty
+                        ? l10n.noProductsToLink
+                        : l10n.noProductsMatch,
                     textAlign: TextAlign.center,
-                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 )
               else
@@ -88,12 +107,26 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
                       final p = matches[i];
                       final details = [
                         if (p.store != null) p.store!,
-                        if (p.price != null) formatMoney(context, p.price!, p.currency),
+                        if (p.price != null)
+                          formatMoney(context, p.price!, p.currency),
                       ].join(' · ');
                       return ListTile(
-                        leading: Icon(CategoryUi.icon(p.category), color: colorScheme.primary),
-                        title: Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                        subtitle: details.isEmpty ? null : Text(details, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        leading: Icon(
+                          CategoryUi.icon(p.category),
+                          color: colorScheme.primary,
+                        ),
+                        title: Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: details.isEmpty
+                            ? null
+                            : Text(
+                                details,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                         onTap: () => Navigator.of(context).pop(p),
                       );
                     },

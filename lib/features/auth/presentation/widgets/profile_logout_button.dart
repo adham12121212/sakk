@@ -34,7 +34,10 @@ class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.cancel, style: TextStyle(color: AppColors.primary)),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: AppColors.primary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -63,20 +66,27 @@ class _ProfileLogoutButtonState extends State<ProfileLogoutButton> {
             onPressed: isBusy ? null : () => _confirmLogout(context),
             icon: _isLoggingOut
                 ? SizedBox(
-              width: 18.w,
-              height: 18.w,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: context.palette.danger,
-              ),
-            )
+                    width: 18.w,
+                    height: 18.w,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: context.palette.danger,
+                    ),
+                  )
                 : Icon(AppIcons.logOut, color: context.palette.danger),
-            label: Text(l10n.logOut, style: TextStyle(color: context.palette.danger, fontWeight: FontWeight.w600)),
+            label: Text(
+              l10n.logOut,
+              style: TextStyle(
+                color: context.palette.danger,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             // Soft red: clearly destructive without shouting.
             style: FilledButton.styleFrom(
               backgroundColor: context.palette.dangerContainer,
               foregroundColor: context.palette.danger,
-              disabledBackgroundColor: context.palette.dangerContainer.withValues(alpha: 0.5),
+              disabledBackgroundColor: context.palette.dangerContainer
+                  .withValues(alpha: 0.5),
             ),
           ),
         );

@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/notification_enitiy.dart';
 
-
 abstract class NotificationState extends Equatable {
   const NotificationState();
 

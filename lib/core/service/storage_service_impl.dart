@@ -14,11 +14,9 @@ class StorageServiceImpl implements StorageService {
     required File file,
     bool upsert = true,
   }) async {
-    await _client.storage.from(bucket).upload(
-      path,
-      file,
-      fileOptions: FileOptions(upsert: upsert),
-    );
+    await _client.storage
+        .from(bucket)
+        .upload(path, file, fileOptions: FileOptions(upsert: upsert));
   }
 
   @override
@@ -27,7 +25,10 @@ class StorageServiceImpl implements StorageService {
   }
 
   @override
-  Future<void> deleteFile({required String bucket, required String path}) async {
+  Future<void> deleteFile({
+    required String bucket,
+    required String path,
+  }) async {
     await _client.storage.from(bucket).remove([path]);
   }
 }

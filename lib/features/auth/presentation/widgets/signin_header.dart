@@ -9,8 +9,6 @@ class SigninHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,12 +25,15 @@ class SigninHeader extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(24.r),
             boxShadow: const [
-              BoxShadow(color: Color(0x404A5CFA), blurRadius: 24, offset: Offset(0, 10)),
+              BoxShadow(
+                color: Color(0x404A5CFA),
+                blurRadius: 24,
+                offset: Offset(0, 10),
+              ),
             ],
           ),
           child: SakkLogo(size: 78.w),
         ),
-
       ],
     );
   }

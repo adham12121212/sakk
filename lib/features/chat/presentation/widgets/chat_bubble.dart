@@ -36,21 +36,22 @@ class ChatBubble extends StatelessWidget {
 
     // Each message keeps its own direction: an English reply inside the
     // Arabic UI must not have its punctuation flipped, and vice versa.
-    final textDirection = Bidi.detectRtlDirectionality(message.content) ? TextDirection.rtl : TextDirection.ltr;
+    final textDirection = Bidi.detectRtlDirectionality(message.content)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
 
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          height: 1.5,
-          color: isUser ? Colors.white : colorScheme.onSurface,
-        );
+      height: 1.5,
+      color: isUser ? Colors.white : colorScheme.onSurface,
+    );
 
     final bubble = Row(
-      mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isUser
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (!isUser) ...[
-          const AiAvatar(),
-          const SizedBox(width: 8),
-        ],
+        if (!isUser) ...[const AiAvatar(), const SizedBox(width: 8)],
         Flexible(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 320),
@@ -65,11 +66,21 @@ class ChatBubble extends StatelessWidget {
                 bottomEnd: isUser ? tail : r,
               ),
               boxShadow: isUser ? null : context.palette.cardShadow,
-              border: !isUser && isDark ? Border.all(color: colorScheme.outline) : null,
+              border: !isUser && isDark
+                  ? Border.all(color: colorScheme.outline)
+                  : null,
             ),
             child: isUser
-                ? Text(message.content, style: textStyle, textDirection: textDirection)
-                : SelectableText(message.content, style: textStyle, textDirection: textDirection),
+                ? Text(
+                    message.content,
+                    style: textStyle,
+                    textDirection: textDirection,
+                  )
+                : SelectableText(
+                    message.content,
+                    style: textStyle,
+                    textDirection: textDirection,
+                  ),
           ),
         ),
         if (isUser) const SizedBox(width: 4),
@@ -95,7 +106,9 @@ class ChatBubble extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     AppLocalizations.of(context)!.messageNotSent,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.error),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: colorScheme.error),
                   ),
                 ],
               ),

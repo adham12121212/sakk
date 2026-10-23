@@ -18,13 +18,19 @@ class DetailsTab extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     // Arabic gets Arabic-Indic digits, like the rest of the app.
     final appLocale = Localizations.localeOf(context);
-    final locale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
+    final locale = appLocale.languageCode == 'ar'
+        ? 'ar_EG'
+        : appLocale.toLanguageTag();
 
     return AppCard(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
         children: [
-          DetailRow(icon: AppIcons.store, label: l10n.store, value: product.store ?? '—'),
+          DetailRow(
+            icon: AppIcons.store,
+            label: l10n.store,
+            value: product.store ?? '—',
+          ),
           DetailRow(
             icon: AppIcons.price,
             label: l10n.price,
@@ -54,16 +60,26 @@ class DetailsTab extends StatelessWidget {
               icon: AppIcons.returnItem,
               label: l10n.returnBy,
               value: product.daysToReturn! < 0
-                  ? l10n.returnWindowClosed(DateFormat.yMMMd(locale).format(product.returnByDate!))
+                  ? l10n.returnWindowClosed(
+                      DateFormat.yMMMd(locale).format(product.returnByDate!),
+                    )
                   : l10n.returnByValue(
                       DateFormat.yMMMd(locale).format(product.returnByDate!),
                       product.daysToReturn!,
                     ),
             ),
           if (product.serialNumber != null)
-            DetailRow(icon: AppIcons.receipt, label: l10n.serialNumber, value: product.serialNumber!),
+            DetailRow(
+              icon: AppIcons.receipt,
+              label: l10n.serialNumber,
+              value: product.serialNumber!,
+            ),
           if (product.invoiceNumber != null)
-            DetailRow(icon: AppIcons.receipt, label: l10n.invoiceNumber, value: product.invoiceNumber!),
+            DetailRow(
+              icon: AppIcons.receipt,
+              label: l10n.invoiceNumber,
+              value: product.invoiceNumber!,
+            ),
           DetailRow(
             icon: AppIcons.category,
             label: l10n.category,
@@ -78,7 +94,9 @@ class DetailsTab extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: Text(
                   product.notes!,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),

@@ -3,7 +3,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entities/scanned_receipt.dart';
 import 'datex.dart';
 
-
 class ProcessingFieldSpec {
   const ProcessingFieldSpec({
     required this.label,
@@ -15,7 +14,6 @@ class ProcessingFieldSpec {
   final String? Function(ScannedReceiptData data) valueOf;
   final double skeletonWidth;
 }
-
 
 List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
@@ -50,7 +48,9 @@ List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
     ),
     ProcessingFieldSpec(
       label: l10n.warrantyDuration,
-      valueOf: (d) => d.warrantyMonths == null ? null : l10n.warrantyMonthsValue(d.warrantyMonths!),
+      valueOf: (d) => d.warrantyMonths == null
+          ? null
+          : l10n.warrantyMonthsValue(d.warrantyMonths!),
       skeletonWidth: 100,
     ),
     ProcessingFieldSpec(

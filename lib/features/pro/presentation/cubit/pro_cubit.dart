@@ -10,7 +10,11 @@ import '../../domain/entities/pro_status.dart';
 import '../../domain/pro_limit.dart';
 
 class ProState extends Equatable {
-  const ProState({this.status = ProStatus.unknown, this.hasLoadedOnce = false, this.loadFailed = false});
+  const ProState({
+    this.status = ProStatus.unknown,
+    this.hasLoadedOnce = false,
+    this.loadFailed = false,
+  });
 
   final ProStatus status;
 
@@ -49,10 +53,10 @@ class ProCubit extends Cubit<ProState> {
     Stream<void> appResumed = const Stream.empty(),
     Duration refreshDebounce = const Duration(milliseconds: 400),
     Duration serverCatchUpInterval = const Duration(seconds: 2),
-  })  : _logger = logger,
-        _refreshDebounce = refreshDebounce,
-        _serverCatchUpInterval = serverCatchUpInterval,
-        super(const ProState()) {
+  }) : _logger = logger,
+       _refreshDebounce = refreshDebounce,
+       _serverCatchUpInterval = serverCatchUpInterval,
+       super(const ProState()) {
     _subscriptions = [
       userIdChanges.distinct().listen(_onUserChanged),
       _gateway.entitlementChanges.listen(_applyStore),
@@ -83,7 +87,8 @@ class ProCubit extends Cubit<ProState> {
 
   /// False when the free plan is already at its limit for [item] (the
   /// paywall should open instead of the add form).
-  bool canAdd(LimitedItem item) => state.isPro || !state.status.item(item).isFull;
+  bool canAdd(LimitedItem item) =>
+      state.isPro || !state.status.item(item).isFull;
 
   /// False when today's [type] quota is used up.
   bool canUse(QuotaType type) => !state.status.quota(type).isUsedUp;
@@ -117,15 +122,25 @@ class ProCubit extends Cubit<ProState> {
       if (generation != _generation) return;
       _serverPro = status.isPro;
       final store = _store;
-      _safeEmit(ProState(
-        status: store != null && !status.isPro ? status.withStoreEntitlement(store) : status,
-        hasLoadedOnce: true,
-      ));
+      _safeEmit(
+        ProState(
+          status: store != null && !status.isPro
+              ? status.withStoreEntitlement(store)
+              : status,
+          hasLoadedOnce: true,
+        ),
+      );
     } catch (e) {
       // Offline or the server is down: keep what's shown, and say so.
       _logger.warning('Loading the plan status failed', data: {'error': '$e'});
       if (generation != _generation) return;
-      _safeEmit(ProState(status: state.status, hasLoadedOnce: state.hasLoadedOnce, loadFailed: true));
+      _safeEmit(
+        ProState(
+          status: state.status,
+          hasLoadedOnce: state.hasLoadedOnce,
+          loadFailed: true,
+        ),
+      );
     }
   }
 
@@ -137,16 +152,21 @@ class ProCubit extends Cubit<ProState> {
   void _applyStore(ProEntitlement entitlement) {
     if (_userId == null) return;
     _store = entitlement;
-    _safeEmit(ProState(
-      status: state.status.withStoreEntitlement(entitlement),
-      hasLoadedOnce: state.hasLoadedOnce,
-      loadFailed: state.loadFailed,
-    ));
+    _safeEmit(
+      ProState(
+        status: state.status.withStoreEntitlement(entitlement),
+        hasLoadedOnce: state.hasLoadedOnce,
+        loadFailed: state.loadFailed,
+      ),
+    );
   }
 
   /// A purchase or restore completed with [entitlement]: show Pro now, then
   /// re-read the server until the webhook has caught up (a few seconds).
-  Future<void> applyPurchase(ProEntitlement entitlement, {int attempts = 5}) async {
+  Future<void> applyPurchase(
+    ProEntitlement entitlement, {
+    int attempts = 5,
+  }) async {
     _applyStore(entitlement);
     if (!entitlement.isActive) {
       await refresh();

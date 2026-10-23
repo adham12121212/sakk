@@ -39,7 +39,10 @@ class FakeStore implements PurchasesGateway {
   final changes = StreamController<ProEntitlement>.broadcast();
   final logins = <String>[];
   int logouts = 0;
-  ProEntitlement purchaseResult = const ProEntitlement(isActive: true, productId: 'sakk_pro:yearly');
+  ProEntitlement purchaseResult = const ProEntitlement(
+    isActive: true,
+    productId: 'sakk_pro:yearly',
+  );
   bool cancel = false;
 
   bool available = true;
@@ -58,9 +61,22 @@ class FakeStore implements PurchasesGateway {
   Future<ProEntitlement?> currentEntitlement() async => null;
   @override
   Future<ProOffer?> loadOffer() async => const ProOffer(
-        monthly: ProPackage(id: 'm', isYearly: false, price: 29, priceString: 'EGP 29', currencyCode: 'EGP'),
-        yearly: ProPackage(id: 'y', isYearly: true, price: 249, priceString: 'EGP 249', currencyCode: 'EGP', freeTrialDays: 7),
-      );
+    monthly: ProPackage(
+      id: 'm',
+      isYearly: false,
+      price: 29,
+      priceString: 'EGP 29',
+      currencyCode: 'EGP',
+    ),
+    yearly: ProPackage(
+      id: 'y',
+      isYearly: true,
+      price: 249,
+      priceString: 'EGP 249',
+      currencyCode: 'EGP',
+      freeTrialDays: 7,
+    ),
+  );
   @override
   Future<ProEntitlement> purchase(ProPackage package) async {
     if (cancel) throw const PurchaseCancelledException();
@@ -68,9 +84,11 @@ class FakeStore implements PurchasesGateway {
   }
 
   @override
-  Future<ProEntitlement> restore() async => const ProEntitlement(isActive: false);
+  Future<ProEntitlement> restore() async =>
+      const ProEntitlement(isActive: false);
   @override
-  Future<Uri> managementUri({String? productId}) async => Uri.parse('https://play.google.com');
+  Future<Uri> managementUri({String? productId}) async =>
+      Uri.parse('https://play.google.com');
 }
 
 class NoLog implements AppLogger {
@@ -81,7 +99,12 @@ class NoLog implements AppLogger {
   @override
   void warning(String message, {Map<String, dynamic>? data}) {}
   @override
-  void error(String message, {Object? error, StackTrace? stackTrace, Map<String, dynamic>? data}) {}
+  void error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, dynamic>? data,
+  }) {}
 }
 
 void main() {
@@ -112,7 +135,8 @@ void main() {
 
   tearDown(() => cubit.close());
 
-  Future<void> settle() => Future<void>.delayed(const Duration(milliseconds: 10));
+  Future<void> settle() =>
+      Future<void>.delayed(const Duration(milliseconds: 10));
 
   test('signing in logs in to the store and loads the plan', () async {
     users.add('user-1');
@@ -138,7 +162,9 @@ void main() {
     await settle();
 
     // The webhook hasn't reached the server yet.
-    store.changes.add(const ProEntitlement(isActive: true, productId: 'sakk_pro:yearly'));
+    store.changes.add(
+      const ProEntitlement(isActive: true, productId: 'sakk_pro:yearly'),
+    );
     await settle();
     expect(cubit.isPro, isTrue);
     expect(cubit.state.status.plan, PlanKind.yearly);
@@ -149,24 +175,29 @@ void main() {
     expect(cubit.isPro, isTrue);
 
     server.status = _pro;
-    await cubit.applyPurchase(const ProEntitlement(isActive: true, productId: 'sakk_pro:monthly'));
+    await cubit.applyPurchase(
+      const ProEntitlement(isActive: true, productId: 'sakk_pro:monthly'),
+    );
     expect(cubit.state.status, _pro);
   });
 
-  test('a failed load is reported instead of loading forever, and a retry recovers', () async {
-    server.fail = true;
-    users.add('user-1');
-    await settle();
-    expect(cubit.state.hasLoadedOnce, isFalse);
-    expect(cubit.state.loadFailed, isTrue);
-    // Nothing is blocked on the client while the plan is unknown.
-    expect(cubit.canAdd(LimitedItem.products), isTrue);
+  test(
+    'a failed load is reported instead of loading forever, and a retry recovers',
+    () async {
+      server.fail = true;
+      users.add('user-1');
+      await settle();
+      expect(cubit.state.hasLoadedOnce, isFalse);
+      expect(cubit.state.loadFailed, isTrue);
+      // Nothing is blocked on the client while the plan is unknown.
+      expect(cubit.canAdd(LimitedItem.products), isTrue);
 
-    server.fail = false;
-    await cubit.refresh();
-    expect(cubit.state.hasLoadedOnce, isTrue);
-    expect(cubit.state.loadFailed, isFalse);
-  });
+      server.fail = false;
+      await cubit.refresh();
+      expect(cubit.state.hasLoadedOnce, isTrue);
+      expect(cubit.state.loadFailed, isFalse);
+    },
+  );
 
   test('usage changes re-read the counters', () async {
     users.add('user-1');
@@ -188,17 +219,20 @@ void main() {
     expect(cubit.isPro, isTrue);
   });
 
-  test('expiry: the server says free again and nothing is kept from before', () async {
-    server.status = _pro;
-    users.add('user-1');
-    await settle();
-    expect(cubit.isPro, isTrue);
+  test(
+    'expiry: the server says free again and nothing is kept from before',
+    () async {
+      server.status = _pro;
+      users.add('user-1');
+      await settle();
+      expect(cubit.isPro, isTrue);
 
-    server.status = _free;
-    await cubit.refresh();
-    expect(cubit.isPro, isFalse);
-    expect(cubit.state.status.plan, PlanKind.free);
-  });
+      server.status = _free;
+      await cubit.refresh();
+      expect(cubit.isPro, isFalse);
+      expect(cubit.state.status.plan, PlanKind.free);
+    },
+  );
 
   group('PaywallCubit', () {
     test('loads both plans with yearly picked; purchase unlocks Pro', () async {

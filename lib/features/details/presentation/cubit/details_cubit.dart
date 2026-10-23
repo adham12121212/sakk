@@ -25,12 +25,14 @@ class DetailsCubit extends Cubit<DetailsState> {
     ProductsCubit? productsCubit,
     WarrantyNotificationService? warrantyNotificationService,
     ProductExtrasUseCase? productExtrasUseCase,
-  })  : _productExtrasUseCase = productExtrasUseCase ?? getIt<ProductExtrasUseCase>(),
-        _updateProductUseCase = updateProductUseCase ?? getIt<UpdateProductUseCase>(),
-        _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
-        _warrantyNotificationService =
-            warrantyNotificationService ?? getIt<WarrantyNotificationService>(),
-        super(const DetailsIdle());
+  }) : _productExtrasUseCase =
+           productExtrasUseCase ?? getIt<ProductExtrasUseCase>(),
+       _updateProductUseCase =
+           updateProductUseCase ?? getIt<UpdateProductUseCase>(),
+       _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
+       _warrantyNotificationService =
+           warrantyNotificationService ?? getIt<WarrantyNotificationService>(),
+       super(const DetailsIdle());
 
   final UpdateProductUseCase _updateProductUseCase;
   final ProductsCubit _productsCubit;
@@ -74,18 +76,14 @@ class DetailsCubit extends Cubit<DetailsState> {
       invoiceNumber: invoiceNumber,
     );
 
-    result.fold(
-          (failure) => emit(DetailsFailure(failure.message)),
-          (product) {
-        _productsCubit.refresh();
-        // The purchase date or warranty length may have changed, so the
-        // reminders scheduled when it was added would fire on the wrong day.
-        _warrantyNotificationService.scheduleFutureNotifications(product);
-        emit(DetailsSuccess(product));
-      },
-    );
+    result.fold((failure) => emit(DetailsFailure(failure.message)), (product) {
+      _productsCubit.refresh();
+      // The purchase date or warranty length may have changed, so the
+      // reminders scheduled when it was added would fire on the wrong day.
+      _warrantyNotificationService.scheduleFutureNotifications(product);
+      emit(DetailsSuccess(product));
+    });
   }
-
 
   /// Downloads the invoice photo to a temporary file for the share image.
   Future<void> downloadInvoice(ProductEntity product) async {
@@ -96,14 +94,19 @@ class DetailsCubit extends Cubit<DetailsState> {
     }
     emit(const DetailsActionInProgress());
     try {
-      final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(const Duration(seconds: 30));
       if (response.statusCode != 200) {
         throw Exception('Server returned ${response.statusCode}');
       }
       final tempDir = await getTemporaryDirectory();
       // Product names can contain "/" or quotes, which aren't valid in a path.
       // Letters and digits in any language (e.g. Arabic) are kept.
-      final safeName = product.name.replaceAll(RegExp(r'[^\p{L}\p{N}\s-]', unicode: true), '_');
+      final safeName = product.name.replaceAll(
+        RegExp(r'[^\p{L}\p{N}\s-]', unicode: true),
+        '_',
+      );
       final file = File('${tempDir.path}/${safeName}_invoice.jpg');
       await file.writeAsBytes(response.bodyBytes);
       if (isClosed) return;
@@ -142,7 +145,10 @@ class DetailsCubit extends Cubit<DetailsState> {
 
       final tempDir = await getTemporaryDirectory();
       // Letters and digits in any language (e.g. Arabic) are kept.
-      final safeName = product.name.replaceAll(RegExp(r'[^\p{L}\p{N}\s-]', unicode: true), '_');
+      final safeName = product.name.replaceAll(
+        RegExp(r'[^\p{L}\p{N}\s-]', unicode: true),
+        '_',
+      );
       final tempFile = File('${tempDir.path}/$safeName.jpg');
       await tempFile.writeAsBytes(response.bodyBytes);
 
@@ -152,11 +158,19 @@ class DetailsCubit extends Cubit<DetailsState> {
       emit(DetailsGallerySaved(tempFile.path));
     } on GalException catch (e, st) {
       // Never log the URL: it's a signed link that opens the receipt.
-      getIt<AppLogger>().error('Saving invoice to gallery failed: ${e.type}', error: e, stackTrace: st);
+      getIt<AppLogger>().error(
+        'Saving invoice to gallery failed: ${e.type}',
+        error: e,
+        stackTrace: st,
+      );
       if (isClosed) return;
       emit(DetailsActionError(e));
     } catch (e, st) {
-      getIt<AppLogger>().error('Saving invoice to gallery failed', error: e, stackTrace: st);
+      getIt<AppLogger>().error(
+        'Saving invoice to gallery failed',
+        error: e,
+        stackTrace: st,
+      );
       if (isClosed) return;
       emit(DetailsActionError(e));
     }
@@ -169,30 +183,44 @@ class DetailsCubit extends Cubit<DetailsState> {
     required String provider,
     required DateTime startDate,
     required int months,
-  }) =>
-      _runExtrasAction(
-        () => _productExtrasUseCase.addExtraWarranty(
-          productId: productId,
-          provider: provider,
-          startDate: startDate,
-          months: months,
-        ),
-        rescheduleProductId: productId,
-      );
+  }) => _runExtrasAction(
+    () => _productExtrasUseCase.addExtraWarranty(
+      productId: productId,
+      provider: provider,
+      startDate: startDate,
+      months: months,
+    ),
+    rescheduleProductId: productId,
+  );
 
-  Future<bool> deleteExtraWarranty(String productId, String warrantyId) => _runExtrasAction(
+  Future<bool> deleteExtraWarranty(String productId, String warrantyId) =>
+      _runExtrasAction(
         () => _productExtrasUseCase.deleteExtraWarranty(warrantyId),
         rescheduleProductId: productId,
       );
 
   Future<bool> startClaim({required String productId, required String issue}) =>
-      _runExtrasAction(() => _productExtrasUseCase.addClaim(productId: productId, issue: issue));
+      _runExtrasAction(
+        () =>
+            _productExtrasUseCase.addClaim(productId: productId, issue: issue),
+      );
 
   Future<bool> updateClaimStatus(String claimId, ClaimStatus status) =>
-      _runExtrasAction(() => _productExtrasUseCase.updateClaimStatus(claimId, status));
+      _runExtrasAction(
+        () => _productExtrasUseCase.updateClaimStatus(claimId, status),
+      );
 
-  Future<bool> addDocument({required String productId, required DocumentKind kind, required String filePath}) =>
-      _runExtrasAction(() => _productExtrasUseCase.addDocument(productId: productId, kind: kind, filePath: filePath));
+  Future<bool> addDocument({
+    required String productId,
+    required DocumentKind kind,
+    required String filePath,
+  }) => _runExtrasAction(
+    () => _productExtrasUseCase.addDocument(
+      productId: productId,
+      kind: kind,
+      filePath: filePath,
+    ),
+  );
 
   Future<bool> deleteDocument(ProductDocument document) =>
       _runExtrasAction(() => _productExtrasUseCase.deleteDocument(document));
@@ -214,8 +242,12 @@ class DetailsCubit extends Cubit<DetailsState> {
     await _productsCubit.refresh();
     if (rescheduleProductId != null) {
       // The coverage end date may have moved, so move the reminders too.
-      final product = _productsCubit.state.products.where((p) => p.id == rescheduleProductId).firstOrNull;
-      if (product != null) await _warrantyNotificationService.scheduleFutureNotifications(product);
+      final product = _productsCubit.state.products
+          .where((p) => p.id == rescheduleProductId)
+          .firstOrNull;
+      if (product != null) {
+        await _warrantyNotificationService.scheduleFutureNotifications(product);
+      }
     }
     if (!isClosed) emit(const DetailsIdle());
     return true;
@@ -224,7 +256,11 @@ class DetailsCubit extends Cubit<DetailsState> {
   Future<bool> delete(String productId) async {
     emit(const DetailsActionInProgress());
     final success = await _productsCubit.deleteProduct(productId);
-    emit(success ? const DetailsDeleted() : const DetailsActionError('delete_failed'));
+    emit(
+      success
+          ? const DetailsDeleted()
+          : const DetailsActionError('delete_failed'),
+    );
     return success;
   }
 }

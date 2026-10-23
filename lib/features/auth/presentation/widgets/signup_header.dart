@@ -27,7 +27,10 @@ class SignupHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.createAccount, style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  l10n.createAccount,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 Text(
                   l10n.joinSakkToday,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(

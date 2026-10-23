@@ -19,31 +19,44 @@ void main() {
   // Regression: the router reports its first route while the app is still
   // building, before any frame. Rebuilding the banner right then threw
   // "setState() or markNeedsBuild() called during build" at every launch.
-  testWidgets('no build error at launch; hidden on splash, shown after', (tester) async {
+  testWidgets('no build error at launch; hidden on splash, shown after', (
+    tester,
+  ) async {
     final network = _Network();
-    final router = GoRouter(initialLocation: '/', routes: [
-      GoRoute(path: '/', builder: (_, _) => const Text('splash')),
-      GoRoute(path: '/home', builder: (_, _) => const Text('home')),
-    ]);
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(path: '/', builder: (_, _) => const Text('splash')),
+        GoRoute(path: '/home', builder: (_, _) => const Text('home')),
+      ],
+    );
     // Attach the way runApp does (outside a frame), not via pumpWidget, which
     // builds inside one and hides the bug.
-    tester.binding.attachRootWidget(tester.binding.wrapWithDefaultView(MaterialApp.router(
-      routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => RouteAwareConnectivityBanner(
-        routerDelegate: router.routerDelegate,
-        isSuppressed: () => router.routerDelegate.currentConfiguration.uri.path == '/',
-        networkInfo: network,
-        child: child!,
+    tester.binding.attachRootWidget(
+      tester.binding.wrapWithDefaultView(
+        MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => RouteAwareConnectivityBanner(
+            routerDelegate: router.routerDelegate,
+            isSuppressed: () =>
+                router.routerDelegate.currentConfiguration.uri.path == '/',
+            networkInfo: network,
+            child: child!,
+          ),
+        ),
       ),
-    )));
+    );
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
     network.changes.add(false);
     await tester.pumpAndSettle();
-    expect(find.text("You're offline. Showing saved data."), findsNothing); // splash
+    expect(
+      find.text("You're offline. Showing saved data."),
+      findsNothing,
+    ); // splash
 
     router.go('/home');
     await tester.pumpAndSettle();

@@ -27,7 +27,8 @@ class PlanBadge extends StatelessWidget {
   });
 
   /// The badge for the signed-in user, kept up to date.
-  static Widget live({PlanBadgeSize size = PlanBadgeSize.regular}) => _LivePlanBadge(size: size);
+  static Widget live({PlanBadgeSize size = PlanBadgeSize.regular}) =>
+      _LivePlanBadge(size: size);
 
   final ProStatus status;
   final PlanBadgeSize size;
@@ -60,7 +61,10 @@ class PlanBadge extends StatelessWidget {
     final foreground = switch (plan) {
       PlanKind.free => colorScheme.onSurfaceVariant,
       PlanKind.billingIssue => palette.warning,
-      PlanKind.trial => Theme.of(context).brightness == Brightness.dark ? _goldGradient.first : const Color(0xFF8A5A00),
+      PlanKind.trial =>
+        Theme.of(context).brightness == Brightness.dark
+            ? _goldGradient.first
+            : const Color(0xFF8A5A00),
       _ => _onGold,
     };
     final decoration = BoxDecoration(
@@ -74,17 +78,33 @@ class PlanBadge extends StatelessWidget {
       },
       // The yearly plan's "distinct touch": a white inner ring on the gold.
       border: switch (plan) {
-        PlanKind.yearly => Border.all(color: Colors.white.withValues(alpha: 0.85), width: 1.5),
-        PlanKind.trial => Border.all(color: _goldGradient.last.withValues(alpha: 0.6)),
+        PlanKind.yearly => Border.all(
+          color: Colors.white.withValues(alpha: 0.85),
+          width: 1.5,
+        ),
+        PlanKind.trial => Border.all(
+          color: _goldGradient.last.withValues(alpha: 0.6),
+        ),
         _ => null,
       },
-      boxShadow: isGold ? const [BoxShadow(color: Color(0x33F2A900), blurRadius: 8, offset: Offset(0, 2))] : null,
+      boxShadow: isGold
+          ? const [
+              BoxShadow(
+                color: Color(0x33F2A900),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ]
+          : null,
     );
 
     final badge = DecoratedBox(
       decoration: decoration,
       child: Padding(
-        padding: EdgeInsetsDirectional.symmetric(horizontal: small ? 8 : 12, vertical: small ? 2 : 5),
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: small ? 8 : 12,
+          vertical: small ? 2 : 5,
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -110,7 +130,12 @@ class PlanBadge extends StatelessWidget {
       ),
     );
 
-    if (onTap == null) return Semantics(label: label, child: ExcludeSemantics(child: badge));
+    if (onTap == null) {
+      return Semantics(
+        label: label,
+        child: ExcludeSemantics(child: badge),
+      );
+    }
     return Semantics(
       button: true,
       label: label,
@@ -148,7 +173,9 @@ class _LivePlanBadge extends StatelessWidget {
       builder: (context, state) {
         // Nothing until the plan is known, so a Pro user never sees "Free"
         // flash first.
-        if (!state.hasLoadedOnce && !state.isPro) return const SizedBox.shrink();
+        if (!state.hasLoadedOnce && !state.isPro) {
+          return const SizedBox.shrink();
+        }
         final plan = state.status.plan;
         return PlanBadge(
           status: state.status,

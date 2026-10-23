@@ -44,7 +44,9 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<PasswordResetCubit>().sendOtp(AppValidators.normalizeEmail(_emailController.text));
+    context.read<PasswordResetCubit>().sendOtp(
+      AppValidators.normalizeEmail(_emailController.text),
+    );
   }
 
   void _handleStateChange(BuildContext context, PasswordResetState state) {
@@ -58,7 +60,9 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
         MaterialPageRoute(
           builder: (_) => BlocProvider.value(
             value: context.read<PasswordResetCubit>(),
-            child: OtpVerificationView(email: AppValidators.normalizeEmail(_emailController.text)),
+            child: OtpVerificationView(
+              email: AppValidators.normalizeEmail(_emailController.text),
+            ),
           ),
         ),
       );
@@ -71,7 +75,7 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-          body: BlocConsumer<PasswordResetCubit, PasswordResetState>(
+        body: BlocConsumer<PasswordResetCubit, PasswordResetState>(
           listener: _handleStateChange,
           builder: (context, state) {
             final isLoading = state is PasswordResetLoading;
@@ -97,7 +101,9 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
                       SizedBox(height: 8.h),
                       Text(
                         l10n.enteryouremailandwellsendyouacodetoresetyourpassword,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       SizedBox(height: 32.h),
                       EmailTextField(

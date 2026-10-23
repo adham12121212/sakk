@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 /// Section title with an optional trailing text action (e.g. "See all").
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({super.key, required this.title, this.actionLabel, this.onAction});
+  const SectionHeader({
+    super.key,
+    required this.title,
+    this.actionLabel,
+    this.onAction,
+  });
 
   final String title;
   final String? actionLabel;

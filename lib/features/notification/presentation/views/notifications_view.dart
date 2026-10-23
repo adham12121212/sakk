@@ -30,17 +30,19 @@ class _NotificationsViewState extends State<NotificationsView> {
       ..refresh();
   }
 
-
   List<NotificationEntity> _placeholderNotifications() {
     final now = DateTime.now();
-    return List.generate(5, (i) => NotificationEntity(
-      id: 'placeholder-$i',
-      userId: widget.userId,
-      title: 'Notification title',
-      subtitle: 'Notification subtitle text goes here',
-      type: NotificationType.info,
-      createdAt: now,
-    ));
+    return List.generate(
+      5,
+      (i) => NotificationEntity(
+        id: 'placeholder-$i',
+        userId: widget.userId,
+        title: 'Notification title',
+        subtitle: 'Notification subtitle text goes here',
+        type: NotificationType.info,
+        createdAt: now,
+      ),
+    );
   }
 
   @override
@@ -48,11 +50,11 @@ class _NotificationsViewState extends State<NotificationsView> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-             leading: IconButton(
-            icon: const Icon(AppIcons.back),
-            tooltip: l10n.back,
-            onPressed: () => Navigator.pop(context),
-          ),
+        leading: IconButton(
+          icon: const Icon(AppIcons.back),
+          tooltip: l10n.back,
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(l10n.notifications),
       ),
       body: BlocBuilder<NotificationCubit, NotificationState>(
@@ -66,9 +68,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                 itemCount: placeholders.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) =>
-                    NotificationTile(
-                        notification: placeholders[index],
-                    ),
+                    NotificationTile(notification: placeholders[index]),
               ),
             );
           }
@@ -109,14 +109,23 @@ class _NotificationsViewState extends State<NotificationsView> {
                             color: context.palette.danger,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Icon(AppIcons.delete, color: Colors.white),
+                          child: const Icon(
+                            AppIcons.delete,
+                            color: Colors.white,
+                          ),
                         ),
-                        onDismissed: (_) => cubit.deleteNotification(widget.userId, notification.id),
+                        onDismissed: (_) => cubit.deleteNotification(
+                          widget.userId,
+                          notification.id,
+                        ),
                         child: NotificationTile(
                           notification: notification,
                           onTap: notification.isRead
                               ? null
-                              : () => cubit.markAsRead(widget.userId, notification.id),
+                              : () => cubit.markAsRead(
+                                  widget.userId,
+                                  notification.id,
+                                ),
                         ),
                       );
                     },

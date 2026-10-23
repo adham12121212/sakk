@@ -27,23 +27,29 @@ DuplicateMatch? findDuplicate(
   final invoice = _normalizeCode(invoiceNumber);
   if (invoice != null) {
     for (final p in existing) {
-      if (_normalizeCode(p.invoiceNumber) == invoice) return DuplicateMatch(p, DuplicateReason.sameInvoiceNumber);
+      if (_normalizeCode(p.invoiceNumber) == invoice) {
+        return DuplicateMatch(p, DuplicateReason.sameInvoiceNumber);
+      }
     }
   }
 
   final serial = _normalizeCode(serialNumber);
   if (serial != null) {
     for (final p in existing) {
-      if (_normalizeCode(p.serialNumber) == serial) return DuplicateMatch(p, DuplicateReason.sameSerialNumber);
+      if (_normalizeCode(p.serialNumber) == serial) {
+        return DuplicateMatch(p, DuplicateReason.sameSerialNumber);
+      }
     }
   }
 
   final normalizedName = _normalizeName(name);
   for (final p in existing) {
-    final sameDay = p.purchaseDate.year == purchaseDate.year &&
+    final sameDay =
+        p.purchaseDate.year == purchaseDate.year &&
         p.purchaseDate.month == purchaseDate.month &&
         p.purchaseDate.day == purchaseDate.day;
-    final priceDiffers = price != null && p.price != null && (price - p.price!).abs() >= 0.01;
+    final priceDiffers =
+        price != null && p.price != null && (price - p.price!).abs() >= 0.01;
     if (sameDay && !priceDiffers && _normalizeName(p.name) == normalizedName) {
       return DuplicateMatch(p, DuplicateReason.sameNameAndDate);
     }
@@ -56,10 +62,14 @@ DuplicateMatch? findDuplicate(
 String? _normalizeCode(String? code) {
   if (code == null) return null;
   final normalized = code
-      .replaceAllMapped(RegExp('[٠-٩]'), (m) => '${m[0]!.codeUnitAt(0) - 0x0660}')
+      .replaceAllMapped(
+        RegExp('[٠-٩]'),
+        (m) => '${m[0]!.codeUnitAt(0) - 0x0660}',
+      )
       .toUpperCase()
       .replaceAll(RegExp(r'[\s\-_/.#]'), '');
   return normalized.isEmpty ? null : normalized;
 }
 
-String _normalizeName(String name) => name.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();
+String _normalizeName(String name) =>
+    name.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();

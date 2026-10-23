@@ -20,12 +20,20 @@ class _Scan implements ScanReceiptUseCase {
   String? lastPdfText;
 
   @override
-  Future<Either<Failure, ScannedReceiptData>> call({required String imagePath, String? pdfText}) async {
+  Future<Either<Failure, ScannedReceiptData>> call({
+    required String imagePath,
+    String? pdfText,
+  }) async {
     lastImagePath = imagePath;
     lastPdfText = pdfText;
     return const Right(
-        ScannedReceiptData(productName: 'TV', receiptPath: 'u1/1.jpg', serialNumber: 'SN1', invoiceNumber: 'INV9'),
-      );
+      ScannedReceiptData(
+        productName: 'TV',
+        receiptPath: 'u1/1.jpg',
+        serialNumber: 'SN1',
+        invoiceNumber: 'INV9',
+      ),
+    );
   }
 
   @override
@@ -40,7 +48,14 @@ class _Add implements AddProductUseCase {
   dynamic noSuchMethod(Invocation i) {
     saved = i.namedArguments;
     return Future.value(
-      Right<Failure, ProductEntity>(ProductEntity(id: '1', name: 'TV', purchaseDate: DateTime(2026), warrantyMonths: 12)),
+      Right<Failure, ProductEntity>(
+        ProductEntity(
+          id: '1',
+          name: 'TV',
+          purchaseDate: DateTime(2026),
+          warrantyMonths: 12,
+        ),
+      ),
     );
   }
 }
@@ -65,16 +80,17 @@ class _PdfReader implements PdfInvoiceReader {
   final PdfInvoice? result;
 
   @override
-  Future<PdfInvoice> read(Uint8List pdfBytes) async => result ?? (throw const PdfInvoiceException());
+  Future<PdfInvoice> read(Uint8List pdfBytes) async =>
+      result ?? (throw const PdfInvoiceException());
 }
 
 ScanCubit _cubit(_Scan scan, _Add add, {PdfInvoiceReader? pdf}) => ScanCubit(
-      scanReceiptUseCase: scan,
-      addProductUseCase: add,
-      productsCubit: _Products(),
-      warrantyNotificationService: _Notifications(),
-      pdfInvoiceReader: pdf,
-    );
+  scanReceiptUseCase: scan,
+  addProductUseCase: add,
+  productsCubit: _Products(),
+  warrantyNotificationService: _Notifications(),
+  pdfInvoiceReader: pdf,
+);
 
 void main() {
   test('leaving without saving deletes the uploaded photo', () async {
@@ -118,18 +134,30 @@ void main() {
     expect(scan.discarded, isEmpty);
   });
 
-  test('a PDF invoice is scanned as its first-page image plus its text', () async {
-    final scan = _Scan();
-    final c = _cubit(scan, _Add(), pdf: _PdfReader(const PdfInvoice(imagePath: '/tmp/page.png', text: 'Invoice No: 1')));
-    await c.processPdf(Uint8List(0));
-    expect(scan.lastImagePath, '/tmp/page.png');
-    expect(scan.lastPdfText, 'Invoice No: 1');
-    expect(c.state, isA<ScanEditing>());
-  });
+  test(
+    'a PDF invoice is scanned as its first-page image plus its text',
+    () async {
+      final scan = _Scan();
+      final c = _cubit(
+        scan,
+        _Add(),
+        pdf: _PdfReader(
+          const PdfInvoice(imagePath: '/tmp/page.png', text: 'Invoice No: 1'),
+        ),
+      );
+      await c.processPdf(Uint8List(0));
+      expect(scan.lastImagePath, '/tmp/page.png');
+      expect(scan.lastPdfText, 'Invoice No: 1');
+      expect(c.state, isA<ScanEditing>());
+    },
+  );
 
   test('a PDF that cannot be opened shows the PDF error', () async {
     final c = _cubit(_Scan(), _Add(), pdf: _PdfReader(null));
     await c.processPdf(Uint8List(0));
-    expect((c.state as ScanProcessingFailed).message, ProductDataSourceImpl.pdfUnreadable);
+    expect(
+      (c.state as ScanProcessingFailed).message,
+      ProductDataSourceImpl.pdfUnreadable,
+    );
   });
 }

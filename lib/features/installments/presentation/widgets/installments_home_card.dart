@@ -33,8 +33,11 @@ class InstallmentsHomeCard extends StatelessWidget {
         final next = active.isEmpty ? null : active.first;
         final nextPayment = next?.nextPayment;
         final totals = state.remainingTotals;
-        final main = totals.containsKey('EGP') || totals.isEmpty ? 'EGP' : totals.keys.first;
-        final extraCurrencies = totals.length - (totals.containsKey(main) ? 1 : 0);
+        final main = totals.containsKey('EGP') || totals.isEmpty
+            ? 'EGP'
+            : totals.keys.first;
+        final extraCurrencies =
+            totals.length - (totals.containsKey(main) ? 1 : 0);
         final hasActive = active.isNotEmpty || isInitialLoading;
 
         return AppCard(
@@ -53,7 +56,11 @@ class InstallmentsHomeCard extends StatelessWidget {
                         color: colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(AppIcons.installments, color: colorScheme.primary, size: 21),
+                      child: Icon(
+                        AppIcons.installments,
+                        color: colorScheme.primary,
+                        size: 21,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -62,7 +69,9 @@ class InstallmentsHomeCard extends StatelessWidget {
                         children: [
                           Text(l10n.installments, style: textTheme.titleMedium),
                           Text(
-                            hasActive ? l10n.installmentsLeftToPay : l10n.installmentsHomeEmpty,
+                            hasActive
+                                ? l10n.installmentsLeftToPay
+                                : l10n.installmentsHomeEmpty,
                             style: textTheme.bodySmall?.copyWith(fontSize: 13),
                           ),
                         ],
@@ -73,7 +82,9 @@ class InstallmentsHomeCard extends StatelessWidget {
                         extraCurrencies > 0
                             ? '${formatMoney(context, totals[main] ?? 0, main)} +'
                             : formatMoney(context, totals[main] ?? 0, main),
-                        style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       )
                     else
                       Icon(AppIcons.add, color: colorScheme.primary),
@@ -82,11 +93,17 @@ class InstallmentsHomeCard extends StatelessWidget {
                 ),
                 if (next != null && nextPayment != null) ...[
                   const SizedBox(height: 12),
-                  Divider(height: 1, color: colorScheme.outline.withValues(alpha: 0.5)),
+                  Divider(
+                    height: 1,
+                    color: colorScheme.outline.withValues(alpha: 0.5),
+                  ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      InstallmentIcon(overdue: next.overdueAmount(today) > 0, size: 28),
+                      InstallmentIcon(
+                        overdue: next.overdueAmount(today) > 0,
+                        size: 28,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text.rich(
@@ -94,11 +111,22 @@ class InstallmentsHomeCard extends StatelessWidget {
                             children: [
                               TextSpan(text: '${next.name} · '),
                               TextSpan(
-                                text: dueLabel(context, nextPayment.daysLeft(today)),
-                                style: dueColor(context, nextPayment.daysLeft(today)) == null
+                                text: dueLabel(
+                                  context,
+                                  nextPayment.daysLeft(today),
+                                ),
+                                style:
+                                    dueColor(
+                                          context,
+                                          nextPayment.daysLeft(today),
+                                        ) ==
+                                        null
                                     ? null
                                     : TextStyle(
-                                        color: dueColor(context, nextPayment.daysLeft(today)),
+                                        color: dueColor(
+                                          context,
+                                          nextPayment.daysLeft(today),
+                                        ),
                                         fontWeight: FontWeight.w600,
                                       ),
                               ),
@@ -112,7 +140,9 @@ class InstallmentsHomeCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         formatMoney(context, nextPayment.amount, next.currency),
-                        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),

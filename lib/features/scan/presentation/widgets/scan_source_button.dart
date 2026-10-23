@@ -29,7 +29,11 @@ class ScanSourceButton extends StatelessWidget {
       width: double.infinity,
       height: 54,
       child: isFilled
-          ? FilledButton.icon(onPressed: onPressed, icon: Icon(icon), label: Text(label))
+          ? FilledButton.icon(
+              onPressed: onPressed,
+              icon: Icon(icon),
+              label: Text(label),
+            )
           : OutlinedButton.icon(
               onPressed: onPressed,
               icon: Icon(icon),

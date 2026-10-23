@@ -14,23 +14,31 @@ class CalendarActions extends StatelessWidget {
 
   final ProductEntity product;
 
-  Future<void> _add(BuildContext context, {required String title, required DateTime date}) async {
+  Future<void> _add(
+    BuildContext context, {
+    required String title,
+    required DateTime date,
+  }) async {
     final l10n = AppLocalizations.of(context)!;
     final day = DateTime(date.year, date.month, date.day);
     bool opened;
     try {
-      opened = await Add2Calendar.addEvent2Cal(Event(
-        title: title,
-        description: l10n.calendarEventDescription(product.name),
-        startDate: day,
-        // The next calendar day, not +24h (off by an hour across a DST change).
-        endDate: DateTime(day.year, day.month, day.day + 1),
-        allDay: true,
-      ));
+      opened = await Add2Calendar.addEvent2Cal(
+        Event(
+          title: title,
+          description: l10n.calendarEventDescription(product.name),
+          startDate: day,
+          // The next calendar day, not +24h (off by an hour across a DST change).
+          endDate: DateTime(day.year, day.month, day.day + 1),
+          allDay: true,
+        ),
+      );
     } catch (_) {
       opened = false;
     }
-    if (!opened && context.mounted) AppSnackBar.error(context, l10n.couldNotOpenCalendar);
+    if (!opened && context.mounted) {
+      AppSnackBar.error(context, l10n.couldNotOpenCalendar);
+    }
   }
 
   @override
@@ -47,14 +55,22 @@ class CalendarActions extends StatelessWidget {
         children: [
           if (!product.isExpired)
             TextButton.icon(
-              onPressed: () => _add(context, title: l10n.calendarWarrantyEnds(product.name), date: product.warrantyEndDate),
+              onPressed: () => _add(
+                context,
+                title: l10n.calendarWarrantyEnds(product.name),
+                date: product.warrantyEndDate,
+              ),
               icon: const Icon(AppIcons.calendar, size: 18),
               label: Text(l10n.addWarrantyEndToCalendar),
               style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
             ),
           if (returnOpen)
             TextButton.icon(
-              onPressed: () => _add(context, title: l10n.calendarReturnDeadline(product.name), date: returnBy),
+              onPressed: () => _add(
+                context,
+                title: l10n.calendarReturnDeadline(product.name),
+                date: returnBy,
+              ),
               icon: const Icon(AppIcons.calendar, size: 18),
               label: Text(l10n.addReturnDeadlineToCalendar),
               style: TextButton.styleFrom(minimumSize: const Size(0, 48)),

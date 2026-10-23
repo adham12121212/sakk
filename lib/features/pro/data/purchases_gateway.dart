@@ -35,7 +35,14 @@ class ProPackage extends Equatable {
   final Object? raw;
 
   @override
-  List<Object?> get props => [id, isYearly, price, priceString, currencyCode, freeTrialDays];
+  List<Object?> get props => [
+    id,
+    isYearly,
+    price,
+    priceString,
+    currencyCode,
+    freeTrialDays,
+  ];
 }
 
 /// The paywall's two plans.
@@ -49,7 +56,12 @@ class ProOffer extends Equatable {
   /// store's real prices; null if it can't be worked out or is no saving.
   int? get yearlySavingsPercent {
     final m = monthly, y = yearly;
-    if (m == null || y == null || m.price <= 0 || m.currencyCode != y.currencyCode) return null;
+    if (m == null ||
+        y == null ||
+        m.price <= 0 ||
+        m.currencyCode != y.currencyCode) {
+      return null;
+    }
     final percent = ((1 - y.price / (m.price * 12)) * 100).floor();
     return percent > 0 ? percent : null;
   }
@@ -92,8 +104,13 @@ abstract class PurchasesGateway {
 }
 
 class RevenueCatGateway implements PurchasesGateway {
-  RevenueCatGateway({required String? androidApiKey, required String? iosApiKey, required this.packageName})
-      : _apiKey = Platform.isAndroid ? androidApiKey : (Platform.isIOS ? iosApiKey : null);
+  RevenueCatGateway({
+    required String? androidApiKey,
+    required String? iosApiKey,
+    required this.packageName,
+  }) : _apiKey = Platform.isAndroid
+           ? androidApiKey
+           : (Platform.isIOS ? iosApiKey : null);
 
   static const entitlementId = 'pro';
 
@@ -111,7 +128,9 @@ class RevenueCatGateway implements PurchasesGateway {
     if (key == null || key.isEmpty || _configured) return;
     await Purchases.setLogLevel(kDebugMode ? LogLevel.debug : LogLevel.warn);
     await Purchases.configure(PurchasesConfiguration(key));
-    Purchases.addCustomerInfoUpdateListener((info) => _changes.add(_entitlementOf(info)));
+    Purchases.addCustomerInfoUpdateListener(
+      (info) => _changes.add(_entitlementOf(info)),
+    );
     _configured = true;
   }
 
@@ -151,10 +170,13 @@ class RevenueCatGateway implements PurchasesGateway {
   @override
   Future<ProEntitlement> purchase(ProPackage package) async {
     try {
-      final result = await Purchases.purchase(PurchaseParams.package(package.raw! as Package));
+      final result = await Purchases.purchase(
+        PurchaseParams.package(package.raw! as Package),
+      );
       return _entitlementOf(result.customerInfo);
     } on PlatformException catch (e) {
-      if (PurchasesErrorHelper.getErrorCode(e) == PurchasesErrorCode.purchaseCancelledError) {
+      if (PurchasesErrorHelper.getErrorCode(e) ==
+          PurchasesErrorCode.purchaseCancelledError) {
         throw const PurchaseCancelledException();
       }
       rethrow;
@@ -162,7 +184,8 @@ class RevenueCatGateway implements PurchasesGateway {
   }
 
   @override
-  Future<ProEntitlement> restore() async => _entitlementOf(await Purchases.restorePurchases());
+  Future<ProEntitlement> restore() async =>
+      _entitlementOf(await Purchases.restorePurchases());
 
   @override
   Future<Uri> managementUri({String? productId}) async {
@@ -210,10 +233,10 @@ class RevenueCatGateway implements PurchasesGateway {
   }
 
   static int _days(Period period) => switch (period.unit) {
-        PeriodUnit.day => period.value,
-        PeriodUnit.week => period.value * 7,
-        PeriodUnit.month => period.value * 30,
-        PeriodUnit.year => period.value * 365,
-        _ => period.value,
-      };
+    PeriodUnit.day => period.value,
+    PeriodUnit.week => period.value * 7,
+    PeriodUnit.month => period.value * 30,
+    PeriodUnit.year => period.value * 365,
+    _ => period.value,
+  };
 }

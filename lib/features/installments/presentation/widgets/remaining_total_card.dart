@@ -108,11 +108,17 @@ class RemainingTotalCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(AppIcons.warning, size: 16, color: AppColors.error),
+                  const Icon(
+                    AppIcons.warning,
+                    size: 16,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      l10n.installmentsOverdueTotal(formatTotals(context, overdue)),
+                      l10n.installmentsOverdueTotal(
+                        formatTotals(context, overdue),
+                      ),
                       style: textTheme.bodySmall?.copyWith(
                         color: AppColors.error,
                         fontWeight: FontWeight.w700,

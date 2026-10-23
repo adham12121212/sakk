@@ -29,7 +29,8 @@ class ProductModel extends ProductEntity {
 
   /// Columns to select so a product row arrives with its extra warranties
   /// and claims embedded (PostgREST follows the product_id foreign keys).
-  static const selectColumns = '*, product_warranties(*), warranty_claims(*), product_documents(*)';
+  static const selectColumns =
+      '*, product_warranties(*), warranty_claims(*), product_documents(*)';
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
@@ -50,7 +51,9 @@ class ProductModel extends ProductEntity {
       serialNumber: json['serial_number'] as String?,
       invoiceNumber: json['invoice_number'] as String?,
       extraWarranties: [
-        for (final w in (json['product_warranties'] as List? ?? const []).cast<Map<String, dynamic>>())
+        for (final w
+            in (json['product_warranties'] as List? ?? const [])
+                .cast<Map<String, dynamic>>())
           ExtraWarranty(
             id: w['id'] as String,
             provider: w['provider'] as String,
@@ -59,7 +62,9 @@ class ProductModel extends ProductEntity {
           ),
       ]..sort((a, b) => a.startDate.compareTo(b.startDate)),
       claims: [
-        for (final c in (json['warranty_claims'] as List? ?? const []).cast<Map<String, dynamic>>())
+        for (final c
+            in (json['warranty_claims'] as List? ?? const [])
+                .cast<Map<String, dynamic>>())
           WarrantyClaim(
             id: c['id'] as String,
             issue: c['issue'] as String,
@@ -68,7 +73,9 @@ class ProductModel extends ProductEntity {
           ),
       ]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
       documents: [
-        for (final d in (json['product_documents'] as List? ?? const []).cast<Map<String, dynamic>>())
+        for (final d
+            in (json['product_documents'] as List? ?? const [])
+                .cast<Map<String, dynamic>>())
           ProductDocument(
             id: d['id'] as String,
             kind: DocumentKindX.fromDb(d['kind'] as String?),
@@ -106,38 +113,38 @@ class ProductModel extends ProductEntity {
 
   /// Full row for the offline cache; round-trips through [ProductModel.fromJson].
   Map<String, dynamic> toCacheJson() => {
-        'id': id,
-        'user_id': ownerId,
-        ..._sharedFields(),
-        'product_warranties': [
-          for (final w in extraWarranties)
-            {
-              'id': w.id,
-              'provider': w.provider,
-              'start_date': _isoDate(w.startDate),
-              'months': w.months,
-            },
-        ],
-        'warranty_claims': [
-          for (final c in claims)
-            {
-              'id': c.id,
-              'issue': c.issue,
-              'status': c.status.dbValue,
-              'created_at': c.createdAt.toIso8601String(),
-            },
-        ],
-        'product_documents': [
-          for (final d in documents)
-            {
-              'id': d.id,
-              'kind': d.kind.dbValue,
-              'file_url': d.url,
-              'file_path': d.path,
-              'created_at': d.createdAt.toIso8601String(),
-            },
-        ],
-      };
+    'id': id,
+    'user_id': ownerId,
+    ..._sharedFields(),
+    'product_warranties': [
+      for (final w in extraWarranties)
+        {
+          'id': w.id,
+          'provider': w.provider,
+          'start_date': _isoDate(w.startDate),
+          'months': w.months,
+        },
+    ],
+    'warranty_claims': [
+      for (final c in claims)
+        {
+          'id': c.id,
+          'issue': c.issue,
+          'status': c.status.dbValue,
+          'created_at': c.createdAt.toIso8601String(),
+        },
+    ],
+    'product_documents': [
+      for (final d in documents)
+        {
+          'id': d.id,
+          'kind': d.kind.dbValue,
+          'file_url': d.url,
+          'file_path': d.path,
+          'created_at': d.createdAt.toIso8601String(),
+        },
+    ],
+  };
 
   static String _isoDate(DateTime d) => d.toIso8601String().split('T').first;
 

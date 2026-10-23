@@ -49,9 +49,7 @@ class PasswordTextField extends StatelessWidget {
       suffixIcon: IconButton(
         tooltip: obscureText ? l10n.showPassword : l10n.hidePassword,
         onPressed: onToggleVisibility,
-        icon: Icon(
-          obscureText ? AppIcons.hide : AppIcons.show,
-        ),
+        icon: Icon(obscureText ? AppIcons.hide : AppIcons.show),
       ),
     );
   }

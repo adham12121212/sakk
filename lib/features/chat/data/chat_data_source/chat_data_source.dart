@@ -74,7 +74,8 @@ class ChatDataSourceImpl implements ChatDataSource {
           .order('created_at', ascending: false)
           .limit(limit);
       return [
-        for (final row in (rows as List).reversed) ChatMessageModel.fromRow(row as Map<String, dynamic>),
+        for (final row in (rows as List).reversed)
+          ChatMessageModel.fromRow(row as Map<String, dynamic>),
       ];
     } catch (e) {
       throw ServerException('Failed to load chat history: $e');

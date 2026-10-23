@@ -57,7 +57,10 @@ Future<Uint8List> buildPdfReport(
       '${formatLocalizedAmount(locale, amount)} ${currency == 'EGP' ? l10n.currencyEgp : currency}';
   String totals(Map<String, double> byCurrency) {
     if (byCurrency.isEmpty) return money(0, 'EGP');
-    final ordered = [if (byCurrency.containsKey('EGP')) 'EGP', ...byCurrency.keys.where((c) => c != 'EGP')];
+    final ordered = [
+      if (byCurrency.containsKey('EGP')) 'EGP',
+      ...byCurrency.keys.where((c) => c != 'EGP'),
+    ];
     return [for (final c in ordered) money(byCurrency[c]!, c)].join(' + ');
   }
 
@@ -71,58 +74,89 @@ Future<Uint8List> buildPdfReport(
   );
 
   final align = rtl ? pw.TextAlign.right : pw.TextAlign.left;
-  final doc = pw.Document(title: l10n.pdfReportTitle, author: 'Sakk', creator: 'Sakk');
+  final doc = pw.Document(
+    title: l10n.pdfReportTitle,
+    author: 'Sakk',
+    creator: 'Sakk',
+  );
 
   pw.Widget heading(String text) => pw.Padding(
-        padding: const pw.EdgeInsets.only(top: 18, bottom: 8),
-        child: pw.Text(text, style: pw.TextStyle(font: bold, fontSize: 14, color: _brand), textAlign: align),
-      );
+    padding: const pw.EdgeInsets.only(top: 18, bottom: 8),
+    child: pw.Text(
+      text,
+      style: pw.TextStyle(font: bold, fontSize: 14, color: _brand),
+      textAlign: align,
+    ),
+  );
 
-  pw.Widget table(List<String> headers, List<List<String>> rows, List<double> flex) {
+  pw.Widget table(
+    List<String> headers,
+    List<List<String>> rows,
+    List<double> flex,
+  ) {
     if (rows.isEmpty) {
-      return pw.Text(l10n.pdfReportNone, style: const pw.TextStyle(color: _muted), textAlign: align);
+      return pw.Text(
+        l10n.pdfReportNone,
+        style: const pw.TextStyle(color: _muted),
+        textAlign: align,
+      );
     }
     // The pdf package lays tables out left to right; reverse the columns so
     // Arabic reads from the right.
     List<T> ordered<T>(List<T> cells) => rtl ? cells.reversed.toList() : cells;
     pw.Widget cell(String text, {bool header = false}) => pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          child: pw.Text(
-            text,
-            textAlign: align,
-            style: pw.TextStyle(font: header ? bold : regular, fontSize: header ? 9 : 9.5),
-          ),
-        );
+      padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      child: pw.Text(
+        text,
+        textAlign: align,
+        style: pw.TextStyle(
+          font: header ? bold : regular,
+          fontSize: header ? 9 : 9.5,
+        ),
+      ),
+    );
     final widths = ordered(flex);
     return pw.Table(
-      columnWidths: {for (var i = 0; i < widths.length; i++) i: pw.FlexColumnWidth(widths[i])},
-      border: const pw.TableBorder(horizontalInside: pw.BorderSide(color: _rule, width: 0.5)),
+      columnWidths: {
+        for (var i = 0; i < widths.length; i++)
+          i: pw.FlexColumnWidth(widths[i]),
+      },
+      border: const pw.TableBorder(
+        horizontalInside: pw.BorderSide(color: _rule, width: 0.5),
+      ),
       children: [
         pw.TableRow(
           decoration: const pw.BoxDecoration(color: _headerFill),
           repeat: true,
           children: ordered([for (final h in headers) cell(h, header: true)]),
         ),
-        for (final row in rows) pw.TableRow(children: ordered([for (final c in row) cell(c)])),
+        for (final row in rows)
+          pw.TableRow(children: ordered([for (final c in row) cell(c)])),
       ],
     );
   }
 
   pw.Widget summaryLine(String label, String value) => pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(vertical: 2),
-        child: pw.Row(
-          children: ordered2(rtl, [
-            pw.Expanded(child: pw.Text(label, textAlign: align, style: const pw.TextStyle(color: _muted))),
-            pw.Text(value, style: pw.TextStyle(font: bold)),
-          ]),
+    padding: const pw.EdgeInsets.symmetric(vertical: 2),
+    child: pw.Row(
+      children: ordered2(rtl, [
+        pw.Expanded(
+          child: pw.Text(
+            label,
+            textAlign: align,
+            style: const pw.TextStyle(color: _muted),
+          ),
         ),
-      );
+        pw.Text(value, style: pw.TextStyle(font: bold)),
+      ]),
+    ),
+  );
 
   String statusOf(ProductEntity p) => switch (p.status) {
-        WarrantyStatus.active => l10n.active,
-        WarrantyStatus.expiring => l10n.expiring,
-        WarrantyStatus.expired => l10n.expired,
-      };
+    WarrantyStatus.active => l10n.active,
+    WarrantyStatus.expiring => l10n.expiring,
+    WarrantyStatus.expired => l10n.expired,
+  };
 
   doc.addPage(
     pw.MultiPage(
@@ -137,38 +171,74 @@ Future<Uint8List> buildPdfReport(
       ),
       header: (context) => context.pageNumber == 1
           ? pw.SizedBox()
-          : pw.Text(l10n.pdfReportTitle, textAlign: align, style: const pw.TextStyle(color: _muted, fontSize: 8)),
+          : pw.Text(
+              l10n.pdfReportTitle,
+              textAlign: align,
+              style: const pw.TextStyle(color: _muted, fontSize: 8),
+            ),
       footer: (context) => pw.Align(
         alignment: pw.Alignment.center,
         child: pw.Text(
-          l10n.pdfReportPage(count(context.pageNumber), count(context.pagesCount)),
+          l10n.pdfReportPage(
+            count(context.pageNumber),
+            count(context.pagesCount),
+          ),
           style: const pw.TextStyle(color: _muted, fontSize: 8),
         ),
       ),
       build: (context) => [
-        pw.Text(l10n.pdfReportTitle, textAlign: align, style: pw.TextStyle(font: bold, fontSize: 22, color: _brand)),
+        pw.Text(
+          l10n.pdfReportTitle,
+          textAlign: align,
+          style: pw.TextStyle(font: bold, fontSize: 22, color: _brand),
+        ),
         pw.SizedBox(height: 4),
         pw.Text(
-          [l10n.pdfReportGenerated(date(input.today)), ?input.accountEmail].join('  ·  '),
+          [
+            l10n.pdfReportGenerated(date(input.today)),
+            ?input.accountEmail,
+          ].join('  ·  '),
           textAlign: align,
           style: const pw.TextStyle(color: _muted),
         ),
 
         heading(l10n.pdfReportSummary),
         summaryLine(l10n.totalProducts, count(input.products.length)),
-        summaryLine(l10n.activeWarranties, count(input.products.where((p) => !p.isExpired).length)),
-        summaryLine(l10n.expiringSoon, count(input.products.where((p) => p.isExpiring).length)),
-        summaryLine(l10n.subscriptionsMonthlyTotal, totals(monthlyTotalsByCurrency(input.subscriptions))),
-        summaryLine(l10n.pdfRemainingInstallments, totals(remainingByCurrency(input.plans))),
+        summaryLine(
+          l10n.activeWarranties,
+          count(input.products.where((p) => !p.isExpired).length),
+        ),
+        summaryLine(
+          l10n.expiringSoon,
+          count(input.products.where((p) => p.isExpiring).length),
+        ),
+        summaryLine(
+          l10n.subscriptionsMonthlyTotal,
+          totals(monthlyTotalsByCurrency(input.subscriptions)),
+        ),
+        summaryLine(
+          l10n.pdfRemainingInstallments,
+          totals(remainingByCurrency(input.plans)),
+        ),
         summaryLine(l10n.monthlySummaryTotal, totals(summary.totals)),
 
         heading(l10n.products),
         table(
-          [l10n.productName, l10n.store, l10n.purchaseDate, l10n.price, l10n.warrantyEnds, l10n.pdfColStatus],
+          [
+            l10n.productName,
+            l10n.store,
+            l10n.purchaseDate,
+            l10n.price,
+            l10n.warrantyEnds,
+            l10n.pdfColStatus,
+          ],
           [
             for (final p in input.products)
               [
-                p.brand == null || p.name.toLowerCase().contains(p.brand!.toLowerCase()) ? p.name : '${p.name} (${p.brand})',
+                p.brand == null ||
+                        p.name.toLowerCase().contains(p.brand!.toLowerCase())
+                    ? p.name
+                    : '${p.name} (${p.brand})',
                 p.store ?? '',
                 date(p.purchaseDate),
                 p.price == null ? '' : money(p.price!, p.currency),
@@ -190,7 +260,13 @@ Future<Uint8List> buildPdfReport(
                 s.billingCycle == BillingCycle.yearly
                     ? l10n.pricePerYear(money(s.price, s.currency))
                     : l10n.pricePerMonth(money(s.price, s.currency)),
-                date(nextRenewalOnOrAfter(s.nextRenewalDate, s.billingCycle, today)),
+                date(
+                  nextRenewalOnOrAfter(
+                    s.nextRenewalDate,
+                    s.billingCycle,
+                    today,
+                  ),
+                ),
               ],
           ],
           [3, 2, 2.4, 2],
@@ -198,7 +274,13 @@ Future<Uint8List> buildPdfReport(
 
         heading(l10n.installments),
         table(
-          [l10n.productName, l10n.installmentProvider, l10n.pdfColPaid, l10n.pdfColRemaining, l10n.pdfColNextDue],
+          [
+            l10n.productName,
+            l10n.installmentProvider,
+            l10n.pdfColPaid,
+            l10n.pdfColRemaining,
+            l10n.pdfColNextDue,
+          ],
           [
             for (final p in running)
               [
@@ -220,4 +302,5 @@ Future<Uint8List> buildPdfReport(
 }
 
 /// [children] in reading order for the page's direction.
-List<pw.Widget> ordered2(bool rtl, List<pw.Widget> children) => rtl ? children.reversed.toList() : children;
+List<pw.Widget> ordered2(bool rtl, List<pw.Widget> children) =>
+    rtl ? children.reversed.toList() : children;

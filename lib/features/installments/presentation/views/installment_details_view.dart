@@ -40,7 +40,9 @@ class InstallmentDetailsView extends StatelessWidget {
       case InstallmentFormSaved(:final plan):
         AppSnackBar.success(
           context,
-          plan.isCancelled ? l10n.installmentPlanCancelled : l10n.installmentPlanReactivated,
+          plan.isCancelled
+              ? l10n.installmentPlanCancelled
+              : l10n.installmentPlanReactivated,
         );
       case InstallmentFormDeleted():
         AppSnackBar.success(context, l10n.installmentDeleted);
@@ -63,7 +65,10 @@ class InstallmentDetailsView extends StatelessWidget {
           if (plan == null) {
             // Deleted, or the list isn't loaded yet (opened from a reminder).
             return Scaffold(
-              appBar: AppBar(surfaceTintColor: Colors.transparent, elevation: 0),
+              appBar: AppBar(
+                surfaceTintColor: Colors.transparent,
+                elevation: 0,
+              ),
               body: state.isLoading || !state.hasLoadedOnce
                   ? const Center(child: CircularProgressIndicator())
                   : AppEmptyView(
@@ -88,14 +93,22 @@ class _PlanDetails extends StatelessWidget {
   final InstallmentPlan plan;
   final Set<String> updating;
 
-  Future<void> _setPaid(BuildContext context, InstallmentPayment payment, bool paid) async {
+  Future<void> _setPaid(
+    BuildContext context,
+    InstallmentPayment payment,
+    bool paid,
+  ) async {
     final l10n = AppLocalizations.of(context)!;
     if (!paid) {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
           title: Text(l10n.markUnpaidQuestion),
-          content: Text(l10n.markUnpaidBody(formatInstallmentDate(context, payment.dueDate))),
+          content: Text(
+            l10n.markUnpaidBody(
+              formatInstallmentDate(context, payment.dueDate),
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -110,7 +123,11 @@ class _PlanDetails extends StatelessWidget {
       );
       if (confirmed != true || !context.mounted) return;
     }
-    final error = await context.read<InstallmentsCubit>().setPaymentPaid(plan.id, payment.id, paid: paid);
+    final error = await context.read<InstallmentsCubit>().setPaymentPaid(
+      plan.id,
+      payment.id,
+      paid: paid,
+    );
     if (!context.mounted) return;
     if (error != null) {
       AppSnackBar.error(context, userFacingError(l10n, error));
@@ -155,7 +172,10 @@ class _PlanDetails extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.delete, style: TextStyle(color: AppColors.error)),
+                child: Text(
+                  l10n.delete,
+                  style: TextStyle(color: AppColors.error),
+                ),
               ),
             ],
           ),
@@ -168,7 +188,8 @@ class _PlanDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final isBusy = context.watch<InstallmentFormCubit>().state is InstallmentFormBusy;
+    final isBusy =
+        context.watch<InstallmentFormCubit>().state is InstallmentFormBusy;
     final today = DateTime.now();
     final overdue = plan.overduePayments(today);
 
@@ -189,12 +210,21 @@ class _PlanDetails extends StatelessWidget {
             onSelected: (action) => _onMenu(context, action),
             itemBuilder: (_) => [
               if (plan.isCancelled)
-                PopupMenuItem(value: _MenuAction.reactivate, child: Text(l10n.reactivateInstallmentPlan))
+                PopupMenuItem(
+                  value: _MenuAction.reactivate,
+                  child: Text(l10n.reactivateInstallmentPlan),
+                )
               else
-                PopupMenuItem(value: _MenuAction.cancelPlan, child: Text(l10n.cancelInstallmentPlan)),
+                PopupMenuItem(
+                  value: _MenuAction.cancelPlan,
+                  child: Text(l10n.cancelInstallmentPlan),
+                ),
               PopupMenuItem(
                 value: _MenuAction.delete,
-                child: Text(l10n.delete, style: TextStyle(color: AppColors.error)),
+                child: Text(
+                  l10n.delete,
+                  style: TextStyle(color: AppColors.error),
+                ),
               ),
             ],
           ),
@@ -208,7 +238,9 @@ class _PlanDetails extends StatelessWidget {
             _SummaryCard(
               plan: plan,
               today: today,
-              busy: plan.nextPayment != null && updating.contains(plan.nextPayment!.id),
+              busy:
+                  plan.nextPayment != null &&
+                  updating.contains(plan.nextPayment!.id),
               onMarkNextPaid: plan.nextPayment == null
                   ? null
                   : () => _setPaid(context, plan.nextPayment!, true),
@@ -217,7 +249,11 @@ class _PlanDetails extends StatelessWidget {
               const SizedBox(height: 12),
               _OverdueBanner(
                 count: overdue.length,
-                amount: formatMoney(context, plan.overdueAmount(today), plan.currency),
+                amount: formatMoney(
+                  context,
+                  plan.overdueAmount(today),
+                  plan.currency,
+                ),
               ),
             ],
             const SizedBox(height: 16),
@@ -237,7 +273,8 @@ class _PlanDetails extends StatelessWidget {
                       today: today,
                       busy: updating.contains(plan.payments[i].id),
                       isLast: i == plan.payments.length - 1,
-                      onToggle: (paid) => _setPaid(context, plan.payments[i], paid),
+                      onToggle: (paid) =>
+                          _setPaid(context, plan.payments[i], paid),
                     ),
                 ],
               ),
@@ -246,9 +283,7 @@ class _PlanDetails extends StatelessWidget {
               const SizedBox(height: 24),
               SectionHeader(title: l10n.notes),
               const SizedBox(height: 8),
-              AppCard(
-                child: Text(plan.notes!, style: textTheme.bodyMedium),
-              ),
+              AppCard(child: Text(plan.notes!, style: textTheme.bodyMedium)),
             ],
           ],
         ),
@@ -283,23 +318,36 @@ class _SummaryCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              InstallmentIcon(overdue: plan.isActive && plan.overdueAmount(today) > 0),
+              InstallmentIcon(
+                overdue: plan.isActive && plan.overdueAmount(today) > 0,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.installmentsLeftToPay, style: textTheme.bodySmall?.copyWith(fontSize: 13)),
+                    Text(
+                      l10n.installmentsLeftToPay,
+                      style: textTheme.bodySmall?.copyWith(fontSize: 13),
+                    ),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
-                        formatMoney(context, plan.remainingBalance, plan.currency),
-                        style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+                        formatMoney(
+                          context,
+                          plan.remainingBalance,
+                          plan.currency,
+                        ),
+                        style: textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                     Text(
-                      l10n.installmentOfTotal(formatMoney(context, plan.totalPayable, plan.currency)),
+                      l10n.installmentOfTotal(
+                        formatMoney(context, plan.totalPayable, plan.currency),
+                      ),
                       style: textTheme.bodySmall?.copyWith(fontSize: 13),
                     ),
                   ],
@@ -312,7 +360,10 @@ class _SummaryCard extends StatelessWidget {
           InstallmentProgress(plan: plan),
           if (next != null && !plan.isCancelled) ...[
             const SizedBox(height: 16),
-            Divider(height: 1, color: colorScheme.outline.withValues(alpha: 0.5)),
+            Divider(
+              height: 1,
+              color: colorScheme.outline.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -320,17 +371,25 @@ class _SummaryCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.nextInstallment, style: textTheme.bodySmall?.copyWith(fontSize: 13)),
+                      Text(
+                        l10n.nextInstallment,
+                        style: textTheme.bodySmall?.copyWith(fontSize: 13),
+                      ),
                       Text(
                         formatMoney(context, next.amount, plan.currency),
-                        style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       Text(
                         '${formatInstallmentDate(context, next.dueDate)} · ${dueLabel(context, next.daysLeft(today))}',
                         style: textTheme.bodySmall?.copyWith(
                           fontSize: 13,
                           color: dueColor(context, next.daysLeft(today)),
-                          fontWeight: dueColor(context, next.daysLeft(today)) == null ? null : FontWeight.w600,
+                          fontWeight:
+                              dueColor(context, next.daysLeft(today)) == null
+                              ? null
+                              : FontWeight.w600,
                         ),
                       ),
                     ],
@@ -369,8 +428,16 @@ class _StatusPill extends StatelessWidget {
     final palette = context.palette;
     final colorScheme = Theme.of(context).colorScheme;
     final (label, fg, bg) = switch (plan.status) {
-      InstallmentPlanStatus.active => (l10n.active, palette.success, palette.successContainer),
-      InstallmentPlanStatus.completed => (l10n.installmentPaidOff, palette.success, palette.successContainer),
+      InstallmentPlanStatus.active => (
+        l10n.active,
+        palette.success,
+        palette.successContainer,
+      ),
+      InstallmentPlanStatus.completed => (
+        l10n.installmentPaidOff,
+        palette.success,
+        palette.successContainer,
+      ),
       InstallmentPlanStatus.cancelled => (
         l10n.installmentCancelled,
         colorScheme.onSurfaceVariant,
@@ -379,8 +446,14 @@ class _StatusPill extends StatelessWidget {
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
-      child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: fg)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: fg),
+      ),
     );
   }
 }
@@ -407,8 +480,15 @@ class _OverdueBanner extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              l10n.installmentsOverdueBanner(count, formatCount(context, count), amount),
-              style: TextStyle(color: palette.danger, fontWeight: FontWeight.w600),
+              l10n.installmentsOverdueBanner(
+                count,
+                formatCount(context, count),
+                amount,
+              ),
+              style: TextStyle(
+                color: palette.danger,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -430,23 +510,46 @@ class _TermsCard extends StatelessWidget {
     final productId = plan.productId;
     final product = productId == null
         ? null
-        : getIt<ProductsCubit>().state.products.where((p) => p.id == productId).firstOrNull;
+        : getIt<ProductsCubit>().state.products
+              .where((p) => p.id == productId)
+              .firstOrNull;
     String money(double v) => formatMoney(context, v, plan.currency);
 
     final rows = <(IconData, String, String, VoidCallback?)>[
       if (product != null)
-        (AppIcons.productPlaceholder, l10n.linkedProduct, product.name, () => context.push(AppRoutes.details, extra: product)),
-      if (plan.provider != null) (AppIcons.store, l10n.installmentProvider, plan.provider!, null),
+        (
+          AppIcons.productPlaceholder,
+          l10n.linkedProduct,
+          product.name,
+          () => context.push(AppRoutes.details, extra: product),
+        ),
+      if (plan.provider != null)
+        (AppIcons.store, l10n.installmentProvider, plan.provider!, null),
       (AppIcons.price, l10n.totalPrice, money(terms.totalPrice), null),
-      if (terms.downPayment > 0) (AppIcons.wallet, l10n.downPayment, money(terms.downPayment), null),
-      if ((terms.interestOrFees ?? 0) > 0) (AppIcons.receipt, l10n.interestOrFees, money(terms.interestOrFees!), null),
+      if (terms.downPayment > 0)
+        (AppIcons.wallet, l10n.downPayment, money(terms.downPayment), null),
+      if ((terms.interestOrFees ?? 0) > 0)
+        (
+          AppIcons.receipt,
+          l10n.interestOrFees,
+          money(terms.interestOrFees!),
+          null,
+        ),
       (
         AppIcons.installments,
         l10n.installmentAmount,
-        l10n.installmentsTimesAmount(formatCount(context, terms.installmentsCount), money(terms.installmentAmount)),
+        l10n.installmentsTimesAmount(
+          formatCount(context, terms.installmentsCount),
+          money(terms.installmentAmount),
+        ),
         null,
       ),
-      (AppIcons.calendar, l10n.dueDayOfMonth, l10n.dueDayValue(formatCount(context, terms.dueDayOfMonth)), null),
+      (
+        AppIcons.calendar,
+        l10n.dueDayOfMonth,
+        l10n.dueDayValue(formatCount(context, terms.dueDayOfMonth)),
+        null,
+      ),
     ];
 
     return AppCard(
@@ -456,7 +559,12 @@ class _TermsCard extends StatelessWidget {
           for (final (i, (icon, label, value, onTap)) in rows.indexed)
             InkWell(
               onTap: onTap,
-              child: DetailRow(icon: icon, label: label, value: value, isLast: i == rows.length - 1),
+              child: DetailRow(
+                icon: icon,
+                label: label,
+                value: value,
+                isLast: i == rows.length - 1,
+              ),
             ),
         ],
       ),
@@ -500,7 +608,10 @@ class _PaymentRow extends StatelessWidget {
         palette.success,
       ),
       PaymentStatus.overdue => (dueLabel(context, daysLeft), palette.danger),
-      PaymentStatus.pending => (dueLabel(context, daysLeft), dueColor(context, daysLeft)),
+      PaymentStatus.pending => (
+        dueLabel(context, daysLeft),
+        dueColor(context, daysLeft),
+      ),
     };
 
     final Widget toggle = busy
@@ -508,14 +619,22 @@ class _PaymentRow extends StatelessWidget {
             width: 48,
             height: 48,
             child: Center(
-              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
             ),
           )
         : IconButton(
-            tooltip: status == PaymentStatus.paid ? l10n.markUnpaid : l10n.markAsPaid,
+            tooltip: status == PaymentStatus.paid
+                ? l10n.markUnpaid
+                : l10n.markAsPaid,
             onPressed: () => onToggle(status != PaymentStatus.paid),
             icon: Icon(
-              status == PaymentStatus.paid ? AppIcons.successFilled : AppIcons.unpaid,
+              status == PaymentStatus.paid
+                  ? AppIcons.successFilled
+                  : AppIcons.unpaid,
               color: switch (status) {
                 PaymentStatus.paid => palette.success,
                 PaymentStatus.overdue => palette.danger,
@@ -534,19 +653,26 @@ class _PaymentRow extends StatelessWidget {
                 width: 28,
                 child: Text(
                   formatCount(context, number),
-                  style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                  style: textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(formatInstallmentDate(context, payment.dueDate), style: textTheme.bodyMedium),
+                    Text(
+                      formatInstallmentDate(context, payment.dueDate),
+                      style: textTheme.bodyMedium,
+                    ),
                     Text(
                       subtitle,
                       style: textTheme.bodySmall?.copyWith(
                         color: subtitleColor,
-                        fontWeight: subtitleColor == null ? null : FontWeight.w600,
+                        fontWeight: subtitleColor == null
+                            ? null
+                            : FontWeight.w600,
                       ),
                     ),
                   ],
@@ -556,8 +682,12 @@ class _PaymentRow extends StatelessWidget {
                 formatMoney(context, payment.amount, currency),
                 style: textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  decoration: status == PaymentStatus.paid ? TextDecoration.lineThrough : null,
-                  color: status == PaymentStatus.paid ? colorScheme.onSurfaceVariant : null,
+                  decoration: status == PaymentStatus.paid
+                      ? TextDecoration.lineThrough
+                      : null,
+                  color: status == PaymentStatus.paid
+                      ? colorScheme.onSurfaceVariant
+                      : null,
                 ),
               ),
               toggle,
@@ -565,7 +695,12 @@ class _PaymentRow extends StatelessWidget {
           ),
         ),
         if (!isLast)
-          Divider(height: 1, indent: 16, endIndent: 16, color: colorScheme.outline.withValues(alpha: 0.4)),
+          Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+            color: colorScheme.outline.withValues(alpha: 0.4),
+          ),
       ],
     );
   }

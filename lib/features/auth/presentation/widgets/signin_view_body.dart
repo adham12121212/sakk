@@ -5,10 +5,7 @@ import 'package:sakk/features/auth/presentation/widgets/signin_form.dart';
 import 'package:sakk/features/auth/presentation/widgets/signin_header.dart';
 
 class SigninViewBody extends StatelessWidget {
-  const SigninViewBody({
-    super.key,
-    required this.isLoading,
-  });
+  const SigninViewBody({super.key, required this.isLoading});
 
   final bool isLoading;
 
@@ -21,11 +18,10 @@ class SigninViewBody extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -35,9 +31,7 @@ class SigninViewBody extends StatelessWidget {
                           horizontal: 24.w,
                           vertical: 28.h,
                         ),
-                        child: SigninForm(
-                          isLoading: isLoading,
-                        ),
+                        child: SigninForm(isLoading: isLoading),
                       ),
                     ],
                   ),
