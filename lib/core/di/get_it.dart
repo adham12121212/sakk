@@ -98,6 +98,7 @@ import '../service/reminder_controller.dart';
 import '../service/reminder_settings.dart';
 import '../service/receipt_ai_client.dart';
 import '../service/review_prompter.dart';
+import '../service/share_intake.dart';
 import '../service/storage_service.dart';
 import '../service/installment_reminder_service.dart';
 import '../service/subscription_reminder_service.dart';
@@ -170,6 +171,7 @@ void setupLocator() {
   getIt.registerLazySingleton<ReminderController>(() => ReminderController());
   getIt.registerLazySingleton<ReminderSettings>(() => ReminderSettings());
   getIt.registerLazySingleton<ReviewPrompter>(() => ReviewPrompter());
+  getIt.registerLazySingleton<ShareIntake>(() => ShareIntake());
   getIt.registerLazySingleton<AmountVisibilityController>(
     () => AmountVisibilityController(),
   );

@@ -20,6 +20,7 @@ import 'core/route/app_router.dart';
 import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
 import 'core/service/reminder_settings.dart';
+import 'core/service/share_intake.dart';
 import 'core/service/temp_file_cleaner.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
@@ -34,6 +35,7 @@ import 'features/pro/data/purchases_gateway.dart';
 import 'features/pro/presentation/cubit/pro_cubit.dart';
 import 'features/pro/presentation/widgets/pro_limit_listener.dart';
 import 'features/products/presentation/cubit/product_cubit.dart';
+import 'features/scan/presentation/widgets/shared_receipt_listener.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 
@@ -105,6 +107,9 @@ Future<void> _bootstrap() async {
   }
 
   runApp(const MyApp());
+
+  // A receipt shared to Sakk from another app (it may be what opened it).
+  unawaited(getIt<ShareIntake>().start());
 
   // Leftover photos and share files from earlier sessions.
   unawaited(TempFileCleaner().clean());
@@ -207,7 +212,12 @@ class MyApp extends StatelessWidget {
                   // A free-plan limit hit anywhere opens the paywall.
                   child: ProLimitListener(
                     router: appRouter,
-                    child: child ?? const SizedBox.shrink(),
+                    // A receipt shared from another app opens Scan.
+                    child: SharedReceiptListener(
+                      router: appRouter,
+                      intake: getIt<ShareIntake>(),
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 ),
               ),
