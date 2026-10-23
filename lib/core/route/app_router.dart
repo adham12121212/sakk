@@ -44,6 +44,7 @@ import '../../features/pro/presentation/cubit/pro_cubit.dart';
 import '../../features/pro/presentation/views/monthly_summary_view.dart';
 import '../../features/pro/presentation/views/paywall_view.dart';
 import '../di/get_it.dart';
+import '../service/share_intake.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -118,7 +119,15 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const PrivacyPolicyView(),
     ),
 
-    GoRoute(path: AppRoutes.scan, builder: (context, state) => ScanView()),
+    GoRoute(
+      path: AppRoutes.scan,
+      // `extra`: a receipt shared from another app (SharedReceiptListener).
+      builder: (context, state) => ScanView(
+        shared: state.extra is SharedReceipt
+            ? state.extra as SharedReceipt
+            : null,
+      ),
+    ),
     GoRoute(
       path: AppRoutes.notifications,
       // Opened with the user's id as `extra`; same fallback as details.

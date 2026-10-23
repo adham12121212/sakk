@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sakk/core/route/app_router.dart';
-
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/network_info.dart';
+import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/service/share_intake.dart';
+import '../../../products/data/product_data_source/product_data_source.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../pro/domain/pro_limit.dart';
@@ -20,7 +25,11 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class ScanView extends StatefulWidget {
-  const ScanView({super.key});
+  const ScanView({super.key, this.shared});
+
+  /// A receipt shared to Sakk from another app: scanned as soon as the
+  /// screen opens, as if it had been picked here.
+  final SharedReceipt? shared;
 
   @override
   State<ScanView> createState() => ScanViewState();
@@ -28,6 +37,50 @@ class ScanView extends StatefulWidget {
 
 class ScanViewState extends State<ScanView> {
   final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    final shared = widget.shared;
+    if (shared != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scanShared(shared));
+    }
+  }
+
+  /// If it can't be scanned (limit, offline, unreadable file) the user stays
+  /// here with the usual message and can pick another way.
+  Future<void> _scanShared(SharedReceipt shared) async {
+    if (!await _canScan()) return;
+    if (!shared.isPdf) {
+      _openProcessing(ScanCubit()..processReceipt(shared.path));
+      return;
+    }
+    final Uint8List bytes;
+    try {
+      bytes = await File(shared.path).readAsBytes();
+    } catch (_) {
+      if (mounted) {
+        AppSnackBar.error(
+          context,
+          userFacingError(
+            AppLocalizations.of(context)!,
+            ProductDataSourceImpl.pdfUnreadable,
+          ),
+        );
+      }
+      return;
+    }
+    if (mounted) _openProcessing(ScanCubit()..processPdf(bytes));
+  }
+
+  void _openProcessing(ScanCubit cubit) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
+      ),
+    );
+  }
 
   /// Before an AI scan: room for one more product, a scan left today and
   /// a connection (otherwise the paywall, or an offline message instead of
@@ -60,14 +113,7 @@ class ScanViewState extends State<ScanView> {
     );
     if (picked == null || !mounted) return;
 
-    final cubit = ScanCubit()..processReceipt(picked.path);
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
-      ),
-    );
+    _openProcessing(ScanCubit()..processReceipt(picked.path));
   }
 
   /// PDF invoices, e.g. the ones online stores email.
@@ -86,13 +132,7 @@ class ScanViewState extends State<ScanView> {
     final bytes = await files.first.xFile.readAsBytes();
     if (!mounted) return;
 
-    final cubit = ScanCubit()..processPdf(bytes);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
-      ),
-    );
+    _openProcessing(ScanCubit()..processPdf(bytes));
   }
 
   /// For products without a receipt (lost, or bought online): straight to
