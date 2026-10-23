@@ -2400,4 +2400,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceUnheardTitle => 'We didn\'t catch that';
+
+  @override
+  String get addPhoto => 'Add a photo (optional)';
+
+  @override
+  String get addPhotoHint => 'The receipt, the box or the product';
+
+  @override
+  String get changePhoto => 'Change photo';
 }

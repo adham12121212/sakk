@@ -2453,4 +2453,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get voiceUnheardTitle => 'مسمعناش كويس';
+
+  @override
+  String get addPhoto => 'ضيف صورة (اختياري)';
+
+  @override
+  String get addPhotoHint => 'الفاتورة أو العلبة أو المنتج نفسه';
+
+  @override
+  String get changePhoto => 'غيّر الصورة';
 }

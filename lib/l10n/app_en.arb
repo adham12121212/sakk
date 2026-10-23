@@ -1087,5 +1087,8 @@
   "paywallHeadlineVoice": "Add products just by saying them",
   "featureVoice": "Add by voice",
   "limitReachedVoice": "Add by voice is part of Sakk Pro.",
-  "voiceUnheardTitle": "We didn't catch that"
+  "voiceUnheardTitle": "We didn't catch that",
+  "addPhoto": "Add a photo (optional)",
+  "addPhotoHint": "The receipt, the box or the product",
+  "changePhoto": "Change photo"
 }

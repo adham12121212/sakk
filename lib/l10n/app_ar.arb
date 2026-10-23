@@ -641,5 +641,8 @@
   "paywallHeadlineVoice": "ضيف منتجاتك بصوتك بس",
   "featureVoice": "الإضافة بالصوت",
   "limitReachedVoice": "الإضافة بالصوت متاحة في Sakk Pro.",
-  "voiceUnheardTitle": "مسمعناش كويس"
+  "voiceUnheardTitle": "مسمعناش كويس",
+  "addPhoto": "ضيف صورة (اختياري)",
+  "addPhotoHint": "الفاتورة أو العلبة أو المنتج نفسه",
+  "changePhoto": "غيّر الصورة"
 }

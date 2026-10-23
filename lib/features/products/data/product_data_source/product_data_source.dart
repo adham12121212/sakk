@@ -20,6 +20,10 @@ abstract class ProductDataSource {
   /// at [audioPath]. There's no receipt photo.
   Future<ScannedReceiptData> scanVoice({required String audioPath});
 
+  /// Uploads a photo the user added to a product with no receipt photo yet
+  /// (added by voice or by hand). It becomes the product's receipt image.
+  Future<UploadedReceipt> uploadReceiptPhoto({required String imagePath});
+
   /// Deletes an uploaded receipt photo that ended up not being saved.
   Future<void> deleteReceiptImage(String path);
 
@@ -141,6 +145,19 @@ class ProductDataSourceImpl implements ProductDataSource {
       rethrow;
     } catch (e) {
       throw ServerException('Voice add failed: $e');
+    }
+  }
+
+  @override
+  Future<UploadedReceipt> uploadReceiptPhoto({
+    required String imagePath,
+  }) async {
+    try {
+      return await _ai.upload(imagePath, expiry: _scanUrlExpiry);
+    } on ServerException {
+      rethrow;
+    } catch (e) {
+      throw ServerException('Photo upload failed: $e');
     }
   }
 

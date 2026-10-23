@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/service/pdf_invoice_reader.dart';
+import 'package:sakk/core/service/receipt_ai_client.dart';
 import 'package:sakk/core/service/warranty_notification_service.dart';
 import 'package:sakk/features/products/data/product_data_source/product_data_source.dart';
 import 'package:sakk/features/category/domain/entities/product_category.dart';
@@ -54,6 +55,21 @@ class _Scan implements ScanReceiptUseCase {
   }) async {
     lastAudioPath = audioPath;
     return voiceResult;
+  }
+
+  int _uploads = 0;
+
+  @override
+  Future<Either<Failure, UploadedReceipt>> uploadPhoto({
+    required String imagePath,
+  }) async {
+    _uploads++;
+    return Right(
+      UploadedReceipt(
+        path: 'u1/photo$_uploads.jpg',
+        signedUrl: 'https://x/photo$_uploads.jpg',
+      ),
+    );
   }
 
   @override
@@ -206,6 +222,56 @@ void main() {
         (c.state as ScanProcessingFailed).message,
         ProductDataSourceImpl.voiceUnheard,
       );
+    });
+  });
+
+  group('adding a photo to a voice entry', () {
+    Future<ScanCubit> spoken(_Scan scan, _Add add) async {
+      final c = _cubit(scan, add);
+      await c.processVoice('/tmp/voice.m4a');
+      return c;
+    }
+
+    test(
+      'it becomes the receipt photo; replacing deletes the old one',
+      () async {
+        final scan = _Scan();
+        final c = await spoken(scan, _Add());
+        expect(await c.attachPhoto('/tmp/a.jpg'), isNull);
+        var scanned = (c.state as ScanEditing).scanned;
+        expect(scanned.receiptPath, 'u1/photo1.jpg');
+        expect(scanned.receiptImageUrl, 'https://x/photo1.jpg');
+        expect(scanned.transcript, isNotNull);
+
+        await c.attachPhoto('/tmp/b.jpg');
+        scanned = (c.state as ScanEditing).scanned;
+        expect(scanned.receiptPath, 'u1/photo2.jpg');
+        expect(scan.discarded, ['u1/photo1.jpg']);
+      },
+    );
+
+    test('leaving without saving deletes it', () async {
+      final scan = _Scan();
+      final c = await spoken(scan, _Add());
+      await c.attachPhoto('/tmp/a.jpg');
+      await c.close();
+      expect(scan.discarded, ['u1/photo1.jpg']);
+    });
+
+    test('saving keeps it as the product\'s receipt', () async {
+      final scan = _Scan();
+      final add = _Add();
+      final c = await spoken(scan, add);
+      await c.attachPhoto('/tmp/a.jpg');
+      await c.save(
+        name: 'Samsung TV',
+        warrantyMonths: 24,
+        category: ProductCategory.electronics,
+        currency: 'EGP',
+      );
+      await c.close();
+      expect(scan.discarded, isEmpty);
+      expect(add.saved![#receiptUrl], 'https://x/photo1.jpg');
     });
   });
 }

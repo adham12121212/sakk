@@ -3953,6 +3953,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We didn\'t catch that'**
   String get voiceUnheardTitle;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (optional)'**
+  String get addPhoto;
+
+  /// No description provided for @addPhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt, the box or the product'**
+  String get addPhotoHint;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get changePhoto;
 }
 
 class _AppLocalizationsDelegate
