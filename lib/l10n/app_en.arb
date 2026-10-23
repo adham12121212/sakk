@@ -1073,5 +1073,18 @@
   "pdfColRemaining": "Remaining",
   "pdfColPlan": "Plan",
   "pdfColStatus": "Status",
-  "pdfRemainingInstallments": "Installments left to pay"
+  "pdfRemainingInstallments": "Installments left to pay",
+  "addByVoice": "Add by voice",
+  "voiceTitle": "Tell Sakk what you bought",
+  "voiceExample": "For example: \"I bought a Samsung 55-inch TV from B.TECH today for 20,000, with a 2-year warranty.\"",
+  "voiceListening": "Listening…",
+  "voiceDone": "Done",
+  "voiceMicDenied": "Sakk needs the microphone to add by voice. Allow it in your phone's settings.",
+  "voiceRecordFailed": "Couldn't record. Please try again.",
+  "voiceUnheard": "We couldn't make out a product. Try again and say the product, the store, the price and the warranty.",
+  "voiceNeedsInternet": "Adding by voice needs an internet connection.",
+  "voiceYouSaid": "You said",
+  "paywallHeadlineVoice": "Add products just by saying them",
+  "featureVoice": "Add by voice",
+  "limitReachedVoice": "Add by voice is part of Sakk Pro."
 }

@@ -11,6 +11,12 @@ abstract class ScanReceiptUseCase {
     String? pdfText,
   });
 
+  /// A product the user described out loud, from the recording at
+  /// [audioPath] (Sakk Pro).
+  Future<Either<Failure, ScannedReceiptData>> voice({
+    required String audioPath,
+  });
+
   /// Deletes the uploaded photo of a scan the user didn't save.
   Future<void> discard(String receiptPath);
 }
@@ -26,6 +32,11 @@ class ScanReceiptUseCaseImpl implements ScanReceiptUseCase {
   }) {
     return _repository.scanReceipt(imagePath: imagePath, pdfText: pdfText);
   }
+
+  @override
+  Future<Either<Failure, ScannedReceiptData>> voice({
+    required String audioPath,
+  }) => _repository.scanVoice(audioPath: audioPath);
 
   @override
   Future<void> discard(String receiptPath) =>

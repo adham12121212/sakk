@@ -17,6 +17,7 @@ import '../widgets/confidence_banner.dart';
 import '../widgets/datex.dart';
 import '../widgets/field_label.dart';
 import '../widgets/invoice_preview.dart';
+import '../widgets/transcript_card.dart';
 import '../widgets/invoice_preview_dialog.dart';
 import '../widgets/review_header.dart';
 import 'scan_failed_view.dart';
@@ -255,13 +256,18 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                               ConfidenceBanner(confidence: scanned.confidence),
                               SizedBox(height: 20.h),
 
-                              InvoicePreview(
-                                imageUrl: scanned.receiptImageUrl,
-                                onTap: () => showInvoicePreviewDialog(
-                                  context,
-                                  scanned.receiptImageUrl,
+                              // Added by voice: no photo; show what was
+                              // heard so the user can check it.
+                              if (scanned.transcript case final said?)
+                                TranscriptCard(text: said)
+                              else
+                                InvoicePreview(
+                                  imageUrl: scanned.receiptImageUrl,
+                                  onTap: () => showInvoicePreviewDialog(
+                                    context,
+                                    scanned.receiptImageUrl,
+                                  ),
                                 ),
-                              ),
                               SizedBox(height: 24.h),
                             ],
 

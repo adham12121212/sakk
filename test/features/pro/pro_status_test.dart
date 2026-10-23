@@ -191,6 +191,26 @@ void main() {
         userFacingError(l10n, 'limit_reached:fair_use'),
         l10n.limitReachedFairUse,
       );
+      expect(
+        userFacingError(l10n, 'limit_reached:voice'),
+        l10n.limitReachedVoice,
+      );
+    });
+
+    test('a free user refused Add by voice gets the voice paywall', () async {
+      final events = <PaywallReason>[];
+      final sub = ProLimit.events.listen(events.add);
+      addTearDown(sub.cancel);
+
+      final code = ProLimit.codeFor(
+        const FunctionException(
+          status: 402,
+          details: {'code': 'LIMIT_REACHED', 'type': 'voice', 'pro': false},
+        ),
+      );
+      expect(code, 'limit_reached:voice');
+      await Future<void>.delayed(Duration.zero);
+      expect(events, [PaywallReason.voice]);
     });
   });
 

@@ -3869,6 +3869,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Installments left to pay'**
   String get pdfRemainingInstallments;
+
+  /// No description provided for @addByVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add by voice'**
+  String get addByVoice;
+
+  /// No description provided for @voiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell Sakk what you bought'**
+  String get voiceTitle;
+
+  /// No description provided for @voiceExample.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: \"I bought a Samsung 55-inch TV from B.TECH today for 20,000, with a 2-year warranty.\"'**
+  String get voiceExample;
+
+  /// No description provided for @voiceListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening…'**
+  String get voiceListening;
+
+  /// No description provided for @voiceDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get voiceDone;
+
+  /// No description provided for @voiceMicDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk needs the microphone to add by voice. Allow it in your phone\'s settings.'**
+  String get voiceMicDenied;
+
+  /// No description provided for @voiceRecordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t record. Please try again.'**
+  String get voiceRecordFailed;
+
+  /// No description provided for @voiceUnheard.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t make out a product. Try again and say the product, the store, the price and the warranty.'**
+  String get voiceUnheard;
+
+  /// No description provided for @voiceNeedsInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding by voice needs an internet connection.'**
+  String get voiceNeedsInternet;
+
+  /// No description provided for @voiceYouSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You said'**
+  String get voiceYouSaid;
+
+  /// No description provided for @paywallHeadlineVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add products just by saying them'**
+  String get paywallHeadlineVoice;
+
+  /// No description provided for @featureVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add by voice'**
+  String get featureVoice;
+
+  /// No description provided for @limitReachedVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add by voice is part of Sakk Pro.'**
+  String get limitReachedVoice;
 }
 
 class _AppLocalizationsDelegate

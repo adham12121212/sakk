@@ -40,6 +40,8 @@ say the app doesn't have it rather than inventing it):
   tap Scan, then "Enter details manually" and fill in the same form. For invoices
   that came as a PDF (e.g. emailed by an online store), tap Scan, then
   "Upload PDF Invoice"; password-protected PDFs need the password removed first.
+  Sakk Pro users can also tap Scan, then "Add by voice", and say what they bought (product, store,
+  price, date, warranty) in Arabic or English; the form is filled in for them to check.
 - Return window: days after purchase the store accepts a return (14 by default,
   following Egypt's consumer protection law; the user can change or clear it).
   The app reminds them 2 days before it closes.
@@ -83,7 +85,7 @@ say the app doesn't have it rather than inventing it):
 - Installments: purchases paid off monthly (bank, Valu, Contact, Sympl, the store...),
   with each payment's due date; the user marks payments as paid.
 - Sakk Pro: a paid plan (monthly or yearly, with a 7-day free trial) that removes the
-  free plan's limits and adds the monthly summary. Managed from Profile.
+  free plan's limits and adds the monthly summary, the PDF report and Add by voice. Managed from Profile.
 
 The user's data is at the end of these instructions as a short summary, with dates,
 days left and totals already worked out, and today's date (Cairo time).

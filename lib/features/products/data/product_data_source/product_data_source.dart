@@ -16,6 +16,10 @@ abstract class ProductDataSource {
     String? pdfText,
   });
 
+  /// A product the user described out loud (Sakk Pro), from the recording
+  /// at [audioPath]. There's no receipt photo.
+  Future<ScannedReceiptData> scanVoice({required String audioPath});
+
   /// Deletes an uploaded receipt photo that ended up not being saved.
   Future<void> deleteReceiptImage(String path);
 
@@ -78,6 +82,10 @@ class ProductDataSourceImpl implements ProductDataSource {
   static const aiBusy = ReceiptAiClient.aiBusy;
   static const pdfUnreadable = 'pdf_unreadable';
 
+  /// A recording with nothing a product could be made from (silence, noise,
+  /// or no product details said).
+  static const voiceUnheard = 'voice_unheard';
+
   @override
   Future<ScannedReceiptData> scanReceipt({
     required String imagePath,
@@ -98,37 +106,66 @@ class ProductDataSourceImpl implements ProductDataSource {
         rethrow;
       }
 
-      return ScannedReceiptData(
-        productName: data['productName'] as String?,
-        brand: data['brand'] as String?,
-        store: data['store_name'] as String?,
-        price: (data['price'] as num?)?.toDouble(),
-        purchaseDate: data['purchaseDate'] != null
-            ? DateTime.tryParse(data['purchaseDate'] as String)
-            : null,
-        warrantyMonths: data['warrantyMonths'] as int?,
-        serialNumber: data['serialNumber'] as String?,
-        invoiceNumber: data['invoiceNumber'] as String?,
-        foreignPrice: (data['foreignPrice'] as num?)?.toDouble(),
-        foreignCurrency: data['foreignCurrency'] as String?,
-        receiptPath: upload.path,
-        receiptImageUrl: upload.signedUrl,
-        confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
-        imageUrl: data['imageUrl'] as String?,
-        // The `extract-receipt` edge function already classifies the
-        // product into one of ProductCategory's values (see its
-        // ALLOWED_CATEGORIES list) — this was previously never read here,
-        // so every scanned product silently fell back to "Other"
-        // regardless of what the AI detected. `ProductCategoryX.fromName`
-        // already defaults unknown/null values to `other`, matching the
-        // edge function's own fallback behavior.
-        category: ProductCategoryX.fromName(data['category'] as String?),
-      );
+      return _scannedFrom(
+        data,
+      ).copyWith(receiptPath: upload.path, receiptImageUrl: upload.signedUrl);
     } on ServerException {
       rethrow;
     } catch (e) {
       throw ServerException('Receipt scan failed: $e');
     }
+  }
+
+  @override
+  Future<ScannedReceiptData> scanVoice({required String audioPath}) async {
+    try {
+      final upload = await _ai.upload(audioPath, expiry: _scanUrlExpiry);
+      final Map<String, dynamic> data;
+      try {
+        data = await _ai.extract({
+          'mode': 'voice',
+          'audioUrl': upload.signedUrl,
+        });
+      } on ServerException catch (e) {
+        // "Unreadable" here means nothing was heard, not a blurry photo.
+        if (e.message == unreadableReceipt) {
+          throw ServerException(voiceUnheard);
+        }
+        rethrow;
+      } finally {
+        // Only needed to transcribe; the product doesn't keep it.
+        await _ai.delete(upload.path);
+      }
+      return _scannedFrom(data);
+    } on ServerException {
+      rethrow;
+    } catch (e) {
+      throw ServerException('Voice add failed: $e');
+    }
+  }
+
+  /// The extract-receipt function's product fields (receipt or voice).
+  static ScannedReceiptData _scannedFrom(Map<String, dynamic> data) {
+    return ScannedReceiptData(
+      productName: data['productName'] as String?,
+      brand: data['brand'] as String?,
+      store: data['store_name'] as String?,
+      price: (data['price'] as num?)?.toDouble(),
+      purchaseDate: data['purchaseDate'] != null
+          ? DateTime.tryParse(data['purchaseDate'] as String)
+          : null,
+      warrantyMonths: data['warrantyMonths'] as int?,
+      serialNumber: data['serialNumber'] as String?,
+      invoiceNumber: data['invoiceNumber'] as String?,
+      foreignPrice: (data['foreignPrice'] as num?)?.toDouble(),
+      foreignCurrency: data['foreignCurrency'] as String?,
+      confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: data['imageUrl'] as String?,
+      transcript: data['transcript'] as String?,
+      // The function returns one of ProductCategory's values; fromName
+      // falls back to `other` like the function does.
+      category: ProductCategoryX.fromName(data['category'] as String?),
+    );
   }
 
   @override

@@ -96,6 +96,17 @@ class ScanCubit extends Cubit<ScanState> {
     );
   }
 
+  /// A product the user described out loud (Sakk Pro). Like a scan, but
+  /// with no receipt photo, so nothing is left to delete if they leave.
+  Future<void> processVoice(String audioPath) async {
+    final result = await _scanReceiptUseCase.voice(audioPath: audioPath);
+    if (isClosed) return;
+    result.fold(
+      (failure) => emit(ScanProcessingFailed(failure.message)),
+      (scanned) => emit(ScanEditing(scanned: scanned)),
+    );
+  }
+
   /// A PDF invoice (e.g. emailed by an online store): its first page becomes
   /// the invoice photo and its text goes to the scanner with it.
   Future<void> processPdf(Uint8List pdfBytes) async {

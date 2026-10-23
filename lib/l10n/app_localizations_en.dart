@@ -2354,4 +2354,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfRemainingInstallments => 'Installments left to pay';
+
+  @override
+  String get addByVoice => 'Add by voice';
+
+  @override
+  String get voiceTitle => 'Tell Sakk what you bought';
+
+  @override
+  String get voiceExample =>
+      'For example: \"I bought a Samsung 55-inch TV from B.TECH today for 20,000, with a 2-year warranty.\"';
+
+  @override
+  String get voiceListening => 'Listening…';
+
+  @override
+  String get voiceDone => 'Done';
+
+  @override
+  String get voiceMicDenied =>
+      'Sakk needs the microphone to add by voice. Allow it in your phone\'s settings.';
+
+  @override
+  String get voiceRecordFailed => 'Couldn\'t record. Please try again.';
+
+  @override
+  String get voiceUnheard =>
+      'We couldn\'t make out a product. Try again and say the product, the store, the price and the warranty.';
+
+  @override
+  String get voiceNeedsInternet =>
+      'Adding by voice needs an internet connection.';
+
+  @override
+  String get voiceYouSaid => 'You said';
+
+  @override
+  String get paywallHeadlineVoice => 'Add products just by saying them';
+
+  @override
+  String get featureVoice => 'Add by voice';
+
+  @override
+  String get limitReachedVoice => 'Add by voice is part of Sakk Pro.';
 }

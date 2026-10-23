@@ -80,29 +80,31 @@ class ProductRepoImpl implements ProductRepo {
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
     required String imagePath,
     String? pdfText,
-  }) async {
+  }) => _scan(
+    'scanReceipt',
+    () => _dataSource.scanReceipt(imagePath: imagePath, pdfText: pdfText),
+  );
+
+  @override
+  Future<Either<Failure, ScannedReceiptData>> scanVoice({
+    required String audioPath,
+  }) => _scan('scanVoice', () => _dataSource.scanVoice(audioPath: audioPath));
+
+  /// An AI scan ([action], named [name] in the logs): needs a connection.
+  Future<Either<Failure, ScannedReceiptData>> _scan(
+    String name,
+    Future<ScannedReceiptData> Function() action,
+  ) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
-      final result = await _dataSource.scanReceipt(
-        imagePath: imagePath,
-        pdfText: pdfText,
-      );
-      return Right(result);
+      return Right(await action());
     } on ServerException catch (e, st) {
-      _logger.error(
-        'Server error during scanReceipt',
-        error: e,
-        stackTrace: st,
-      );
+      _logger.error('Server error during $name', error: e, stackTrace: st);
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error(
-        'Unexpected error during scanReceipt',
-        error: e,
-        stackTrace: st,
-      );
+      _logger.error('Unexpected error during $name', error: e, stackTrace: st);
       return Left(UnknownFailure(e.toString()));
     }
   }

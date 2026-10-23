@@ -43,9 +43,14 @@ class ReceiptAiClient {
       throw ServerException('You must be signed in to scan a receipt');
     }
 
-    // .png for rendered PDF pages, .jpg for photos; the upload's content
-    // type follows the extension.
-    final extension = imagePath.toLowerCase().endsWith('.png') ? 'png' : 'jpg';
+    // .png for rendered PDF pages, .m4a for voice recordings, .jpg for
+    // photos; the upload's content type follows the extension.
+    final lower = imagePath.toLowerCase();
+    final extension = lower.endsWith('.png')
+        ? 'png'
+        : lower.endsWith('.m4a')
+        ? 'm4a'
+        : 'jpg';
     final path = '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
     await _client.storage.from(bucket).upload(path, File(imagePath));
     try {

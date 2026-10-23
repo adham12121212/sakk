@@ -90,6 +90,8 @@
 	<string>Sakk uses Face ID to unlock the app when you turn on biometric lock.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Sakk uses the camera to scan receipts and take photos of your products.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Sakk listens while you describe a purchase, to add it by voice.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sakk lets you choose receipt and product photos from your library.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

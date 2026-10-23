@@ -13,6 +13,11 @@ abstract class ProductRepo {
     String? pdfText,
   });
 
+  /// A product the user described out loud (Sakk Pro).
+  Future<Either<Failure, ScannedReceiptData>> scanVoice({
+    required String audioPath,
+  });
+
   /// Deletes a scanned receipt photo the user didn't save. Best effort.
   Future<void> discardReceiptImage(String path);
 

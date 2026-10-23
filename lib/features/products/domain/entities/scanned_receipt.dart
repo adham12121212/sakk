@@ -24,6 +24,9 @@ class ScannedReceiptData extends Equatable {
   /// leaves without saving.
   final String? receiptPath;
 
+  /// What the user said, for a product added by voice.
+  final String? transcript;
+
   final double confidence;
 
   const ScannedReceiptData({
@@ -42,6 +45,7 @@ class ScannedReceiptData extends Equatable {
     this.foreignPrice,
     this.foreignCurrency,
     this.receiptPath,
+    this.transcript,
   });
 
   ScannedReceiptData copyWith({
@@ -60,6 +64,7 @@ class ScannedReceiptData extends Equatable {
     double? foreignPrice,
     String? foreignCurrency,
     String? receiptPath,
+    String? transcript,
   }) {
     return ScannedReceiptData(
       productName: productName ?? this.productName,
@@ -77,6 +82,7 @@ class ScannedReceiptData extends Equatable {
       foreignPrice: foreignPrice ?? this.foreignPrice,
       foreignCurrency: foreignCurrency ?? this.foreignCurrency,
       receiptPath: receiptPath ?? this.receiptPath,
+      transcript: transcript ?? this.transcript,
     );
   }
 
@@ -97,5 +103,6 @@ class ScannedReceiptData extends Equatable {
     foreignPrice,
     foreignCurrency,
     receiptPath,
+    transcript,
   ];
 }

@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Release builds: Supabase, Firebase, Google Fonts. (Debug/profile manifests already add this.) -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Add by voice (Sakk Pro): asked for the first time it's used. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission
         android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission

@@ -59,6 +59,10 @@ void main() {
         l10n.pdfUnreadable,
       );
       expect(
+        userFacingError(l10n, ProductDataSourceImpl.voiceUnheard),
+        l10n.voiceUnheard,
+      );
+      expect(
         userFacingError(l10n, 'FunctionsHttpException(status: 500)'),
         l10n.errorGeneric,
       );

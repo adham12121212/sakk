@@ -36,6 +36,26 @@ class _Scan implements ScanReceiptUseCase {
     );
   }
 
+  String? lastAudioPath;
+
+  /// What [voice] returns.
+  Either<Failure, ScannedReceiptData> voiceResult = const Right(
+    ScannedReceiptData(
+      productName: 'Samsung TV',
+      price: 20000,
+      warrantyMonths: 24,
+      transcript: 'اشتريت تليفزيون سامسونج بعشرين ألف وضمانه سنتين',
+    ),
+  );
+
+  @override
+  Future<Either<Failure, ScannedReceiptData>> voice({
+    required String audioPath,
+  }) async {
+    lastAudioPath = audioPath;
+    return voiceResult;
+  }
+
   @override
   Future<void> discard(String receiptPath) async => discarded.add(receiptPath);
 }
@@ -159,5 +179,33 @@ void main() {
       (c.state as ScanProcessingFailed).message,
       ProductDataSourceImpl.pdfUnreadable,
     );
+  });
+
+  group('add by voice', () {
+    test('what was said fills the form, with nothing to delete', () async {
+      final scan = _Scan();
+      final c = _cubit(scan, _Add());
+      await c.processVoice('/tmp/voice.m4a');
+      expect(scan.lastAudioPath, '/tmp/voice.m4a');
+      final scanned = (c.state as ScanEditing).scanned;
+      expect(scanned.productName, 'Samsung TV');
+      expect(scanned.warrantyMonths, 24);
+      expect(scanned.transcript, contains('سامسونج'));
+      await c.close();
+      expect(scan.discarded, isEmpty);
+    });
+
+    test('nothing heard shows the voice message', () async {
+      final scan = _Scan()
+        ..voiceResult = const Left(
+          ServerFailure(ProductDataSourceImpl.voiceUnheard),
+        );
+      final c = _cubit(scan, _Add());
+      await c.processVoice('/tmp/voice.m4a');
+      expect(
+        (c.state as ScanProcessingFailed).message,
+        ProductDataSourceImpl.voiceUnheard,
+      );
+    });
   });
 }

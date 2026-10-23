@@ -627,5 +627,18 @@
   "pdfColRemaining": "الباقي",
   "pdfColPlan": "الباقة",
   "pdfColStatus": "الحالة",
-  "pdfRemainingInstallments": "الأقساط الباقية"
+  "pdfRemainingInstallments": "الأقساط الباقية",
+  "addByVoice": "أضف بصوتك",
+  "voiceTitle": "قول لصك اشتريت إيه",
+  "voiceExample": "مثلًا: \"اشتريت تليفزيون سامسونج ٥٥ بوصة من بي تك النهارده بعشرين ألف، وضمانه سنتين.\"",
+  "voiceListening": "بسمعك…",
+  "voiceDone": "تمام",
+  "voiceMicDenied": "صك محتاج الميكروفون عشان تضيف بصوتك. اسمح بيه من إعدادات الموبايل.",
+  "voiceRecordFailed": "معرفناش نسجّل. جرّب تاني.",
+  "voiceUnheard": "مقدرناش نفهم المنتج. جرّب تاني وقول اسم المنتج والمحل والسعر والضمان.",
+  "voiceNeedsInternet": "الإضافة بالصوت محتاجة إنترنت.",
+  "voiceYouSaid": "إنت قلت",
+  "paywallHeadlineVoice": "ضيف منتجاتك بصوتك بس",
+  "featureVoice": "الإضافة بالصوت",
+  "limitReachedVoice": "الإضافة بالصوت متاحة في Sakk Pro."
 }

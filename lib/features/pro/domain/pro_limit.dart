@@ -20,6 +20,7 @@ enum PaywallReason {
   installmentsLimit,
   monthlySummary,
   pdfReport,
+  voice,
 }
 
 /// The free plan's limit errors, as they travel through the app.
@@ -97,6 +98,8 @@ class ProLimit {
     'products' => PaywallReason.productsLimit,
     'subscriptions' => PaywallReason.subscriptionsLimit,
     'installments' => PaywallReason.installmentsLimit,
+    // Add by voice is Pro only: the free plan's quota is 0.
+    'voice' => PaywallReason.voice,
     _ => null,
   };
 
