@@ -14,10 +14,12 @@ class ProfileDeleteAccountButton extends StatefulWidget {
   const ProfileDeleteAccountButton({super.key});
 
   @override
-  State<ProfileDeleteAccountButton> createState() => _ProfileDeleteAccountButtonState();
+  State<ProfileDeleteAccountButton> createState() =>
+      _ProfileDeleteAccountButtonState();
 }
 
-class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton> {
+class _ProfileDeleteAccountButtonState
+    extends State<ProfileDeleteAccountButton> {
   // AuthLoading is shared with log out, so track which button started it:
   // only this one shows a spinner while the account is being deleted.
   bool _isDeleting = false;
@@ -29,6 +31,8 @@ class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton>
     // cubit returns to AuthInitial, so this context won't be around after.
     final messenger = ScaffoldMessenger.of(context);
 
+    if (!await confirmProBeforeDelete(context)) return;
+    if (!context.mounted) return;
     final confirmed = await showDeleteAccountDialog(context);
     if (!confirmed) return;
 
@@ -55,20 +59,27 @@ class _ProfileDeleteAccountButtonState extends State<ProfileDeleteAccountButton>
             onPressed: isBusy ? null : () => _confirmDelete(context),
             icon: _isDeleting
                 ? SizedBox(
-              width: 18.w,
-              height: 18.w,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: context.palette.danger,
-              ),
-            )
+                    width: 18.w,
+                    height: 18.w,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: context.palette.danger,
+                    ),
+                  )
                 : Icon(AppIcons.deleteAccount, color: context.palette.danger),
-            label: Text(l10n.deleteAccount, style: TextStyle(color: context.palette.danger, fontWeight: FontWeight.w600)),
+            label: Text(
+              l10n.deleteAccount,
+              style: TextStyle(
+                color: context.palette.danger,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             // Soft red: clearly destructive without shouting.
             style: FilledButton.styleFrom(
               backgroundColor: context.palette.dangerContainer,
               foregroundColor: context.palette.danger,
-              disabledBackgroundColor: context.palette.dangerContainer.withValues(alpha: 0.5),
+              disabledBackgroundColor: context.palette.dangerContainer
+                  .withValues(alpha: 0.5),
             ),
           ),
         );

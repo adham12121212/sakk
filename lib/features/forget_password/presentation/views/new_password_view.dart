@@ -10,7 +10,6 @@ import '../../../auth/presentation/widgets/auth_primary_button.dart';
 import '../../../auth/presentation/widgets/password_text_field.dart';
 import '../cubit/password_reset_cubit.dart';
 
-
 class NewPasswordView extends StatefulWidget {
   const NewPasswordView({super.key});
 
@@ -63,82 +62,98 @@ class _NewPasswordViewState extends State<NewPasswordView> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        if (context.read<PasswordResetCubit>().state is PasswordResetLoading) return;
+        if (context.read<PasswordResetCubit>().state is PasswordResetLoading) {
+          return;
+        }
         _abandon();
       },
       child: GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
           body: BlocConsumer<PasswordResetCubit, PasswordResetState>(
-          listener: _handleStateChange,
-          builder: (context, state) {
-            final isLoading = state is PasswordResetLoading;
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 12.h),
-                      Text(
-                        l10n.setNewPassword,
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        l10n.chooseNewPasswordSubtitle,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      ),
-                      SizedBox(height: 32.h),
-                      PasswordTextField(
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        onToggleVisibility: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
-                        enabled: !isLoading,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      SizedBox(height: 6.h),
-                      Padding(
-                        padding: EdgeInsetsDirectional.only(start: 4.w),
-                        child: Text(
-                          l10n.atleast8characters,
-                          style: Theme.of(context).textTheme.bodySmall,
+            listener: _handleStateChange,
+            builder: (context, state) {
+              final isLoading = state is PasswordResetLoading;
+              return SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 12.h),
+                        Text(
+                          l10n.setNewPassword,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      PasswordTextField(
-                        controller: _confirmController,
-                        obscureText: _obscureConfirm,
-                        onToggleVisibility: () =>
-                            setState(() => _obscureConfirm = !_obscureConfirm),
-                        label: l10n.confirmPassword,
-                        hint: l10n.confirmPasswordHint,
-                        enabled: !isLoading,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _submit(),
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return l10n.confirmPasswordRequired;
-                          if (v != _passwordController.text) return l10n.passwordsDoNotMatch;
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 28.h),
-                      AuthPrimaryButton(
-                        label: l10n.updatePasswordButton,
-                        isLoading: isLoading,
-                        onPressed: _submit,
-                      ),
-                    ],
+                        SizedBox(height: 8.h),
+                        Text(
+                          l10n.chooseNewPasswordSubtitle,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        SizedBox(height: 32.h),
+                        PasswordTextField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          onToggleVisibility: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
+                          enabled: !isLoading,
+                          textInputAction: TextInputAction.next,
+                        ),
+                        SizedBox(height: 6.h),
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(start: 4.w),
+                          child: Text(
+                            l10n.atleast8characters,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        PasswordTextField(
+                          controller: _confirmController,
+                          obscureText: _obscureConfirm,
+                          onToggleVisibility: () => setState(
+                            () => _obscureConfirm = !_obscureConfirm,
+                          ),
+                          label: l10n.confirmPassword,
+                          hint: l10n.confirmPasswordHint,
+                          enabled: !isLoading,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _submit(),
+                          validator: (v) {
+                            if (v == null || v.isEmpty) {
+                              return l10n.confirmPasswordRequired;
+                            }
+                            if (v != _passwordController.text) {
+                              return l10n.passwordsDoNotMatch;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 28.h),
+                        AuthPrimaryButton(
+                          label: l10n.updatePasswordButton,
+                          isLoading: isLoading,
+                          onPressed: _submit,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
       ),
     );
   }

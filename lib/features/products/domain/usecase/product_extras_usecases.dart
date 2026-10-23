@@ -16,9 +16,15 @@ abstract class ProductExtrasUseCase {
 
   Future<Either<Failure, void>> deleteExtraWarranty(String id);
 
-  Future<Either<Failure, void>> addClaim({required String productId, required String issue});
+  Future<Either<Failure, void>> addClaim({
+    required String productId,
+    required String issue,
+  });
 
-  Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status);
+  Future<Either<Failure, void>> updateClaimStatus(
+    String id,
+    ClaimStatus status,
+  );
 
   Future<Either<Failure, void>> deleteClaim(String id);
 
@@ -42,36 +48,45 @@ class ProductExtrasUseCaseImpl implements ProductExtrasUseCase {
     required String provider,
     required DateTime startDate,
     required int months,
-  }) =>
-      _repository.addExtraWarranty(
-        productId: productId,
-        provider: provider,
-        startDate: startDate,
-        months: months,
-      );
+  }) => _repository.addExtraWarranty(
+    productId: productId,
+    provider: provider,
+    startDate: startDate,
+    months: months,
+  );
 
   @override
-  Future<Either<Failure, void>> deleteExtraWarranty(String id) => _repository.deleteExtraWarranty(id);
+  Future<Either<Failure, void>> deleteExtraWarranty(String id) =>
+      _repository.deleteExtraWarranty(id);
 
   @override
-  Future<Either<Failure, void>> addClaim({required String productId, required String issue}) =>
-      _repository.addClaim(productId: productId, issue: issue);
+  Future<Either<Failure, void>> addClaim({
+    required String productId,
+    required String issue,
+  }) => _repository.addClaim(productId: productId, issue: issue);
 
   @override
-  Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status) =>
-      _repository.updateClaimStatus(id, status);
+  Future<Either<Failure, void>> updateClaimStatus(
+    String id,
+    ClaimStatus status,
+  ) => _repository.updateClaimStatus(id, status);
 
   @override
-  Future<Either<Failure, void>> deleteClaim(String id) => _repository.deleteClaim(id);
+  Future<Either<Failure, void>> deleteClaim(String id) =>
+      _repository.deleteClaim(id);
 
   @override
   Future<Either<Failure, void>> addDocument({
     required String productId,
     required DocumentKind kind,
     required String filePath,
-  }) =>
-      _repository.addDocument(productId: productId, kind: kind, filePath: filePath);
+  }) => _repository.addDocument(
+    productId: productId,
+    kind: kind,
+    filePath: filePath,
+  );
 
   @override
-  Future<Either<Failure, void>> deleteDocument(ProductDocument document) => _repository.deleteDocument(document);
+  Future<Either<Failure, void>> deleteDocument(ProductDocument document) =>
+      _repository.deleteDocument(document);
 }

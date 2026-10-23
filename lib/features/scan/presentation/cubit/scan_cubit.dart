@@ -23,14 +23,14 @@ class ScanCubit extends Cubit<ScanState> {
     WarrantyNotificationService? warrantyNotificationService,
     PdfInvoiceReader? pdfInvoiceReader,
     ReviewPrompter? reviewPrompter,
-  })  : _reviewPrompter = reviewPrompter,
-        _pdfInvoiceReader = pdfInvoiceReader ?? PdfInvoiceReader(),
-        _scanReceiptUseCase = scanReceiptUseCase ?? getIt<ScanReceiptUseCase>(),
-        _addProductUseCase = addProductUseCase ?? getIt<AddProductUseCase>(),
-        _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
-        _warrantyNotificationService =
-            warrantyNotificationService ?? getIt<WarrantyNotificationService>(),
-        super(const ScanProcessing());
+  }) : _reviewPrompter = reviewPrompter,
+       _pdfInvoiceReader = pdfInvoiceReader ?? PdfInvoiceReader(),
+       _scanReceiptUseCase = scanReceiptUseCase ?? getIt<ScanReceiptUseCase>(),
+       _addProductUseCase = addProductUseCase ?? getIt<AddProductUseCase>(),
+       _productsCubit = productsCubit ?? getIt<ProductsCubit>(),
+       _warrantyNotificationService =
+           warrantyNotificationService ?? getIt<WarrantyNotificationService>(),
+       super(const ScanProcessing());
 
   final ScanReceiptUseCase _scanReceiptUseCase;
   final AddProductUseCase _addProductUseCase;
@@ -65,11 +65,21 @@ class ScanCubit extends Cubit<ScanState> {
   /// product added without a receipt.
   void startManualEntry() {
     _isManualEntry = true;
-    emit(ScanEditing(scanned: ScannedReceiptData(purchaseDate: DateTime.now(), confidence: 1)));
+    emit(
+      ScanEditing(
+        scanned: ScannedReceiptData(
+          purchaseDate: DateTime.now(),
+          confidence: 1,
+        ),
+      ),
+    );
   }
 
   Future<void> processReceipt(String imagePath, {String? pdfText}) async {
-    final result = await _scanReceiptUseCase(imagePath: imagePath, pdfText: pdfText);
+    final result = await _scanReceiptUseCase(
+      imagePath: imagePath,
+      pdfText: pdfText,
+    );
     if (isClosed) {
       // The user left while the scan was running: emitting now would throw,
       // and close() couldn't delete a photo it didn't know about yet.
@@ -81,8 +91,8 @@ class ScanCubit extends Cubit<ScanState> {
     }
 
     result.fold(
-          (failure) => emit(ScanProcessingFailed(failure.message)),
-          (scanned) => emit(ScanEditing(scanned: scanned)),
+      (failure) => emit(ScanProcessingFailed(failure.message)),
+      (scanned) => emit(ScanEditing(scanned: scanned)),
     );
   }
 
@@ -93,7 +103,9 @@ class ScanCubit extends Cubit<ScanState> {
     try {
       invoice = await _pdfInvoiceReader.read(pdfBytes);
     } on PdfInvoiceException {
-      if (!isClosed) emit(const ScanProcessingFailed(ProductDataSourceImpl.pdfUnreadable));
+      if (!isClosed) {
+        emit(const ScanProcessingFailed(ProductDataSourceImpl.pdfUnreadable));
+      }
       return;
     }
     if (isClosed) return;
@@ -144,11 +156,16 @@ class ScanCubit extends Cubit<ScanState> {
     );
 
     result.fold(
-          (failure) => emit(ScanSaveFailure(scanned: scanned, message: failure.message)),
-          (product) {
+      (failure) =>
+          emit(ScanSaveFailure(scanned: scanned, message: failure.message)),
+      (product) {
         _saved = true;
         _productsCubit.refresh();
-        final prompter = _reviewPrompter ?? (getIt.isRegistered<ReviewPrompter>() ? getIt<ReviewPrompter>() : null);
+        final prompter =
+            _reviewPrompter ??
+            (getIt.isRegistered<ReviewPrompter>()
+                ? getIt<ReviewPrompter>()
+                : null);
         unawaited(prompter?.productSaved());
         _warrantyNotificationService.scheduleFutureNotifications(product);
         emit(ScanSaveSuccess(scanned: scanned));

@@ -32,5 +32,6 @@ class GetChatHistoryUseCaseImpl implements GetChatHistoryUseCase {
   GetChatHistoryUseCaseImpl(this._repository);
 
   @override
-  Future<Either<Failure, List<ChatMessageEntity>>> call() => _repository.getHistory();
+  Future<Either<Failure, List<ChatMessageEntity>>> call() =>
+      _repository.getHistory();
 }

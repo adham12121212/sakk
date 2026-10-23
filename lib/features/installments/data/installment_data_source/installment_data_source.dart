@@ -120,7 +120,11 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
       ProLimit.notifyUsageChanged();
       return InstallmentPaymentModel.fromJson(row);
     } catch (e) {
-      throw ServerException('Failed to update the installment payment: $e');
+      // Unmarking a payment on a finished plan can hit the free limit.
+      throw ProLimit.exceptionFor(
+        e,
+        'Failed to update the installment payment: $e',
+      );
     }
   }
 
@@ -136,8 +140,9 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
         upload = await _ai.upload(imagePath, expiry: _screenshotUrlExpiry);
       }
       // Full card numbers and email addresses never leave the device.
-      String? scrub(String? value) =>
-          value == null ? null : PiiMasker.scrub(PiiMasker.maskCardNumbers(value));
+      String? scrub(String? value) => value == null
+          ? null
+          : PiiMasker.scrub(PiiMasker.maskCardNumbers(value));
       final data = await _ai.extract({
         'mode': 'installment',
         'imageUrl': ?upload?.signedUrl,
@@ -152,7 +157,9 @@ class InstallmentDataSourceImpl implements InstallmentDataSource {
         downPayment: number('downPayment'),
         installmentAmount: number('installmentAmount'),
         installmentsCount: (data['installmentsCount'] as num?)?.toInt(),
-        firstDueDate: data['firstDueDate'] is String ? DateTime.tryParse(data['firstDueDate'] as String) : null,
+        firstDueDate: data['firstDueDate'] is String
+            ? DateTime.tryParse(data['firstDueDate'] as String)
+            : null,
         dueDayOfMonth: (data['dueDayOfMonth'] as num?)?.toInt(),
         interestOrFees: number('interestOrFees'),
         currency: data['currency'] as String?,

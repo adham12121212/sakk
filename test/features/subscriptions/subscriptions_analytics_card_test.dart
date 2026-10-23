@@ -8,50 +8,71 @@ import 'package:sakk/features/subscriptions/presentation/cubit/subscriptions_sta
 import 'package:sakk/features/subscriptions/presentation/widgets/subscriptions_analytics_card.dart';
 import 'package:sakk/l10n/app_localizations.dart';
 
-UserSubscription sub(String id, double price, SubscriptionCategory category,
-        {String currency = 'EGP', BillingCycle cycle = BillingCycle.monthly}) =>
-    UserSubscription(
-      id: id,
-      customName: id,
-      category: category,
-      price: price,
-      currency: currency,
-      billingCycle: cycle,
-      nextRenewalDate: DateTime(2026, 11, 1),
-    );
+UserSubscription sub(
+  String id,
+  double price,
+  SubscriptionCategory category, {
+  String currency = 'EGP',
+  BillingCycle cycle = BillingCycle.monthly,
+}) => UserSubscription(
+  id: id,
+  customName: id,
+  category: category,
+  price: price,
+  currency: currency,
+  billingCycle: cycle,
+  nextRenewalDate: DateTime(2026, 11, 1),
+);
 
-Widget app(SubscriptionsState state, {Locale locale = const Locale('en')}) => MaterialApp(
+Widget app(SubscriptionsState state, {Locale locale = const Locale('en')}) =>
+    MaterialApp(
       locale: locale,
       theme: AppTheme.light(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
-        body: SingleChildScrollView(child: SubscriptionsAnalyticsCard(state: state, onTap: () {})),
+        body: SingleChildScrollView(
+          child: SubscriptionsAnalyticsCard(state: state, onTap: () {}),
+        ),
       ),
     );
 
 void main() {
-  final state = SubscriptionsState(hasLoadedOnce: true, subscriptions: [
-    sub('Netflix', 240, SubscriptionCategory.streaming),
-    sub('Shahid', 1200, SubscriptionCategory.streaming, cycle: BillingCycle.yearly), // 100 / month
-    sub('Spotify', 60, SubscriptionCategory.music),
-    sub('ChatGPT', 20, SubscriptionCategory.ai, currency: 'USD'),
-  ]);
+  final state = SubscriptionsState(
+    hasLoadedOnce: true,
+    subscriptions: [
+      sub('Netflix', 240, SubscriptionCategory.streaming),
+      sub(
+        'Shahid',
+        1200,
+        SubscriptionCategory.streaming,
+        cycle: BillingCycle.yearly,
+      ), // 100 / month
+      sub('Spotify', 60, SubscriptionCategory.music),
+      sub('ChatGPT', 20, SubscriptionCategory.ai, currency: 'USD'),
+    ],
+  );
 
-  testWidgets('monthly and yearly totals, other currencies apart, breakdown by category', (tester) async {
-    await tester.pumpWidget(app(state));
-    expect(find.text('400 EGP'), findsOneWidget); // 240 + 100 + 60
-    expect(find.text('4,800 EGP'), findsOneWidget);
-    expect(find.text('+ 20 USD / month'), findsOneWidget);
+  testWidgets(
+    'monthly and yearly totals, other currencies apart, breakdown by category',
+    (tester) async {
+      await tester.pumpWidget(app(state));
+      expect(find.text('400 EGP'), findsOneWidget); // 240 + 100 + 60
+      expect(find.text('4,800 EGP'), findsOneWidget);
+      expect(find.text('+ 20 USD / month'), findsOneWidget);
 
-    expect(find.text('Streaming'), findsOneWidget);
-    expect(find.text('340 EGP'), findsOneWidget);
-    expect(find.text('85%'), findsOneWidget);
-    expect(find.text('Music'), findsOneWidget);
-    expect(find.text('15%'), findsOneWidget);
-    expect(find.text('AI'), findsNothing); // USD only: not in the EGP breakdown
-    expect(find.text('Breakdown of EGP subscriptions'), findsOneWidget);
-  });
+      expect(find.text('Streaming'), findsOneWidget);
+      expect(find.text('340 EGP'), findsOneWidget);
+      expect(find.text('85%'), findsOneWidget);
+      expect(find.text('Music'), findsOneWidget);
+      expect(find.text('15%'), findsOneWidget);
+      expect(
+        find.text('AI'),
+        findsNothing,
+      ); // USD only: not in the EGP breakdown
+      expect(find.text('Breakdown of EGP subscriptions'), findsOneWidget);
+    },
+  );
 
   testWidgets('Arabic digits, no overflow', (tester) async {
     await tester.pumpWidget(app(state, locale: const Locale('ar')));

@@ -44,14 +44,20 @@ class ConfidenceBanner extends StatelessWidget {
                       TextSpan(text: l10n.confidenceScoreLabel),
                       TextSpan(
                         text: '$percent%',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: level.foreground),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: level.foreground,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 if (level.subtext != null) ...[
                   const SizedBox(height: 4),
-                  Text(level.subtext!, style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    level.subtext!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ],
             ),
@@ -61,10 +67,18 @@ class ConfidenceBanner extends StatelessWidget {
     );
   }
 
-  _ConfidenceLevel _levelFor(BuildContext context, AppLocalizations l10n, double confidence) {
+  _ConfidenceLevel _levelFor(
+    BuildContext context,
+    AppLocalizations l10n,
+    double confidence,
+  ) {
     final p = context.palette;
     if (confidence >= _highThreshold) {
-      return _ConfidenceLevel(foreground: p.success, background: p.successContainer, icon: AppIcons.successFilled);
+      return _ConfidenceLevel(
+        foreground: p.success,
+        background: p.successContainer,
+        icon: AppIcons.successFilled,
+      );
     }
     if (confidence >= _mediumThreshold) {
       return _ConfidenceLevel(

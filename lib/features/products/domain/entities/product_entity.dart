@@ -89,7 +89,11 @@ class ProductEntity extends Equatable {
   /// Last day the store takes the product back, or null when not tracked.
   DateTime? get returnByDate => returnDays == null
       ? null
-      : DateTime(purchaseDate.year, purchaseDate.month, purchaseDate.day + returnDays!);
+      : DateTime(
+          purchaseDate.year,
+          purchaseDate.month,
+          purchaseDate.day + returnDays!,
+        );
 
   /// Days until [returnByDate] (0 on the last day, negative once it passed),
   /// or null when no return window is tracked.
@@ -101,14 +105,11 @@ class ProductEntity extends Equatable {
 
   static DateTime _dateOnly(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
-
   int get daysRemaining {
     final today = _dateOnly(DateTime.now());
     final endDate = _dateOnly(warrantyEndDate);
     return endDate.difference(today).inDays;
   }
-
-
 
   WarrantyStatus get status {
     if (daysRemaining <= 0) {

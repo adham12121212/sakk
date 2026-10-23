@@ -8,12 +8,13 @@ extension ClaimStatusX on ClaimStatus {
   String get dbValue => this == ClaimStatus.inRepair ? 'in_repair' : name;
 
   static ClaimStatus fromDb(String? value) => ClaimStatus.values.firstWhere(
-        (s) => s.dbValue == value,
-        orElse: () => ClaimStatus.submitted,
-      );
+    (s) => s.dbValue == value,
+    orElse: () => ClaimStatus.submitted,
+  );
 
   /// Still waiting on the store or maker.
-  bool get isOpen => this == ClaimStatus.submitted || this == ClaimStatus.inRepair;
+  bool get isOpen =>
+      this == ClaimStatus.submitted || this == ClaimStatus.inRepair;
 }
 
 /// One request to the store or maker to repair or replace a product.

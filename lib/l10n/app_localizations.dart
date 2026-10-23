@@ -686,6 +686,12 @@ abstract class AppLocalizations {
   /// **'\"{productName}\" will be permanently removed. This can\'t be undone.'**
   String deleteProductConfirmBody(Object productName);
 
+  /// No description provided for @deleteProductLinkedPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}'**
+  String deleteProductLinkedPlans(int count);
+
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
@@ -1301,8 +1307,26 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAccountWarning.
   ///
   /// In en, this message translates to:
-  /// **'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.'**
+  /// **'This permanently deletes your account and all its data: products, receipts and documents, subscriptions, installment plans, chat history and notifications. This can\'t be undone.'**
   String get deleteAccountWarning;
+
+  /// No description provided for @deleteAccountProTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Sakk Pro first'**
+  String get deleteAccountProTitle;
+
+  /// No description provided for @deleteAccountProBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account doesn\'t cancel your Sakk Pro subscription in Google Play. Cancel it there first so you aren\'t charged again.'**
+  String get deleteAccountProBody;
+
+  /// No description provided for @deleteAccountProContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete anyway'**
+  String get deleteAccountProContinue;
 
   /// No description provided for @deleteAccountKeyword.
   ///
@@ -3648,6 +3672,12 @@ abstract class AppLocalizations {
   /// **'Subscriptions aren\'t available right now. Please try again later.'**
   String get purchasesUnavailable;
 
+  /// No description provided for @proComingSoonIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.'**
+  String get proComingSoonIos;
+
   /// No description provided for @alreadyPro.
   ///
   /// In en, this message translates to:
@@ -3744,35 +3774,101 @@ abstract class AppLocalizations {
   /// **'Sakk Pro'**
   String get reminderCustomProOnly;
 
-  /// No description provided for @backupExport.
+  /// No description provided for @paywallHeadlinePdfReport.
   ///
   /// In en, this message translates to:
-  /// **'Export backup (JSON)'**
-  String get backupExport;
+  /// **'Get everything in one PDF'**
+  String get paywallHeadlinePdfReport;
 
-  /// No description provided for @backupFailed.
+  /// No description provided for @featurePdfReport.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t create the backup. Please try again.'**
-  String get backupFailed;
-
-  /// No description provided for @paywallHeadlineBackup.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep a copy of everything'**
-  String get paywallHeadlineBackup;
-
-  /// No description provided for @featureBackup.
-  ///
-  /// In en, this message translates to:
-  /// **'Backup export'**
-  String get featureBackup;
+  /// **'PDF report'**
+  String get featurePdfReport;
 
   /// No description provided for @proStatusLoadFailed.
   ///
   /// In en, this message translates to:
   /// **'Couldn\'t load your plan. Check your connection and try again.'**
   String get proStatusLoadFailed;
+
+  /// No description provided for @pdfReportExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF report'**
+  String get pdfReportExport;
+
+  /// No description provided for @pdfReportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the report. Please try again.'**
+  String get pdfReportFailed;
+
+  /// No description provided for @pdfReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk report'**
+  String get pdfReportTitle;
+
+  /// No description provided for @pdfReportGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created on {date}'**
+  String pdfReportGenerated(String date);
+
+  /// No description provided for @pdfReportSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get pdfReportSummary;
+
+  /// No description provided for @pdfReportNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet'**
+  String get pdfReportNone;
+
+  /// No description provided for @pdfReportPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {total}'**
+  String pdfReportPage(String page, String total);
+
+  /// No description provided for @pdfColNextDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next payment'**
+  String get pdfColNextDue;
+
+  /// No description provided for @pdfColPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get pdfColPaid;
+
+  /// No description provided for @pdfColRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get pdfColRemaining;
+
+  /// No description provided for @pdfColPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get pdfColPlan;
+
+  /// No description provided for @pdfColStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get pdfColStatus;
+
+  /// No description provided for @pdfRemainingInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments left to pay'**
+  String get pdfRemainingInstallments;
 }
 
 class _AppLocalizationsDelegate

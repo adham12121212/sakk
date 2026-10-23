@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entities/notification_enitiy.dart';
+import '../../domain/entities/notification_entity.dart';
 import '../../domain/usecase/delete_notification_use_case.dart';
 import '../../domain/usecase/get_notification_use_case.dart';
 import '../../domain/usecase/mark_notification_read_use_case.dart';
@@ -69,7 +69,9 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> refresh() {
     final userId = _userId;
     if (userId == null) return Future.value();
-    return _inFlightLoad ??= loadNotifications(userId).whenComplete(() => _inFlightLoad = null);
+    return _inFlightLoad ??= loadNotifications(
+      userId,
+    ).whenComplete(() => _inFlightLoad = null);
   }
 
   Future<void> loadNotifications(String userId) async {
@@ -77,32 +79,27 @@ class NotificationCubit extends Cubit<NotificationState> {
     if (_notifications == null) emit(NotificationLoading());
     final result = await getNotificationsUseCase(userId);
     if (isClosed || userId != _userId) return;
-    result.fold(
-          (failure) {
-        // With a list already on screen, keep it rather than replacing it
-        // with an error (e.g. a background refresh while offline). The
-        // repository has already logged the failure.
-        if (_notifications == null) emit(NotificationError(failure.message));
-      },
-          (notifications) => _emitList(notifications),
-    );
+    result.fold((failure) {
+      // With a list already on screen, keep it rather than replacing it
+      // with an error (e.g. a background refresh while offline). The
+      // repository has already logged the failure.
+      if (_notifications == null) emit(NotificationError(failure.message));
+    }, (notifications) => _emitList(notifications));
   }
 
   Future<void> markAsRead(String userId, String notificationId) async {
     final previous = _notifications;
     if (previous != null) {
       _emitList([
-        for (final n in previous) n.id == notificationId ? n.copyWith(isRead: true) : n,
+        for (final n in previous)
+          n.id == notificationId ? n.copyWith(isRead: true) : n,
       ]);
     }
     final result = await markNotificationAsReadUseCase(notificationId);
-    result.fold(
-          (failure) {
-        _notifications = previous;
-        emit(NotificationError(failure.message));
-      },
-          (_) {},
-    );
+    result.fold((failure) {
+      _notifications = previous;
+      emit(NotificationError(failure.message));
+    }, (_) {});
   }
 
   Future<void> deleteNotification(String userId, String notificationId) async {
@@ -113,13 +110,10 @@ class NotificationCubit extends Cubit<NotificationState> {
       _emitList(previous.where((n) => n.id != notificationId).toList());
     }
     final result = await deleteNotificationUseCase(notificationId);
-    result.fold(
-          (failure) {
-        _notifications = previous;
-        emit(NotificationError(failure.message));
-      },
-          (_) {},
-    );
+    result.fold((failure) {
+      _notifications = previous;
+      emit(NotificationError(failure.message));
+    }, (_) {});
   }
 
   void _emitList(List<NotificationEntity> notifications) {

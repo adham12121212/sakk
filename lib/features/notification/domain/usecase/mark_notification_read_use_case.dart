@@ -7,7 +7,8 @@ abstract class MarkNotificationAsReadUseCase {
   Future<Either<Failure, void>> call(String notificationId);
 }
 
-class MarkNotificationAsReadUseCaseImpl implements MarkNotificationAsReadUseCase {
+class MarkNotificationAsReadUseCaseImpl
+    implements MarkNotificationAsReadUseCase {
   final NotificationRepo notificationRepo;
   MarkNotificationAsReadUseCaseImpl({required this.notificationRepo});
 

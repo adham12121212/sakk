@@ -18,14 +18,27 @@ ProductEntity endingIn(int days, {List<ExtraWarranty> extras = const []}) {
 void main() {
   group('warranty dates', () {
     test('end date adds the warranty months to the purchase date', () {
-      final p = ProductEntity(id: 'p', name: 'TV', purchaseDate: DateTime(2026, 3, 15), warrantyMonths: 24);
+      final p = ProductEntity(
+        id: 'p',
+        name: 'TV',
+        purchaseDate: DateTime(2026, 3, 15),
+        warrantyMonths: 24,
+      );
       expect(p.warrantyEndDate, DateTime(2028, 3, 15));
     });
 
-    test('month overflow rolls over like DateTime (Jan 31 + 1 month = Mar 3)', () {
-      final p = ProductEntity(id: 'p', name: 'TV', purchaseDate: DateTime(2026, 1, 31), warrantyMonths: 1);
-      expect(p.warrantyEndDate, DateTime(2026, 3, 3));
-    });
+    test(
+      'month overflow rolls over like DateTime (Jan 31 + 1 month = Mar 3)',
+      () {
+        final p = ProductEntity(
+          id: 'p',
+          name: 'TV',
+          purchaseDate: DateTime(2026, 1, 31),
+          warrantyMonths: 1,
+        );
+        expect(p.warrantyEndDate, DateTime(2026, 3, 3));
+      },
+    );
 
     test('status: active, expiring within 3 months, expired', () {
       expect(endingIn(200).status, WarrantyStatus.active);
@@ -46,7 +59,12 @@ void main() {
         purchaseDate: base.purchaseDate,
         warrantyMonths: 12,
         extraWarranties: [
-          ExtraWarranty(id: 'w', provider: 'Store', startDate: base.manufacturerWarrantyEndDate, months: 24),
+          ExtraWarranty(
+            id: 'w',
+            provider: 'Store',
+            startDate: base.manufacturerWarrantyEndDate,
+            months: 24,
+          ),
         ],
       );
       expect(extended.manufacturerWarrantyEndDate, base.warrantyEndDate);
@@ -55,16 +73,29 @@ void main() {
     });
 
     test('an extra warranty ending earlier does not shorten coverage', () {
-      final p = endingIn(300, extras: [
-        ExtraWarranty(id: 'w', provider: 'Store', startDate: DateTime(2020, 1, 1), months: 12),
-      ]);
+      final p = endingIn(
+        300,
+        extras: [
+          ExtraWarranty(
+            id: 'w',
+            provider: 'Store',
+            startDate: DateTime(2020, 1, 1),
+            months: 12,
+          ),
+        ],
+      );
       expect(p.warrantyEndDate, p.manufacturerWarrantyEndDate);
     });
   });
 
   group('return window', () {
     test('no return window when returnDays is null', () {
-      final p = ProductEntity(id: 'p', name: 'TV', purchaseDate: DateTime(2026, 1, 1), warrantyMonths: 12);
+      final p = ProductEntity(
+        id: 'p',
+        name: 'TV',
+        purchaseDate: DateTime(2026, 1, 1),
+        warrantyMonths: 12,
+      );
       expect(p.returnByDate, isNull);
       expect(p.daysToReturn, isNull);
     });
@@ -72,13 +103,28 @@ void main() {
     test('return-by date and days left', () {
       final today = DateTime.now();
       final bought = DateTime(today.year, today.month, today.day - 4);
-      final p = ProductEntity(id: 'p', name: 'TV', purchaseDate: bought, warrantyMonths: 12, returnDays: 14);
-      expect(p.returnByDate, DateTime(bought.year, bought.month, bought.day + 14));
+      final p = ProductEntity(
+        id: 'p',
+        name: 'TV',
+        purchaseDate: bought,
+        warrantyMonths: 12,
+        returnDays: 14,
+      );
+      expect(
+        p.returnByDate,
+        DateTime(bought.year, bought.month, bought.day + 14),
+      );
       expect(p.daysToReturn, 10);
     });
 
     test('closed window gives negative days', () {
-      final p = ProductEntity(id: 'p', name: 'TV', purchaseDate: DateTime(2020, 1, 1), warrantyMonths: 12, returnDays: 14);
+      final p = ProductEntity(
+        id: 'p',
+        name: 'TV',
+        purchaseDate: DateTime(2020, 1, 1),
+        warrantyMonths: 12,
+        returnDays: 14,
+      );
       expect(p.daysToReturn! < 0, isTrue);
     });
   });

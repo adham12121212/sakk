@@ -14,7 +14,11 @@ import '../util/subscription_format.dart';
 /// that splits by category. Amounts in other currencies are listed but not
 /// added in (no exchange rates), so the breakdown covers the main currency.
 class SubscriptionsAnalyticsCard extends StatelessWidget {
-  const SubscriptionsAnalyticsCard({super.key, required this.state, required this.onTap});
+  const SubscriptionsAnalyticsCard({
+    super.key,
+    required this.state,
+    required this.onTap,
+  });
 
   final SubscriptionsState state;
   final VoidCallback onTap;
@@ -28,7 +32,9 @@ class SubscriptionsAnalyticsCard extends StatelessWidget {
     final isInitialLoading = state.isLoading && !state.hasLoadedOnce;
 
     final totals = state.monthlyTotals;
-    final main = totals.containsKey('EGP') || totals.isEmpty ? 'EGP' : totals.keys.first;
+    final main = totals.containsKey('EGP') || totals.isEmpty
+        ? 'EGP'
+        : totals.keys.first;
     final mainMonthly = isInitialLoading ? 500.0 : totals[main] ?? 0;
     final others = totals.entries.where((e) => e.key != main).toList();
 
@@ -39,7 +45,11 @@ class SubscriptionsAnalyticsCard extends StatelessWidget {
       byCategory[SubscriptionCategory.music] = 200;
     } else {
       for (final s in state.subscriptions.where((s) => s.currency == main)) {
-        byCategory.update(s.category, (sum) => sum + s.monthlyCost, ifAbsent: () => s.monthlyCost);
+        byCategory.update(
+          s.category,
+          (sum) => sum + s.monthlyCost,
+          ifAbsent: () => s.monthlyCost,
+        );
       }
     }
     final entries = byCategory.entries.where((e) => e.value > 0).toList()
@@ -56,7 +66,9 @@ class SubscriptionsAnalyticsCard extends StatelessWidget {
           if (!isInitialLoading && state.subscriptions.isEmpty)
             Text(
               l10n.subscriptionsAnalyticsEmpty,
-              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             )
           else
             Skeletonizer(
@@ -104,7 +116,9 @@ class SubscriptionsAnalyticsCard extends StatelessWidget {
                     if (others.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Text(
-                        l10n.subscriptionsBreakdownNote(main == 'EGP' ? l10n.currencyEgp : main),
+                        l10n.subscriptionsBreakdownNote(
+                          main == 'EGP' ? l10n.currencyEgp : main,
+                        ),
                         style: textTheme.bodySmall,
                       ),
                     ],
@@ -135,7 +149,10 @@ class _Figure extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: AlignmentDirectional.centerStart,
-          child: Text(value, style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          child: Text(
+            value,
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
         ),
       ],
     );
@@ -145,7 +162,12 @@ class _Figure extends StatelessWidget {
 /// Same look as the product CategoryBreakdownCard rows: tinted icon, name,
 /// amount, share and a slim bar in the category colour.
 class _CategoryRow extends StatelessWidget {
-  const _CategoryRow({required this.category, required this.amount, required this.share, required this.percent});
+  const _CategoryRow({
+    required this.category,
+    required this.amount,
+    required this.share,
+    required this.percent,
+  });
 
   final SubscriptionCategory category;
   final String amount;
@@ -163,8 +185,15 @@ class _CategoryRow extends StatelessWidget {
         Container(
           width: 40,
           height: 40,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-          child: Icon(SubscriptionCategoryUi.icon(category), color: color, size: 20),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            SubscriptionCategoryUi.icon(category),
+            color: color,
+            size: 20,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -174,13 +203,20 @@ class _CategoryRow extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(SubscriptionCategoryUi.label(context, category), style: textTheme.titleSmall),
+                    child: Text(
+                      SubscriptionCategoryUi.label(context, category),
+                      style: textTheme.titleSmall,
+                    ),
                   ),
                   Text(amount, style: textTheme.titleSmall),
                   const SizedBox(width: 8),
                   SizedBox(
                     width: 44,
-                    child: Text(percent, textAlign: TextAlign.end, style: textTheme.bodySmall),
+                    child: Text(
+                      percent,
+                      textAlign: TextAlign.end,
+                      style: textTheme.bodySmall,
+                    ),
                   ),
                 ],
               ),

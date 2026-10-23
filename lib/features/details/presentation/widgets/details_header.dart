@@ -77,10 +77,7 @@ class DetailsHeader extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            _ActionChip(
-                              label: l10n.share,
-                              onTap: onShare,
-                            ),
+                            _ActionChip(label: l10n.share, onTap: onShare),
                             SizedBox(width: 8.w),
                             _ActionChip(
                               label: l10n.downloadInvoice,
@@ -131,7 +128,9 @@ class DetailsHeader extends StatelessWidget {
                                 strokeAlign: 2,
                                 value: warrantyProgress,
                                 strokeWidth: 4,
-                                backgroundColor: Colors.white.withValues(alpha: 0.25),
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.25,
+                                ),
                                 valueColor: AlwaysStoppedAnimation(
                                   warrantyProgressColor(
                                     context,

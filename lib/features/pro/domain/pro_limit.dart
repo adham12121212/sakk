@@ -19,7 +19,7 @@ enum PaywallReason {
   subscriptionsLimit,
   installmentsLimit,
   monthlySummary,
-  backup,
+  pdfReport,
 }
 
 /// The free plan's limit errors, as they travel through the app.
@@ -42,7 +42,9 @@ class ProLimit {
 
   /// `products`, `scan`... for a limit code, null for any other message.
   static String? kindOf(String? message) =>
-      message != null && message.startsWith(_prefix) ? message.substring(_prefix.length) : null;
+      message != null && message.startsWith(_prefix)
+      ? message.substring(_prefix.length)
+      : null;
 
   static final _events = StreamController<PaywallReason>.broadcast();
 
@@ -73,7 +75,9 @@ class ProLimit {
   static String? _kindOfError(Object error) {
     if (error is FunctionException) {
       final details = error.details;
-      if (error.status == 402 && details is Map && details['code'] == 'LIMIT_REACHED') {
+      if (error.status == 402 &&
+          details is Map &&
+          details['code'] == 'LIMIT_REACHED') {
         // A Pro user at the fair-use cap: no paywall, just "try tomorrow".
         if (details['pro'] == true) return fairUse;
         return details['type']?.toString() ?? 'scan';
@@ -88,17 +92,17 @@ class ProLimit {
   }
 
   static PaywallReason? reasonFor(String kind) => switch (kind) {
-        'scan' => PaywallReason.scanLimit,
-        'chat' => PaywallReason.chatLimit,
-        'products' => PaywallReason.productsLimit,
-        'subscriptions' => PaywallReason.subscriptionsLimit,
-        'installments' => PaywallReason.installmentsLimit,
-        _ => null,
-      };
+    'scan' => PaywallReason.scanLimit,
+    'chat' => PaywallReason.chatLimit,
+    'products' => PaywallReason.productsLimit,
+    'subscriptions' => PaywallReason.subscriptionsLimit,
+    'installments' => PaywallReason.installmentsLimit,
+    _ => null,
+  };
 
   static PaywallReason reasonForItem(LimitedItem item) => switch (item) {
-        LimitedItem.products => PaywallReason.productsLimit,
-        LimitedItem.subscriptions => PaywallReason.subscriptionsLimit,
-        LimitedItem.installments => PaywallReason.installmentsLimit,
-      };
+    LimitedItem.products => PaywallReason.productsLimit,
+    LimitedItem.subscriptions => PaywallReason.subscriptionsLimit,
+    LimitedItem.installments => PaywallReason.installmentsLimit,
+  };
 }

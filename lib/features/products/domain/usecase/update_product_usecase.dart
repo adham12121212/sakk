@@ -47,22 +47,21 @@ class UpdateProductUsecaseImpl implements UpdateProductUseCase {
     String? serialNumber,
     String? invoiceNumber,
   }) {
-
     return _repository.updateProduct(
-        id: id,
-        name: name,
-        currency: currency,
-        price: price,
-        purchaseDate: purchaseDate,
-        warrantyMonths: warrantyMonths,
-        category: category,
-        imageUrl: imageUrl,
-        receiptUrl: receiptUrl,
-        store: store,
-        notes: notes,
-        returnDays: returnDays,
-        serialNumber: serialNumber,
-        invoiceNumber: invoiceNumber,
+      id: id,
+      name: name,
+      currency: currency,
+      price: price,
+      purchaseDate: purchaseDate,
+      warrantyMonths: warrantyMonths,
+      category: category,
+      imageUrl: imageUrl,
+      receiptUrl: receiptUrl,
+      store: store,
+      notes: notes,
+      returnDays: returnDays,
+      serialNumber: serialNumber,
+      invoiceNumber: invoiceNumber,
     );
   }
 }

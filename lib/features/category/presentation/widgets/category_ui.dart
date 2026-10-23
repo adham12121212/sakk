@@ -4,7 +4,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/product_category.dart';
 import '../../../../core/theme/app_icons.dart';
 
-
 class CategoryUi {
   CategoryUi._();
 
@@ -42,7 +41,7 @@ class CategoryUi {
     }
   }
 
-  static String label(BuildContext  context, ProductCategory category) {
+  static String label(BuildContext context, ProductCategory category) {
     final l10n = AppLocalizations.of(context)!;
     switch (category) {
       case ProductCategory.electronics:
@@ -59,6 +58,4 @@ class CategoryUi {
         return l10n.other;
     }
   }
-
-
 }

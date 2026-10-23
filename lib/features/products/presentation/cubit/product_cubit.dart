@@ -12,12 +12,12 @@ import '../../domain/usecase/get_products_usecase.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   ProductsCubit(
-      this._getProductsUseCase,
-      this._deleteProductUseCase,
-      this._historyService,
-      this._warrantyNotificationService,
-      this._homeWidget,
-      ) : super(const ProductsState()) {
+    this._getProductsUseCase,
+    this._deleteProductUseCase,
+    this._historyService,
+    this._warrantyNotificationService,
+    this._homeWidget,
+  ) : super(const ProductsState()) {
     _homeWidget.followLanguage(() => state.products);
     _warrantyNotificationService.followLanguage(() => state.products);
   }
@@ -28,13 +28,12 @@ class ProductsCubit extends Cubit<ProductsState> {
   final WarrantyNotificationService _warrantyNotificationService;
   final HomeWidgetSync _homeWidget;
 
-
   void _safeEmit(ProductsState newState) {
     if (isClosed) return;
     emit(newState);
   }
 
-   void reset() {
+  void reset() {
     _safeEmit(const ProductsState());
     unawaited(_homeWidget.clear());
     // Signed out (or switching accounts): no reminders for the old products.
@@ -52,9 +51,16 @@ class ProductsCubit extends Cubit<ProductsState> {
     final result = await _getProductsUseCase();
 
     result.fold(
-          (failure) => _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
-          (products) {
-        _safeEmit(state.copyWith(products: products, isLoading: false, hasLoadedOnce: true));
+      (failure) =>
+          _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
+      (products) {
+        _safeEmit(
+          state.copyWith(
+            products: products,
+            isLoading: false,
+            hasLoadedOnce: true,
+          ),
+        );
         unawaited(_warrantyNotificationService.checkAndNotify(products));
         unawaited(_warrantyNotificationService.syncAll(products));
         unawaited(_homeWidget.update(products));
@@ -62,19 +68,20 @@ class ProductsCubit extends Cubit<ProductsState> {
     );
   }
 
-
   Future<bool> deleteProduct(String id) async {
     final result = await _deleteProductUseCase(id);
 
     return result.fold(
-          (failure) {
+      (failure) {
         _safeEmit(state.copyWith(error: failure.message));
         return false;
       },
-          (_) {
+      (_) {
         final updated = state.products.where((p) => p.id != id).toList();
         _safeEmit(state.copyWith(products: updated, clearError: true));
-        unawaited(_warrantyNotificationService.cancelScheduledNotifications(id));
+        unawaited(
+          _warrantyNotificationService.cancelScheduledNotifications(id),
+        );
         unawaited(_homeWidget.update(updated));
         return true;
       },
@@ -103,7 +110,9 @@ class ProductsCubit extends Cubit<ProductsState> {
           (p.invoiceNumber?.toLowerCase().contains(lower) ?? false);
     }).toList();
 
-    _safeEmit(state.copyWith(query: trimmed, results: results, hasSearched: true));
+    _safeEmit(
+      state.copyWith(query: trimmed, results: results, hasSearched: true),
+    );
   }
 
   Future<void> commitSearch(String query) async {
@@ -118,8 +127,10 @@ class ProductsCubit extends Cubit<ProductsState> {
     final result = await _getProductsUseCase();
 
     result.fold(
-          (failure) => _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
-          (products) => _safeEmit(state.copyWith(isLoading: false, products: products)),
+      (failure) =>
+          _safeEmit(state.copyWith(isLoading: false, error: failure.message)),
+      (products) =>
+          _safeEmit(state.copyWith(isLoading: false, products: products)),
     );
   }
 }

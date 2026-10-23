@@ -1,10 +1,12 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
-import '../entities/notification_enitiy.dart';
+import '../entities/notification_entity.dart';
 
 abstract class NotificationRepo {
-  Future<Either<Failure, List<NotificationEntity>>> getNotifications(String userId);
+  Future<Either<Failure, List<NotificationEntity>>> getNotifications(
+    String userId,
+  );
   Future<Either<Failure, void>> markNotificationAsRead(String notificationId);
   Future<Either<Failure, void>> deleteNotification(String notificationId);
   Future<Either<Failure, void>> addNotification({

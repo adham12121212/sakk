@@ -1,4 +1,3 @@
-
 import 'package:intl/intl.dart';
 
 extension DateFormatting on DateTime {

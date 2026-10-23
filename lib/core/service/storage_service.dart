@@ -12,5 +12,3 @@ abstract class StorageService {
 
   Future<void> deleteFile({required String bucket, required String path});
 }
-
-

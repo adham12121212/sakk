@@ -9,14 +9,19 @@ part 'installment_smart_add_state.dart';
 /// the AI and hands the form what it found. Nothing is saved here: the user
 /// reviews the filled-in form and saves it themselves.
 class InstallmentSmartAddCubit extends Cubit<InstallmentSmartAddState> {
-  InstallmentSmartAddCubit(this._extractUseCase) : super(const InstallmentSmartAddIdle());
+  InstallmentSmartAddCubit(this._extractUseCase)
+    : super(const InstallmentSmartAddIdle());
 
   final ExtractInstallmentUseCase _extractUseCase;
 
   Future<void> read({String? imagePath, String? pdfText, String? text}) async {
     if (state is InstallmentSmartAddReading || isClosed) return;
     emit(const InstallmentSmartAddReading());
-    final result = await _extractUseCase(imagePath: imagePath, pdfText: pdfText, text: text);
+    final result = await _extractUseCase(
+      imagePath: imagePath,
+      pdfText: pdfText,
+      text: text,
+    );
     if (isClosed) return;
     result.fold(
       (failure) => emit(InstallmentSmartAddFailure(failure.message)),

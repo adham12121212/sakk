@@ -15,7 +15,12 @@ import '../util/installment_format.dart';
 /// listed but not added in (no exchange rates), so the chart covers the
 /// main currency.
 class InstallmentsAnalyticsCard extends StatefulWidget {
-  const InstallmentsAnalyticsCard({super.key, required this.state, required this.onTap, this.today});
+  const InstallmentsAnalyticsCard({
+    super.key,
+    required this.state,
+    required this.onTap,
+    this.today,
+  });
 
   final InstallmentsState state;
   final VoidCallback onTap;
@@ -24,7 +29,8 @@ class InstallmentsAnalyticsCard extends StatefulWidget {
   final DateTime? today;
 
   @override
-  State<InstallmentsAnalyticsCard> createState() => _InstallmentsAnalyticsCardState();
+  State<InstallmentsAnalyticsCard> createState() =>
+      _InstallmentsAnalyticsCardState();
 }
 
 class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
@@ -42,13 +48,19 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
     final hasPlans = state.plans.any((p) => !p.isCancelled);
 
     final remaining = state.remainingTotals;
-    final main = remaining.containsKey('EGP') || remaining.isEmpty ? 'EGP' : remaining.keys.first;
+    final main = remaining.containsKey('EGP') || remaining.isEmpty
+        ? 'EGP'
+        : remaining.keys.first;
     final others = remaining.entries.where((e) => e.key != main).toList();
     final overdue = overdueByCurrency(state.plans, today);
     final months = isInitialLoading
         ? [
             for (var i = 0; i < 6; i++)
-              (year: today.year, month: today.month + i, amount: 1000.0 + i * 150),
+              (
+                year: today.year,
+                month: today.month + i,
+                amount: 1000.0 + i * 150,
+              ),
           ]
         : dueByMonth(state.plans, from: today, currency: main);
 
@@ -63,7 +75,9 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
           if (!isInitialLoading && !hasPlans)
             Text(
               l10n.installmentsAnalyticsEmpty,
-              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             )
           else
             Skeletonizer(
@@ -76,14 +90,22 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
                       Expanded(
                         child: _Figure(
                           label: l10n.installmentsLeftToPay,
-                          value: formatMoney(context, isInitialLoading ? 12000 : remaining[main] ?? 0, main),
+                          value: formatMoney(
+                            context,
+                            isInitialLoading ? 12000 : remaining[main] ?? 0,
+                            main,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _Figure(
                           label: l10n.installmentsThisMonth,
-                          value: formatMoney(context, months.first.amount, main),
+                          value: formatMoney(
+                            context,
+                            months.first.amount,
+                            main,
+                          ),
                         ),
                       ),
                     ],
@@ -91,18 +113,27 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
                   for (final other in others)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Text('+ ${formatMoney(context, other.value, other.key)}', style: textTheme.bodySmall),
+                      child: Text(
+                        '+ ${formatMoney(context, other.value, other.key)}',
+                        style: textTheme.bodySmall,
+                      ),
                     ),
                   if (overdue.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     // Status: red with an icon and words, never colour alone.
                     Row(
                       children: [
-                        Icon(AppIcons.warning, size: 16, color: context.palette.danger),
+                        Icon(
+                          AppIcons.warning,
+                          size: 16,
+                          color: context.palette.danger,
+                        ),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            l10n.installmentsOverdueTotal(formatTotals(context, overdue)),
+                            l10n.installmentsOverdueTotal(
+                              formatTotals(context, overdue),
+                            ),
                             style: textTheme.bodySmall?.copyWith(
                               color: context.palette.danger,
                               fontWeight: FontWeight.w600,
@@ -113,7 +144,10 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
                     ),
                   ],
                   const SizedBox(height: 20),
-                  Text(l10n.installmentsDuePerMonth, style: textTheme.titleSmall),
+                  Text(
+                    l10n.installmentsDuePerMonth,
+                    style: textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 12),
                   _MonthlyBars(
                     months: months,
@@ -124,7 +158,9 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
                   if (others.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Text(
-                      l10n.installmentsChartCurrencyNote(main == 'EGP' ? l10n.currencyEgp : main),
+                      l10n.installmentsChartCurrencyNote(
+                        main == 'EGP' ? l10n.currencyEgp : main,
+                      ),
                       style: textTheme.bodySmall,
                     ),
                   ],
@@ -154,7 +190,10 @@ class _Figure extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: AlignmentDirectional.centerStart,
-          child: Text(value, style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+          child: Text(
+            value,
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
         ),
       ],
     );
@@ -209,7 +248,8 @@ class _MonthlyBars extends StatelessWidget {
                   child: Semantics(
                     button: true,
                     selected: i == selected,
-                    label: '${monthFormat.format(DateTime(m.year, m.month))}: ${formatMoney(context, m.amount, currency)}',
+                    label:
+                        '${monthFormat.format(DateTime(m.year, m.month))}: ${formatMoney(context, m.amount, currency)}',
                     child: ExcludeSemantics(
                       child: InkWell(
                         onTap: () => onSelect(i),
@@ -221,24 +261,40 @@ class _MonthlyBars extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                height: max <= 0 ? 0 : (m.amount / max * _barAreaHeight).clamp(m.amount > 0 ? 4.0 : 0.0, _barAreaHeight),
+                                height: max <= 0
+                                    ? 0
+                                    : (m.amount / max * _barAreaHeight).clamp(
+                                        m.amount > 0 ? 4.0 : 0.0,
+                                        _barAreaHeight,
+                                      ),
                                 decoration: BoxDecoration(
                                   color: i == selected
                                       ? colorScheme.primary
-                                      : colorScheme.primary.withValues(alpha: 0.45),
+                                      : colorScheme.primary.withValues(
+                                          alpha: 0.45,
+                                        ),
                                   // Rounded data end, square on the baseline.
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(4),
+                                  ),
                                 ),
                               ),
                               // Recessive baseline.
-                              Container(height: 1, color: colorScheme.outline.withValues(alpha: 0.6)),
+                              Container(
+                                height: 1,
+                                color: colorScheme.outline.withValues(
+                                  alpha: 0.6,
+                                ),
+                              ),
                               const SizedBox(height: 6),
                               Text(
                                 monthFormat.format(DateTime(m.year, m.month)),
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
                                 style: textTheme.bodySmall?.copyWith(
-                                  fontWeight: i == selected ? FontWeight.w700 : null,
+                                  fontWeight: i == selected
+                                      ? FontWeight.w700
+                                      : null,
                                 ),
                               ),
                             ],

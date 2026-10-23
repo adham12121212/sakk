@@ -34,13 +34,10 @@ import 'features/products/presentation/cubit/product_cubit.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await CrashReporting.init();
   await _bootstrap();
 }
@@ -66,7 +63,9 @@ Future<void> _bootstrap() async {
     // The iOS "Mark as paid" button is titled once, in the saved language.
     final locale = getIt<LocaleController>();
     await locale.loaded;
-    await notificationService.init(markPaidLabel: lookupAppLocalizations(locale.value).markAsPaid);
+    await notificationService.init(
+      markPaidLabel: lookupAppLocalizations(locale.value).markAsPaid,
+    );
     await notificationService.requestPermission();
   } catch (e, stackTrace) {
     getIt<AppLogger>().error(
@@ -80,7 +79,11 @@ Future<void> _bootstrap() async {
     await getIt<PurchasesGateway>().init();
   } catch (e, stackTrace) {
     // The app works without the store (free plan; the paywall says so).
-    getIt<AppLogger>().error('RevenueCat setup failed', error: e, stackTrace: stackTrace);
+    getIt<AppLogger>().error(
+      'RevenueCat setup failed',
+      error: e,
+      stackTrace: stackTrace,
+    );
   }
   // Created now so it logs in to RevenueCat with the restored session and
   // loads the plan before any screen asks. The Pro reminders follow it.
@@ -91,7 +94,11 @@ Future<void> _bootstrap() async {
   try {
     await SakkLogo.precache();
   } catch (e, stackTrace) {
-    getIt<AppLogger>().error('Splash logo precache failed', error: e, stackTrace: stackTrace);
+    getIt<AppLogger>().error(
+      'Splash logo precache failed',
+      error: e,
+      stackTrace: stackTrace,
+    );
   }
 
   runApp(const MyApp());
@@ -103,7 +110,6 @@ Future<void> _bootstrap() async {
     });
   }
 }
-
 
 void _reloadAfterReconnect() {
   final products = getIt<ProductsCubit>();
@@ -117,7 +123,10 @@ void _reloadAfterReconnect() {
 /// [coldStart]: the notification launched the app, and the splash screen
 /// is about to replace the stack (with Home or the lock screen), so an
 /// installment reminder's button only marks the payment paid.
-void _handleNotificationTap(NotificationResponse response, {bool coldStart = false}) {
+void _handleNotificationTap(
+  NotificationResponse response, {
+  bool coldStart = false,
+}) {
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
   final installment = InstallmentReminderPayload.tryParse(payload);
@@ -139,9 +148,14 @@ Future<void> _openInstallment(
 }) async {
   // Another account's reminder (signed out before this device re-synced).
   if (getIt<GetUserUseCase>()()?.id != reminder.userId) return;
-  if (navigate) appRouter.push(AppRoutes.installmentDetails, extra: reminder.planId);
+  if (navigate) {
+    appRouter.push(AppRoutes.installmentDetails, extra: reminder.planId);
+  }
   if (!markPaid) return;
-  final error = await getIt<InstallmentsCubit>().markPaidFromReminder(reminder.planId, reminder.paymentId);
+  final error = await getIt<InstallmentsCubit>().markPaidFromReminder(
+    reminder.planId,
+    reminder.paymentId,
+  );
   final context = appRouter.routerDelegate.navigatorKey.currentContext;
   if (context == null || !context.mounted) return;
   final l10n = AppLocalizations.of(context)!;
@@ -180,7 +194,8 @@ class MyApp extends StatelessWidget {
                 child: RouteAwareConnectivityBanner(
                   routerDelegate: appRouter.routerDelegate,
                   isSuppressed: () =>
-                      appRouter.routerDelegate.currentConfiguration.uri.path == AppRoutes.splash,
+                      appRouter.routerDelegate.currentConfiguration.uri.path ==
+                      AppRoutes.splash,
                   networkInfo: getIt<NetworkInfo>(),
                   onReconnected: _reloadAfterReconnect,
                   // A free-plan limit hit anywhere opens the paywall.
@@ -192,7 +207,7 @@ class MyApp extends StatelessWidget {
               ),
 
               onGenerateTitle: (context) =>
-              AppLocalizations.of(context)!.appName,
+                  AppLocalizations.of(context)!.appName,
 
               locale: getIt<LocaleController>().value,
               themeMode: getIt<ThemeController>().value,
@@ -206,15 +221,13 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
 
-              supportedLocales: const [
-                Locale('en'),
-                Locale('ar'),
-              ],
+              supportedLocales: const [Locale('en'), Locale('ar')],
 
               localeResolutionCallback: (locale, supportedLocales) {
                 if (locale != null &&
-                    supportedLocales
-                        .any((l) => l.languageCode == locale.languageCode)) {
+                    supportedLocales.any(
+                      (l) => l.languageCode == locale.languageCode,
+                    )) {
                   return Locale(locale.languageCode);
                 }
                 return const Locale('en');

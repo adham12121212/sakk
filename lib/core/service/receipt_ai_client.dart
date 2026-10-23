@@ -34,7 +34,10 @@ class ReceiptAiClient {
 
   /// Uploads [imagePath] for the signed-in user. The signed URL lasts
   /// [expiry]; the edge function only accepts URLs to the user's own folder.
-  Future<UploadedReceipt> upload(String imagePath, {required Duration expiry}) async {
+  Future<UploadedReceipt> upload(
+    String imagePath, {
+    required Duration expiry,
+  }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) {
       throw ServerException('You must be signed in to scan a receipt');
@@ -46,7 +49,9 @@ class ReceiptAiClient {
     final path = '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
     await _client.storage.from(bucket).upload(path, File(imagePath));
     try {
-      final signedUrl = await _client.storage.from(bucket).createSignedUrl(path, expiry.inSeconds);
+      final signedUrl = await _client.storage
+          .from(bucket)
+          .createSignedUrl(path, expiry.inSeconds);
       return UploadedReceipt(path: path, signedUrl: signedUrl);
     } catch (_) {
       await delete(path);
@@ -62,7 +67,10 @@ class ReceiptAiClient {
   /// if it fails on its side), so the plan status re-reads its counter.
   Future<Map<String, dynamic>> extract(Map<String, dynamic> body) async {
     try {
-      final response = await _client.functions.invoke(_functionName, body: body);
+      final response = await _client.functions.invoke(
+        _functionName,
+        body: body,
+      );
       return response.data as Map<String, dynamic>;
     } on FunctionException catch (e) {
       final limit = ProLimit.codeFor(e);

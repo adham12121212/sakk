@@ -11,7 +11,10 @@ void main() {
     });
 
     test('leaves a clean address unchanged', () {
-      expect(AppValidators.normalizeEmail('adham@gmail.com'), 'adham@gmail.com');
+      expect(
+        AppValidators.normalizeEmail('adham@gmail.com'),
+        'adham@gmail.com',
+      );
     });
   });
 }

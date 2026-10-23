@@ -33,11 +33,20 @@ DateTime nextRenewalOnOrAfter(
 
 /// [subscriptions] with every renewal that already passed moved to its next
 /// one on or after [today]. Unchanged subscriptions are returned as they are.
-List<UserSubscription> advancePassedRenewals(Iterable<UserSubscription> subscriptions, DateTime today) {
+List<UserSubscription> advancePassedRenewals(
+  Iterable<UserSubscription> subscriptions,
+  DateTime today,
+) {
   return [
     for (final s in subscriptions)
       s.daysLeft(today) < 0
-          ? s.copyWith(nextRenewalDate: nextRenewalOnOrAfter(s.nextRenewalDate, s.billingCycle, today))
+          ? s.copyWith(
+              nextRenewalDate: nextRenewalOnOrAfter(
+                s.nextRenewalDate,
+                s.billingCycle,
+                today,
+              ),
+            )
           : s,
   ];
 }

@@ -12,9 +12,12 @@ class ChatCubit extends Cubit<ChatState> {
   ///
   /// [getHistoryUseCase] loads the conversation saved on the server (see
   /// [loadHistoryIfNeeded]).
-  ChatCubit(this._sendMessageUseCase, Stream<String?> userIdChanges, {GetChatHistoryUseCase? getHistoryUseCase})
-      : _getHistoryUseCase = getHistoryUseCase,
-        super(const ChatState()) {
+  ChatCubit(
+    this._sendMessageUseCase,
+    Stream<String?> userIdChanges, {
+    GetChatHistoryUseCase? getHistoryUseCase,
+  }) : _getHistoryUseCase = getHistoryUseCase,
+       super(const ChatState()) {
     _userSubscription = userIdChanges.distinct().listen((_) => clearChat());
   }
 
@@ -57,12 +60,14 @@ class ChatCubit extends Cubit<ChatState> {
 
     final conversation = _conversation;
     final historyForRequest = state.messages;
-    emit(state.copyWith(
-      messages: [...state.messages, userMessage],
-      isSending: true,
-      clearError: true,
-      clearFailedMessage: true,
-    ));
+    emit(
+      state.copyWith(
+        messages: [...state.messages, userMessage],
+        isSending: true,
+        clearError: true,
+        clearFailedMessage: true,
+      ),
+    );
 
     final result = await _sendMessageUseCase(
       content: trimmed,
@@ -71,15 +76,16 @@ class ChatCubit extends Cubit<ChatState> {
     if (isClosed || conversation != _conversation) return;
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isSending: false,
-        error: failure.message,
-        failedMessageId: userMessage.id,
-      )),
-      (reply) => emit(state.copyWith(
-        messages: [...state.messages, reply],
-        isSending: false,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          isSending: false,
+          error: failure.message,
+          failedMessageId: userMessage.id,
+        ),
+      ),
+      (reply) => emit(
+        state.copyWith(messages: [...state.messages, reply], isSending: false),
+      ),
     );
   }
 
@@ -91,10 +97,12 @@ class ChatCubit extends Cubit<ChatState> {
     final failed = state.messages.where((m) => m.id == failedId).firstOrNull;
     if (failed == null) return;
 
-    emit(state.copyWith(
-      messages: state.messages.where((m) => m.id != failedId).toList(),
-      clearFailedMessage: true,
-    ));
+    emit(
+      state.copyWith(
+        messages: state.messages.where((m) => m.id != failedId).toList(),
+        clearFailedMessage: true,
+      ),
+    );
     await sendMessage(failed.content);
   }
 

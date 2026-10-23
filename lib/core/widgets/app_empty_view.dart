@@ -55,17 +55,26 @@ class AppEmptyView extends StatelessWidget {
             Container(
               width: 88,
               height: 88,
-              decoration: BoxDecoration(color: colorScheme.primaryContainer, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, size: 40, color: colorScheme.primary),
             ),
             const SizedBox(height: 20),
-            Text(title, textAlign: TextAlign.center, style: textTheme.titleLarge),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: textTheme.titleLarge,
+            ),
             if (message != null) ...[
               const SizedBox(height: 8),
               Text(
                 message!,
                 textAlign: TextAlign.center,
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
             if (actionLabel != null && onAction != null) ...[

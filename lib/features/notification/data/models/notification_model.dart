@@ -1,4 +1,4 @@
-import '../../domain/entities/notification_enitiy.dart';
+import '../../domain/entities/notification_entity.dart';
 
 class NotificationModel extends NotificationEntity {
   const NotificationModel({
@@ -19,7 +19,7 @@ class NotificationModel extends NotificationEntity {
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
       type: NotificationType.values.firstWhere(
-            (e) => e.name == json['type'],
+        (e) => e.name == json['type'],
         orElse: () => NotificationType.info,
       ),
       createdAt: DateTime.parse(

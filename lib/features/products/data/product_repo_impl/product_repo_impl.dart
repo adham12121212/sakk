@@ -21,7 +21,12 @@ class ProductRepoImpl implements ProductRepo {
   final ProductLocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
   final AppLogger _logger;
-  ProductRepoImpl(this._dataSource, this._localDataSource, this._networkInfo, this._logger);
+  ProductRepoImpl(
+    this._dataSource,
+    this._localDataSource,
+    this._networkInfo,
+    this._logger,
+  );
 
   /// The on-device copy as domain entities, or null if there is none.
   /// Cache problems are logged and treated as "no cache", never as a failure.
@@ -30,20 +35,28 @@ class ProductRepoImpl implements ProductRepo {
       final cached = await _localDataSource.getCachedProducts();
       return cached == null ? null : List<ProductEntity>.from(cached);
     } catch (e) {
-      _logger.warning('Reading the offline product cache failed', data: {'error': '$e'});
+      _logger.warning(
+        'Reading the offline product cache failed',
+        data: {'error': '$e'},
+      );
       return null;
     }
   }
 
   /// Applies [change] to the cached list (if any), so an add/edit/delete made
   /// online is also reflected the next time the app is offline.
-  Future<void> _updateCache(List<ProductModel> Function(List<ProductModel> current) change) async {
+  Future<void> _updateCache(
+    List<ProductModel> Function(List<ProductModel> current) change,
+  ) async {
     try {
       final current = await _localDataSource.getCachedProducts();
       if (current == null) return;
       await _localDataSource.cacheProducts(change(current));
     } catch (e) {
-      _logger.warning('Updating the offline product cache failed', data: {'error': '$e'});
+      _logger.warning(
+        'Updating the offline product cache failed',
+        data: {'error': '$e'},
+      );
     }
   }
 
@@ -52,12 +65,16 @@ class ProductRepoImpl implements ProductRepo {
     try {
       await _localDataSource.clearAll();
     } catch (e) {
-      _logger.warning('Clearing the offline product cache failed', data: {'error': '$e'});
+      _logger.warning(
+        'Clearing the offline product cache failed',
+        data: {'error': '$e'},
+      );
     }
   }
 
   @override
-  Future<void> discardReceiptImage(String path) => _dataSource.deleteReceiptImage(path);
+  Future<void> discardReceiptImage(String path) =>
+      _dataSource.deleteReceiptImage(path);
 
   @override
   Future<Either<Failure, ScannedReceiptData>> scanReceipt({
@@ -68,7 +85,10 @@ class ProductRepoImpl implements ProductRepo {
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
-      final result = await _dataSource.scanReceipt(imagePath: imagePath, pdfText: pdfText);
+      final result = await _dataSource.scanReceipt(
+        imagePath: imagePath,
+        pdfText: pdfText,
+      );
       return Right(result);
     } on ServerException catch (e, st) {
       _logger.error(
@@ -166,7 +186,10 @@ class ProductRepoImpl implements ProductRepo {
       try {
         await _localDataSource.cacheProducts(products);
       } catch (e) {
-        _logger.warning('Saving the offline product cache failed', data: {'error': '$e'});
+        _logger.warning(
+          'Saving the offline product cache failed',
+          data: {'error': '$e'},
+        );
       }
       // Explicitly re-wrap: `products` is a List<ProductModel> at runtime
       // (Dart's generics are reified), and since ProductModel extends
@@ -176,7 +199,9 @@ class ProductRepoImpl implements ProductRepo {
       // ProductModel instead of ProductEntity, breaking any caller that
       // passes a plain ProductEntity. Converting here keeps the domain
       // layer's contract (List<ProductEntity>) genuinely true at runtime.
-      return Right<Failure, List<ProductEntity>>(List<ProductEntity>.from(products));
+      return Right<Failure, List<ProductEntity>>(
+        List<ProductEntity>.from(products),
+      );
     } on ServerException catch (e, st) {
       _logger.error(
         'Server error during getProducts',
@@ -206,7 +231,9 @@ class ProductRepoImpl implements ProductRepo {
     }
     try {
       await _dataSource.deleteProduct(id);
-      await _updateCache((current) => current.where((p) => p.id != id).toList());
+      await _updateCache(
+        (current) => current.where((p) => p.id != id).toList(),
+      );
       return const Right(null);
     } on ServerException catch (e, st) {
       _logger.error(
@@ -234,7 +261,7 @@ class ProductRepoImpl implements ProductRepo {
       final products = await _dataSource.getProducts();
       final totalPrice = products.fold<double>(
         0.0,
-            (sum, product) => sum + (product.price ?? 0.0),
+        (sum, product) => sum + (product.price ?? 0.0),
       );
       return Right(ScannedReceiptData(price: totalPrice));
     } on ServerException catch (e, st) {
@@ -271,42 +298,55 @@ class ProductRepoImpl implements ProductRepo {
     int? returnDays,
     String? serialNumber,
     String? invoiceNumber,
-  })  async{
-    if(!await _networkInfo.isConnected){
+  }) async {
+    if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
-    try{
+    try {
       final model = ProductModel(
-          id: id,
-          name: name,
-          brand: brand,
-          price: price,
-          purchaseDate: purchaseDate,
-          warrantyMonths: warrantyMonths,
-          imageUrl: imageUrl,
-          receiptUrl: receiptUrl,
-          store: store,
-          notes: notes,
-          category: category,
-          currency: currency,
-          returnDays: returnDays,
-          serialNumber: serialNumber,
-          invoiceNumber: invoiceNumber,
+        id: id,
+        name: name,
+        brand: brand,
+        price: price,
+        purchaseDate: purchaseDate,
+        warrantyMonths: warrantyMonths,
+        imageUrl: imageUrl,
+        receiptUrl: receiptUrl,
+        store: store,
+        notes: notes,
+        category: category,
+        currency: currency,
+        returnDays: returnDays,
+        serialNumber: serialNumber,
+        invoiceNumber: invoiceNumber,
       );
       final updated = await _dataSource.updateProduct(id, model.toUpdateJson());
-      await _updateCache((current) => [for (final p in current) p.id == id ? updated : p]);
+      await _updateCache(
+        (current) => [for (final p in current) p.id == id ? updated : p],
+      );
       return Right(updated);
-    }on ServerException catch(e,st){
-      _logger.error('Server error during updateProduct', error: e, stackTrace: st);
+    } on ServerException catch (e, st) {
+      _logger.error(
+        'Server error during updateProduct',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
-    }catch(e,st){
-      _logger.error('Unexpected error during updateProduct', error: e, stackTrace: st);
+    } catch (e, st) {
+      _logger.error(
+        'Unexpected error during updateProduct',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.toString()));
     }
   }
 
   /// Runs a write that needs the network, mapping errors like the methods above.
-  Future<Either<Failure, void>> _write(String action, Future<void> Function() run) async {
+  Future<Either<Failure, void>> _write(
+    String action,
+    Future<void> Function() run,
+  ) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure(NetworkFailure.noConnectionMessage));
     }
@@ -317,7 +357,11 @@ class ProductRepoImpl implements ProductRepo {
       _logger.error('Server error during $action', error: e, stackTrace: st);
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during $action', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during $action',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -328,25 +372,37 @@ class ProductRepoImpl implements ProductRepo {
     required String provider,
     required DateTime startDate,
     required int months,
-  }) =>
-      _write('addExtraWarranty', () => _dataSource.addExtraWarranty(
-            productId: productId,
-            provider: provider,
-            startDate: startDate,
-            months: months,
-          ));
+  }) => _write(
+    'addExtraWarranty',
+    () => _dataSource.addExtraWarranty(
+      productId: productId,
+      provider: provider,
+      startDate: startDate,
+      months: months,
+    ),
+  );
 
   @override
   Future<Either<Failure, void>> deleteExtraWarranty(String id) =>
       _write('deleteExtraWarranty', () => _dataSource.deleteExtraWarranty(id));
 
   @override
-  Future<Either<Failure, void>> addClaim({required String productId, required String issue}) =>
-      _write('addClaim', () => _dataSource.addClaim(productId: productId, issue: issue));
+  Future<Either<Failure, void>> addClaim({
+    required String productId,
+    required String issue,
+  }) => _write(
+    'addClaim',
+    () => _dataSource.addClaim(productId: productId, issue: issue),
+  );
 
   @override
-  Future<Either<Failure, void>> updateClaimStatus(String id, ClaimStatus status) =>
-      _write('updateClaimStatus', () => _dataSource.updateClaimStatus(id, status.dbValue));
+  Future<Either<Failure, void>> updateClaimStatus(
+    String id,
+    ClaimStatus status,
+  ) => _write(
+    'updateClaimStatus',
+    () => _dataSource.updateClaimStatus(id, status.dbValue),
+  );
 
   @override
   Future<Either<Failure, void>> deleteClaim(String id) =>
@@ -357,11 +413,19 @@ class ProductRepoImpl implements ProductRepo {
     required String productId,
     required DocumentKind kind,
     required String filePath,
-  }) =>
-      _write('addDocument',
-          () => _dataSource.addDocument(productId: productId, kind: kind.dbValue, filePath: filePath));
+  }) => _write(
+    'addDocument',
+    () => _dataSource.addDocument(
+      productId: productId,
+      kind: kind.dbValue,
+      filePath: filePath,
+    ),
+  );
 
   @override
   Future<Either<Failure, void>> deleteDocument(ProductDocument document) =>
-      _write('deleteDocument', () => _dataSource.deleteDocument(id: document.id, path: document.path));
+      _write(
+        'deleteDocument',
+        () => _dataSource.deleteDocument(id: document.id, path: document.path),
+      );
 }

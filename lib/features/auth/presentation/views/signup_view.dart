@@ -10,9 +10,7 @@ class SignupView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: const Scaffold(
-        body: SignupViewConsumerBody(),
-      ),
+      child: const Scaffold(body: SignupViewConsumerBody()),
     );
   }
 }

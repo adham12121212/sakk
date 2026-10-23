@@ -32,7 +32,15 @@ class SummaryPayment extends Equatable {
   final String? planId;
 
   @override
-  List<Object?> get props => [kind, name, amount, currency, date, isOverdue, planId];
+  List<Object?> get props => [
+    kind,
+    name,
+    amount,
+    currency,
+    date,
+    isOverdue,
+    planId,
+  ];
 }
 
 /// "What will I pay this month": subscription renewals and unpaid
@@ -71,30 +79,38 @@ class MonthlySummary extends Equatable {
     final payments = <SummaryPayment>[];
 
     for (final s in subscriptions) {
-      final renews = nextRenewalOnOrAfter(s.nextRenewalDate, s.billingCycle, day);
+      final renews = nextRenewalOnOrAfter(
+        s.nextRenewalDate,
+        s.billingCycle,
+        day,
+      );
       if (renews.isAfter(monthEnd)) continue;
-      payments.add(SummaryPayment(
-        kind: SummaryPaymentKind.renewal,
-        name: s.name,
-        amount: s.price,
-        currency: s.currency,
-        date: renews,
-      ));
+      payments.add(
+        SummaryPayment(
+          kind: SummaryPaymentKind.renewal,
+          name: s.name,
+          amount: s.price,
+          currency: s.currency,
+          date: renews,
+        ),
+      );
     }
 
     for (final plan in plans.where((p) => p.isActive)) {
       for (final p in plan.unpaidPayments) {
         final due = DateTime(p.dueDate.year, p.dueDate.month, p.dueDate.day);
         if (due.isAfter(monthEnd)) continue;
-        payments.add(SummaryPayment(
-          kind: SummaryPaymentKind.installment,
-          name: plan.name,
-          amount: p.amount,
-          currency: plan.currency,
-          date: due,
-          isOverdue: due.isBefore(day),
-          planId: plan.id,
-        ));
+        payments.add(
+          SummaryPayment(
+            kind: SummaryPaymentKind.installment,
+            name: plan.name,
+            amount: p.amount,
+            currency: plan.currency,
+            date: due,
+            isOverdue: due.isBefore(day),
+            planId: plan.id,
+          ),
+        );
       }
     }
     payments.sort((a, b) => a.date.compareTo(b.date));
@@ -102,7 +118,11 @@ class MonthlySummary extends Equatable {
     Map<String, double> sum(Iterable<SummaryPayment> ps) {
       final totals = <String, double>{};
       for (final p in ps) {
-        totals.update(p.currency, (v) => v + p.amount, ifAbsent: () => p.amount);
+        totals.update(
+          p.currency,
+          (v) => v + p.amount,
+          ifAbsent: () => p.amount,
+        );
       }
       return totals;
     }
@@ -111,18 +131,27 @@ class MonthlySummary extends Equatable {
     final expiring = products.where((p) {
       final end = p.warrantyEndDate;
       return !end.isBefore(day) && !end.isAfter(windowEnd);
-    }).toList()
-      ..sort((a, b) => a.warrantyEndDate.compareTo(b.warrantyEndDate));
+    }).toList()..sort((a, b) => a.warrantyEndDate.compareTo(b.warrantyEndDate));
 
     return MonthlySummary(
       totals: sum(payments),
-      subscriptionTotals: sum(payments.where((p) => p.kind == SummaryPaymentKind.renewal)),
-      installmentTotals: sum(payments.where((p) => p.kind == SummaryPaymentKind.installment)),
+      subscriptionTotals: sum(
+        payments.where((p) => p.kind == SummaryPaymentKind.renewal),
+      ),
+      installmentTotals: sum(
+        payments.where((p) => p.kind == SummaryPaymentKind.installment),
+      ),
       payments: payments,
       expiringWarranties: expiring,
     );
   }
 
   @override
-  List<Object?> get props => [totals, subscriptionTotals, installmentTotals, payments, expiringWarranties];
+  List<Object?> get props => [
+    totals,
+    subscriptionTotals,
+    installmentTotals,
+    payments,
+    expiringWarranties,
+  ];
 }

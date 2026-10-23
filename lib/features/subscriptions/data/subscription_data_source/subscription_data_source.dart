@@ -139,7 +139,12 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
     try {
       await _client
           .from(_table)
-          .update({'next_renewal_date': nextRenewalDate.toIso8601String().split('T').first})
+          .update({
+            'next_renewal_date': nextRenewalDate
+                .toIso8601String()
+                .split('T')
+                .first,
+          })
           .eq('id', id);
     } catch (e) {
       throw ServerException('Failed to update the renewal date: $e');

@@ -12,7 +12,7 @@ import 'package:sakk/core/util/notification_ids.dart';
 import 'package:sakk/core/util/notified_warranties_tracker.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 import 'package:sakk/features/products/domain/entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,8 +66,10 @@ class _Notifications implements NotificationService {
   Future<void> cancelNotification(int id) async => scheduled.remove(id);
 
   @override
-  Future<List<PendingNotificationRequest>> pendingNotifications() async =>
-      [for (final id in scheduled.keys) PendingNotificationRequest(id, null, null, null)];
+  Future<List<PendingNotificationRequest>> pendingNotifications() async => [
+    for (final id in scheduled.keys)
+      PendingNotificationRequest(id, null, null, null),
+  ];
 
   @override
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
@@ -78,14 +80,21 @@ class _NoLog implements AppLogger {
   dynamic noSuchMethod(Invocation i) {}
 }
 
-ProductEntity endingIn(String id, int days, {int? returnDays, DateTime? bought}) {
+ProductEntity endingIn(
+  String id,
+  int days, {
+  int? returnDays,
+  DateTime? bought,
+}) {
   final today = DateTime.now();
   final end = DateTime(today.year, today.month, today.day + days);
   return ProductEntity(
     id: id,
     name: id,
     purchaseDate: bought ?? DateTime(end.year - 1, end.month, end.day),
-    warrantyMonths: bought == null ? 12 : (end.year - bought.year) * 12 + end.month - bought.month,
+    warrantyMonths: bought == null
+        ? 12
+        : (end.year - bought.year) * 12 + end.month - bought.month,
     returnDays: returnDays,
   );
 }
@@ -122,19 +131,30 @@ void main() {
 
   test('immediate reminders respect the chosen lead time, once each', () async {
     await reminders.setDays(7);
-    final products = [endingIn('in30', 30), endingIn('in5', 5), endingIn('gone', -3)];
+    final products = [
+      endingIn('in30', 30),
+      endingIn('in5', 5),
+      endingIn('gone', -3),
+    ];
     await service.checkAndNotify(products);
     await service.checkAndNotify(products); // no duplicates on refresh
-    expect(added.added, ['in5:Warranty expiring soon', 'gone:Warranty expired']);
+    expect(added.added, [
+      'in5:Warranty expiring soon',
+      'gone:Warranty expired',
+    ]);
   });
 
   test('changing the lead time moves the scheduled reminder', () async {
     final p = endingIn('p', 200);
     await service.scheduleFutureNotifications(p);
-    DateTime earliest() => notifications.scheduled.values.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime earliest() =>
+        notifications.scheduled.values.reduce((a, b) => a.isBefore(b) ? a : b);
     // Calendar days, not 24-hour ones: a daylight-saving change may fall in between.
-    DateTime daysBeforeEnd(int days) =>
-        DateTime(p.warrantyEndDate.year, p.warrantyEndDate.month, p.warrantyEndDate.day - days);
+    DateTime daysBeforeEnd(int days) => DateTime(
+      p.warrantyEndDate.year,
+      p.warrantyEndDate.month,
+      p.warrantyEndDate.day - days,
+    );
     expect(earliest(), daysBeforeEnd(90));
 
     await reminders.setDays(7);
@@ -143,20 +163,28 @@ void main() {
     expect(notifications.scheduled, hasLength(2)); // "expiring" + "expired"
   });
 
-  test('return window reminder 2 days before it closes, cancelled when cleared', () async {
-    final today = DateTime.now();
-    final bought = DateTime(today.year, today.month, today.day - 2);
-    final p = endingIn('r', 365, returnDays: 14, bought: bought);
-    await service.scheduleFutureNotifications(p);
-    expect(notifications.scheduled.values, contains(DateTime(bought.year, bought.month, bought.day + 12)));
-    expect(notifications.scheduled, hasLength(3));
+  test(
+    'return window reminder 2 days before it closes, cancelled when cleared',
+    () async {
+      final today = DateTime.now();
+      final bought = DateTime(today.year, today.month, today.day - 2);
+      final p = endingIn('r', 365, returnDays: 14, bought: bought);
+      await service.scheduleFutureNotifications(p);
+      expect(
+        notifications.scheduled.values,
+        contains(DateTime(bought.year, bought.month, bought.day + 12)),
+      );
+      expect(notifications.scheduled, hasLength(3));
 
-    await service.scheduleFutureNotifications(endingIn('r', 365, bought: bought)); // return window removed
-    expect(notifications.scheduled, hasLength(2));
+      await service.scheduleFutureNotifications(
+        endingIn('r', 365, bought: bought),
+      ); // return window removed
+      expect(notifications.scheduled, hasLength(2));
 
-    await service.cancelScheduledNotifications('r');
-    expect(notifications.scheduled, isEmpty);
-  });
+      await service.cancelScheduledNotifications('r');
+      expect(notifications.scheduled, isEmpty);
+    },
+  );
 
   test('syncAll schedules every product and cancels stale reminders', () async {
     final keep = endingIn('keep', 200);
@@ -173,7 +201,9 @@ void main() {
 
   test('syncAll never cancels subscription reminders', () async {
     final subscriptionId = reminderNotificationId('netflix-sub', 5);
-    notifications.scheduled[subscriptionId] = DateTime.now().add(const Duration(days: 20));
+    notifications.scheduled[subscriptionId] = DateTime.now().add(
+      const Duration(days: 20),
+    );
     await service.syncAll([endingIn('keep', 200)]);
     await service.syncAll(const []);
     expect(notifications.scheduled.keys, [subscriptionId]);
@@ -211,33 +241,38 @@ void main() {
     expect(added.added.single, 'gone:انتهى الضمان');
   });
 
-  test('turned off in Reminders: nothing scheduled or shown, and pending ones cancelled', () async {
-    final settings = ReminderSettings();
-    await settings.ready;
-    final off = WarrantyNotificationService(
-      getUserUseCase: _User(),
-      addNotificationUseCase: added,
-      tracker: _Tracker(),
-      localNotifications: notifications,
-      reminders: reminders,
-      logger: _NoLog(),
-      settings: settings,
-    );
-    final products = [endingIn('p', 200), endingIn('soon', 5)];
-    off.followLanguage(() => products);
-    await off.syncAll(products);
-    expect(notifications.scheduled, isNotEmpty);
+  test(
+    'turned off in Reminders: nothing scheduled or shown, and pending ones cancelled',
+    () async {
+      final settings = ReminderSettings();
+      await settings.ready;
+      final off = WarrantyNotificationService(
+        getUserUseCase: _User(),
+        addNotificationUseCase: added,
+        tracker: _Tracker(),
+        localNotifications: notifications,
+        reminders: reminders,
+        logger: _NoLog(),
+        settings: settings,
+      );
+      final products = [endingIn('p', 200), endingIn('soon', 5)];
+      off.followLanguage(() => products);
+      await off.syncAll(products);
+      expect(notifications.scheduled, isNotEmpty);
 
-    await settings.setWarrantyEnabled(false);
-    await off.syncAll(products); // the listener's sync is queued before this one
-    expect(notifications.scheduled, isEmpty);
-    await off.scheduleFutureNotifications(endingIn('new', 200));
-    expect(notifications.scheduled, isEmpty);
-    await off.checkAndNotify(products);
-    expect(added.added, isEmpty);
+      await settings.setWarrantyEnabled(false);
+      await off.syncAll(
+        products,
+      ); // the listener's sync is queued before this one
+      expect(notifications.scheduled, isEmpty);
+      await off.scheduleFutureNotifications(endingIn('new', 200));
+      expect(notifications.scheduled, isEmpty);
+      await off.checkAndNotify(products);
+      expect(added.added, isEmpty);
 
-    await settings.setWarrantyEnabled(true);
-    await off.syncAll(products);
-    expect(notifications.scheduled, isNotEmpty);
-  });
+      await settings.setWarrantyEnabled(true);
+      await off.syncAll(products);
+      expect(notifications.scheduled, isNotEmpty);
+    },
+  );
 }

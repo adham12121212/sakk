@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -63,6 +65,9 @@ class _PaywallViewState extends State<PaywallView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Purchases go through Google Play only for now: on iOS the paywall
+    // explains the plans but sells nothing.
+    final sellsHere = defaultTargetPlatform != TargetPlatform.iOS;
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -88,18 +93,25 @@ class _PaywallViewState extends State<PaywallView> {
                 children: [
                   _Hero(reason: widget.reason),
                   const SizedBox(height: 20),
-                  _ComparisonTable(status: pro.status, loaded: pro.hasLoadedOnce),
+                  _ComparisonTable(
+                    status: pro.status,
+                    loaded: pro.hasLoadedOnce,
+                  ),
                   const SizedBox(height: 20),
                   if (pro.isPro)
                     _AlreadyPro(onManage: ProActions.manageSubscription)
+                  else if (!sellsHere)
+                    _Notice(l10n.proComingSoonIos)
                   else
                     _Plans(state: state),
                   const SizedBox(height: 16),
                   _Links(
                     isRestoring: state.isRestoring,
-                    onRestore: context.read<PaywallCubit>().restore,
+                    onRestore: sellsHere
+                        ? context.read<PaywallCubit>().restore
+                        : null,
                   ),
-                  if (!pro.isPro && !state.isUnavailable) ...[
+                  if (sellsHere && !pro.isPro && !state.isUnavailable) ...[
                     const SizedBox(height: 12),
                     Text(
                       l10n.autoRenewDisclosure,
@@ -136,7 +148,7 @@ class _Hero extends StatelessWidget {
       PaywallReason.subscriptionsLimit => l10n.paywallHeadlineSubscriptions,
       PaywallReason.installmentsLimit => l10n.paywallHeadlineInstallments,
       PaywallReason.monthlySummary => l10n.paywallHeadlineSummary,
-      PaywallReason.backup => l10n.paywallHeadlineBackup,
+      PaywallReason.pdfReport => l10n.paywallHeadlinePdfReport,
     };
     return BrandGradientCard(
       child: Column(
@@ -151,21 +163,33 @@ class _Hero extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(AppIcons.pro, color: Color(0xFFFFD966), size: 22),
+                child: const Icon(
+                  AppIcons.pro,
+                  color: Color(0xFFFFD966),
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
                 l10n.sakkPro,
-                style: textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                style: textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 14),
-          Text(headline, style: textTheme.headlineSmall?.copyWith(color: Colors.white)),
+          Text(
+            headline,
+            style: textTheme.headlineSmall?.copyWith(color: Colors.white),
+          ),
           const SizedBox(height: 6),
           Text(
             l10n.paywallSubtitle,
-            style: textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+            style: textTheme.bodyMedium?.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
           ),
         ],
       ),
@@ -195,49 +219,98 @@ class _ComparisonTable extends StatelessWidget {
     final freeKnown = !status.isPro && loaded;
 
     // null from the server is unlimited (app_config).
-    String count(int? n) => n == null ? l10n.valueUnlimited : formatLocalizedInt(locale, n);
-    String perDay(int? n) => n == null ? l10n.valueUnlimited : l10n.valuePerDay(formatLocalizedInt(locale, n));
+    String count(int? n) =>
+        n == null ? l10n.valueUnlimited : formatLocalizedInt(locale, n);
+    String perDay(int? n) => n == null
+        ? l10n.valueUnlimited
+        : l10n.valuePerDay(formatLocalizedInt(locale, n));
 
     final rows = <(String, String, String)>[
-      (l10n.featureProducts, freeKnown ? count(status.item(LimitedItem.products).limit) : '–', l10n.valueUnlimited),
-      (l10n.featureSubscriptions, freeKnown ? count(status.item(LimitedItem.subscriptions).limit) : '–', l10n.valueUnlimited),
-      (l10n.featureInstallments, freeKnown ? count(status.item(LimitedItem.installments).limit) : '–', l10n.valueUnlimited),
-      (l10n.featureScans, freeKnown ? perDay(status.scan.limit) : '–', l10n.valueUnlimited),
-      (l10n.featureChat, freeKnown ? perDay(status.chat.limit) : '–', l10n.valueUnlimited),
+      (
+        l10n.featureProducts,
+        freeKnown ? count(status.item(LimitedItem.products).limit) : '–',
+        l10n.valueUnlimited,
+      ),
+      (
+        l10n.featureSubscriptions,
+        freeKnown ? count(status.item(LimitedItem.subscriptions).limit) : '–',
+        l10n.valueUnlimited,
+      ),
+      (
+        l10n.featureInstallments,
+        freeKnown ? count(status.item(LimitedItem.installments).limit) : '–',
+        l10n.valueUnlimited,
+      ),
+      (
+        l10n.featureScans,
+        freeKnown ? perDay(status.scan.limit) : '–',
+        l10n.valueUnlimited,
+      ),
+      (
+        l10n.featureChat,
+        freeKnown ? perDay(status.chat.limit) : '–',
+        l10n.valueUnlimited,
+      ),
       (l10n.featureReminders, l10n.valueBasic, l10n.valueSmart),
       (l10n.featureSummary, '✕', '✓'),
-      (l10n.featureBackup, '✕', '✓'),
+      (l10n.featurePdfReport, '✕', '✓'),
     ];
 
-    final header = textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant);
+    final header = textTheme.labelLarge?.copyWith(
+      color: colorScheme.onSurfaceVariant,
+    );
     return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Table(
-        columnWidths: const {0: FlexColumnWidth(2.2), 1: FlexColumnWidth(1.2), 2: FlexColumnWidth(1.3)},
+        columnWidths: const {
+          0: FlexColumnWidth(2.2),
+          1: FlexColumnWidth(1.2),
+          2: FlexColumnWidth(1.3),
+        },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          TableRow(children: [
-            Text(l10n.paywallFeature, style: header),
-            Text(l10n.paywallFree, style: header, textAlign: TextAlign.center),
-            Text(
-              l10n.paywallPro,
-              style: header?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w800),
-              textAlign: TextAlign.center,
-            ),
-          ]),
-          for (final (feature, free, pro) in rows)
-            TableRow(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                child: Text(feature, style: textTheme.bodyMedium),
-              ),
-              Text(free, textAlign: TextAlign.center, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
+          TableRow(
+            children: [
+              Text(l10n.paywallFeature, style: header),
               Text(
-                pro,
+                l10n.paywallFree,
+                style: header,
                 textAlign: TextAlign.center,
-                style: textTheme.bodyMedium?.copyWith(color: context.palette.success, fontWeight: FontWeight.w700),
               ),
-            ]),
+              Text(
+                l10n.paywallPro,
+                style: header?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          for (final (feature, free, pro) in rows)
+            TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9),
+                  child: Text(feature, style: textTheme.bodyMedium),
+                ),
+                Text(
+                  free,
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                Text(
+                  pro,
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: context.palette.success,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -255,22 +328,25 @@ class _Plans extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final cubit = context.read<PaywallCubit>();
 
-    if (state.isUnavailable) {
-      return AppCard(
-        child: Row(
-          children: [
-            Icon(AppIcons.info, color: Theme.of(context).colorScheme.onSurfaceVariant),
-            const SizedBox(width: 12),
-            Expanded(child: Text(l10n.purchasesUnavailable)),
-          ],
-        ),
-      );
-    }
+    if (state.isUnavailable) return _Notice(l10n.purchasesUnavailable);
 
     // Placeholder plans shaped like the real ones while prices load.
     const placeholder = ProOffer(
-      yearly: ProPackage(id: 'y', isYearly: true, price: 0, priceString: 'EGP 000.00', currencyCode: '', freeTrialDays: 7),
-      monthly: ProPackage(id: 'm', isYearly: false, price: 0, priceString: 'EGP 00.00', currencyCode: ''),
+      yearly: ProPackage(
+        id: 'y',
+        isYearly: true,
+        price: 0,
+        priceString: 'EGP 000.00',
+        currencyCode: '',
+        freeTrialDays: 7,
+      ),
+      monthly: ProPackage(
+        id: 'm',
+        isYearly: false,
+        price: 0,
+        priceString: 'EGP 00.00',
+        currencyCode: '',
+      ),
     );
     final offer = state.isLoading ? placeholder : state.offer!;
     final selected = state.isLoading ? placeholder.yearly : state.selected;
@@ -287,11 +363,14 @@ class _Plans extends StatelessWidget {
               title: l10n.planYearly,
               price: l10n.pricePerYear(offer.yearly!.priceString),
               badge: l10n.bestValue,
-              savings: savings == null ? null : l10n.savePercent(formatLocalizedInt(locale, savings)),
+              savings: savings == null
+                  ? null
+                  : l10n.savePercent(formatLocalizedInt(locale, savings)),
               selected: selected == offer.yearly,
               onTap: () => cubit.select(yearly: true),
             ),
-          if (offer.yearly != null && offer.monthly != null) const SizedBox(height: 10),
+          if (offer.yearly != null && offer.monthly != null)
+            const SizedBox(height: 10),
           if (offer.monthly != null)
             _PlanOption(
               title: l10n.planMonthly,
@@ -304,7 +383,9 @@ class _Plans extends StatelessWidget {
             Text(
               l10n.autoRenewTrialDisclosure(
                 formatLocalizedInt(locale, trialDays),
-                selected.isYearly ? l10n.pricePerYear(selected.priceString) : l10n.pricePerMonth(selected.priceString),
+                selected.isYearly
+                    ? l10n.pricePerYear(selected.priceString)
+                    : l10n.pricePerMonth(selected.priceString),
               ),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
@@ -314,19 +395,34 @@ class _Plans extends StatelessWidget {
           SizedBox(
             height: 54,
             child: FilledButton(
-              onPressed: state.isBusy || state.isLoading ? null : cubit.purchase,
+              onPressed: state.isBusy || state.isLoading
+                  ? null
+                  : cubit.purchase,
               child: state.isPurchasing
-                  ? const SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                  : Text(trialDays != null ? l10n.startFreeTrial : l10n.subscribe),
+                  ? const SizedBox.square(
+                      dimension: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Text(
+                      trialDays != null ? l10n.startFreeTrial : l10n.subscribe,
+                    ),
             ),
           ),
           if (trialDays != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                l10n.freeTrialDays(trialDays, formatLocalizedInt(locale, trialDays)),
+                l10n.freeTrialDays(
+                  trialDays,
+                  formatLocalizedInt(locale, trialDays),
+                ),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: context.palette.success),
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: context.palette.success,
+                ),
               ),
             ),
         ],
@@ -362,10 +458,15 @@ class _PlanOption extends StatelessWidget {
       inMutuallyExclusiveGroup: true,
       button: true,
       child: Material(
-        color: selected ? AppColors.primary.withValues(alpha: 0.08) : colorScheme.surface,
+        color: selected
+            ? AppColors.primary.withValues(alpha: 0.08)
+            : colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: shape,
-          side: BorderSide(color: selected ? AppColors.primary : colorScheme.outline, width: selected ? 2 : 1),
+          side: BorderSide(
+            color: selected ? AppColors.primary : colorScheme.outline,
+            width: selected ? 2 : 1,
+          ),
         ),
         child: InkWell(
           onTap: onTap,
@@ -376,7 +477,9 @@ class _PlanOption extends StatelessWidget {
               children: [
                 Icon(
                   selected ? AppIcons.successFilled : AppIcons.unpaid,
-                  color: selected ? AppColors.primary : colorScheme.onSurfaceVariant,
+                  color: selected
+                      ? AppColors.primary
+                      : colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -389,12 +492,22 @@ class _PlanOption extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text(title, style: textTheme.titleMedium),
-                          if (badge != null) _Chip(text: badge!, color: AppColors.primary),
-                          if (savings != null) _Chip(text: savings!, color: context.palette.success),
+                          if (badge != null)
+                            _Chip(text: badge!, color: AppColors.primary),
+                          if (savings != null)
+                            _Chip(
+                              text: savings!,
+                              color: context.palette.success,
+                            ),
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(price, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
+                      Text(
+                        price,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -416,10 +529,20 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(999)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        child: Text(text, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700)),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
@@ -441,11 +564,43 @@ class _AlreadyPro extends StatelessWidget {
             children: [
               const Icon(AppIcons.pro, color: Color(0xFFF2A900)),
               const SizedBox(width: 10),
-              Expanded(child: Text(l10n.alreadyPro, style: Theme.of(context).textTheme.titleMedium)),
+              Expanded(
+                child: Text(
+                  l10n.alreadyPro,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          OutlinedButton(onPressed: onManage, child: Text(l10n.manageSubscription)),
+          OutlinedButton(
+            onPressed: onManage,
+            child: Text(l10n.manageSubscription),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// An info line in place of the plans (purchases unavailable, or not sold
+/// on this platform yet).
+class _Notice extends StatelessWidget {
+  const _Notice(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Row(
+        children: [
+          Icon(
+            AppIcons.info,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Text(text)),
         ],
       ),
     );
@@ -456,23 +611,36 @@ class _Links extends StatelessWidget {
   const _Links({required this.isRestoring, required this.onRestore});
 
   final bool isRestoring;
-  final VoidCallback onRestore;
+
+  /// Null hides the restore button (nothing to restore where nothing is sold).
+  final VoidCallback? onRestore;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final onRestore = this.onRestore;
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
+        if (onRestore != null)
+          TextButton(
+            onPressed: isRestoring ? null : onRestore,
+            child: isRestoring
+                ? const SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(l10n.restorePurchases),
+          ),
         TextButton(
-          onPressed: isRestoring ? null : onRestore,
-          child: isRestoring
-              ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
-              : Text(l10n.restorePurchases),
+          onPressed: () => context.push(AppRoutes.terms),
+          child: Text(l10n.termsOfService),
         ),
-        TextButton(onPressed: () => context.push(AppRoutes.terms), child: Text(l10n.termsOfService)),
-        TextButton(onPressed: () => context.push(AppRoutes.privacy), child: Text(l10n.privacyPolicy)),
+        TextButton(
+          onPressed: () => context.push(AppRoutes.privacy),
+          child: Text(l10n.privacyPolicy),
+        ),
       ],
     );
   }

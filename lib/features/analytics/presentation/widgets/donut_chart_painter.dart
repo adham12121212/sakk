@@ -14,10 +14,16 @@ class DonutChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final strokeWidth = size.width * 0.13;
     final rect = (Offset.zero & size).deflate(strokeWidth / 2);
-    canvas.drawArc(rect, 0, 2 * math.pi, false, Paint()
-      ..color = trackColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth);
+    canvas.drawArc(
+      rect,
+      0,
+      2 * math.pi,
+      false,
+      Paint()
+        ..color = trackColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
 
     final visible = segments.where((s) => s.value > 0).toList();
     final total = visible.fold<double>(0, (sum, s) => sum + s.value);

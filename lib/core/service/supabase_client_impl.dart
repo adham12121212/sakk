@@ -29,9 +29,11 @@ class SupabaseServiceImpl implements SupabaseService {
     _googleSignInInitialized = true;
   }
 
-
   @override
-  Future<AuthResponse> signIn({required String email, required String password}) {
+  Future<AuthResponse> signIn({
+    required String email,
+    required String password,
+  }) {
     return _client.auth.signInWithPassword(email: email, password: password);
   }
 
@@ -44,8 +46,6 @@ class SupabaseServiceImpl implements SupabaseService {
     return _client.auth.signUp(email: email, password: password, data: data);
   }
 
-
-
   @override
   User? get currentUser => _client.auth.currentUser;
 
@@ -54,12 +54,11 @@ class SupabaseServiceImpl implements SupabaseService {
     return _client.from(tableName).insert(data);
   }
 
-
   @override
   Future<List<Map<String, dynamic>>> get(
-      String tableName, {
-        Map<String, dynamic>? filters,
-      }) {
+    String tableName, {
+    Map<String, dynamic>? filters,
+  }) {
     var query = _client.from(tableName).select();
     filters?.forEach((column, value) {
       query = query.eq(column, value);
@@ -69,20 +68,20 @@ class SupabaseServiceImpl implements SupabaseService {
 
   @override
   Future<void> update(
-      String tableName,
-      Map<String, dynamic> data, {
-        required String matchColumn,
-        required dynamic matchValue,
-      }) {
+    String tableName,
+    Map<String, dynamic> data, {
+    required String matchColumn,
+    required dynamic matchValue,
+  }) {
     return _client.from(tableName).update(data).eq(matchColumn, matchValue);
   }
 
   @override
   Future<void> delete(
-      String tableName, {
-        required String matchColumn,
-        required dynamic matchValue,
-      }) {
+    String tableName, {
+    required String matchColumn,
+    required dynamic matchValue,
+  }) {
     return _client.from(tableName).delete().eq(matchColumn, matchValue);
   }
 
@@ -108,7 +107,10 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   @override
-  Future<void> verifyRecoveryOtp({required String email, required String token}) async {
+  Future<void> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
     await _client.auth.verifyOTP(
       type: OtpType.recovery,
       email: email,
@@ -133,7 +135,10 @@ class SupabaseServiceImpl implements SupabaseService {
   }
 
   @override
-  Future<FunctionResponse> invokeFunction(String functionName, {Map<String, dynamic>? body}) {
+  Future<FunctionResponse> invokeFunction(
+    String functionName, {
+    Map<String, dynamic>? body,
+  }) {
     return _client.functions.invoke(functionName, body: body);
   }
 
@@ -147,7 +152,9 @@ class SupabaseServiceImpl implements SupabaseService {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         throw GoogleSignInCancelledException(e.description);
       }
-      throw ServerException('Google sign-in failed: ${e.description ?? e.code}');
+      throw ServerException(
+        'Google sign-in failed: ${e.description ?? e.code}',
+      );
     }
 
     final idToken = googleUser.authentication.idToken;
@@ -160,5 +167,4 @@ class SupabaseServiceImpl implements SupabaseService {
       nonce: _googleRawNonce,
     );
   }
-
 }

@@ -5,7 +5,6 @@ sealed class ScanState {
   const ScanState();
 }
 
-
 final class ScanProcessing extends ScanState {
   const ScanProcessing();
 }
@@ -15,7 +14,6 @@ final class ScanProcessingFailed extends ScanState {
 
   final String message;
 }
-
 
 sealed class ScanLoaded extends ScanState {
   const ScanLoaded({required this.scanned});

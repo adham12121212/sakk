@@ -43,14 +43,23 @@ class DetailRow extends StatelessWidget {
                   children: [
                     Text(label, style: textTheme.bodySmall),
                     const SizedBox(height: 2),
-                    Text(value, style: textTheme.titleSmall?.copyWith(fontSize: 15)),
+                    Text(
+                      value,
+                      style: textTheme.titleSmall?.copyWith(fontSize: 15),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        if (!isLast) Divider(height: 1, indent: 68, endIndent: 16, color: colorScheme.outlineVariant),
+        if (!isLast)
+          Divider(
+            height: 1,
+            indent: 68,
+            endIndent: 16,
+            color: colorScheme.outlineVariant,
+          ),
       ],
     );
   }

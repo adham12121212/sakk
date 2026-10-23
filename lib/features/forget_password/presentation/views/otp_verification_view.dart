@@ -21,11 +21,15 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-
   static const _length = 8;
-  final List<TextEditingController> _controllers =
-  List.generate(_length, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(_length, (_) => FocusNode());
+  final List<TextEditingController> _controllers = List.generate(
+    _length,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _focusNodes = List.generate(
+    _length,
+    (_) => FocusNode(),
+  );
 
   @override
   void dispose() {
@@ -54,7 +58,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   void _verify() {
     if (_otp.length != _length) {
-      AppSnackBar.error(context, AppLocalizations.of(context)!.enterDigitCode(_length));
+      AppSnackBar.error(
+        context,
+        AppLocalizations.of(context)!.enterDigitCode(_length),
+      );
       return;
     }
     context.read<PasswordResetCubit>().verifyOtp(_otp);
@@ -104,11 +111,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleIconButton(
-                        icon: AppIcons.back,
-                        semanticLabel: l10n.back,
-                        onTap: () => Navigator.of(context).pop(),
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                    icon: AppIcons.back,
+                    semanticLabel: l10n.back,
+                    onTap: () => Navigator.of(context).pop(),
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   SizedBox(height: 28.h),
                   Text(
                     l10n.enterCode,
@@ -116,8 +123,13 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    l10n.weSentCodeTo(_length, PiiMasker.maskEmail(widget.email)),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    l10n.weSentCodeTo(
+                      _length,
+                      PiiMasker.maskEmail(widget.email),
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   SizedBox(height: 32.h),
                   // Codes are read left to right in every language, so the
@@ -159,4 +171,3 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     );
   }
 }
-

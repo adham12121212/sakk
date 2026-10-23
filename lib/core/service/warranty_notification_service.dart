@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' show Locale;
 
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
-import '../../features/notification/domain/entities/notification_enitiy.dart';
+import '../../features/notification/domain/entities/notification_entity.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
@@ -27,14 +27,14 @@ class WarrantyNotificationService {
     required AppLogger logger,
     ValueListenable<Locale>? locale,
     ReminderSettings? settings,
-  })  : _settings = settings,
-        _locale = locale,
-        _getUserUseCase = getUserUseCase,
-        _addNotificationUseCase = addNotificationUseCase,
-        _tracker = tracker,
-        _localNotifications = localNotifications,
-        _reminders = reminders,
-        _logger = logger;
+  }) : _settings = settings,
+       _locale = locale,
+       _getUserUseCase = getUserUseCase,
+       _addNotificationUseCase = addNotificationUseCase,
+       _tracker = tracker,
+       _localNotifications = localNotifications,
+       _reminders = reminders,
+       _logger = logger;
 
   final GetUserUseCase _getUserUseCase;
   final AddNotificationUseCase _addNotificationUseCase;
@@ -53,7 +53,8 @@ class WarrantyNotificationService {
     return _settings?.warrantyEnabled ?? true;
   }
 
-  AppLocalizations get _l10n => lookupAppLocalizations(_locale?.value ?? const Locale('en'));
+  AppLocalizations get _l10n =>
+      lookupAppLocalizations(_locale?.value ?? const Locale('en'));
 
   /// Re-schedules reminders when the user switches the language or turns
   /// warranty reminders on or off.
@@ -89,11 +90,15 @@ class WarrantyNotificationService {
       final isExpired = product.status == WarrantyStatus.expired;
       if (!isExpired && product.daysRemaining > reminderDays) continue;
 
-      final statusKey = isExpired ? WarrantyStatus.expired.name : WarrantyStatus.expiring.name;
+      final statusKey = isExpired
+          ? WarrantyStatus.expired.name
+          : WarrantyStatus.expiring.name;
       if (await _tracker.hasNotified(product.id, statusKey)) continue;
 
       final l10n = _l10n;
-      final title = isExpired ? l10n.notifExpiredTitle : l10n.notifExpiringTitle;
+      final title = isExpired
+          ? l10n.notifExpiredTitle
+          : l10n.notifExpiringTitle;
       final subtitle = isExpired
           ? l10n.notifExpiredBody(product.name)
           : l10n.notifExpiringInDays(product.daysRemaining, product.name);
@@ -119,7 +124,11 @@ class WarrantyNotificationService {
 
         await _tracker.markNotified(product.id, statusKey);
       } catch (e, st) {
-        _logger.error('Failed to send warranty notification', error: e, stackTrace: st);
+        _logger.error(
+          'Failed to send warranty notification',
+          error: e,
+          stackTrace: st,
+        );
       }
     }
   }
@@ -147,8 +156,15 @@ class WarrantyNotificationService {
   /// added on another device or by a household member. Pass [] on sign-out.
   Future<void> syncAll(List<ProductEntity> products) {
     // Serialize: overlapping syncs could interleave cancels and schedules.
-    return _syncQueue = _syncQueue.then((_) => _syncAll(products)).catchError((Object e, StackTrace st) {
-      _logger.error('Syncing warranty reminders failed', error: e, stackTrace: st);
+    return _syncQueue = _syncQueue.then((_) => _syncAll(products)).catchError((
+      Object e,
+      StackTrace st,
+    ) {
+      _logger.error(
+        'Syncing warranty reminders failed',
+        error: e,
+        stackTrace: st,
+      );
     });
   }
 
@@ -163,7 +179,10 @@ class WarrantyNotificationService {
     final wanted = [
       if (enabled)
         for (final product in products)
-          ..._remindersFor(product, reminderDays).where((r) => r.dateTime.isAfter(now)),
+          ..._remindersFor(
+            product,
+            reminderDays,
+          ).where((r) => r.dateTime.isAfter(now)),
     ];
     final wantedIds = {for (final r in wanted) r.id};
 
@@ -171,7 +190,9 @@ class WarrantyNotificationService {
     // belong to other reminders (subscriptions) and are left alone.
     for (final pending in await _localNotifications.pendingNotifications()) {
       if (!warrantyReminderSlots.contains(reminderSlot(pending.id))) continue;
-      if (!wantedIds.contains(pending.id)) await _localNotifications.cancelNotification(pending.id);
+      if (!wantedIds.contains(pending.id)) {
+        await _localNotifications.cancelNotification(pending.id);
+      }
     }
     for (final reminder in wanted) {
       await _schedule(reminder, userId);
@@ -208,7 +229,8 @@ class WarrantyNotificationService {
     ];
   }
 
-  Future<void> _schedule(_Reminder reminder, String? userId) => _localNotifications.scheduleNotification(
+  Future<void> _schedule(_Reminder reminder, String? userId) =>
+      _localNotifications.scheduleNotification(
         id: reminder.id,
         title: reminder.title,
         body: reminder.body,
@@ -231,15 +253,22 @@ class WarrantyNotificationService {
     }
   }
 
-  Iterable<int> _idsFor(String productId) => [0, 1, 2].map((s) => _notificationIdFor(productId, s));
+  Iterable<int> _idsFor(String productId) =>
+      [0, 1, 2].map((s) => _notificationIdFor(productId, s));
 
   /// Slot 0 "expiring", 1 "expired", 2 "return window closing"; see
   /// [reminderNotificationId].
-  int _notificationIdFor(String productId, int suffix) => reminderNotificationId(productId, suffix);
+  int _notificationIdFor(String productId, int suffix) =>
+      reminderNotificationId(productId, suffix);
 }
 
 class _Reminder {
-  const _Reminder({required this.id, required this.title, required this.body, required this.dateTime});
+  const _Reminder({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.dateTime,
+  });
 
   final int id;
   final String title;

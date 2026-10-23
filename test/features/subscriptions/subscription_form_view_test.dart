@@ -21,7 +21,8 @@ import 'package:sakk/l10n/app_localizations.dart';
 
 class _NoGet implements GetSubscriptionsUseCase {
   @override
-  Future<Either<Failure, List<UserSubscription>>> call() async => const Right([]);
+  Future<Either<Failure, List<UserSubscription>>> call() async =>
+      const Right([]);
 }
 
 /// Captures what the form sends.
@@ -49,14 +50,16 @@ class CaptureAdd implements AddSubscriptionUseCase {
       'currency': currency,
       'billingCycle': billingCycle,
     };
-    return Right(UserSubscription(
-      id: 'new',
-      catalogId: catalogId,
-      customName: customName,
-      price: price,
-      billingCycle: billingCycle,
-      nextRenewalDate: nextRenewalDate,
-    ));
+    return Right(
+      UserSubscription(
+        id: 'new',
+        catalogId: catalogId,
+        customName: customName,
+        price: price,
+        billingCycle: billingCycle,
+        nextRenewalDate: nextRenewalDate,
+      ),
+    );
   }
 }
 
@@ -70,31 +73,42 @@ class _NoDelete implements DeleteSubscriptionUseCase {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-Widget app(SubscriptionFormArgs args, CaptureAdd add, {Locale locale = const Locale('en')}) => ScreenUtilInit(
-      designSize: const Size(390, 844),
-      builder: (_, _) => MaterialApp(
-        locale: locale,
-        theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        // A first page so the form has something to pop back to.
-        home: Builder(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: TextButton(
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute<bool>(
-                  builder: (_) => BlocProvider(
-                    create: (_) => SubscriptionFormCubit(add, _NoUpdate(), _NoDelete(), SubscriptionsCubit(_NoGet())),
-                    child: SubscriptionFormView(args: args),
+Widget app(
+  SubscriptionFormArgs args,
+  CaptureAdd add, {
+  Locale locale = const Locale('en'),
+}) => ScreenUtilInit(
+  designSize: const Size(390, 844),
+  builder: (_, _) => MaterialApp(
+    locale: locale,
+    theme: AppTheme.light(),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    // A first page so the form has something to pop back to.
+    home: Builder(
+      builder: (context) => Scaffold(
+        body: Center(
+          child: TextButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<bool>(
+                builder: (_) => BlocProvider(
+                  create: (_) => SubscriptionFormCubit(
+                    add,
+                    _NoUpdate(),
+                    _NoDelete(),
+                    SubscriptionsCubit(_NoGet()),
                   ),
-                )),
-                child: const Text('open'),
+                  child: SubscriptionFormView(args: args),
+                ),
               ),
             ),
+            child: const Text('open'),
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
 
 Future<void> open(WidgetTester tester) async {
   await tester.tap(find.text('open'));
@@ -109,7 +123,9 @@ Future<void> tapSave(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('custom: needs a name and a price, then saves and closes', (tester) async {
+  testWidgets('custom: needs a name and a price, then saves and closes', (
+    tester,
+  ) async {
     final add = CaptureAdd();
     await tester.pumpWidget(app(const SubscriptionFormArgs.custom(), add));
     await open(tester);
@@ -121,7 +137,10 @@ void main() {
 
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), '  Gym  ');
-    await tester.enterText(fields.at(2), '٥٠٠'); // Arabic-Indic digits are accepted
+    await tester.enterText(
+      fields.at(2),
+      '٥٠٠',
+    ); // Arabic-Indic digits are accepted
     await tester.ensureVisible(find.text('Yearly'));
     await tester.tap(find.text('Yearly'));
     await tapSave(tester);
@@ -138,20 +157,32 @@ void main() {
     expect(find.text('open'), findsOneWidget); // popped back
   });
 
-  testWidgets('from the catalog: shows the service and pre-fills the plan', (tester) async {
+  testWidgets('from the catalog: shows the service and pre-fills the plan', (
+    tester,
+  ) async {
     final add = CaptureAdd();
-    const plan = CatalogPlan(name: 'Plus', price: 20, currency: 'USD', billingCycle: BillingCycle.monthly);
+    const plan = CatalogPlan(
+      name: 'Plus',
+      price: 20,
+      currency: 'USD',
+      billingCycle: BillingCycle.monthly,
+    );
     const service = CatalogService(
       id: 'c1',
       name: 'ChatGPT',
       category: SubscriptionCategory.ai,
       plans: [plan],
     );
-    await tester.pumpWidget(app(const SubscriptionFormArgs.fromCatalog(service, plan), add));
+    await tester.pumpWidget(
+      app(const SubscriptionFormArgs.fromCatalog(service, plan), add),
+    );
     await open(tester);
 
     expect(find.text('ChatGPT'), findsOneWidget);
-    expect(find.text('Name'), findsNothing); // no name field for catalog services
+    expect(
+      find.text('Name'),
+      findsNothing,
+    ); // no name field for catalog services
     await tapSave(tester);
 
     expect(add.sent, {
@@ -166,27 +197,43 @@ void main() {
   });
 
   testWidgets('lays out in Arabic without overflow', (tester) async {
-    await tester.pumpWidget(app(const SubscriptionFormArgs.custom(), CaptureAdd(), locale: const Locale('ar')));
+    await tester.pumpWidget(
+      app(
+        const SubscriptionFormArgs.custom(),
+        CaptureAdd(),
+        locale: const Locale('ar'),
+      ),
+    );
     await open(tester);
     expect(find.text('إضافة اشتراك'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('from smart add: pre-filled from the scan, with its confidence', (tester) async {
+  testWidgets('from smart add: pre-filled from the scan, with its confidence', (
+    tester,
+  ) async {
     final add = CaptureAdd();
     final today = DateTime.now();
-    final charged = DateTime(today.year, today.month, today.day).subtract(const Duration(days: 3));
-    await tester.pumpWidget(app(
-      SubscriptionFormArgs.fromScan(ScannedSubscription(
-        serviceName: 'Gold Gym',
-        price: 750,
-        billingCycle: BillingCycle.monthly,
-        chargeDate: charged,
-        paymentMethod: 'Visa •• 4242',
-        confidence: 0.92,
-      )),
-      add,
-    ));
+    final charged = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).subtract(const Duration(days: 3));
+    await tester.pumpWidget(
+      app(
+        SubscriptionFormArgs.fromScan(
+          ScannedSubscription(
+            serviceName: 'Gold Gym',
+            price: 750,
+            billingCycle: BillingCycle.monthly,
+            chargeDate: charged,
+            paymentMethod: 'Visa •• 4242',
+            confidence: 0.92,
+          ),
+        ),
+        add,
+      ),
+    );
     await open(tester);
 
     expect(find.textContaining('92%', findRichText: true), findsOneWidget);

@@ -23,9 +23,18 @@ class AuthPrimaryButton extends StatelessWidget {
         child: isLoading
             ? const SizedBox.square(
                 dimension: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Colors.white,
+                ),
               )
-            : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            : Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
       ),
     );
   }

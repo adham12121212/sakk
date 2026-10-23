@@ -25,10 +25,12 @@ class ProductInstallmentsSection extends StatefulWidget {
   final ProductEntity product;
 
   @override
-  State<ProductInstallmentsSection> createState() => _ProductInstallmentsSectionState();
+  State<ProductInstallmentsSection> createState() =>
+      _ProductInstallmentsSectionState();
 }
 
-class _ProductInstallmentsSectionState extends State<ProductInstallmentsSection> {
+class _ProductInstallmentsSectionState
+    extends State<ProductInstallmentsSection> {
   final _cubit = getIt<InstallmentsCubit>();
 
   @override
@@ -39,7 +41,10 @@ class _ProductInstallmentsSectionState extends State<ProductInstallmentsSection>
 
   void _add() {
     if (!ProActions.ensureCanAdd(context, LimitedItem.installments)) return;
-    context.push(AppRoutes.installmentForm, extra: InstallmentFormArgs.add(product: widget.product));
+    context.push(
+      AppRoutes.installmentForm,
+      extra: InstallmentFormArgs.add(product: widget.product),
+    );
   }
 
   @override
@@ -58,7 +63,9 @@ class _ProductInstallmentsSectionState extends State<ProductInstallmentsSection>
             const SizedBox(height: 24),
             Row(
               children: [
-                Expanded(child: Text(l10n.installments, style: textTheme.titleMedium)),
+                Expanded(
+                  child: Text(l10n.installments, style: textTheme.titleMedium),
+                ),
                 TextButton.icon(
                   onPressed: _add,
                   icon: const Icon(AppIcons.add, size: 18),
@@ -71,13 +78,18 @@ class _ProductInstallmentsSectionState extends State<ProductInstallmentsSection>
             if (plans.isEmpty)
               Text(
                 l10n.productInstallmentsHint,
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               )
             else
               for (final plan in plans) ...[
                 _PlanStatusCard(
                   plan: plan,
-                  onTap: () => context.push(AppRoutes.installmentDetails, extra: plan.id),
+                  onTap: () => context.push(
+                    AppRoutes.installmentDetails,
+                    extra: plan.id,
+                  ),
                 ),
                 const SizedBox(height: 8),
               ],
@@ -121,11 +133,18 @@ class _PlanStatusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(AppIcons.installments, size: 20, color: Theme.of(context).colorScheme.primary),
+              Icon(
+                AppIcons.installments,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  [if (plan.provider != null) plan.provider!, status].join(' · '),
+                  [
+                    if (plan.provider != null) plan.provider!,
+                    status,
+                  ].join(' · '),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: textTheme.bodyMedium?.copyWith(

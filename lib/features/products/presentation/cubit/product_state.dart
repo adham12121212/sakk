@@ -62,8 +62,13 @@ class ProductsState extends Equatable {
 
   @override
   List<Object?> get props => [
-    products, isLoading, error,
-    hasLoadedOnce, query, recentSearches,
-    results, hasSearched,
+    products,
+    isLoading,
+    error,
+    hasLoadedOnce,
+    query,
+    recentSearches,
+    results,
+    hasSearched,
   ];
 }

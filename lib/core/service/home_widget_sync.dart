@@ -31,15 +31,23 @@ class HomeWidgetSync {
       ..sort((a, b) => a.warrantyEndDate.compareTo(b.warrantyEndDate));
 
     if (upcoming.isEmpty) {
-      await _save(header: l10n.widgetNextToEnd, title: l10n.widgetNoWarranties, subtitle: '');
+      await _save(
+        header: l10n.widgetNextToEnd,
+        title: l10n.widgetNoWarranties,
+        subtitle: '',
+      );
       return;
     }
     final next = upcoming.first;
-    final dateLocale = locale.languageCode == 'ar' ? 'ar_EG' : locale.toLanguageTag();
+    final dateLocale = locale.languageCode == 'ar'
+        ? 'ar_EG'
+        : locale.toLanguageTag();
     await _save(
       header: l10n.widgetNextToEnd,
       title: next.name,
-      subtitle: l10n.widgetEndsOn(DateFormat.yMMMd(dateLocale).format(next.warrantyEndDate)),
+      subtitle: l10n.widgetEndsOn(
+        DateFormat.yMMMd(dateLocale).format(next.warrantyEndDate),
+      ),
     );
   }
 
@@ -54,10 +62,18 @@ class HomeWidgetSync {
   /// On sign-out: never leave the last account's product on the home screen.
   Future<void> clear() async {
     final l10n = lookupAppLocalizations(_localeController.value);
-    await _save(header: l10n.appName, title: l10n.widgetSignedOut, subtitle: '');
+    await _save(
+      header: l10n.appName,
+      title: l10n.widgetSignedOut,
+      subtitle: '',
+    );
   }
 
-  Future<void> _save({required String header, required String title, required String subtitle}) async {
+  Future<void> _save({
+    required String header,
+    required String title,
+    required String subtitle,
+  }) async {
     try {
       await HomeWidget.setAppGroupId(iOSAppGroup);
       await HomeWidget.saveWidgetData<String>('header', header);
@@ -66,7 +82,10 @@ class HomeWidgetSync {
       await HomeWidget.updateWidget(androidName: androidName, iOSName: iOSName);
     } catch (e) {
       // No widget placed yet, or the iOS extension isn't installed: harmless.
-      _logger.warning('Updating the home screen widget failed', data: {'error': '$e'});
+      _logger.warning(
+        'Updating the home screen widget failed',
+        data: {'error': '$e'},
+      );
     }
   }
 }

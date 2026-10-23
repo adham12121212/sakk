@@ -5,7 +5,6 @@ import '../../core/route/app_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_icons.dart';
 
-
 class ScaffoldWithNavBar extends StatelessWidget {
   const ScaffoldWithNavBar({super.key, required this.navigationShell});
 
@@ -51,10 +50,18 @@ class _BottomBar extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        border: isDark ? Border(top: BorderSide(color: colorScheme.outline)) : null,
+        border: isDark
+            ? Border(top: BorderSide(color: colorScheme.outline))
+            : null,
         boxShadow: isDark
             ? null
-            : const [BoxShadow(color: Color(0x140F172A), blurRadius: 24, offset: Offset(0, -6))],
+            : const [
+                BoxShadow(
+                  color: Color(0x140F172A),
+                  blurRadius: 24,
+                  offset: Offset(0, -6),
+                ),
+              ],
       ),
       child: SafeArea(
         top: false,
@@ -142,10 +149,16 @@ class _NavItem extends StatelessWidget {
                 width: 52,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: isActive ? AppColors.primary.withValues(alpha: 0.12) : Colors.transparent,
+                  color: isActive
+                      ? AppColors.primary.withValues(alpha: 0.12)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(isActive ? activeIcon : icon, color: color, size: 22),
+                child: Icon(
+                  isActive ? activeIcon : icon,
+                  color: color,
+                  size: 22,
+                ),
               ),
               const SizedBox(height: 4),
               _Label(
@@ -211,7 +224,11 @@ class _ScanItem extends StatelessWidget {
               const SizedBox(height: 4),
               _Label(
                 label,
-                TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: colorScheme.onSurfaceVariant),
+                TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 10),
             ],

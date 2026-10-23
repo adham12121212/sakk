@@ -12,7 +12,12 @@ class FieldLabel extends StatelessWidget {
     return ExcludeSemantics(
       child: Padding(
         padding: const EdgeInsetsDirectional.only(bottom: 8, start: 2),
-        child: Text(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 13.5)),
+        child: Text(
+          text,
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(fontSize: 13.5),
+        ),
       ),
     );
   }

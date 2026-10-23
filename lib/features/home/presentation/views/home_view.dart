@@ -27,7 +27,6 @@ import '../widgets/recent_product_data.dart';
 import '../widgets/recent_products_section.dart';
 import '../widgets/stat_card.dart';
 import '../../../../core/theme/app_icons.dart';
-import '../../../pro/presentation/widgets/monthly_summary_tile.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -201,7 +200,10 @@ class _HomeContentState extends State<_HomeContent> {
                                 children: [
                                   _statRow(
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.total),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.total,
+                                      ),
                                       label: l10n.totalProducts,
                                       icon: AppIcons.products,
                                       iconColor: colorScheme.primary,
@@ -213,7 +215,10 @@ class _HomeContentState extends State<_HomeContent> {
                                                 context.go(AppRoutes.products),
                                     ),
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.active),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.active,
+                                      ),
                                       label: l10n.activeWarranties,
                                       icon: AppIcons.warranty,
                                       iconColor: palette.success,
@@ -224,7 +229,10 @@ class _HomeContentState extends State<_HomeContent> {
                                   const SizedBox(height: 12),
                                   _statRow(
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.expiring),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.expiring,
+                                      ),
                                       label: l10n.expiringSoon,
                                       icon: AppIcons.expiring,
                                       iconColor: palette.warning,
@@ -232,7 +240,10 @@ class _HomeContentState extends State<_HomeContent> {
                                           palette.warningContainer,
                                     ),
                                     StatCard(
-                                      value: formatLocalizedInt(locale, displayState.expired),
+                                      value: formatLocalizedInt(
+                                        locale,
+                                        displayState.expired,
+                                      ),
                                       label: l10n.expired,
                                       icon: AppIcons.error,
                                       iconColor: palette.danger,
@@ -264,10 +275,6 @@ class _HomeContentState extends State<_HomeContent> {
                           onTap: () => context.push(AppRoutes.installments),
                         ),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: MonthlySummaryTile(),
                     ),
                     if (!(state.error != null && state.products.isEmpty))
                       Skeletonizer(

@@ -1,4 +1,4 @@
-enum NotificationType { success,warning,  info, error }
+enum NotificationType { success, warning, info, error }
 
 class NotificationEntity {
   final String id;

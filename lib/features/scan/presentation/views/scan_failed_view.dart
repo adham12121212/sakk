@@ -35,7 +35,11 @@ class ScanFailedView extends StatelessWidget {
                     color: context.palette.dangerContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(AppIcons.receipt, color: context.palette.danger, size: 40.sp),
+                  child: Icon(
+                    AppIcons.receipt,
+                    color: context.palette.danger,
+                    size: 40.sp,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 Text(

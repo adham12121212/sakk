@@ -24,7 +24,10 @@ void main() {
   });
 
   test('favicon url from the domain', () {
-    expect(faviconUrl('netflix.com'), 'https://www.google.com/s2/favicons?domain=netflix.com&sz=128');
+    expect(
+      faviconUrl('netflix.com'),
+      'https://www.google.com/s2/favicons?domain=netflix.com&sz=128',
+    );
     expect(faviconUrl(null), isNull);
     expect(faviconUrl(''), isNull);
   });

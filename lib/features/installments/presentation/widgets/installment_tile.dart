@@ -33,12 +33,20 @@ class InstallmentTile extends StatelessWidget {
 
     final (String status, Color? statusColor) = switch (plan.status) {
       InstallmentPlanStatus.cancelled => (l10n.installmentCancelled, null),
-      InstallmentPlanStatus.completed => (l10n.installmentPaidOff, context.palette.success),
-      InstallmentPlanStatus.active => (dueLabel(context, daysLeft!), dueColor(context, daysLeft)),
+      InstallmentPlanStatus.completed => (
+        l10n.installmentPaidOff,
+        context.palette.success,
+      ),
+      InstallmentPlanStatus.active => (
+        dueLabel(context, daysLeft!),
+        dueColor(context, daysLeft),
+      ),
     };
     final provider = plan.provider;
     // Everything overdue is due now; otherwise the next installment.
-    final amountDue = !plan.isActive ? null : (overdue > 0 ? overdue : next!.amount);
+    final amountDue = !plan.isActive
+        ? null
+        : (overdue > 0 ? overdue : next!.amount);
 
     return AppCard(
       onTap: onTap,
@@ -69,7 +77,10 @@ class InstallmentTile extends StatelessWidget {
                             text: status,
                             style: statusColor == null
                                 ? null
-                                : TextStyle(color: statusColor, fontWeight: FontWeight.w600),
+                                : TextStyle(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                           ),
                         ],
                       ),
@@ -84,7 +95,9 @@ class InstallmentTile extends StatelessWidget {
               if (amountDue != null)
                 Text(
                   formatMoney(context, amountDue, plan.currency),
-                  style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  style: textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               const SizedBox(width: 2),
               Icon(
@@ -116,7 +129,9 @@ class InstallmentIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: overdue ? context.palette.dangerContainer : colorScheme.primaryContainer,
+        color: overdue
+            ? context.palette.dangerContainer
+            : colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(size * 0.28),
       ),
       child: Icon(

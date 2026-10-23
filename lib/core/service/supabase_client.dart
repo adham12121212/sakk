@@ -19,32 +19,37 @@ abstract class SupabaseService {
   User? get currentUser;
 
   Future<void> add(String tableName, Map<String, dynamic> data);
-  Future<List<Map<String, dynamic>>> get(String tableName,{Map<String, dynamic>? filters});
-
+  Future<List<Map<String, dynamic>>> get(
+    String tableName, {
+    Map<String, dynamic>? filters,
+  });
 
   Future<void> update(
-      String tableName,
-      Map<String, dynamic> data, {
-        required String matchColumn,
-        required dynamic matchValue,
-      });
+    String tableName,
+    Map<String, dynamic> data, {
+    required String matchColumn,
+    required dynamic matchValue,
+  });
 
   Future<void> delete(
-      String tableName, {
-        required String matchColumn,
-        required dynamic matchValue,
-      });
+    String tableName, {
+    required String matchColumn,
+    required dynamic matchValue,
+  });
 
-    Future<void> resetPasswordForEmail(String email);
+  Future<void> resetPasswordForEmail(String email);
 
-  Future<void> verifyRecoveryOtp({required String email, required String token});
+  Future<void> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  });
 
   Future<void> updatePassword(String newPassword);
 
   Future<User> updateUserMetadata(Map<String, dynamic> data);
 
-  Future<FunctionResponse> invokeFunction(String functionName, {Map<String, dynamic>? body});
-
+  Future<FunctionResponse> invokeFunction(
+    String functionName, {
+    Map<String, dynamic>? body,
+  });
 }
-
-

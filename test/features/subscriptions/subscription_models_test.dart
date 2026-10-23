@@ -8,36 +8,50 @@ import 'package:sakk/features/subscriptions/domain/entities/subscription_categor
 
 /// A user_subscriptions row as Supabase returns it with UserSubscriptionModel.selectColumns.
 Map<String, dynamic> subscriptionRow() => {
-      'id': 's1',
-      'user_id': 'u1',
-      'catalog_id': 'c1',
-      'custom_name': null,
-      'plan_name': 'Premium',
-      'category': 'streaming',
-      'price': 240,
-      'currency': 'EGP',
-      'billing_cycle': 'monthly',
-      'next_renewal_date': '2026-11-01',
-      'payment_method': 'Visa •• 4242',
-      'notes': null,
-      'created_at': '2026-10-12T10:00:00Z',
-      'updated_at': '2026-10-12T10:00:00Z',
-      'subscription_catalog': {'name': 'Netflix', 'domain': 'netflix.com', 'logo_url': null},
-    };
+  'id': 's1',
+  'user_id': 'u1',
+  'catalog_id': 'c1',
+  'custom_name': null,
+  'plan_name': 'Premium',
+  'category': 'streaming',
+  'price': 240,
+  'currency': 'EGP',
+  'billing_cycle': 'monthly',
+  'next_renewal_date': '2026-11-01',
+  'payment_method': 'Visa •• 4242',
+  'notes': null,
+  'created_at': '2026-10-12T10:00:00Z',
+  'updated_at': '2026-10-12T10:00:00Z',
+  'subscription_catalog': {
+    'name': 'Netflix',
+    'domain': 'netflix.com',
+    'logo_url': null,
+  },
+};
 
 Map<String, dynamic> catalogRow() => {
-      'id': 'c1',
-      'name': 'Netflix',
-      'category': 'streaming',
-      'domain': 'netflix.com',
-      'logo_url': null,
-      'is_active': true,
-      'created_at': '2026-10-12T10:00:00Z',
-      'plans': [
-        {'name': 'Basic', 'price': 120, 'currency': 'EGP', 'billing_cycle': 'monthly'},
-        {'name': 'Yearly', 'price': 99.5, 'currency': 'USD', 'billing_cycle': 'yearly'},
-      ],
-    };
+  'id': 'c1',
+  'name': 'Netflix',
+  'category': 'streaming',
+  'domain': 'netflix.com',
+  'logo_url': null,
+  'is_active': true,
+  'created_at': '2026-10-12T10:00:00Z',
+  'plans': [
+    {
+      'name': 'Basic',
+      'price': 120,
+      'currency': 'EGP',
+      'billing_cycle': 'monthly',
+    },
+    {
+      'name': 'Yearly',
+      'price': 99.5,
+      'currency': 'USD',
+      'billing_cycle': 'yearly',
+    },
+  ],
+};
 
 void main() {
   group('UserSubscriptionModel', () {

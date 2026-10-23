@@ -36,7 +36,7 @@ create policy "Signed-in users can read app config" on public.app_config
 -- paywall is out:
 --
 --   update public.app_config set value = '{
---     "free": {"products": 5, "subscriptions": 3, "installments": 1, "scan_per_day": 3, "chat_per_day": 5},
+--     "free": {"products": null, "subscriptions": null, "installments": 2, "scan_per_day": 5, "chat_per_day": 10},
 --     "pro":  {"products": null, "subscriptions": null, "installments": null, "scan_per_day": null, "chat_per_day": 200}
 --   }' where key = 'limits';
 --

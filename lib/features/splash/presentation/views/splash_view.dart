@@ -12,7 +12,6 @@ import '../../../../core/service/onboarding_service.dart';
 import '../../../../core/service/password_recovery_service.dart';
 import '../../../../core/widgets/sakk_logo.dart';
 
-
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -28,7 +27,6 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> _bootstrap() async {
-
     final minDelay = Future.delayed(const Duration(milliseconds: 1400));
 
     var session = Supabase.instance.client.auth.currentSession;
@@ -48,18 +46,21 @@ class _SplashViewState extends State<SplashView> {
       await recoveryService.clear();
     }
 
-    final hasSeenOnboarding = await getIt<OnboardingService>().hasSeenOnboarding();
+    final hasSeenOnboarding = await getIt<OnboardingService>()
+        .hasSeenOnboarding();
 
     // Only relevant when a session already exists — no point checking the
     // biometric preference at all if the user isn't signed in.
-    final biometricLockRequired = session != null &&
-        await getIt<BiometricAuthService>().isEnabled;
+    final biometricLockRequired =
+        session != null && await getIt<BiometricAuthService>().isEnabled;
 
     await minDelay;
     if (!mounted) return;
 
     if (session != null) {
-      context.go(biometricLockRequired ? AppRoutes.biometricLock : AppRoutes.home);
+      context.go(
+        biometricLockRequired ? AppRoutes.biometricLock : AppRoutes.home,
+      );
     } else if (!hasSeenOnboarding) {
       context.go(AppRoutes.onboarding);
     } else {

@@ -309,6 +309,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String deleteProductLinkedPlans(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count installment plans are linked to this product. They will be kept, without the link.',
+      one:
+          '1 installment plan is linked to this product. It will be kept, without the link.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete => 'Delete';
 
   @override
@@ -679,7 +692,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountWarning =>
-      'This permanently deletes your account, all your products, receipts and notifications. This can\'t be undone.';
+      'This permanently deletes your account and all its data: products, receipts and documents, subscriptions, installment plans, chat history and notifications. This can\'t be undone.';
+
+  @override
+  String get deleteAccountProTitle => 'Cancel Sakk Pro first';
+
+  @override
+  String get deleteAccountProBody =>
+      'Deleting your account doesn\'t cancel your Sakk Pro subscription in Google Play. Cancel it there first so you aren\'t charged again.';
+
+  @override
+  String get deleteAccountProContinue => 'Delete anyway';
 
   @override
   String get deleteAccountKeyword => 'DELETE';
@@ -2218,6 +2241,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Subscriptions aren\'t available right now. Please try again later.';
 
   @override
+  String get proComingSoonIos =>
+      'Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.';
+
+  @override
   String get alreadyPro => 'You\'re on Sakk Pro';
 
   @override
@@ -2275,18 +2302,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderCustomProOnly => 'Sakk Pro';
 
   @override
-  String get backupExport => 'Export backup (JSON)';
+  String get paywallHeadlinePdfReport => 'Get everything in one PDF';
 
   @override
-  String get backupFailed => 'Couldn\'t create the backup. Please try again.';
-
-  @override
-  String get paywallHeadlineBackup => 'Keep a copy of everything';
-
-  @override
-  String get featureBackup => 'Backup export';
+  String get featurePdfReport => 'PDF report';
 
   @override
   String get proStatusLoadFailed =>
       'Couldn\'t load your plan. Check your connection and try again.';
+
+  @override
+  String get pdfReportExport => 'Export PDF report';
+
+  @override
+  String get pdfReportFailed =>
+      'Couldn\'t create the report. Please try again.';
+
+  @override
+  String get pdfReportTitle => 'Sakk report';
+
+  @override
+  String pdfReportGenerated(String date) {
+    return 'Created on $date';
+  }
+
+  @override
+  String get pdfReportSummary => 'Summary';
+
+  @override
+  String get pdfReportNone => 'None yet';
+
+  @override
+  String pdfReportPage(String page, String total) {
+    return 'Page $page of $total';
+  }
+
+  @override
+  String get pdfColNextDue => 'Next payment';
+
+  @override
+  String get pdfColPaid => 'Paid';
+
+  @override
+  String get pdfColRemaining => 'Remaining';
+
+  @override
+  String get pdfColPlan => 'Plan';
+
+  @override
+  String get pdfColStatus => 'Status';
+
+  @override
+  String get pdfRemainingInstallments => 'Installments left to pay';
 }

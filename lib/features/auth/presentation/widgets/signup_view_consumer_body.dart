@@ -12,7 +12,6 @@ import 'welcome_message.dart';
 class SignupViewConsumerBody extends StatelessWidget {
   const SignupViewConsumerBody({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -33,10 +32,7 @@ class SignupViewConsumerBody extends StatelessWidget {
             context.go(AppRoutes.signin);
             break;
           case AuthError():
-            AppSnackBar.error(
-              context,
-              state.message,
-            );
+            AppSnackBar.error(context, state.message);
 
             break;
           default:
@@ -44,7 +40,7 @@ class SignupViewConsumerBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return SignupViewBody(isLoading: state is AuthLoading,);
+        return SignupViewBody(isLoading: state is AuthLoading);
       },
     );
   }

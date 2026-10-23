@@ -2,7 +2,11 @@ import 'package:equatable/equatable.dart';
 
 /// A family group whose members see each other's products.
 class Household extends Equatable {
-  const Household({required this.id, required this.name, required this.inviteCode});
+  const Household({
+    required this.id,
+    required this.name,
+    required this.inviteCode,
+  });
 
   final String id;
   final String name;
@@ -15,7 +19,11 @@ class Household extends Equatable {
 }
 
 class HouseholdMember extends Equatable {
-  const HouseholdMember({required this.userId, required this.displayName, required this.isOwner});
+  const HouseholdMember({
+    required this.userId,
+    required this.displayName,
+    required this.isOwner,
+  });
 
   final String userId;
   final String displayName;

@@ -29,7 +29,12 @@ class _SilentLogger implements AppLogger {
   @override
   void warning(String message, {Map<String, dynamic>? data}) {}
   @override
-  void error(String message, {Object? error, StackTrace? stackTrace, Map<String, dynamic>? data}) {}
+  void error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, dynamic>? data,
+  }) {}
 }
 
 class _FakeRemote implements InstallmentDataSource {
@@ -45,11 +50,17 @@ class _FakeRemote implements InstallmentDataSource {
   }
 
   @override
-  Future<InstallmentPlanModel> savePlan(Map<String, dynamic> planJson, List<Map<String, dynamic>> paymentsJson) async {
+  Future<InstallmentPlanModel> savePlan(
+    Map<String, dynamic> planJson,
+    List<Map<String, dynamic>> paymentsJson,
+  ) async {
     if (fail) throw ServerException('boom');
     lastPlan = planJson;
     lastPayments = paymentsJson;
-    return InstallmentPlanModel.fromJson({...planRow(id: planJson['id'] as String? ?? 'new'), 'title': planJson['title']});
+    return InstallmentPlanModel.fromJson({
+      ...planRow(id: planJson['id'] as String? ?? 'new'),
+      'title': planJson['title'],
+    });
   }
 
   @override
@@ -57,14 +68,26 @@ class _FakeRemote implements InstallmentDataSource {
 
   ScannedInstallment scan = const ScannedInstallment(title: 'TV');
   @override
-  Future<ScannedInstallment> extractInstallment({String? imagePath, String? pdfText, String? text}) async {
+  Future<ScannedInstallment> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
+  }) async {
     if (fail) throw ServerException('boom');
     return scan;
   }
 
   @override
-  Future<InstallmentPaymentModel> setPaymentPaid(String paymentId, DateTime? paidAt) async =>
-      InstallmentPaymentModel(id: paymentId, planId: 'pl1', dueDate: DateTime(2026, 12, 31), amount: 2000, paidAt: paidAt);
+  Future<InstallmentPaymentModel> setPaymentPaid(
+    String paymentId,
+    DateTime? paidAt,
+  ) async => InstallmentPaymentModel(
+    id: paymentId,
+    planId: 'pl1',
+    dueDate: DateTime(2026, 12, 31),
+    amount: 2000,
+    paidAt: paidAt,
+  );
 }
 
 class _MemoryCache implements InstallmentLocalDataSource {
@@ -97,31 +120,44 @@ void main() {
     expect(cache.plans!.single.id, 'pl1');
   });
 
-  test('offline, serves the saved list; without one, says no connection', () async {
-    network.connected = false;
-    final noCache = await repo.getPlans();
-    expect(noCache.fold((f) => f, (_) => null), const NetworkFailure(NetworkFailure.noConnectionMessage));
-    cache.plans = [InstallmentPlanModel.fromJson(planRow())];
-    final cached = await repo.getPlans();
-    expect(cached.getOrElse(() => []).single.id, 'pl1');
-  });
+  test(
+    'offline, serves the saved list; without one, says no connection',
+    () async {
+      network.connected = false;
+      final noCache = await repo.getPlans();
+      expect(
+        noCache.fold((f) => f, (_) => null),
+        const NetworkFailure(NetworkFailure.noConnectionMessage),
+      );
+      cache.plans = [InstallmentPlanModel.fromJson(planRow())];
+      final cached = await repo.getPlans();
+      expect(cached.getOrElse(() => []).single.id, 'pl1');
+    },
+  );
 
-  test('saving sends the plan and its unpaid installments, and updates the cache', () async {
-    cache.plans = [InstallmentPlanModel.fromJson(planRow())];
-    final plan = InstallmentPlanModel.fromJson(planRow());
-    final result = await repo.savePlan(
-      id: 'pl1',
-      draft: plan.toDraft(),
-      unpaid: [ScheduledPayment(dueDate: DateTime(2027, 1, 31), amount: 2000)],
-    );
-    expect(result.isRight(), isTrue);
-    expect(remote.lastPlan!['id'], 'pl1');
-    expect(remote.lastPayments, [{'due_date': '2027-01-31', 'amount': 2000.0}]);
-    expect(cache.plans, hasLength(1));
+  test(
+    'saving sends the plan and its unpaid installments, and updates the cache',
+    () async {
+      cache.plans = [InstallmentPlanModel.fromJson(planRow())];
+      final plan = InstallmentPlanModel.fromJson(planRow());
+      final result = await repo.savePlan(
+        id: 'pl1',
+        draft: plan.toDraft(),
+        unpaid: [
+          ScheduledPayment(dueDate: DateTime(2027, 1, 31), amount: 2000),
+        ],
+      );
+      expect(result.isRight(), isTrue);
+      expect(remote.lastPlan!['id'], 'pl1');
+      expect(remote.lastPayments, [
+        {'due_date': '2027-01-31', 'amount': 2000.0},
+      ]);
+      expect(cache.plans, hasLength(1));
 
-    await repo.savePlan(draft: plan.toDraft(), unpaid: const []);
-    expect(cache.plans!.map((p) => p.id), ['new', 'pl1']);
-  });
+      await repo.savePlan(draft: plan.toDraft(), unpaid: const []);
+      expect(cache.plans!.map((p) => p.id), ['new', 'pl1']);
+    },
+  );
 
   test('marking a payment paid updates it in the cached plan', () async {
     cache.plans = [InstallmentPlanModel.fromJson(planRow())];
@@ -134,10 +170,16 @@ void main() {
   test('writes need a connection and report server errors', () async {
     network.connected = false;
     final offline = await repo.deletePlan('pl1');
-    expect(offline.fold((f) => f, (_) => null), const NetworkFailure(NetworkFailure.noConnectionMessage));
+    expect(
+      offline.fold((f) => f, (_) => null),
+      const NetworkFailure(NetworkFailure.noConnectionMessage),
+    );
     network.connected = true;
     remote.fail = true;
-    final failed = await repo.savePlan(draft: InstallmentPlanModel.fromJson(planRow()).toDraft(), unpaid: const []);
+    final failed = await repo.savePlan(
+      draft: InstallmentPlanModel.fromJson(planRow()).toDraft(),
+      unpaid: const [],
+    );
     expect(failed.fold((f) => f, (_) => null), isA<ServerFailure>());
   });
 

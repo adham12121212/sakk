@@ -7,7 +7,11 @@ import '../util/installment_format.dart';
 /// How much of a plan is paid: a bar (by amount, down payment included)
 /// with "4 of 12 paid" under it.
 class InstallmentProgress extends StatelessWidget {
-  const InstallmentProgress({super.key, required this.plan, this.dense = false});
+  const InstallmentProgress({
+    super.key,
+    required this.plan,
+    this.dense = false,
+  });
 
   final InstallmentPlan plan;
 
@@ -46,7 +50,11 @@ class InstallmentProgress extends StatelessWidget {
                 style: textTheme.bodySmall,
               ),
             ),
-            if (!dense) Text('$percent${_percentSign(context)}', style: textTheme.bodySmall),
+            if (!dense)
+              Text(
+                '$percent${_percentSign(context)}',
+                style: textTheme.bodySmall,
+              ),
           ],
         ),
       ],

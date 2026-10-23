@@ -105,6 +105,10 @@
   "productUpdated": "Product updated",
   "deleteProductQuestion": "Delete product?",
   "deleteProductConfirmBody": "\"{productName}\" will be permanently removed. This can't be undone.",
+  "deleteProductLinkedPlans": "{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}",
+  "@deleteProductLinkedPlans": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "delete": "Delete",
   "edit": "Edit",
   "share": "Share",
@@ -214,7 +218,10 @@
   "scannedPriceValue": "{price} EGP",
   "deleteAccount": "Delete account",
   "deleteAccountTitle": "Delete your account?",
-  "deleteAccountWarning": "This permanently deletes your account, all your products, receipts and notifications. This can't be undone.",
+  "deleteAccountWarning": "This permanently deletes your account and all its data: products, receipts and documents, subscriptions, installment plans, chat history and notifications. This can't be undone.",
+  "deleteAccountProTitle": "Cancel Sakk Pro first",
+  "deleteAccountProBody": "Deleting your account doesn't cancel your Sakk Pro subscription in Google Play. Cancel it there first so you aren't charged again.",
+  "deleteAccountProContinue": "Delete anyway",
   "deleteAccountKeyword": "DELETE",
   "deleteAccountTypeToConfirm": "Type {keyword} to confirm",
   "@deleteAccountTypeToConfirm": { "placeholders": { "keyword": { "type": "String" } } },
@@ -1006,6 +1013,7 @@
   "purchaseSuccess": "Welcome to Sakk Pro!",
   "purchaseFailed": "The purchase didn't go through. Please try again.",
   "purchasesUnavailable": "Subscriptions aren't available right now. Please try again later.",
+  "proComingSoonIos": "Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.",
   "alreadyPro": "You're on Sakk Pro",
   "monthlySummary": "This month",
   "monthlySummaryTotal": "Left to pay this month",
@@ -1033,9 +1041,37 @@
     }
   },
   "reminderCustomProOnly": "Sakk Pro",
-  "backupExport": "Export backup (JSON)",
-  "backupFailed": "Couldn't create the backup. Please try again.",
-  "paywallHeadlineBackup": "Keep a copy of everything",
-  "featureBackup": "Backup export",
-  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again."
+  "paywallHeadlinePdfReport": "Get everything in one PDF",
+  "featurePdfReport": "PDF report",
+  "proStatusLoadFailed": "Couldn't load your plan. Check your connection and try again.",
+  "pdfReportExport": "Export PDF report",
+  "pdfReportFailed": "Couldn't create the report. Please try again.",
+  "pdfReportTitle": "Sakk report",
+  "pdfReportGenerated": "Created on {date}",
+  "@pdfReportGenerated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfReportSummary": "Summary",
+  "pdfReportNone": "None yet",
+  "pdfReportPage": "Page {page} of {total}",
+  "@pdfReportPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfColNextDue": "Next payment",
+  "pdfColPaid": "Paid",
+  "pdfColRemaining": "Remaining",
+  "pdfColPlan": "Plan",
+  "pdfColStatus": "Status",
+  "pdfRemainingInstallments": "Installments left to pay"
 }

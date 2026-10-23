@@ -51,7 +51,10 @@ class AppTextField extends StatelessWidget {
         // Visible label; excluded from semantics because the field below
         // carries the same text as its own label.
         ExcludeSemantics(
-          child: Text(label, style: textTheme.labelLarge?.copyWith(fontSize: 13.5)),
+          child: Text(
+            label,
+            style: textTheme.labelLarge?.copyWith(fontSize: 13.5),
+          ),
         ),
         const SizedBox(height: 8),
         Semantics(
@@ -72,7 +75,9 @@ class AppTextField extends StatelessWidget {
             // Fill, radius and focus/error borders come from the app theme.
             decoration: InputDecoration(
               hintText: hint,
-              prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 20) : null,
+              prefixIcon: prefixIcon != null
+                  ? Icon(prefixIcon, size: 20)
+                  : null,
               prefixIconColor: colorScheme.onSurfaceVariant,
               suffixIcon: suffixIcon,
               suffixIconColor: colorScheme.onSurfaceVariant,

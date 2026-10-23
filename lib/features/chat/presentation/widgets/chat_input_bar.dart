@@ -6,7 +6,12 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class ChatInputBar extends StatefulWidget {
-  const ChatInputBar({super.key, required this.onSend, required this.isSending, this.canSend});
+  const ChatInputBar({
+    super.key,
+    required this.onSend,
+    required this.isSending,
+    this.canSend,
+  });
 
   final ValueChanged<String> onSend;
   final bool isSending;
@@ -110,7 +115,11 @@ class _ChatInputBarState extends State<ChatInputBar> {
                                 colors: AppColors.brandGradientColors,
                               ),
                             ),
-                            child: const Icon(AppIcons.sendUp, color: Colors.white, size: 22),
+                            child: const Icon(
+                              AppIcons.sendUp,
+                              color: Colors.white,
+                              size: 22,
+                            ),
                           ),
                         ),
                       ),

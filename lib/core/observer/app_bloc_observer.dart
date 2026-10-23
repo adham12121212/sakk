@@ -29,7 +29,10 @@ class AppBlocObserver extends BlocObserver {
     super.onEvent(bloc, event);
     _logger.debug(
       'Event added',
-      data: {'bloc': bloc.runtimeType.toString(), 'event': event.runtimeType.toString()},
+      data: {
+        'bloc': bloc.runtimeType.toString(),
+        'event': event.runtimeType.toString(),
+      },
     );
   }
 

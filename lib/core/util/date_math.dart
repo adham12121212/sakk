@@ -18,7 +18,8 @@ DateTime dateOnly(DateTime date) => DateTime(date.year, date.month, date.day);
 
 /// Whole days from [from] to [to], ignoring the time of day (UTC, so a
 /// daylight-saving change can't make a day 23 hours long).
-int daysBetween(DateTime from, DateTime to) =>
-    DateTime.utc(to.year, to.month, to.day)
-        .difference(DateTime.utc(from.year, from.month, from.day))
-        .inDays;
+int daysBetween(DateTime from, DateTime to) => DateTime.utc(
+  to.year,
+  to.month,
+  to.day,
+).difference(DateTime.utc(from.year, from.month, from.day)).inDays;

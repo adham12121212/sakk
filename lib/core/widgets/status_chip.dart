@@ -14,9 +14,18 @@ class WarrantyStatusColors {
   factory WarrantyStatusColors.of(BuildContext context, WarrantyStatus status) {
     final p = context.palette;
     return switch (status) {
-      WarrantyStatus.active => WarrantyStatusColors(p.success, p.successContainer),
-      WarrantyStatus.expiring => WarrantyStatusColors(p.warning, p.warningContainer),
-      WarrantyStatus.expired => WarrantyStatusColors(p.danger, p.dangerContainer),
+      WarrantyStatus.active => WarrantyStatusColors(
+        p.success,
+        p.successContainer,
+      ),
+      WarrantyStatus.expiring => WarrantyStatusColors(
+        p.warning,
+        p.warningContainer,
+      ),
+      WarrantyStatus.expired => WarrantyStatusColors(
+        p.danger,
+        p.dangerContainer,
+      ),
     };
   }
 }
@@ -49,12 +58,19 @@ class StatusChip extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(color: colors.foreground, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: colors.foreground,
+              shape: BoxShape.circle,
+            ),
           ),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.foreground),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: colors.foreground,
+            ),
           ),
         ],
       ),

@@ -1,5 +1,5 @@
 import 'package:sakk/core/error/exceptions.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' ;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseErrorMapper {
   static Never handle(Object error, StackTrace stackTrace) {

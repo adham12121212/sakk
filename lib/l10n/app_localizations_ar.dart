@@ -308,6 +308,19 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String deleteProductLinkedPlans(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'هناك $count خطة تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      few: 'هناك $count خطط تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      two: 'هناك خطتا تقسيط مرتبطتان بهذا المنتج. ستبقيان ولكن بدون الربط.',
+      one: 'هناك خطة تقسيط مرتبطة بهذا المنتج. ستبقى الخطة ولكن بدون الربط.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete => 'حذف';
 
   @override
@@ -682,7 +695,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteAccountWarning =>
-      'سيتم حذف حسابك وكل منتجاتك وفواتيرك وإشعاراتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.';
+      'سيتم حذف حسابك وكل بياناته نهائيًا: المنتجات والفواتير والمستندات والاشتراكات وخطط التقسيط وسجل المحادثة والإشعارات. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get deleteAccountProTitle => 'ألغِ اشتراك Sakk Pro أولًا';
+
+  @override
+  String get deleteAccountProBody =>
+      'حذف حسابك لا يلغي اشتراكك في Sakk Pro على Google Play. ألغِ الاشتراك من هناك أولًا حتى لا يتم خصم المبلغ مرة أخرى.';
+
+  @override
+  String get deleteAccountProContinue => 'احذف على أي حال';
 
   @override
   String get deleteAccountKeyword => 'حذف';
@@ -2270,6 +2293,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'الاشتراكات مش متاحة دلوقتي. جرّب تاني بعدين.';
 
   @override
+  String get proComingSoonIos =>
+      'Sakk Pro جاي قريب على الآيفون. تقدر تكمّل على الخطة المجانية لحد ما ينزل.';
+
+  @override
   String get alreadyPro => 'إنت مشترك في Sakk Pro';
 
   @override
@@ -2330,18 +2357,55 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reminderCustomProOnly => 'مع Sakk Pro';
 
   @override
-  String get backupExport => 'تصدير نسخة احتياطية (JSON)';
+  String get paywallHeadlinePdfReport => 'كل حاجة في ملف PDF واحد';
 
   @override
-  String get backupFailed => 'معرفناش نعمل النسخة الاحتياطية. جرّب تاني.';
-
-  @override
-  String get paywallHeadlineBackup => 'خلّي معاك نسخة من كل حاجة';
-
-  @override
-  String get featureBackup => 'نسخة احتياطية';
+  String get featurePdfReport => 'تقرير PDF';
 
   @override
   String get proStatusLoadFailed =>
       'معرفناش نحمّل خطتك. اتأكد من الاتصال وجرّب تاني.';
+
+  @override
+  String get pdfReportExport => 'تصدير تقرير PDF';
+
+  @override
+  String get pdfReportFailed => 'معرفناش نعمل التقرير. جرّب تاني.';
+
+  @override
+  String get pdfReportTitle => 'تقرير صك';
+
+  @override
+  String pdfReportGenerated(String date) {
+    return 'اتعمل يوم $date';
+  }
+
+  @override
+  String get pdfReportSummary => 'ملخص';
+
+  @override
+  String get pdfReportNone => 'مفيش لسه';
+
+  @override
+  String pdfReportPage(String page, String total) {
+    return 'صفحة $page من $total';
+  }
+
+  @override
+  String get pdfColNextDue => 'القسط الجاي';
+
+  @override
+  String get pdfColPaid => 'اتدفع';
+
+  @override
+  String get pdfColRemaining => 'الباقي';
+
+  @override
+  String get pdfColPlan => 'الباقة';
+
+  @override
+  String get pdfColStatus => 'الحالة';
+
+  @override
+  String get pdfRemainingInstallments => 'الأقساط الباقية';
 }

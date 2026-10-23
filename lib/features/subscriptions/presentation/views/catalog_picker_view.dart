@@ -262,7 +262,6 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
   }
 }
 
-
 /// Tinted icon, title, hint and a chevron: the picker's top actions.
 class _ActionTile extends StatelessWidget {
   const _ActionTile({

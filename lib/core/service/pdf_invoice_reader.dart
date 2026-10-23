@@ -35,7 +35,10 @@ class PdfInvoiceReader {
   Future<PdfInvoice> read(Uint8List pdfBytes) async {
     PdfDocument? document;
     try {
-      document = await PdfDocument.openData(pdfBytes, sourceName: 'invoice.pdf');
+      document = await PdfDocument.openData(
+        pdfBytes,
+        sourceName: 'invoice.pdf',
+      );
       if (document.pages.isEmpty) throw const PdfInvoiceException();
 
       final imagePath = await _renderFirstPage(document.pages.first);
@@ -49,7 +52,9 @@ class PdfInvoiceReader {
 
       return PdfInvoice(
         imagePath: imagePath,
-        text: text.isEmpty ? null : text.substring(0, text.length.clamp(0, _maxTextLength)),
+        text: text.isEmpty
+            ? null
+            : text.substring(0, text.length.clamp(0, _maxTextLength)),
       );
     } on PdfInvoiceException {
       rethrow;
@@ -62,7 +67,8 @@ class PdfInvoiceReader {
   }
 
   Future<String> _renderFirstPage(PdfPage page) async {
-    final scale = _maxPixels / (page.width > page.height ? page.width : page.height);
+    final scale =
+        _maxPixels / (page.width > page.height ? page.width : page.height);
     final width = (page.width * scale).round();
     final height = (page.height * scale).round();
     final rendered = await page.render(
@@ -80,7 +86,9 @@ class PdfInvoiceReader {
       final png = await image.toByteData(format: ui.ImageByteFormat.png);
       if (png == null) throw const PdfInvoiceException();
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.png');
+      final file = File(
+        '${dir.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await file.writeAsBytes(png.buffer.asUint8List());
       return file.path;
     } finally {

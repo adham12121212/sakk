@@ -10,8 +10,6 @@ import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/theme/app_icons.dart';
 
-
-
 class ProfileStatsSection extends StatelessWidget {
   const ProfileStatsSection({super.key});
 

@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 /// A shimmering skeleton shape, used as a loading placeholder while a
 /// field's real value hasn't arrived yet.
 class ShimmerShape extends StatelessWidget {
-  const ShimmerShape({
-    super.key,
-    required this.animation,
-    required this.child,
-  });
+  const ShimmerShape({super.key, required this.animation, required this.child});
 
   final Animation<double> animation;
   final Widget child;
@@ -25,8 +21,16 @@ class ShimmerShape extends StatelessWidget {
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) => LinearGradient(
             colors: Theme.of(context).brightness == Brightness.dark
-                ? const [Color(0xFF262A31), Color(0xFF323741), Color(0xFF262A31)]
-                : const [Color(0xFFE7EBF2), Color(0xFFF4F6FA), Color(0xFFE7EBF2)],
+                ? const [
+                    Color(0xFF262A31),
+                    Color(0xFF323741),
+                    Color(0xFF262A31),
+                  ]
+                : const [
+                    Color(0xFFE7EBF2),
+                    Color(0xFFF4F6FA),
+                    Color(0xFFE7EBF2),
+                  ],
             stops: const [0.35, 0.5, 0.65],
             begin: begin,
             end: end,

@@ -7,12 +7,11 @@ class AppValidators {
   // Zero-width and bidi control characters. Keyboards (notably in RTL
   // locales) and copy-paste can slip these into a field invisibly; they
   // aren't whitespace, so trim() leaves them in place.
-  static final _invisibleChars =
-      RegExp(r'[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF\u00AD]');
-
-  static final _emailRegex = RegExp(
-    r'^[\w.+-]+@([\w-]+\.)+[A-Za-z]{2,}$',
+  static final _invisibleChars = RegExp(
+    r'[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF\u00AD]',
   );
+
+  static final _emailRegex = RegExp(r'^[\w.+-]+@([\w-]+\.)+[A-Za-z]{2,}$');
 
   /// The email as it should be validated and sent to the backend.
   static String normalizeEmail(String value) =>
@@ -48,10 +47,10 @@ class AppValidators {
   }
 
   static String? requiredField(
-      BuildContext context,
-      String? value, {
-        required String fieldName,
-      }) {
+    BuildContext context,
+    String? value, {
+    required String fieldName,
+  }) {
     if (value == null || value.trim().isEmpty) {
       return fieldName;
     }
@@ -76,10 +75,10 @@ class AppValidators {
   }
 
   static String? confirmPassword(
-      BuildContext context, {
-        required String? value,
-        required TextEditingController passwordController,
-      }) {
+    BuildContext context, {
+    required String? value,
+    required TextEditingController passwordController,
+  }) {
     final l10n = AppLocalizations.of(context)!;
 
     if (value == null || value.isEmpty) {

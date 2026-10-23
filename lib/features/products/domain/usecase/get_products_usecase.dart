@@ -4,7 +4,6 @@ import '../../../../core/error/failure.dart';
 import '../entities/product_entity.dart';
 import '../product_repo/product_repo.dart';
 
-
 abstract class GetProductsUseCase {
   Future<Either<Failure, List<ProductEntity>>> call();
 }

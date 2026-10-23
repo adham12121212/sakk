@@ -15,16 +15,30 @@ import 'failure.dart';
 /// distinguishes "no connection" and the receipt scanner's own codes from
 /// everything else.
 String userFacingError(AppLocalizations l10n, String? message) {
-  if (message == NetworkFailure.noConnectionMessage) return l10n.errorNoInternet;
-  if (message == ProductDataSourceImpl.unreadableReceipt) return l10n.scanUnreadable;
+  if (message == NetworkFailure.noConnectionMessage) {
+    return l10n.errorNoInternet;
+  }
+  if (message == ProductDataSourceImpl.unreadableReceipt) {
+    return l10n.scanUnreadable;
+  }
   if (message == ProductDataSourceImpl.aiBusy) return l10n.scanBusy;
   if (message == ProductDataSourceImpl.pdfUnreadable) return l10n.pdfUnreadable;
-  if (message == SubscriptionDataSourceImpl.unreadableSubscription) return l10n.subscriptionScanUnreadable;
-  if (message == HouseholdDataSource.invalidInviteCode) return l10n.invalidInviteCode;
-  if (message == HouseholdDataSource.alreadyInHousehold) return l10n.alreadyInHousehold;
+  if (message == SubscriptionDataSourceImpl.unreadableSubscription) {
+    return l10n.subscriptionScanUnreadable;
+  }
+  if (message == HouseholdDataSource.invalidInviteCode) {
+    return l10n.invalidInviteCode;
+  }
+  if (message == HouseholdDataSource.alreadyInHousehold) {
+    return l10n.alreadyInHousehold;
+  }
   if (message == HouseholdDataSource.householdFull) return l10n.householdFull;
-  if (message == InstallmentDataSourceImpl.unreadableInstallment) return l10n.installmentScanUnreadable;
-  if (message == UpdateInstallmentPlanUseCase.tooFewInstallments) return l10n.installmentsCountBelowPaidGeneric;
+  if (message == InstallmentDataSourceImpl.unreadableInstallment) {
+    return l10n.installmentScanUnreadable;
+  }
+  if (message == UpdateInstallmentPlanUseCase.tooFewInstallments) {
+    return l10n.installmentsCountBelowPaidGeneric;
+  }
   if (message == ChatDataSourceImpl.aiBusy) return l10n.chatBusy;
   final limit = ProLimit.kindOf(message);
   if (limit != null) return _limitMessage(l10n, limit);

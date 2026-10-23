@@ -43,10 +43,10 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
   }
 
   Future<void> _refresh() => Future.wait([
-        context.read<SubscriptionsCubit>().refresh(),
-        context.read<InstallmentsCubit>().refresh(),
-        context.read<ProductsCubit>().refresh(),
-      ]);
+    context.read<SubscriptionsCubit>().refresh(),
+    context.read<InstallmentsCubit>().refresh(),
+    context.read<ProductsCubit>().refresh(),
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,9 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Column(
                     children: [
-                      for (final p in loading ? _placeholderPayments : summary.payments) _PaymentRow(payment: p),
+                      for (final p
+                          in loading ? _placeholderPayments : summary.payments)
+                        _PaymentRow(payment: p),
                     ],
                   ),
                 ),
@@ -105,14 +107,30 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
                     children: [
                       for (final product in summary.expiringWarranties)
                         ListTile(
-                          leading: Icon(AppIcons.warranty, color: context.palette.warning),
-                          title: Text(product.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                          subtitle: Text(formatInstallmentDate(context, product.warrantyEndDate)),
+                          leading: Icon(
+                            AppIcons.warranty,
+                            color: context.palette.warning,
+                          ),
+                          title: Text(
+                            product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            formatInstallmentDate(
+                              context,
+                              product.warrantyEndDate,
+                            ),
+                          ),
                           trailing: Text(
                             l10n.daysLeft(product.daysRemaining),
-                            style: TextStyle(color: context.palette.warning, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: context.palette.warning,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          onTap: () => context.push(AppRoutes.details, extra: product),
+                          onTap: () =>
+                              context.push(AppRoutes.details, extra: product),
                         ),
                     ],
                   ),
@@ -124,8 +142,14 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
     );
   }
 
-  static bool _loaded(SubscriptionsState s, InstallmentsState i, ProductsState p) =>
-      (s.hasLoadedOnce || s.error != null) && (i.hasLoadedOnce || i.error != null) && (p.hasLoadedOnce || p.error != null);
+  static bool _loaded(
+    SubscriptionsState s,
+    InstallmentsState i,
+    ProductsState p,
+  ) =>
+      (s.hasLoadedOnce || s.error != null) &&
+      (i.hasLoadedOnce || i.error != null) &&
+      (p.hasLoadedOnce || p.error != null);
 
   static final _placeholderPayments = [
     for (var i = 0; i < 3; i++)
@@ -155,15 +179,25 @@ class _TotalCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(AppIcons.monthlySummary, color: Colors.white, size: 20),
+              const Icon(
+                AppIcons.monthlySummary,
+                color: Colors.white,
+                size: 20,
+              ),
               const SizedBox(width: 8),
-              Text(l10n.monthlySummaryTotal, style: textTheme.titleSmall?.copyWith(color: white70)),
+              Text(
+                l10n.monthlySummaryTotal,
+                style: textTheme.titleSmall?.copyWith(color: white70),
+              ),
             ],
           ),
           const SizedBox(height: 10),
           Text(
             formatTotals(context, summary.totals),
-            style: textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+            style: textTheme.headlineMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -181,7 +215,10 @@ class _TotalCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(l10n.monthlySummaryTotalHint, style: textTheme.bodySmall?.copyWith(color: white70)),
+          Text(
+            l10n.monthlySummaryTotalHint,
+            style: textTheme.bodySmall?.copyWith(color: white70),
+          ),
         ],
       ),
     );
@@ -199,7 +236,9 @@ class _PaymentRow extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isRenewal = payment.kind == SummaryPaymentKind.renewal;
     final kindLabel = isRenewal ? l10n.summaryRenewal : l10n.summaryInstallment;
-    final dateLabel = payment.isOverdue ? l10n.monthlySummaryOverdue : formatInstallmentDate(context, payment.date);
+    final dateLabel = payment.isOverdue
+        ? l10n.monthlySummaryOverdue
+        : formatInstallmentDate(context, payment.date);
     return ListTile(
       leading: Icon(
         isRenewal ? AppIcons.subscriptions : AppIcons.installments,
@@ -208,7 +247,9 @@ class _PaymentRow extends StatelessWidget {
       title: Text(payment.name, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
         '$kindLabel · $dateLabel',
-        style: payment.isOverdue ? TextStyle(color: context.palette.danger) : null,
+        style: payment.isOverdue
+            ? TextStyle(color: context.palette.danger)
+            : null,
       ),
       trailing: Text(
         formatMoney(context, payment.amount, payment.currency),
@@ -216,7 +257,10 @@ class _PaymentRow extends StatelessWidget {
       ),
       onTap: payment.planId == null
           ? () => context.push(AppRoutes.subscriptions)
-          : () => context.push(AppRoutes.installmentDetails, extra: payment.planId),
+          : () => context.push(
+              AppRoutes.installmentDetails,
+              extra: payment.planId,
+            ),
     );
   }
 }

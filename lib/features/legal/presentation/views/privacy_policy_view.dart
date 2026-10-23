@@ -26,19 +26,32 @@ class PrivacyPolicyView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isArabic ? 'آخر تحديث: 11 أكتوبر 2026' : 'Last updated: October 11, 2026',
-                style: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                isArabic
+                    ? 'آخر تحديث: 21 أكتوبر 2026'
+                    : 'Last updated: October 21, 2026',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
               ),
               SizedBox(height: 20.h),
               for (final section in sections) ...[
                 Text(
                   section.heading,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 SizedBox(height: 6.h),
                 Text(
                   section.body,
-                  style: TextStyle(fontSize: 14.sp, height: 1.5, color: colorScheme.onSurface.withValues(alpha: 0.8)),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    height: 1.5,
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
                 SizedBox(height: 18.h),
               ],
@@ -76,7 +89,14 @@ const List<_LegalSection> _enSections = [
         'product photos, manuals).\n\n'
         'Family sharing: the household you create or join and the name other '
         'members see.\n\n'
-        'Messages you send to the AI assistant.\n\n'
+        'Subscriptions and installments you track: the service or purchase, '
+        'price, billing cycle or schedule, renewal and due dates, payment '
+        'method and notes.\n\n'
+        'Messages you send to the AI assistant and its answers, kept as your '
+        'chat history.\n\n'
+        'Sakk Pro: whether you have Pro, your plan, trial and renewal status '
+        '(from Google Play, through RevenueCat), and how many scans and chat '
+        'messages you used each day. We never see your payment card.\n\n'
         'Technical data: crash reports when the app fails (see below).',
   ),
   _LegalSection(
@@ -99,12 +119,16 @@ const List<_LegalSection> _enSections = [
   ),
   _LegalSection(
     'The AI assistant and receipt scanning',
-    'To read a receipt or invoice, the photo (and, for PDFs, the text of the '
-        'invoice) is sent to our AI provider. To answer your questions, the AI '
-        'assistant receives your message, recent messages in the conversation, '
-        'and the details of the products you can see in the app (yours and, if '
-        'you are in a household, your household\'s). AI answers can be wrong; '
-        'check important details such as dates yourself.',
+    'AI features are processed by Groq, our AI provider, through our server. '
+        'When you scan, Groq receives the receipt or invoice photo, the pages '
+        'and text of a PDF you pick, and, for adding a subscription or '
+        'installment plan, the screenshot, contract or message you share. When '
+        'you use the AI assistant, Groq receives your message, recent messages '
+        'in the conversation, and the details of the products you can see in '
+        'the app (yours and, if you are in a household, your household\'s). '
+        'Your chat history is stored in our database until you delete your '
+        'account. AI answers can be wrong; check important details such as '
+        'dates yourself.',
   ),
   _LegalSection(
     'Third-party services we use',
@@ -113,8 +137,10 @@ const List<_LegalSection> _enSections = [
         'processes scanned receipts and assistant messages as described above. '
         'Firebase Crashlytics (Google) receives crash reports; before a report '
         'leaves your device we remove email addresses and private links. Google '
-        'processes Google sign-in, and Firebase provides app services. Each '
-        'provider handles data under its own privacy policy.',
+        'processes Google sign-in, and Firebase provides app services. Google '
+        'Play handles Sakk Pro payments, and RevenueCat tells us whether your '
+        'subscription is active. Each provider handles data under its own '
+        'privacy policy.',
   ),
   _LegalSection(
     'Device permissions',
@@ -200,7 +226,13 @@ const List<_LegalSection> _arSections = [
         'بطاقات الضمان، صور المنتجات، أدلة الاستخدام).\n\n'
         'المشاركة العائلية: العائلة التي تنشئها أو تنضم إليها، والاسم الذي '
         'يراه بقية الأعضاء.\n\n'
-        'الرسائل التي ترسلها للمساعد الذكي.\n\n'
+        'الاشتراكات والأقساط التي تتابعها: الخدمة أو المشتريات، السعر، دورة '
+        'الدفع أو جدول الأقساط، مواعيد التجديد والاستحقاق، وسيلة الدفع '
+        'والملاحظات.\n\n'
+        'الرسائل التي ترسلها للمساعد الذكي وإجاباته، محفوظةً كسجل للمحادثة.\n\n'
+        'Sakk Pro: هل لديك اشتراك Pro، وخطتك وحالة الفترة التجريبية والتجديد '
+        '(من Google Play عبر RevenueCat)، وعدد مرات المسح ورسائل المحادثة التي '
+        'استخدمتها كل يوم. لا نطّلع أبدًا على بطاقة الدفع الخاصة بك.\n\n'
         'بيانات تقنية: تقارير الأعطال عند حدوث خطأ في التطبيق (انظر أدناه).',
   ),
   _LegalSection(
@@ -222,11 +254,14 @@ const List<_LegalSection> _arSections = [
   ),
   _LegalSection(
     'المساعد الذكي ومسح الفواتير',
-    'لقراءة فاتورة، تُرسَل الصورة (ونص الفاتورة في حالة ملفات PDF) إلى مزوّد '
-        'الذكاء الاصطناعي. وللإجابة عن أسئلتك، يتلقى المساعد رسالتك والرسائل '
-        'الأخيرة في المحادثة وتفاصيل المنتجات التي تراها في التطبيق (منتجاتك '
-        'ومنتجات عائلتك إذا كنت في عائلة). قد تكون إجابات الذكاء الاصطناعي '
-        'خاطئة، فتحقق بنفسك من التفاصيل المهمة مثل التواريخ.',
+    'تعالج Groq، مزوّد الذكاء الاصطناعي لدينا، ميزات الذكاء الاصطناعي عبر '
+        'خادمنا. عند المسح، تتلقى Groq صورة الفاتورة، وصفحات ونص ملف PDF الذي '
+        'تختاره، وعند إضافة اشتراك أو خطة تقسيط، لقطة الشاشة أو العقد أو '
+        'الرسالة التي تشاركها. وعند استخدام المساعد الذكي، تتلقى Groq رسالتك '
+        'والرسائل الأخيرة في المحادثة وتفاصيل المنتجات التي تراها في التطبيق '
+        '(منتجاتك ومنتجات عائلتك إذا كنت في عائلة). يُحفظ سجل المحادثة في '
+        'قاعدة بياناتنا حتى تحذف حسابك. قد تكون إجابات الذكاء الاصطناعي خاطئة، '
+        'فتحقق بنفسك من التفاصيل المهمة مثل التواريخ.',
   ),
   _LegalSection(
     'خدمات طرف ثالث نستخدمها',
@@ -235,7 +270,8 @@ const List<_LegalSection> _arSections = [
         'الاصطناعي الحالي) الفواتير الممسوحة ورسائل المساعد كما هو موضّح أعلاه. '
         'تستقبل Firebase Crashlytics (من جوجل) تقارير الأعطال، ونزيل منها عناوين البريد والروابط الخاصة '
         'قبل أن تغادر جهازك. تعالج جوجل تسجيل الدخول بحساب جوجل، وتوفّر Firebase '
-        'خدمات للتطبيق. يخضع كل مزوّد لسياسة الخصوصية الخاصة به.',
+        'خدمات للتطبيق. يتولى Google Play مدفوعات Sakk Pro، ويخبرنا RevenueCat '
+        'إذا كان اشتراكك فعّالًا. يخضع كل مزوّد لسياسة الخصوصية الخاصة به.',
   ),
   _LegalSection(
     'أذونات الجهاز',

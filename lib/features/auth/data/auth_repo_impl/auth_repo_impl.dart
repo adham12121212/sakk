@@ -17,12 +17,18 @@ class AuthRepoImpl implements AuthRepository {
   AuthRepoImpl(this._authDataSource, this._networkInfo, this._logger);
 
   @override
-  Future<Either<Failure, UserEntity>> signIn({required String email, required String password}) async {
+  Future<Either<Failure, UserEntity>> signIn({
+    required String email,
+    required String password,
+  }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
-      final response = await _authDataSource.signIn(email: email, password: password);
+      final response = await _authDataSource.signIn(
+        email: email,
+        password: password,
+      );
       return Right(response);
     } on ServerException catch (e, st) {
       _logger.error(
@@ -62,23 +68,35 @@ class AuthRepoImpl implements AuthRepository {
     } on EmailConfirmationRequiredException {
       return const Left(EmailConfirmationRequiredFailure());
     } on ServerException catch (e, st) {
-      _logger.error('Server error during signUp', error: e, stackTrace: st,
-          data: {'email': PiiMasker.maskEmail(email)});
+      _logger.error(
+        'Server error during signUp',
+        error: e,
+        stackTrace: st,
+        data: {'email': PiiMasker.maskEmail(email)},
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during signUp', error: e, stackTrace: st,
-          data: {'email': PiiMasker.maskEmail(email)});
+      _logger.error(
+        'Unexpected error during signUp',
+        error: e,
+        stackTrace: st,
+        data: {'email': PiiMasker.maskEmail(email)},
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
   UserEntity? getUser() {
-    try{
+    try {
       final user = _authDataSource.getUser();
       return user;
-    }catch(e,st){
-      _logger.error('Unexpected error during getUser', error: e, stackTrace: st);
+    } catch (e, st) {
+      _logger.error(
+        'Unexpected error during getUser',
+        error: e,
+        stackTrace: st,
+      );
       return null;
     }
   }
@@ -89,7 +107,9 @@ class AuthRepoImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> sendPasswordResetOtp({required String email}) async {
+  Future<Either<Failure, void>> sendPasswordResetOtp({
+    required String email,
+  }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -105,7 +125,11 @@ class AuthRepoImpl implements AuthRepository {
       );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during sendPasswordResetOtp', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during sendPasswordResetOtp',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -122,16 +146,26 @@ class AuthRepoImpl implements AuthRepository {
       await _authDataSource.verifyPasswordResetOtp(email: email, otp: otp);
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during verifyPasswordResetOtp', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during verifyPasswordResetOtp',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during verifyPasswordResetOtp', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during verifyPasswordResetOtp',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> updatePassword({required String newPassword}) async {
+  Future<Either<Failure, void>> updatePassword({
+    required String newPassword,
+  }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -139,10 +173,18 @@ class AuthRepoImpl implements AuthRepository {
       await _authDataSource.updatePassword(newPassword);
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during updatePassword', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during updatePassword',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during updatePassword', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during updatePassword',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -156,10 +198,18 @@ class AuthRepoImpl implements AuthRepository {
       final response = await _authDataSource.updateAvatar(imageFile);
       return Right(response);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during updateAvatar', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during updateAvatar',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during updateAvatar', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during updateAvatar',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -179,10 +229,18 @@ class AuthRepoImpl implements AuthRepository {
       );
       return const Left(CancelledFailure());
     } on ServerException catch (e, st) {
-      _logger.error('Server error during signInWithGoogle', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during signInWithGoogle',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during signInWithGoogle', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during signInWithGoogle',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -196,10 +254,18 @@ class AuthRepoImpl implements AuthRepository {
       await _authDataSource.deleteAccount();
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during deleteAccount', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during deleteAccount',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during deleteAccount', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during deleteAccount',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }

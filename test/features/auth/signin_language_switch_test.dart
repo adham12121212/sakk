@@ -49,20 +49,27 @@ class _Delete implements DeleteAccountUseCase {
 }
 
 Widget app(Locale locale) => ScreenUtilInit(
-      designSize: const Size(390, 844),
-      builder: (_, _) => MaterialApp(
-        locale: locale,
-        theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: BlocProvider(
-            create: (_) => AuthCubit(_Signup(), _SignIn(), _SignOut(), _Avatar(), _Google(), _Delete()),
-            child: const SigninViewBody(isLoading: false),
-          ),
+  designSize: const Size(390, 844),
+  builder: (_, _) => MaterialApp(
+    locale: locale,
+    theme: AppTheme.light(),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(
+      body: BlocProvider(
+        create: (_) => AuthCubit(
+          _Signup(),
+          _SignIn(),
+          _SignOut(),
+          _Avatar(),
+          _Google(),
+          _Delete(),
         ),
+        child: const SigninViewBody(isLoading: false),
       ),
-    );
+    ),
+  ),
+);
 
 void main() {
   setUp(() async {
@@ -71,23 +78,29 @@ void main() {
     getIt.registerSingleton(LocaleController());
   });
 
-  for (final (locale, rtl) in [(const Locale('en'), false), (const Locale('ar'), true)]) {
-    testWidgets('${locale.languageCode}: the switch sits in the top ${rtl ? 'left' : 'right'} corner', (tester) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      await tester.pumpWidget(app(locale));
-      await tester.pumpAndSettle();
+  for (final (locale, rtl) in [
+    (const Locale('en'), false),
+    (const Locale('ar'), true),
+  ]) {
+    testWidgets(
+      '${locale.languageCode}: the switch sits in the top ${rtl ? 'left' : 'right'} corner',
+      (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(app(locale));
+        await tester.pumpAndSettle();
 
-      final box = tester.getRect(find.byType(LanguageSwitch));
-      expect(box.top, lessThan(40));
-      if (rtl) {
-        expect(box.left, lessThan(40));
-      } else {
-        expect(box.right, greaterThan(390 - 40));
-      }
-      expect(tester.takeException(), isNull);
-    });
+        final box = tester.getRect(find.byType(LanguageSwitch));
+        expect(box.top, lessThan(40));
+        if (rtl) {
+          expect(box.left, lessThan(40));
+        } else {
+          expect(box.right, greaterThan(390 - 40));
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 
   testWidgets('it stays put when the form scrolls', (tester) async {
@@ -98,7 +111,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final before = tester.getRect(find.byType(LanguageSwitch));
-    await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -200));
+    await tester.drag(
+      find.byType(SingleChildScrollView),
+      const Offset(0, -200),
+    );
     await tester.pumpAndSettle();
     expect(tester.getRect(find.byType(LanguageSwitch)), before);
   });

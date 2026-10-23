@@ -97,7 +97,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                     onPressed: _finish,
                     child: Text(
                       l10n.skip,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14.sp, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -120,7 +124,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                           width: 180.w,
                           height: 180.w,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primaryContainer,
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
@@ -135,10 +141,18 @@ class _OnboardingViewState extends State<OnboardingView> {
                               ),
                               borderRadius: BorderRadius.circular(30.r),
                               boxShadow: const [
-                                BoxShadow(color: Color(0x404A5CFA), blurRadius: 24, offset: Offset(0, 10)),
+                                BoxShadow(
+                                  color: Color(0x404A5CFA),
+                                  blurRadius: 24,
+                                  offset: Offset(0, 10),
+                                ),
                               ],
                             ),
-                            child: Icon(page.icon, size: 48.sp, color: Colors.white),
+                            child: Icon(
+                              page.icon,
+                              size: 48.sp,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         SizedBox(height: 40.h),
@@ -151,9 +165,12 @@ class _OnboardingViewState extends State<OnboardingView> {
                         Text(
                           page.description,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                         ),
                       ],
                     ),
@@ -165,13 +182,15 @@ class _OnboardingViewState extends State<OnboardingView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 pages.length,
-                    (i) => AnimatedContainer(
+                (i) => AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: EdgeInsets.symmetric(horizontal: 4.w),
                   width: i == _page ? 22.w : 8.w,
                   height: 8.w,
                   decoration: BoxDecoration(
-                    color: i == _page ? AppColors.primary : Theme.of(context).colorScheme.outline,
+                    color: i == _page
+                        ? AppColors.primary
+                        : Theme.of(context).colorScheme.outline,
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                 ),
@@ -187,7 +206,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                   onPressed: isLast ? _finish : _next,
                   child: Text(
                     isLast ? l10n.getStarted : l10n.next,
-                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

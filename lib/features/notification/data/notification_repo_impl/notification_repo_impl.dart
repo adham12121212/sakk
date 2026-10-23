@@ -5,7 +5,7 @@ import 'package:sakk/core/error/exceptions.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/error/network_info.dart';
 import 'package:sakk/core/logger/app_logger.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 
 import '../../domain/notification_repo/notification_repo.dart';
 import '../notification_data_source/notification_data_source.dart';
@@ -23,7 +23,9 @@ class NotificationRepoImpl implements NotificationRepo {
   Stream<String> get onNotificationAdded => _addedController.stream;
 
   @override
-  Future<Either<Failure, List<NotificationEntity>>> getNotifications(String userId) async {
+  Future<Either<Failure, List<NotificationEntity>>> getNotifications(
+    String userId,
+  ) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -31,16 +33,26 @@ class NotificationRepoImpl implements NotificationRepo {
       final notifications = await _dataSource.getNotifications(userId);
       return Right(notifications);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during getNotifications', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during getNotifications',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during getNotifications', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during getNotifications',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> markNotificationAsRead(String notificationId) async {
+  Future<Either<Failure, void>> markNotificationAsRead(
+    String notificationId,
+  ) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -48,16 +60,26 @@ class NotificationRepoImpl implements NotificationRepo {
       await _dataSource.markNotificationAsRead(notificationId);
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during markNotificationAsRead', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during markNotificationAsRead',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during markNotificationAsRead', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during markNotificationAsRead',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> deleteNotification(String notificationId) async {
+  Future<Either<Failure, void>> deleteNotification(
+    String notificationId,
+  ) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -65,10 +87,18 @@ class NotificationRepoImpl implements NotificationRepo {
       await _dataSource.deleteNotification(notificationId);
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during deleteNotification', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during deleteNotification',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during deleteNotification', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during deleteNotification',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }
@@ -96,10 +126,18 @@ class NotificationRepoImpl implements NotificationRepo {
       _addedController.add(userId);
       return const Right(null);
     } on ServerException catch (e, st) {
-      _logger.error('Server error during addNotification', error: e, stackTrace: st);
+      _logger.error(
+        'Server error during addNotification',
+        error: e,
+        stackTrace: st,
+      );
       return Left(ServerFailure(e.message));
     } catch (e, st) {
-      _logger.error('Unexpected error during addNotification', error: e, stackTrace: st);
+      _logger.error(
+        'Unexpected error during addNotification',
+        error: e,
+        stackTrace: st,
+      );
       return Left(UnknownFailure(e.toString()));
     }
   }

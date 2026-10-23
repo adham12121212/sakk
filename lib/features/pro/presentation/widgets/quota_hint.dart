@@ -24,14 +24,21 @@ class QuotaHint extends StatelessWidget {
       bloc: pro,
       builder: (context, state) {
         final remaining = state.status.quota(type).remaining;
-        if (state.isPro || !state.hasLoadedOnce || remaining == null) return const SizedBox.shrink();
+        if (state.isPro || !state.hasLoadedOnce || remaining == null) {
+          return const SizedBox.shrink();
+        }
 
         final l10n = AppLocalizations.of(context)!;
-        final text = formatLocalizedInt(Localizations.localeOf(context), remaining);
+        final text = formatLocalizedInt(
+          Localizations.localeOf(context),
+          remaining,
+        );
         final label = type == QuotaType.scan
             ? l10n.scansLeftToday(remaining, text)
             : l10n.chatMessagesLeftToday(remaining, text);
-        final color = remaining == 0 ? context.palette.warning : Theme.of(context).colorScheme.onSurfaceVariant;
+        final color = remaining == 0
+            ? context.palette.warning
+            : Theme.of(context).colorScheme.onSurfaceVariant;
 
         return Semantics(
           button: true,
@@ -39,17 +46,28 @@ class QuotaHint extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
             onTap: () => ProActions.openPaywall(
               context,
-              type == QuotaType.scan ? PaywallReason.scanLimit : PaywallReason.chatLimit,
+              type == QuotaType.scan
+                  ? PaywallReason.scanLimit
+                  : PaywallReason.chatLimit,
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(type == QuotaType.scan ? AppIcons.scan : AppIcons.ai, size: 14, color: color),
+                  Icon(
+                    type == QuotaType.scan ? AppIcons.scan : AppIcons.ai,
+                    size: 14,
+                    color: color,
+                  ),
                   const SizedBox(width: 6),
                   Flexible(
-                    child: Text(label, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
+                    child: Text(
+                      label,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(color: color),
+                    ),
                   ),
                 ],
               ),

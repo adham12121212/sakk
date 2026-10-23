@@ -4,6 +4,7 @@ import 'package:sakk/features/auth/data/models/user_model.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/service/storage_service.dart';
 import '../../../../core/service/supabase_client.dart';
+import '../../../../core/util/avatar_image.dart';
 
 abstract class AuthDataSource {
   Future<UserModel> signIn({required String email, required String password});
@@ -13,10 +14,13 @@ abstract class AuthDataSource {
     required String fullName,
   });
   Future<void> signOut();
-  UserModel?  getUser();
+  UserModel? getUser();
 
   Future<void> sendPasswordResetOtp(String email);
-  Future<void> verifyPasswordResetOtp({required String email, required String otp});
+  Future<void> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  });
   Future<void> updatePassword(String newPassword);
   Future<UserModel> updateAvatar(File imageFile);
   Future<UserModel> signInWithGoogle();
@@ -26,21 +30,24 @@ abstract class AuthDataSource {
 class AuthDataSourceImpl implements AuthDataSource {
   final SupabaseService _supabaseService;
   final StorageService _storageService;
-  AuthDataSourceImpl(this._supabaseService ,this._storageService);
+  AuthDataSourceImpl(this._supabaseService, this._storageService);
 
   @override
-  Future<UserModel> signIn(
-      {required String email, required String password}) async {
+  Future<UserModel> signIn({
+    required String email,
+    required String password,
+  }) async {
     try {
       final response = await _supabaseService.signIn(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       final user = response.user;
       if (user == null) {
         throw ServerException('Sign in failed: no user returned');
       }
       return UserModel.fromSupabaseUser(user);
     } catch (e, s) {
-
       if (e is ServerException) rethrow;
       return SupabaseErrorMapper.handle(e, s);
     }
@@ -76,7 +83,9 @@ class AuthDataSourceImpl implements AuthDataSource {
 
       return UserModel.fromSupabaseUser(user);
     } catch (e, s) {
-      if (e is ServerException || e is EmailConfirmationRequiredException) rethrow;
+      if (e is ServerException || e is EmailConfirmationRequiredException) {
+        rethrow;
+      }
       return SupabaseErrorMapper.handle(e, s);
     }
   }
@@ -103,7 +112,10 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> verifyPasswordResetOtp({required String email, required String otp}) async {
+  Future<void> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) async {
     try {
       await _supabaseService.verifyRecoveryOtp(email: email, token: otp);
     } catch (e, s) {
@@ -121,7 +133,6 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-
   Future<UserModel> updateAvatar(File imageFile) async {
     try {
       final user = _supabaseService.currentUser;
@@ -139,17 +150,17 @@ class AuthDataSourceImpl implements AuthDataSource {
         upsert: true,
       );
 
-      final publicUrl = _storageService.getPublicUrl(
-        bucket: 'avatars',
-        path: storagePath,
-      );
-      final bustedUrl =
-          '$publicUrl?updated=${DateTime.now().millisecondsSinceEpoch}';
+      // The bucket is private: the app loads this link with the user's
+      // token (see avatarImage).
+      final url = authenticatedAvatarUrl(
+        _storageService.getPublicUrl(bucket: 'avatars', path: storagePath),
+      )!;
+      final bustedUrl = '$url?updated=${DateTime.now().millisecondsSinceEpoch}';
 
       // Not 'avatar_url': Google sign-in rewrites that key on every login.
-      final updatedUser = await _supabaseService.updateUserMetadata(
-        {UserModel.customAvatarKey: bustedUrl},
-      );
+      final updatedUser = await _supabaseService.updateUserMetadata({
+        UserModel.customAvatarKey: bustedUrl,
+      });
 
       return UserModel.fromSupabaseUser(updatedUser);
     } catch (e, s) {
@@ -163,7 +174,9 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       final response = await _supabaseService.signInWithGoogle();
       final user = response.user;
-      if (user == null) throw ServerException('Google sign-in failed: no user returned');
+      if (user == null) {
+        throw ServerException('Google sign-in failed: no user returned');
+      }
       return UserModel.fromSupabaseUser(user);
     } catch (e, s) {
       if (e is GoogleSignInCancelledException || e is ServerException) rethrow;
@@ -176,7 +189,9 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       final res = await _supabaseService.invokeFunction('delete-account');
       if (res.status != 200) {
-        final msg = (res.data is Map ? res.data['error'] : null) ?? 'Could not delete account';
+        final msg =
+            (res.data is Map ? res.data['error'] : null) ??
+            'Could not delete account';
         throw ServerException(msg.toString());
       }
       // The user no longer exists on the server; clear the local session too.

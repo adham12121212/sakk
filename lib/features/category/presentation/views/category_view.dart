@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../domain/entities/product_category.dart';
 import '../widgets/category_card.dart';
 import '../../../../core/theme/app_icons.dart';
-
 
 class CategoriesView extends StatelessWidget {
   const CategoriesView({super.key, this.currentCategory});
@@ -42,7 +40,10 @@ class CategoriesView extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   SizedBox(width: 4.w),
-                  Text(l10n.categories, style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    l10n.categories,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                 ],
               ),
             ),
@@ -78,4 +79,3 @@ class CategoriesView extends StatelessWidget {
     );
   }
 }
-

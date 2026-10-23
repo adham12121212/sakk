@@ -41,7 +41,7 @@ class ProfileView extends StatelessWidget {
 
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) =>
-      previous is AuthLoading && current is AuthInitial,
+          previous is AuthLoading && current is AuthInitial,
       listener: (context, state) {
         context.go(AppRoutes.signin);
       },
@@ -51,33 +51,39 @@ class ProfileView extends StatelessWidget {
           final message = (state as AuthError).message;
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-              content: Text(message),
-              backgroundColor: AppColors.error,
-            ));
+            ..showSnackBar(
+              SnackBar(
+                content: Text(message),
+                backgroundColor: AppColors.error,
+              ),
+            );
         },
         child: Scaffold(
-              body: SingleChildScrollView(
+          body: SingleChildScrollView(
             child: BlocBuilder<AuthCubit, AuthState>(
               buildWhen: (previous, current) =>
-              current is AuthAvatarUpdated ||
+                  current is AuthAvatarUpdated ||
                   current is AuthAvatarUpdating ||
                   previous is AuthAvatarUpdating,
               builder: (context, state) {
-                final updatedUser = state is AuthAvatarUpdated ? state.user : null;
-                debugPrint('[ProfileView] updatedUser.avatarUrl = ${updatedUser?.avatarUrl}');
+                final updatedUser = state is AuthAvatarUpdated
+                    ? state.user
+                    : null;
                 final isUploadingAvatar = state is AuthAvatarUpdating;
                 final l10n = AppLocalizations.of(context)!;
 
                 final effectiveName = updatedUser != null
                     ? (updatedUser.name.trim().isNotEmpty
-                    ? updatedUser.name.trim()
-                    : updatedUser.email.split('@').first)
+                          ? updatedUser.name.trim()
+                          : updatedUser.email.split('@').first)
                     : ((fallbackUser?.name.trim().isNotEmpty ?? false)
-                    ? fallbackUser!.name.trim()
-                    : (fallbackUser?.email.split('@').first ?? l10n.guestFallbackName));
-                final effectiveEmail = updatedUser?.email ?? fallbackUser?.email ?? '';
-                final effectiveAvatarUrl = updatedUser?.avatarUrl ?? fallbackUser?.avatarUrl;
+                          ? fallbackUser!.name.trim()
+                          : (fallbackUser?.email.split('@').first ??
+                                l10n.guestFallbackName));
+                final effectiveEmail =
+                    updatedUser?.email ?? fallbackUser?.email ?? '';
+                final effectiveAvatarUrl =
+                    updatedUser?.avatarUrl ?? fallbackUser?.avatarUrl;
 
                 return Column(
                   children: [
@@ -91,7 +97,10 @@ class ProfileView extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(
-                        AppSizes.s20, AppSizes.s20, AppSizes.s20, AppSizes.s8,
+                        AppSizes.s20,
+                        AppSizes.s20,
+                        AppSizes.s20,
+                        AppSizes.s8,
                       ),
                       child: Column(
                         children: [
@@ -101,8 +110,7 @@ class ProfileView extends StatelessWidget {
                           AppSpacing.h12,
                           const ProPlanCard(),
                           AppSpacing.h24,
-                          SectionLabel(l10n.preferences,
-                          ),
+                          SectionLabel(l10n.preferences),
                           AppSpacing.h12,
                           const ProfileSettingsCard(),
                           AppSpacing.h24,

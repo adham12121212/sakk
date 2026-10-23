@@ -20,7 +20,8 @@ class UserModel extends UserEntity {
       id: user.id,
       email: user.email ?? '',
       name: metadata?['name'] ?? '',
-      avatarUrl: metadata?[customAvatarKey] as String? ??
+      avatarUrl:
+          metadata?[customAvatarKey] as String? ??
           _fullSizeAvatar(metadata?['avatar_url'] as String?),
       isNewAccount: _isNewAccount(user.createdAt, user.lastSignInAt),
     );
@@ -31,7 +32,9 @@ class UserModel extends UserEntity {
   /// between Supabase creating the user and recording the sign-in.
   static bool _isNewAccount(String createdAt, String? lastSignInAt) {
     final created = DateTime.tryParse(createdAt);
-    final signedIn = lastSignInAt == null ? null : DateTime.tryParse(lastSignInAt);
+    final signedIn = lastSignInAt == null
+        ? null
+        : DateTime.tryParse(lastSignInAt);
     if (created == null || signedIn == null) return false;
     return signedIn.difference(created).abs() < const Duration(minutes: 1);
   }
@@ -42,5 +45,4 @@ class UserModel extends UserEntity {
     if (url == null || !url.contains('googleusercontent.com')) return url;
     return url.replaceFirst(RegExp(r'=s\d+-c$'), '=s512-c');
   }
-
 }

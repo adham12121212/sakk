@@ -12,7 +12,7 @@ import 'package:sakk/core/util/notification_ids.dart';
 import 'package:sakk/core/util/notified_warranties_tracker.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
@@ -68,8 +68,10 @@ class _Notifications implements NotificationService {
   @override
   Future<void> cancelNotification(int id) async => scheduled.remove(id);
   @override
-  Future<List<PendingNotificationRequest>> pendingNotifications() async =>
-      [for (final id in scheduled.keys) PendingNotificationRequest(id, null, null, null)];
+  Future<List<PendingNotificationRequest>> pendingNotifications() async => [
+    for (final id in scheduled.keys)
+      PendingNotificationRequest(id, null, null, null),
+  ];
   @override
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
@@ -100,11 +102,14 @@ UserSubscription renewingIn(
     currency: currency,
     billingCycle: BillingCycle.monthly,
     nextRenewalDate: today.add(Duration(days: days)),
-    createdAt: createdDaysAgo == null ? null : today.subtract(Duration(days: createdDaysAgo)),
+    createdAt: createdDaysAgo == null
+        ? null
+        : today.subtract(Duration(days: createdDaysAgo)),
   );
 }
 
-DateTime at10(DateTime day, int offset) => DateTime(day.year, day.month, day.day + offset, 10);
+DateTime at10(DateTime day, int offset) =>
+    DateTime(day.year, day.month, day.day + offset, 10);
 
 int idOf(String sub, RenewalReminder kind, {bool previous = false}) =>
     SubscriptionReminderService.notificationId(sub, kind, previous: previous);
@@ -131,122 +136,194 @@ void main() {
     );
   });
 
-  test('schedules 3 days before, the day before and the day after, at 10:00', () async {
-    final netflix = renewingIn('Netflix', 10);
-    await service.syncAll([netflix]);
-    final r = netflix.nextRenewalDate;
+  test(
+    'schedules 3 days before, the day before and the day after, at 10:00',
+    () async {
+      final netflix = renewingIn('Netflix', 10);
+      await service.syncAll([netflix]);
+      final r = netflix.nextRenewalDate;
 
-    expect(notifications.scheduled, {
-      idOf('Netflix', RenewalReminder.threeDaysBefore): at10(r, -3),
-      idOf('Netflix', RenewalReminder.dayBefore): at10(r, -1),
-      idOf('Netflix', RenewalReminder.dayAfter): at10(r, 1),
-    });
-    expect(notifications.bodies[idOf('Netflix', RenewalReminder.threeDaysBefore)], 'Netflix renews in 3 days for 240 EGP');
-    expect(notifications.bodies[idOf('Netflix', RenewalReminder.dayBefore)], 'Netflix renews tomorrow for 240 EGP');
-    expect(
-      notifications.bodies[idOf('Netflix', RenewalReminder.dayAfter)],
-      'Netflix renewed yesterday for 240 EGP. Check you were charged the right amount.',
-    );
-    expect(
-      notifications.scheduled.keys.map(reminderSlot).toSet(),
-      everyElement(isIn(subscriptionReminderSlots)),
-    );
-  });
+      expect(notifications.scheduled, {
+        idOf('Netflix', RenewalReminder.threeDaysBefore): at10(r, -3),
+        idOf('Netflix', RenewalReminder.dayBefore): at10(r, -1),
+        idOf('Netflix', RenewalReminder.dayAfter): at10(r, 1),
+      });
+      expect(
+        notifications.bodies[idOf('Netflix', RenewalReminder.threeDaysBefore)],
+        'Netflix renews in 3 days for 240 EGP',
+      );
+      expect(
+        notifications.bodies[idOf('Netflix', RenewalReminder.dayBefore)],
+        'Netflix renews tomorrow for 240 EGP',
+      );
+      expect(
+        notifications.bodies[idOf('Netflix', RenewalReminder.dayAfter)],
+        'Netflix renewed yesterday for 240 EGP. Check you were charged the right amount.',
+      );
+      expect(
+        notifications.scheduled.keys.map(reminderSlot).toSet(),
+        everyElement(isIn(subscriptionReminderSlots)),
+      );
+    },
+  );
 
-  test('the "renewed" reminder for a renewal that just passed survives the date moving on', () async {
-    // Renewed today (the date already moved a month on), existed before.
-    final sub = renewingIn('Spotify', 0, createdDaysAgo: 60).copyWith(
-      nextRenewalDate: addMonthsClamped(today, 1),
-    );
-    await service.syncAll([sub]);
-    expect(notifications.scheduled[idOf('Spotify', RenewalReminder.dayAfter, previous: true)], at10(today, 1));
-    // And the next renewal's reminders are there too.
-    expect(notifications.scheduled[idOf('Spotify', RenewalReminder.dayAfter)], at10(sub.nextRenewalDate, 1));
-  });
+  test(
+    'the "renewed" reminder for a renewal that just passed survives the date moving on',
+    () async {
+      // Renewed today (the date already moved a month on), existed before.
+      final sub = renewingIn(
+        'Spotify',
+        0,
+        createdDaysAgo: 60,
+      ).copyWith(nextRenewalDate: addMonthsClamped(today, 1));
+      await service.syncAll([sub]);
+      expect(
+        notifications.scheduled[idOf(
+          'Spotify',
+          RenewalReminder.dayAfter,
+          previous: true,
+        )],
+        at10(today, 1),
+      );
+      // And the next renewal's reminders are there too.
+      expect(
+        notifications.scheduled[idOf('Spotify', RenewalReminder.dayAfter)],
+        at10(sub.nextRenewalDate, 1),
+      );
+    },
+  );
 
   test('a subscription added today never hears "renewed yesterday"', () async {
-    final added0 = renewingIn('Gym', 30, createdDaysAgo: 0).copyWith(nextRenewalDate: addMonthsClamped(today, 1));
+    final added0 = renewingIn(
+      'Gym',
+      30,
+      createdDaysAgo: 0,
+    ).copyWith(nextRenewalDate: addMonthsClamped(today, 1));
     await service.syncAll([added0]);
-    expect(notifications.scheduled.containsKey(idOf('Gym', RenewalReminder.dayAfter, previous: true)), isFalse);
+    expect(
+      notifications.scheduled.containsKey(
+        idOf('Gym', RenewalReminder.dayAfter, previous: true),
+      ),
+      isFalse,
+    );
 
-    await service.checkAndNotify([added0], today: today.add(const Duration(days: 1)));
+    await service.checkAndNotify([
+      added0,
+    ], today: today.add(const Duration(days: 1)));
     expect(added.added, isEmpty);
   });
 
-  test('sync cancels stale subscription reminders but never warranty ones', () async {
-    final warrantyId = reminderNotificationId('fridge', 0);
-    notifications.scheduled[warrantyId] = DateTime.now().add(const Duration(days: 90));
+  test(
+    'sync cancels stale subscription reminders but never warranty ones',
+    () async {
+      final warrantyId = reminderNotificationId('fridge', 0);
+      notifications.scheduled[warrantyId] = DateTime.now().add(
+        const Duration(days: 90),
+      );
 
-    await service.syncAll([renewingIn('a', 10), renewingIn('b', 20)]);
-    expect(notifications.scheduled, hasLength(1 + 3 + 3));
+      await service.syncAll([renewingIn('a', 10), renewingIn('b', 20)]);
+      expect(notifications.scheduled, hasLength(1 + 3 + 3));
 
-    await service.syncAll([renewingIn('a', 10)]); // "b" deleted
-    expect(notifications.scheduled, hasLength(1 + 3));
+      await service.syncAll([renewingIn('a', 10)]); // "b" deleted
+      expect(notifications.scheduled, hasLength(1 + 3));
 
-    await service.syncAll(const []); // signed out
-    expect(notifications.scheduled.keys, [warrantyId]);
-  });
+      await service.syncAll(const []); // signed out
+      expect(notifications.scheduled.keys, [warrantyId]);
+    },
+  );
 
-  test('inside each window: one in-app entry each, no second push when one was scheduled', () async {
-    final netflix = renewingIn('Netflix', 5);
-    await service.syncAll([netflix]); // all three scheduled ahead on this device
-    notifications.scheduled.clear(); // ...and have fired by the time the app opens
+  test(
+    'inside each window: one in-app entry each, no second push when one was scheduled',
+    () async {
+      final netflix = renewingIn('Netflix', 5);
+      await service.syncAll([
+        netflix,
+      ]); // all three scheduled ahead on this device
+      notifications.scheduled
+          .clear(); // ...and have fired by the time the app opens
 
-    await service.checkAndNotify([netflix], today: today.add(const Duration(days: 2))); // 3 days left
-    await service.checkAndNotify([netflix], today: today.add(const Duration(days: 2))); // opened again
-    await service.checkAndNotify([netflix], today: today.add(const Duration(days: 4))); // 1 day left
-    expect(added.added, [
-      'Netflix renews in 3 days for 240 EGP',
-      'Netflix renews tomorrow for 240 EGP',
-    ]);
-    expect(notifications.scheduled, isEmpty); // nothing pushed twice
-  });
+      await service.checkAndNotify([
+        netflix,
+      ], today: today.add(const Duration(days: 2))); // 3 days left
+      await service.checkAndNotify([
+        netflix,
+      ], today: today.add(const Duration(days: 2))); // opened again
+      await service.checkAndNotify([
+        netflix,
+      ], today: today.add(const Duration(days: 4))); // 1 day left
+      expect(added.added, [
+        'Netflix renews in 3 days for 240 EGP',
+        'Netflix renews tomorrow for 240 EGP',
+      ]);
+      expect(notifications.scheduled, isEmpty); // nothing pushed twice
+    },
+  );
 
-  test('the day after a renewal: "renewed" in the list, pushed only if not scheduled ahead', () async {
-    // Renewed yesterday; the app already moved the date on. Existed before.
-    final sub = renewingIn('Shahid', 0, price: 100, createdDaysAgo: 90)
-        .copyWith(nextRenewalDate: addMonthsClamped(today.subtract(const Duration(days: 1)), 1));
+  test(
+    'the day after a renewal: "renewed" in the list, pushed only if not scheduled ahead',
+    () async {
+      // Renewed yesterday; the app already moved the date on. Existed before.
+      final sub = renewingIn('Shahid', 0, price: 100, createdDaysAgo: 90)
+          .copyWith(
+            nextRenewalDate: addMonthsClamped(
+              today.subtract(const Duration(days: 1)),
+              1,
+            ),
+          );
 
-    await service.checkAndNotify([sub]);
-    expect(added.added, ['Shahid renewed yesterday for 100 EGP. Check you were charged the right amount.']);
-    // This device never scheduled it ahead, so it pushes now, once.
-    expect(notifications.scheduled.keys, [idOf('Shahid', RenewalReminder.dayAfter, previous: true)]);
+      await service.checkAndNotify([sub]);
+      expect(added.added, [
+        'Shahid renewed yesterday for 100 EGP. Check you were charged the right amount.',
+      ]);
+      // This device never scheduled it ahead, so it pushes now, once.
+      expect(notifications.scheduled.keys, [
+        idOf('Shahid', RenewalReminder.dayAfter, previous: true),
+      ]);
 
-    notifications.scheduled.clear();
-    await service.checkAndNotify([sub]);
-    expect(added.added, hasLength(1));
-    expect(notifications.scheduled, isEmpty);
-  });
+      notifications.scheduled.clear();
+      await service.checkAndNotify([sub]);
+      expect(added.added, hasLength(1));
+      expect(notifications.scheduled, isEmpty);
+    },
+  );
 
-  test('added the day before it renews: "tomorrow" pushes once, scheduled or right away', () async {
-    // "Tomorrow" is due today at 10:00, so whether it can still be scheduled
-    // depends on the time the test runs; both cases must push exactly once.
-    final beforeTen = DateTime.now().isBefore(at10(today, 0));
-    final shahid = renewingIn('Shahid', 1, price: 100);
-    await service.syncAll([shahid]); // too late for the 3-day push either way
-    expect(notifications.scheduled.keys.toSet(), {
-      if (beforeTen) idOf('Shahid', RenewalReminder.dayBefore),
-      idOf('Shahid', RenewalReminder.dayAfter),
-    });
-    notifications.scheduled.clear();
+  test(
+    'added the day before it renews: "tomorrow" pushes once, scheduled or right away',
+    () async {
+      // "Tomorrow" is due today at 10:00, so whether it can still be scheduled
+      // depends on the time the test runs; both cases must push exactly once.
+      final beforeTen = DateTime.now().isBefore(at10(today, 0));
+      final shahid = renewingIn('Shahid', 1, price: 100);
+      await service.syncAll([shahid]); // too late for the 3-day push either way
+      expect(notifications.scheduled.keys.toSet(), {
+        if (beforeTen) idOf('Shahid', RenewalReminder.dayBefore),
+        idOf('Shahid', RenewalReminder.dayAfter),
+      });
+      notifications.scheduled.clear();
 
-    await service.checkAndNotify([shahid]);
-    // Already scheduled for 10:00: no extra push now. Too late: pushed now.
-    expect(notifications.scheduled.keys, beforeTen ? isEmpty : [idOf('Shahid', RenewalReminder.dayBefore)]);
-    expect(added.added, ['Shahid renews tomorrow for 100 EGP']);
+      await service.checkAndNotify([shahid]);
+      // Already scheduled for 10:00: no extra push now. Too late: pushed now.
+      expect(
+        notifications.scheduled.keys,
+        beforeTen ? isEmpty : [idOf('Shahid', RenewalReminder.dayBefore)],
+      );
+      expect(added.added, ['Shahid renews tomorrow for 100 EGP']);
 
-    notifications.scheduled.clear();
-    await service.checkAndNotify([shahid]);
-    expect(notifications.scheduled, isEmpty);
-    expect(added.added, hasLength(1));
-  });
+      notifications.scheduled.clear();
+      await service.checkAndNotify([shahid]);
+      expect(notifications.scheduled, isEmpty);
+      expect(added.added, hasLength(1));
+    },
+  );
 
   test('the next renewal reminds again; far-off ones do not yet', () async {
     final sub = renewingIn('Spotify', 2);
     await service.checkAndNotify([sub, renewingIn('Far', 10)]);
     expect(added.added, hasLength(1));
 
-    final next = sub.copyWith(nextRenewalDate: addMonthsClamped(sub.nextRenewalDate, 1));
+    final next = sub.copyWith(
+      nextRenewalDate: addMonthsClamped(sub.nextRenewalDate, 1),
+    );
     await service.checkAndNotify([next], today: addMonthsClamped(today, 1));
     expect(added.added, hasLength(2));
   });
@@ -257,41 +334,53 @@ void main() {
     await service.syncAll(subs);
     final before = idOf('Netflix', RenewalReminder.threeDaysBefore);
     final after = idOf('Netflix', RenewalReminder.dayAfter);
-    expect(notifications.bodies[before], 'Netflix renews in 3 days for 5.99 USD');
+    expect(
+      notifications.bodies[before],
+      'Netflix renews in 3 days for 5.99 USD',
+    );
 
     locale.value = const Locale('ar');
     await service.syncAll(subs); // waits behind the sync the change queued
-    expect(notifications.bodies[before], 'يتجدد Netflix بعد ٣ أيام بقيمة ٥٫٩٩ USD');
-    expect(notifications.bodies[after], 'تم تجديد Netflix أمس بقيمة ٥٫٩٩ USD. تأكد من خصم المبلغ الصحيح.');
-  });
-
-  test('only the reminders chosen in Reminders are scheduled and shown', () async {
-    SharedPreferences.setMockInitialValues({});
-    final settings = ReminderSettings();
-    await settings.ready;
-    final chosen = SubscriptionReminderService(
-      getUserUseCase: _User(),
-      addNotificationUseCase: added,
-      tracker: tracker,
-      localNotifications: notifications,
-      logger: _NoLog(),
-      locale: locale,
-      settings: settings,
+    expect(
+      notifications.bodies[before],
+      'يتجدد Netflix بعد ٣ أيام بقيمة ٥٫٩٩ USD',
     );
-    final netflix = renewingIn('Netflix', 10);
-    chosen.followLanguage(() => [netflix]);
-
-    await settings.setSubscriptionKind(RenewalReminder.dayAfter, false);
-    await chosen.syncAll([netflix]);
-    expect(notifications.scheduled.keys.toSet(), {
-      idOf('Netflix', RenewalReminder.threeDaysBefore),
-      idOf('Netflix', RenewalReminder.dayBefore),
-    });
-
-    await settings.setSubscriptionsEnabled(false);
-    await chosen.syncAll([netflix]);
-    expect(notifications.scheduled, isEmpty);
-    await chosen.checkAndNotify([renewingIn('Gym', 1)], today: today);
-    expect(added.added, isEmpty);
+    expect(
+      notifications.bodies[after],
+      'تم تجديد Netflix أمس بقيمة ٥٫٩٩ USD. تأكد من خصم المبلغ الصحيح.',
+    );
   });
+
+  test(
+    'only the reminders chosen in Reminders are scheduled and shown',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final settings = ReminderSettings();
+      await settings.ready;
+      final chosen = SubscriptionReminderService(
+        getUserUseCase: _User(),
+        addNotificationUseCase: added,
+        tracker: tracker,
+        localNotifications: notifications,
+        logger: _NoLog(),
+        locale: locale,
+        settings: settings,
+      );
+      final netflix = renewingIn('Netflix', 10);
+      chosen.followLanguage(() => [netflix]);
+
+      await settings.setSubscriptionKind(RenewalReminder.dayAfter, false);
+      await chosen.syncAll([netflix]);
+      expect(notifications.scheduled.keys.toSet(), {
+        idOf('Netflix', RenewalReminder.threeDaysBefore),
+        idOf('Netflix', RenewalReminder.dayBefore),
+      });
+
+      await settings.setSubscriptionsEnabled(false);
+      await chosen.syncAll([netflix]);
+      expect(notifications.scheduled, isEmpty);
+      await chosen.checkAndNotify([renewingIn('Gym', 1)], today: today);
+      expect(added.added, isEmpty);
+    },
+  );
 }

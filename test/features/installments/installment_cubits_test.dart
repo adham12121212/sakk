@@ -26,7 +26,8 @@ class _FakeRepo implements InstallmentRepo {
   DateTime? lastPaidAt;
 
   @override
-  Future<Either<Failure, List<InstallmentPlan>>> getPlans() async => failWith != null ? Left(failWith!) : Right(plans);
+  Future<Either<Failure, List<InstallmentPlan>>> getPlans() async =>
+      failWith != null ? Left(failWith!) : Right(plans);
 
   @override
   Future<Either<Failure, InstallmentPlan>> savePlan({
@@ -37,17 +38,25 @@ class _FakeRepo implements InstallmentRepo {
     if (failWith != null) return Left(failWith!);
     savedId = id;
     savedUnpaid = unpaid;
-    return Right(InstallmentPlan(id: id ?? 'new', title: draft.title, terms: draft.terms));
+    return Right(
+      InstallmentPlan(id: id ?? 'new', title: draft.title, terms: draft.terms),
+    );
   }
 
   @override
-  Future<Either<Failure, void>> deletePlan(String id) async => failWith != null ? Left(failWith!) : const Right(null);
+  Future<Either<Failure, void>> deletePlan(String id) async =>
+      failWith != null ? Left(failWith!) : const Right(null);
 
   @override
-  Future<Either<Failure, InstallmentPayment>> setPaymentPaid(String paymentId, {DateTime? paidAt}) async {
+  Future<Either<Failure, InstallmentPayment>> setPaymentPaid(
+    String paymentId, {
+    DateTime? paidAt,
+  }) async {
     if (failWith != null) return Left(failWith!);
     lastPaidAt = paidAt;
-    final payment = plans.expand((p) => p.payments).firstWhere((p) => p.id == paymentId);
+    final payment = plans
+        .expand((p) => p.payments)
+        .firstWhere((p) => p.id == paymentId);
     return Right(payment.withPaidAt(paidAt));
   }
 
@@ -55,8 +64,11 @@ class _FakeRepo implements InstallmentRepo {
   Future<void> clearCachedInstallments() async {}
 
   @override
-  Future<Either<Failure, ScannedInstallment>> extractInstallment({String? imagePath, String? pdfText, String? text}) async =>
-      const Right(ScannedInstallment());
+  Future<Either<Failure, ScannedInstallment>> extractInstallment({
+    String? imagePath,
+    String? pdfText,
+    String? text,
+  }) async => const Right(ScannedInstallment());
 }
 
 void main() {
@@ -65,13 +77,19 @@ void main() {
 
   setUp(() {
     repo = _FakeRepo();
-    cubit = InstallmentsCubit(GetInstallmentPlansUseCaseImpl(repo), SetPaymentPaidUseCaseImpl(repo));
+    cubit = InstallmentsCubit(
+      GetInstallmentPlansUseCaseImpl(repo),
+      SetPaymentPaidUseCaseImpl(repo),
+    );
   });
   tearDown(() => cubit.close());
 
   group('InstallmentsCubit', () {
     test('loads plans sorted by next due date, once', () async {
-      repo.plans = [plan('later', t: terms(start: DateTime(2027, 3, 1))), plan('sooner')];
+      repo.plans = [
+        plan('later', t: terms(start: DateTime(2027, 3, 1))),
+        plan('sooner'),
+      ];
       await cubit.loadIfNeeded();
       expect(cubit.state.plans.map((p) => p.id), ['sooner', 'later']);
       expect(cubit.state.hasLoadedOnce, isTrue);
@@ -90,7 +108,9 @@ void main() {
     });
 
     test('marks a payment paid and unpaid again', () async {
-      repo.plans = [plan('a', t: terms(count: 2, total: 2000), paid: {0})];
+      repo.plans = [
+        plan('a', t: terms(count: 2, total: 2000), paid: {0}),
+      ];
       await cubit.refresh();
       expect(await cubit.setPaymentPaid('a', 'a-p1', paid: true), isNull);
       expect(repo.lastPaidAt, isNotNull);
@@ -102,14 +122,22 @@ void main() {
       expect(cubit.state.planById('a')!.status, InstallmentPlanStatus.active);
     });
 
-    test('a failed mark-as-paid changes nothing and returns the message', () async {
-      repo.plans = [plan('a')];
-      await cubit.refresh();
-      repo.failWith = const NetworkFailure(NetworkFailure.noConnectionMessage);
-      expect(await cubit.setPaymentPaid('a', 'a-p0', paid: true), NetworkFailure.noConnectionMessage);
-      expect(cubit.state.planById('a')!.paidCount, 0);
-      expect(cubit.state.updatingPaymentIds, isEmpty);
-    });
+    test(
+      'a failed mark-as-paid changes nothing and returns the message',
+      () async {
+        repo.plans = [plan('a')];
+        await cubit.refresh();
+        repo.failWith = const NetworkFailure(
+          NetworkFailure.noConnectionMessage,
+        );
+        expect(
+          await cubit.setPaymentPaid('a', 'a-p0', paid: true),
+          NetworkFailure.noConnectionMessage,
+        );
+        expect(cubit.state.planById('a')!.paidCount, 0);
+        expect(cubit.state.updatingPaymentIds, isEmpty);
+      },
+    );
 
     test('reset forgets the account', () async {
       repo.plans = [plan('a')];
@@ -120,7 +148,10 @@ void main() {
     });
 
     test('counts overdue installments on active plans', () async {
-      repo.plans = [plan('a', t: terms(start: DateTime(2026, 9, 1))), plan('c', cancelled: true, t: terms(start: DateTime(2026, 9, 1)))];
+      repo.plans = [
+        plan('a', t: terms(start: DateTime(2026, 9, 1))),
+        plan('c', cancelled: true, t: terms(start: DateTime(2026, 9, 1))),
+      ];
       await cubit.refresh();
       expect(cubit.state.overdueCount(DateTime(2026, 10, 18)), 2);
     });
@@ -128,21 +159,31 @@ void main() {
 
   group('InstallmentFormCubit', () {
     late InstallmentFormCubit form;
-    setUp(() => form = InstallmentFormCubit(
-          AddInstallmentPlanUseCaseImpl(repo),
-          UpdateInstallmentPlanUseCaseImpl(repo),
-          DeleteInstallmentPlanUseCaseImpl(repo),
-          cubit,
-        ));
+    setUp(
+      () => form = InstallmentFormCubit(
+        AddInstallmentPlanUseCaseImpl(repo),
+        UpdateInstallmentPlanUseCaseImpl(repo),
+        DeleteInstallmentPlanUseCaseImpl(repo),
+        cubit,
+      ),
+    );
     tearDown(() => form.close());
 
-    test('adding sends the whole schedule and puts the plan in the list', () async {
-      await form.save(InstallmentPlanDraft(title: 'TV', terms: terms(count: 3, total: 3000)));
-      expect(form.state, isA<InstallmentFormSaved>());
-      expect(repo.savedId, isNull);
-      expect(repo.savedUnpaid, hasLength(3));
-      expect(cubit.state.planById('new'), isNotNull);
-    });
+    test(
+      'adding sends the whole schedule and puts the plan in the list',
+      () async {
+        await form.save(
+          InstallmentPlanDraft(
+            title: 'TV',
+            terms: terms(count: 3, total: 3000),
+          ),
+        );
+        expect(form.state, isA<InstallmentFormSaved>());
+        expect(repo.savedId, isNull);
+        expect(repo.savedUnpaid, hasLength(3));
+        expect(cubit.state.planById('new'), isNotNull);
+      },
+    );
 
     test('editing sends only the unpaid installments', () async {
       final current = plan('a', t: terms(count: 4, total: 4000), paid: {0});
@@ -151,15 +192,28 @@ void main() {
       expect(repo.savedUnpaid, hasLength(3));
     });
 
-    test('editing below the installments paid is refused without saving', () async {
-      final current = plan('a', t: terms(count: 4, total: 4000), paid: {0, 1, 2});
-      final draft = InstallmentPlanDraft(title: 'a', terms: terms(count: 2, total: 4000));
-      await form.save(draft, current: current);
-      final state = form.state;
-      expect(state, isA<InstallmentFormFailure>());
-      expect((state as InstallmentFormFailure).message, UpdateInstallmentPlanUseCase.tooFewInstallments);
-      expect(repo.savedId, isNull);
-    });
+    test(
+      'editing below the installments paid is refused without saving',
+      () async {
+        final current = plan(
+          'a',
+          t: terms(count: 4, total: 4000),
+          paid: {0, 1, 2},
+        );
+        final draft = InstallmentPlanDraft(
+          title: 'a',
+          terms: terms(count: 2, total: 4000),
+        );
+        await form.save(draft, current: current);
+        final state = form.state;
+        expect(state, isA<InstallmentFormFailure>());
+        expect(
+          (state as InstallmentFormFailure).message,
+          UpdateInstallmentPlanUseCase.tooFewInstallments,
+        );
+        expect(repo.savedId, isNull);
+      },
+    );
 
     test('deleting removes the plan from the list', () async {
       repo.plans = [plan('a')];

@@ -10,12 +10,12 @@ part 'password_reset_state.dart';
 
 class PasswordResetCubit extends Cubit<PasswordResetState> {
   PasswordResetCubit(
-      this._sendOtpUseCase,
-      this._verifyOtpUseCase,
-      this._updatePasswordUseCase,
-      this._signOutUseCase,
-      this._recoveryService,
-      ) : super(PasswordResetIdle());
+    this._sendOtpUseCase,
+    this._verifyOtpUseCase,
+    this._updatePasswordUseCase,
+    this._signOutUseCase,
+    this._recoveryService,
+  ) : super(PasswordResetIdle());
 
   final SendPasswordResetOtpUseCase _sendOtpUseCase;
   final VerifyPasswordResetOtpUseCase _verifyOtpUseCase;
@@ -31,8 +31,8 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
     _email = email;
     final result = await _sendOtpUseCase(email: email);
     result.fold(
-          (failure) => emit(PasswordResetError(failure.message)),
-          (_) => emit(PasswordResetOtpSent()),
+      (failure) => emit(PasswordResetError(failure.message)),
+      (_) => emit(PasswordResetOtpSent()),
     );
   }
 
@@ -46,21 +46,18 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
     // Marked before verifying: a correct code creates the session right away.
     await _recoveryService.markPending();
     final result = await _verifyOtpUseCase(email: email, otp: otp);
-    await result.fold(
-          (failure) async {
-        await _recoveryService.clear();
-        emit(PasswordResetError(failure.message));
-      },
-          (_) async => emit(PasswordResetOtpVerified()),
-    );
+    await result.fold((failure) async {
+      await _recoveryService.clear();
+      emit(PasswordResetError(failure.message));
+    }, (_) async => emit(PasswordResetOtpVerified()));
   }
 
   Future<void> updatePassword(String newPassword) async {
     emit(PasswordResetLoading());
     final result = await _updatePasswordUseCase(newPassword: newPassword);
     await result.fold(
-          (failure) async => emit(PasswordResetError(failure.message)),
-          (_) async {
+      (failure) async => emit(PasswordResetError(failure.message)),
+      (_) async {
         await _recoveryService.clear();
         emit(PasswordResetCompleted());
       },

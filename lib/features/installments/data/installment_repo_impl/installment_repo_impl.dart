@@ -114,7 +114,11 @@ class InstallmentRepoImpl with OnlineRepo implements InstallmentRepo {
   }) {
     return online(
       'extractInstallment',
-      () => _dataSource.extractInstallment(imagePath: imagePath, pdfText: pdfText, text: text),
+      () => _dataSource.extractInstallment(
+        imagePath: imagePath,
+        pdfText: pdfText,
+        text: text,
+      ),
     );
   }
 

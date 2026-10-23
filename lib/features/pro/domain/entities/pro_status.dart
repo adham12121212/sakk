@@ -18,10 +18,10 @@ class Quota extends Equatable {
   bool get isUsedUp => remaining != null && remaining! <= 0;
 
   factory Quota.fromJson(Map<String, dynamic>? json) => Quota(
-        used: (json?['used'] as num?)?.toInt() ?? 0,
-        limit: (json?['limit'] as num?)?.toInt(),
-        remaining: (json?['remaining'] as num?)?.toInt(),
-      );
+    used: (json?['used'] as num?)?.toInt() ?? 0,
+    limit: (json?['limit'] as num?)?.toInt(),
+    remaining: (json?['remaining'] as num?)?.toInt(),
+  );
 
   @override
   List<Object?> get props => [used, limit, remaining];
@@ -39,9 +39,9 @@ class ItemUsage extends Equatable {
   bool get isFull => limit != null && count >= limit!;
 
   factory ItemUsage.fromJson(Map<String, dynamic>? json) => ItemUsage(
-        count: (json?['count'] as num?)?.toInt() ?? 0,
-        limit: (json?['limit'] as num?)?.toInt(),
-      );
+    count: (json?['count'] as num?)?.toInt() ?? 0,
+    limit: (json?['limit'] as num?)?.toInt(),
+  );
 
   @override
   List<Object?> get props => [count, limit];
@@ -77,17 +77,29 @@ class ProEntitlement extends Equatable {
     return id.contains('year') || id.contains('annual');
   }
 
-  factory ProEntitlement.fromJson(Map<String, dynamic> json, {required bool isActive}) => ProEntitlement(
-        isActive: isActive,
-        productId: json['product_id'] as String?,
-        isTrial: json['is_trial'] as bool? ?? false,
-        expiresAt: DateTime.tryParse(json['active_until'] as String? ?? '')?.toLocal(),
-        willRenew: json['will_renew'] as bool? ?? true,
-        billingIssue: json['billing_issue'] as bool? ?? false,
-      );
+  factory ProEntitlement.fromJson(
+    Map<String, dynamic> json, {
+    required bool isActive,
+  }) => ProEntitlement(
+    isActive: isActive,
+    productId: json['product_id'] as String?,
+    isTrial: json['is_trial'] as bool? ?? false,
+    expiresAt: DateTime.tryParse(
+      json['active_until'] as String? ?? '',
+    )?.toLocal(),
+    willRenew: json['will_renew'] as bool? ?? true,
+    billingIssue: json['billing_issue'] as bool? ?? false,
+  );
 
   @override
-  List<Object?> get props => [isActive, productId, isTrial, expiresAt, willRenew, billingIssue];
+  List<Object?> get props => [
+    isActive,
+    productId,
+    isTrial,
+    expiresAt,
+    willRenew,
+    billingIssue,
+  ];
 }
 
 /// The user's plan and how much of it they've used, from the
@@ -138,12 +150,15 @@ class ProStatus extends Equatable {
     final items = json['items'] as Map<String, dynamic>? ?? const {};
     return ProStatus(
       isPro: isPro,
-      entitlement: plan is Map<String, dynamic> ? ProEntitlement.fromJson(plan, isActive: isPro) : null,
+      entitlement: plan is Map<String, dynamic>
+          ? ProEntitlement.fromJson(plan, isActive: isPro)
+          : null,
       scan: Quota.fromJson(json['scan'] as Map<String, dynamic>?),
       chat: Quota.fromJson(json['chat'] as Map<String, dynamic>?),
       items: {
         for (final item in LimitedItem.values)
-          if (items[item.name] is Map<String, dynamic>) item: ItemUsage.fromJson(items[item.name]),
+          if (items[item.name] is Map<String, dynamic>)
+            item: ItemUsage.fromJson(items[item.name]),
       },
     );
   }
@@ -162,17 +177,19 @@ class ProStatus extends Equatable {
       entitlement: store,
       scan: Quota(used: scan.used),
       chat: chat,
-      items: {for (final e in items.entries) e.key: ItemUsage(count: e.value.count)},
+      items: {
+        for (final e in items.entries) e.key: ItemUsage(count: e.value.count),
+      },
     );
   }
 
   ProStatus copyWith({bool? isPro, ProEntitlement? entitlement}) => ProStatus(
-        isPro: isPro ?? this.isPro,
-        entitlement: entitlement ?? this.entitlement,
-        scan: scan,
-        chat: chat,
-        items: items,
-      );
+    isPro: isPro ?? this.isPro,
+    entitlement: entitlement ?? this.entitlement,
+    scan: scan,
+    chat: chat,
+    items: items,
+  );
 
   @override
   List<Object?> get props => [isPro, entitlement, scan, chat, items];

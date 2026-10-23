@@ -8,7 +8,11 @@ import '../util/installment_format.dart';
 
 /// One row of the preview.
 class PreviewRow {
-  const PreviewRow({required this.dueDate, required this.amount, this.isPaid = false});
+  const PreviewRow({
+    required this.dueDate,
+    required this.amount,
+    this.isPaid = false,
+  });
 
   final DateTime dueDate;
   final double amount;
@@ -46,8 +50,11 @@ class _SchedulePreviewState extends State<SchedulePreview> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final rows = widget.rows;
-    final total = widget.downPayment + rows.fold(0.0, (sum, r) => sum + r.amount);
-    final shown = _expanded || rows.length <= _collapsedRows + 1 ? rows : rows.take(_collapsedRows).toList();
+    final total =
+        widget.downPayment + rows.fold(0.0, (sum, r) => sum + r.amount);
+    final shown = _expanded || rows.length <= _collapsedRows + 1
+        ? rows
+        : rows.take(_collapsedRows).toList();
     String money(double v) => formatMoney(context, v, widget.currency);
 
     return AppCard(
@@ -58,7 +65,9 @@ class _SchedulePreviewState extends State<SchedulePreview> {
             children: [
               Icon(AppIcons.calendar, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
-              Expanded(child: Text(l10n.schedulePreview, style: textTheme.titleMedium)),
+              Expanded(
+                child: Text(l10n.schedulePreview, style: textTheme.titleMedium),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -87,12 +96,23 @@ class _SchedulePreviewState extends State<SchedulePreview> {
                       width: 28,
                       child: Text(
                         formatCount(context, i + 1),
-                        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                        style: textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    Expanded(child: Text(formatInstallmentDate(context, row.dueDate), style: textTheme.bodyMedium)),
+                    Expanded(
+                      child: Text(
+                        formatInstallmentDate(context, row.dueDate),
+                        style: textTheme.bodyMedium,
+                      ),
+                    ),
                     if (row.isPaid) ...[
-                      Icon(AppIcons.successFilled, size: 16, color: context.palette.success),
+                      Icon(
+                        AppIcons.successFilled,
+                        size: 16,
+                        color: context.palette.success,
+                      ),
                       const SizedBox(width: 4),
                     ],
                     Text(
@@ -105,16 +125,23 @@ class _SchedulePreviewState extends State<SchedulePreview> {
                   ],
                 ),
               ),
-            if (shown.length < rows.length || _expanded && rows.length > _collapsedRows + 1)
+            if (shown.length < rows.length ||
+                _expanded && rows.length > _collapsedRows + 1)
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: TextButton(
                   onPressed: () => setState(() => _expanded = !_expanded),
-                  style: TextButton.styleFrom(minimumSize: const Size(0, 44), padding: EdgeInsets.zero),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(0, 44),
+                    padding: EdgeInsets.zero,
+                  ),
                   child: Text(
                     _expanded
                         ? l10n.showLess
-                        : l10n.showAllInstallments(rows.length, formatCount(context, rows.length)),
+                        : l10n.showAllInstallments(
+                            rows.length,
+                            formatCount(context, rows.length),
+                          ),
                   ),
                 ),
               ),

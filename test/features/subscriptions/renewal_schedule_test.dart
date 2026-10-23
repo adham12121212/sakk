@@ -15,15 +15,33 @@ void main() {
     });
 
     test('goes back too, into the previous year', () {
-      expect(addMonthsClamped(DateTime(2026, 1, 15), -1), DateTime(2025, 12, 15));
-      expect(addMonthsClamped(DateTime(2026, 3, 31), -1), DateTime(2026, 2, 28));
-      expect(addMonthsClamped(DateTime(2026, 2, 10), -12), DateTime(2025, 2, 10));
-      expect(addMonthsClamped(DateTime(2026, 1, 1), -13), DateTime(2024, 12, 1));
+      expect(
+        addMonthsClamped(DateTime(2026, 1, 15), -1),
+        DateTime(2025, 12, 15),
+      );
+      expect(
+        addMonthsClamped(DateTime(2026, 3, 31), -1),
+        DateTime(2026, 2, 28),
+      );
+      expect(
+        addMonthsClamped(DateTime(2026, 2, 10), -12),
+        DateTime(2025, 2, 10),
+      );
+      expect(
+        addMonthsClamped(DateTime(2026, 1, 1), -13),
+        DateTime(2024, 12, 1),
+      );
     });
 
     test('crosses year boundaries', () {
-      expect(addMonthsClamped(DateTime(2026, 11, 30), 3), DateTime(2027, 2, 28));
-      expect(addMonthsClamped(DateTime(2028, 2, 29), 12), DateTime(2029, 2, 28));
+      expect(
+        addMonthsClamped(DateTime(2026, 11, 30), 3),
+        DateTime(2027, 2, 28),
+      );
+      expect(
+        addMonthsClamped(DateTime(2028, 2, 29), 12),
+        DateTime(2029, 2, 28),
+      );
     });
   });
 
@@ -31,30 +49,85 @@ void main() {
     final today = DateTime(2026, 10, 12, 18, 30);
 
     test('a renewal today or later is unchanged', () {
-      expect(nextRenewalOnOrAfter(DateTime(2026, 10, 12), BillingCycle.monthly, today), DateTime(2026, 10, 12));
-      expect(nextRenewalOnOrAfter(DateTime(2026, 12, 1), BillingCycle.yearly, today), DateTime(2026, 12, 1));
+      expect(
+        nextRenewalOnOrAfter(
+          DateTime(2026, 10, 12),
+          BillingCycle.monthly,
+          today,
+        ),
+        DateTime(2026, 10, 12),
+      );
+      expect(
+        nextRenewalOnOrAfter(DateTime(2026, 12, 1), BillingCycle.yearly, today),
+        DateTime(2026, 12, 1),
+      );
     });
 
-    test('a passed monthly renewal moves to the next one on or after today', () {
-      expect(nextRenewalOnOrAfter(DateTime(2026, 10, 11), BillingCycle.monthly, today), DateTime(2026, 11, 11));
-      expect(nextRenewalOnOrAfter(DateTime(2026, 9, 12), BillingCycle.monthly, today), DateTime(2026, 10, 12));
-      expect(nextRenewalOnOrAfter(DateTime(2026, 9, 20), BillingCycle.monthly, today), DateTime(2026, 10, 20));
-    });
+    test(
+      'a passed monthly renewal moves to the next one on or after today',
+      () {
+        expect(
+          nextRenewalOnOrAfter(
+            DateTime(2026, 10, 11),
+            BillingCycle.monthly,
+            today,
+          ),
+          DateTime(2026, 11, 11),
+        );
+        expect(
+          nextRenewalOnOrAfter(
+            DateTime(2026, 9, 12),
+            BillingCycle.monthly,
+            today,
+          ),
+          DateTime(2026, 10, 12),
+        );
+        expect(
+          nextRenewalOnOrAfter(
+            DateTime(2026, 9, 20),
+            BillingCycle.monthly,
+            today,
+          ),
+          DateTime(2026, 10, 20),
+        );
+      },
+    );
 
     test('skips several missed cycles at once', () {
-      expect(nextRenewalOnOrAfter(DateTime(2024, 5, 3), BillingCycle.monthly, today), DateTime(2026, 11, 3));
-      expect(nextRenewalOnOrAfter(DateTime(2023, 6, 1), BillingCycle.yearly, today), DateTime(2027, 6, 1));
-      expect(nextRenewalOnOrAfter(DateTime(2025, 10, 12), BillingCycle.yearly, today), DateTime(2026, 10, 12));
+      expect(
+        nextRenewalOnOrAfter(DateTime(2024, 5, 3), BillingCycle.monthly, today),
+        DateTime(2026, 11, 3),
+      );
+      expect(
+        nextRenewalOnOrAfter(DateTime(2023, 6, 1), BillingCycle.yearly, today),
+        DateTime(2027, 6, 1),
+      );
+      expect(
+        nextRenewalOnOrAfter(
+          DateTime(2025, 10, 12),
+          BillingCycle.yearly,
+          today,
+        ),
+        DateTime(2026, 10, 12),
+      );
     });
 
     test('counts from the original day, so the 31st does not drift', () {
       // Jan 31 → (Feb 28) → Mar 31, not Mar 28.
       expect(
-        nextRenewalOnOrAfter(DateTime(2026, 1, 31), BillingCycle.monthly, DateTime(2026, 3, 1)),
+        nextRenewalOnOrAfter(
+          DateTime(2026, 1, 31),
+          BillingCycle.monthly,
+          DateTime(2026, 3, 1),
+        ),
         DateTime(2026, 3, 31),
       );
       expect(
-        nextRenewalOnOrAfter(DateTime(2026, 1, 31), BillingCycle.monthly, DateTime(2026, 2, 2)),
+        nextRenewalOnOrAfter(
+          DateTime(2026, 1, 31),
+          BillingCycle.monthly,
+          DateTime(2026, 2, 2),
+        ),
         DateTime(2026, 2, 28),
       );
     });
@@ -62,7 +135,13 @@ void main() {
 
   test('advancePassedRenewals moves only renewals that passed', () {
     UserSubscription sub(String id, DateTime renewal, BillingCycle cycle) =>
-        UserSubscription(id: id, customName: id, price: 1, billingCycle: cycle, nextRenewalDate: renewal);
+        UserSubscription(
+          id: id,
+          customName: id,
+          price: 1,
+          billingCycle: cycle,
+          nextRenewalDate: renewal,
+        );
     final today = DateTime(2026, 10, 12);
     final result = advancePassedRenewals([
       sub('future', DateTime(2026, 10, 20), BillingCycle.monthly),
@@ -70,11 +149,14 @@ void main() {
       sub('passed', DateTime(2026, 9, 30), BillingCycle.monthly),
       sub('yearly', DateTime(2025, 8, 1), BillingCycle.yearly),
     ], today);
-    expect({for (final s in result) s.id: s.nextRenewalDate}, {
-      'future': DateTime(2026, 10, 20),
-      'today': DateTime(2026, 10, 12),
-      'passed': DateTime(2026, 10, 30),
-      'yearly': DateTime(2027, 8, 1),
-    });
+    expect(
+      {for (final s in result) s.id: s.nextRenewalDate},
+      {
+        'future': DateTime(2026, 10, 20),
+        'today': DateTime(2026, 10, 12),
+        'passed': DateTime(2026, 10, 30),
+        'yearly': DateTime(2027, 8, 1),
+      },
+    );
   });
 }

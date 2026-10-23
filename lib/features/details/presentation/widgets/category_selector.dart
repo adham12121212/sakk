@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 
-
 class CategorySelector extends StatelessWidget {
-  const CategorySelector({super.key, required this.selected, required this.onChanged});
+  const CategorySelector({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
 
   final ProductCategory selected;
   final ValueChanged<ProductCategory> onChanged;
@@ -43,7 +46,7 @@ class CategorySelector extends StatelessWidget {
                   ),
                   SizedBox(width: 6.w),
                   Text(
-                    CategoryUi.label(context,category),
+                    CategoryUi.label(context, category),
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,

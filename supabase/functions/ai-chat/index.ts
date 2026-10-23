@@ -117,7 +117,12 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return jsonResponse({ error: "Not authenticated" }, 401);
 
-    const { message }: ChatRequest = await req.json();
+    let message: unknown;
+    try {
+      ({ message } = (await req.json()) as ChatRequest);
+    } catch {
+      return jsonResponse({ error: "invalid_body" }, 400);
+    }
     const text = typeof message === "string" ? message.trim() : "";
     if (!text) return jsonResponse({ error: "message is required" }, 400);
     if (text.length > MAX_MESSAGE_LENGTH) return jsonResponse({ error: "message is too long" }, 400);
@@ -146,11 +151,10 @@ serve(async (req) => {
     if (error instanceof AiBusyError) {
       return jsonResponse({ error: "ai_busy", message: BUSY_MESSAGE }, 503);
     }
+    // The details stay in the function logs: they can hold Groq's or the
+    // database's own error text. The app shows its generic message.
     console.error("ai-chat error:", error);
-    return jsonResponse(
-      { error: error instanceof Error ? error.message : String(error) },
-      500,
-    );
+    return jsonResponse({ error: "internal_error" }, 500);
   }
 });
 

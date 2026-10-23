@@ -11,7 +11,12 @@ import '../../../products/domain/entities/product_entity.dart';
 /// Categories ranked by product count: tinted icon, name, count, percentage
 /// and a slim bar in the category colour.
 class CategoryBreakdownCard extends StatelessWidget {
-  const CategoryBreakdownCard({super.key, required this.products, required this.isLoading, required this.l10n});
+  const CategoryBreakdownCard({
+    super.key,
+    required this.products,
+    required this.isLoading,
+    required this.l10n,
+  });
 
   final List<ProductEntity> products;
   final bool isLoading;
@@ -36,7 +41,8 @@ class CategoryBreakdownCard extends StatelessWidget {
       }
       total = products.length;
     }
-    final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final entries = counts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
     return AppCard(
       padding: const EdgeInsets.all(20),
@@ -46,7 +52,12 @@ class CategoryBreakdownCard extends StatelessWidget {
           Text(l10n.categoryBreakdown, style: textTheme.titleMedium),
           const SizedBox(height: 16),
           if (!isInitialLoading && total == 0)
-            Text(l10n.noProductsYet, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant))
+            Text(
+              l10n.noProductsYet,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            )
           else
             Skeletonizer(
               enabled: isInitialLoading,
@@ -58,7 +69,8 @@ class CategoryBreakdownCard extends StatelessWidget {
                       category: entry.key,
                       count: formatLocalizedInt(locale, entry.value),
                       share: entry.value / total,
-                      percent: '${formatLocalizedInt(locale, (entry.value / total * 100).round())}%',
+                      percent:
+                          '${formatLocalizedInt(locale, (entry.value / total * 100).round())}%',
                     ),
                   ],
                 ],
@@ -71,7 +83,12 @@ class CategoryBreakdownCard extends StatelessWidget {
 }
 
 class _CategoryRow extends StatelessWidget {
-  const _CategoryRow({required this.category, required this.count, required this.share, required this.percent});
+  const _CategoryRow({
+    required this.category,
+    required this.count,
+    required this.share,
+    required this.percent,
+  });
 
   final ProductCategory category;
   final String count;
@@ -89,7 +106,10 @@ class _CategoryRow extends StatelessWidget {
         Container(
           width: 40,
           height: 40,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Icon(CategoryUi.icon(category), color: color, size: 20),
         ),
         const SizedBox(width: 12),
@@ -99,12 +119,21 @@ class _CategoryRow extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(CategoryUi.label(context, category), style: textTheme.titleSmall)),
+                  Expanded(
+                    child: Text(
+                      CategoryUi.label(context, category),
+                      style: textTheme.titleSmall,
+                    ),
+                  ),
                   Text(count, style: textTheme.titleSmall),
                   const SizedBox(width: 8),
                   SizedBox(
                     width: 44,
-                    child: Text(percent, textAlign: TextAlign.end, style: textTheme.bodySmall),
+                    child: Text(
+                      percent,
+                      textAlign: TextAlign.end,
+                      style: textTheme.bodySmall,
+                    ),
                   ),
                 ],
               ),

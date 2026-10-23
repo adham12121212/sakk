@@ -5,7 +5,11 @@ import '../../../../l10n/app_localizations.dart';
 
 /// iOS-style segmented control: grey track, white sliding selection.
 class SegmentedTabs extends StatelessWidget {
-  const SegmentedTabs({super.key, required this.index, required this.onChanged});
+  const SegmentedTabs({
+    super.key,
+    required this.index,
+    required this.onChanged,
+  });
 
   final int index;
   final ValueChanged<int> onChanged;
@@ -21,7 +25,9 @@ class SegmentedTabs extends StatelessWidget {
       height: 48,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? colorScheme.surfaceContainerHighest : const Color(0xFFE9EDF3),
+        color: isDark
+            ? colorScheme.surfaceContainerHighest
+            : const Color(0xFFE9EDF3),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -48,7 +54,9 @@ class SegmentedTabs extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: selected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+                      color: selected
+                          ? colorScheme.onSurface
+                          : colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

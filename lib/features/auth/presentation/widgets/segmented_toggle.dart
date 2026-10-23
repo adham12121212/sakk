@@ -22,7 +22,10 @@ class SegmentedToggle<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Inline in a row: hug the content. Given full width: share it.
-        final expand = constraints.hasBoundedWidth && constraints.maxWidth.isFinite && constraints.maxWidth > 220;
+        final expand =
+            constraints.hasBoundedWidth &&
+            constraints.maxWidth.isFinite &&
+            constraints.maxWidth > 220;
         Widget segment(MapEntry<T, String> entry) {
           final isSelected = entry.key == selected;
           final box = Semantics(
@@ -47,7 +50,9 @@ class SegmentedToggle<T> extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+                    color: isSelected
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -60,7 +65,9 @@ class SegmentedToggle<T> extends StatelessWidget {
           height: 40,
           padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            color: isDark ? colorScheme.surfaceContainerHighest : const Color(0xFFE9EDF3),
+            color: isDark
+                ? colorScheme.surfaceContainerHighest
+                : const Color(0xFFE9EDF3),
             borderRadius: BorderRadius.circular(13),
           ),
           child: Row(

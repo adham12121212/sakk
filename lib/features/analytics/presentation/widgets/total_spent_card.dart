@@ -30,8 +30,12 @@ class TotalSpentCard extends StatelessWidget {
     final isInitialLoading = state.isLoading && state.products.isEmpty;
     final appLocale = Localizations.localeOf(context);
     // Arabic gets Arabic-Indic digits, like the rest of the app.
-    final locale = appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag();
-    final amount = NumberFormat.decimalPattern(locale).format(state.totalPrice.round());
+    final locale = appLocale.languageCode == 'ar'
+        ? 'ar_EG'
+        : appLocale.toLanguageTag();
+    final amount = NumberFormat.decimalPattern(
+      locale,
+    ).format(state.totalPrice.round());
     final visibility = getIt<AmountVisibilityController>();
 
     return Container(
@@ -40,7 +44,11 @@ class TotalSpentCard extends StatelessWidget {
         gradient: _gradient,
         borderRadius: BorderRadius.circular(24),
         boxShadow: const [
-          BoxShadow(color: Color(0x404A5CFA), blurRadius: 24, offset: Offset(0, 10)),
+          BoxShadow(
+            color: Color(0x404A5CFA),
+            blurRadius: 24,
+            offset: Offset(0, 10),
+          ),
         ],
       ),
       child: ClipRRect(
@@ -72,7 +80,11 @@ class TotalSpentCard extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(AppIcons.wallet, color: Colors.white, size: 18),
+                        child: const Icon(
+                          AppIcons.wallet,
+                          color: Colors.white,
+                          size: 18,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -89,8 +101,14 @@ class TotalSpentCard extends StatelessWidget {
                         valueListenable: visibility,
                         builder: (context, hidden, _) => IconButton(
                           onPressed: visibility.toggle,
-                          tooltip: hidden ? l10n.showTotalSpent : l10n.hideTotalSpent,
-                          icon: Icon(hidden ? AppIcons.hide : AppIcons.show, color: Colors.white, size: 22),
+                          tooltip: hidden
+                              ? l10n.showTotalSpent
+                              : l10n.hideTotalSpent,
+                          icon: Icon(
+                            hidden ? AppIcons.hide : AppIcons.show,
+                            color: Colors.white,
+                            size: 22,
+                          ),
                         ),
                       ),
                     ],
@@ -110,16 +128,25 @@ class TotalSpentCard extends StatelessWidget {
                             label: hidden ? l10n.totalSpentHidden : null,
                             excludeSemantics: hidden,
                             child: GestureDetector(
-                              onTap: isInitialLoading ? null : visibility.toggle,
+                              onTap: isInitialLoading
+                                  ? null
+                                  : visibility.toggle,
                               child: TweenAnimationBuilder<double>(
-                                tween: Tween(end: hidden && !isInitialLoading ? 12 : 0),
+                                tween: Tween(
+                                  end: hidden && !isInitialLoading ? 12 : 0,
+                                ),
                                 duration: const Duration(milliseconds: 250),
                                 curve: Curves.easeOut,
-                                builder: (context, sigma, child) => ImageFiltered(
-                                  enabled: sigma > 0.1,
-                                  imageFilter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma, tileMode: TileMode.decal),
-                                  child: child,
-                                ),
+                                builder: (context, sigma, child) =>
+                                    ImageFiltered(
+                                      enabled: sigma > 0.1,
+                                      imageFilter: ImageFilter.blur(
+                                        sigmaX: sigma,
+                                        sigmaY: sigma,
+                                        tileMode: TileMode.decal,
+                                      ),
+                                      child: child,
+                                    ),
                                 child: Text(
                                   isInitialLoading ? '1,234' : amount,
                                   style: const TextStyle(
@@ -134,7 +161,11 @@ class TotalSpentCard extends StatelessWidget {
                           ),
                           const Text(
                             '  EGP',
-                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
@@ -157,8 +188,11 @@ class _Circle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(color: Colors.white.withValues(alpha: opacity), shape: BoxShape.circle),
-      );
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: opacity),
+      shape: BoxShape.circle,
+    ),
+  );
 }

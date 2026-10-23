@@ -34,7 +34,9 @@ class ReminderSettingsView extends StatelessWidget {
     Future<void> setLeadTime(int days) async {
       await leadTime.setDays(days);
       if (getIt.isRegistered<WarrantyNotificationService>()) {
-        await getIt<WarrantyNotificationService>().rescheduleAll(getIt<ProductsCubit>().state.products);
+        await getIt<WarrantyNotificationService>().rescheduleAll(
+          getIt<ProductsCubit>().state.products,
+        );
       }
     }
 
@@ -68,7 +70,10 @@ class ReminderSettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.warrantyReminder, style: Theme.of(context).textTheme.bodyMedium),
+                    Text(
+                      l10n.warrantyReminder,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                     const SizedBox(height: 10),
                     SegmentedToggle<int>(
                       options: {
@@ -95,9 +100,11 @@ class ReminderSettingsView extends StatelessWidget {
                   children: [
                     _KindChoices<RenewalReminder>(
                       options: {
-                        RenewalReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
+                        RenewalReminder.threeDaysBefore:
+                            l10n.reminderThreeDaysBefore,
                         RenewalReminder.dayBefore: l10n.reminderDayBefore,
-                        RenewalReminder.dayAfter: l10n.reminderDayAfterCheckCharge,
+                        RenewalReminder.dayAfter:
+                            l10n.reminderDayAfterCheckCharge,
                       },
                       selected: settings.subscriptionKinds,
                       onChanged: settings.setSubscriptionKind,
@@ -122,7 +129,8 @@ class ReminderSettingsView extends StatelessWidget {
                   children: [
                     _KindChoices<InstallmentReminder>(
                       options: {
-                        InstallmentReminder.threeDaysBefore: l10n.reminderThreeDaysBefore,
+                        InstallmentReminder.threeDaysBefore:
+                            l10n.reminderThreeDaysBefore,
                         InstallmentReminder.dueDay: l10n.reminderOnDueDay,
                       },
                       selected: settings.installmentKinds,
@@ -190,7 +198,10 @@ class _ReminderSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: textTheme.titleSmall?.copyWith(fontSize: 15)),
+                      Text(
+                        title,
+                        style: textTheme.titleSmall?.copyWith(fontSize: 15),
+                      ),
                       Text(subtitle, style: textTheme.bodySmall),
                     ],
                   ),
@@ -215,7 +226,11 @@ class _ReminderSection extends StatelessWidget {
 /// Which reminders of one kind to get. The last one left can't be unticked:
 /// the switch above turns them all off.
 class _KindChoices<T> extends StatelessWidget {
-  const _KindChoices({required this.options, required this.selected, required this.onChanged});
+  const _KindChoices({
+    required this.options,
+    required this.selected,
+    required this.onChanged,
+  });
 
   final Map<T, String> options;
   final Set<T> selected;
@@ -245,7 +260,11 @@ class _KindChoices<T> extends StatelessWidget {
 /// see the choices locked (on "Off"); picking one opens the paywall. A
 /// choice made while Pro is saved, and comes back if Pro does.
 class _ProLeadTime extends StatelessWidget {
-  const _ProLeadTime({required this.days, required this.proActive, required this.onChanged});
+  const _ProLeadTime({
+    required this.days,
+    required this.proActive,
+    required this.onChanged,
+  });
 
   final int? days;
   final bool proActive;
@@ -273,9 +292,18 @@ class _ProLeadTime extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(l10n.reminderCustomTitle, style: textTheme.bodyMedium)),
+              Expanded(
+                child: Text(
+                  l10n.reminderCustomTitle,
+                  style: textTheme.bodyMedium,
+                ),
+              ),
               if (!proActive) ...[
-                Icon(AppIcons.locked, size: 14, color: colorScheme.onSurfaceVariant),
+                Icon(
+                  AppIcons.locked,
+                  size: 14,
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(width: 4),
                 Text(l10n.reminderCustomProOnly, style: textTheme.labelMedium),
               ],
@@ -289,11 +317,19 @@ class _ProLeadTime extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final value in [null, ...ReminderSettings.customDayOptions])
+                for (final value in [
+                  null,
+                  ...ReminderSettings.customDayOptions,
+                ])
                   ChoiceChip(
-                    label: Text(value == null
-                        ? l10n.reminderCustomOff
-                        : l10n.reminderCustomDays(value, formatLocalizedInt(locale, value))),
+                    label: Text(
+                      value == null
+                          ? l10n.reminderCustomOff
+                          : l10n.reminderCustomDays(
+                              value,
+                              formatLocalizedInt(locale, value),
+                            ),
+                    ),
                     selected: proActive ? days == value : value == null,
                     onSelected: (_) => pick(value),
                   ),

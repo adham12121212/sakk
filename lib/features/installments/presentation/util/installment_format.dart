@@ -57,5 +57,7 @@ String formatTotals(BuildContext context, Map<String, double> totals) {
     if (totals.containsKey('EGP')) 'EGP',
     ...totals.keys.where((c) => c != 'EGP'),
   ];
-  return [for (final c in ordered) formatMoney(context, totals[c]!, c)].join(' + ');
+  return [
+    for (final c in ordered) formatMoney(context, totals[c]!, c),
+  ].join(' + ');
 }

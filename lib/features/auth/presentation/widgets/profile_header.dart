@@ -9,7 +9,6 @@ import '../../../pro/presentation/widgets/plan_badge.dart';
 import 'profile_avatar.dart';
 import '../../../../core/theme/app_icons.dart';
 
-
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
     super.key,

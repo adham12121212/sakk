@@ -3,7 +3,11 @@ import '../../../../l10n/app_localizations.dart';
 import 'auth_primary_button.dart';
 
 class SigninButton extends StatelessWidget {
-  const SigninButton({super.key, required this.isLoading, required this.onPressed});
+  const SigninButton({
+    super.key,
+    required this.isLoading,
+    required this.onPressed,
+  });
 
   final bool isLoading;
   final VoidCallback onPressed;
@@ -11,6 +15,10 @@ class SigninButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return AuthPrimaryButton(label: l10n.signIn, isLoading: isLoading, onPressed: onPressed);
+    return AuthPrimaryButton(
+      label: l10n.signIn,
+      isLoading: isLoading,
+      onPressed: onPressed,
+    );
   }
 }

@@ -17,31 +17,47 @@ void main() {
     test('everything is on by default', () async {
       final s = ReminderSettings();
       await s.ready;
-      expect(s.warrantyEnabled && s.subscriptionsEnabled && s.installmentsEnabled, isTrue);
+      expect(
+        s.warrantyEnabled && s.subscriptionsEnabled && s.installmentsEnabled,
+        isTrue,
+      );
       // All but Sakk Pro's earlier reminder, which is off until days are picked.
-      final subscriptionKinds = RenewalReminder.values.where((k) => k != RenewalReminder.custom);
-      final installmentKinds = InstallmentReminder.values.where((k) => k != InstallmentReminder.custom);
+      final subscriptionKinds = RenewalReminder.values.where(
+        (k) => k != RenewalReminder.custom,
+      );
+      final installmentKinds = InstallmentReminder.values.where(
+        (k) => k != InstallmentReminder.custom,
+      );
       expect(subscriptionKinds.every(s.wantsSubscription), isTrue);
       expect(installmentKinds.every(s.wantsInstallment), isTrue);
       expect(s.wantsSubscription(RenewalReminder.custom), isFalse);
       expect(s.wantsInstallment(InstallmentReminder.custom), isFalse);
     });
 
-    test('choices are remembered, and the switch keeps them while off', () async {
-      final s = ReminderSettings();
-      await s.ready;
-      await s.setSubscriptionKind(RenewalReminder.dayAfter, false);
-      await s.setInstallmentsEnabled(false);
-      await s.setWarrantyEnabled(false);
+    test(
+      'choices are remembered, and the switch keeps them while off',
+      () async {
+        final s = ReminderSettings();
+        await s.ready;
+        await s.setSubscriptionKind(RenewalReminder.dayAfter, false);
+        await s.setInstallmentsEnabled(false);
+        await s.setWarrantyEnabled(false);
 
-      final again = ReminderSettings();
-      await again.ready;
-      expect(again.warrantyEnabled, isFalse);
-      expect(again.subscriptionKinds, {RenewalReminder.threeDaysBefore, RenewalReminder.dayBefore});
-      expect(again.wantsInstallment(InstallmentReminder.dueDay), isFalse);
-      await again.setInstallmentsEnabled(true);
-      expect(again.installmentKinds, {InstallmentReminder.threeDaysBefore, InstallmentReminder.dueDay});
-    });
+        final again = ReminderSettings();
+        await again.ready;
+        expect(again.warrantyEnabled, isFalse);
+        expect(again.subscriptionKinds, {
+          RenewalReminder.threeDaysBefore,
+          RenewalReminder.dayBefore,
+        });
+        expect(again.wantsInstallment(InstallmentReminder.dueDay), isFalse);
+        await again.setInstallmentsEnabled(true);
+        expect(again.installmentKinds, {
+          InstallmentReminder.threeDaysBefore,
+          InstallmentReminder.dueDay,
+        });
+      },
+    );
 
     test('the last reminder of a kind stays on', () async {
       final s = ReminderSettings();
@@ -52,7 +68,9 @@ void main() {
     });
 
     test('names this version does not know are ignored', () async {
-      SharedPreferences.setMockInitialValues({'reminders_subscription_kinds': ['weekly', 'dayBefore']});
+      SharedPreferences.setMockInitialValues({
+        'reminders_subscription_kinds': ['weekly', 'dayBefore'],
+      });
       final s = ReminderSettings();
       await s.ready;
       expect(s.subscriptionKinds, {RenewalReminder.dayBefore});
@@ -60,7 +78,10 @@ void main() {
   });
 
   group('ReminderSettingsView', () {
-    Future<(ReminderSettings, ReminderController)> open(WidgetTester tester, {Locale locale = const Locale('en')}) async {
+    Future<(ReminderSettings, ReminderController)> open(
+      WidgetTester tester, {
+      Locale locale = const Locale('en'),
+    }) async {
       // Phone width, tall enough for every section (the list builds lazily).
       tester.view.physicalSize = const Size(390, 1600);
       tester.view.devicePixelRatio = 1;
@@ -71,21 +92,25 @@ void main() {
         await settings.ready;
         await lead.ready;
       });
-      await tester.pumpWidget(ScreenUtilInit(
-        designSize: const Size(390, 844),
-        builder: (_, _) => MaterialApp(
-          locale: locale,
-          theme: AppTheme.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: ReminderSettingsView(settings: settings, leadTime: lead),
+      await tester.pumpWidget(
+        ScreenUtilInit(
+          designSize: const Size(390, 844),
+          builder: (_, _) => MaterialApp(
+            locale: locale,
+            theme: AppTheme.light(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: ReminderSettingsView(settings: settings, leadTime: lead),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       return (settings, lead);
     }
 
-    testWidgets('three sections; switching one off hides its choices', (tester) async {
+    testWidgets('three sections; switching one off hides its choices', (
+      tester,
+    ) async {
       final (settings, _) = await open(tester);
       expect(find.text('Warranties'), findsOneWidget);
       expect(find.text('Subscriptions'), findsOneWidget);
@@ -101,7 +126,9 @@ void main() {
       expect(find.text('On the due day'), findsNothing);
     });
 
-    testWidgets('Pro: an earlier reminder for subscriptions and installments', (tester) async {
+    testWidgets('Pro: an earlier reminder for subscriptions and installments', (
+      tester,
+    ) async {
       final (settings, _) = await open(tester);
       settings.setProActive(true);
       await tester.pumpAndSettle();
@@ -118,21 +145,29 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('unticking a reminder saves it; the last one cannot be unticked', (tester) async {
-      final (settings, _) = await open(tester);
-      await tester.tap(find.text('The day after, to check the charge'));
-      await tester.pumpAndSettle();
-      expect(settings.subscriptionKinds.contains(RenewalReminder.dayAfter), isFalse);
+    testWidgets(
+      'unticking a reminder saves it; the last one cannot be unticked',
+      (tester) async {
+        final (settings, _) = await open(tester);
+        await tester.tap(find.text('The day after, to check the charge'));
+        await tester.pumpAndSettle();
+        expect(
+          settings.subscriptionKinds.contains(RenewalReminder.dayAfter),
+          isFalse,
+        );
 
-      final installmentsEarly = find.text('3 days before').last; // installments
-      await tester.ensureVisible(installmentsEarly);
-      await tester.pumpAndSettle();
-      await tester.tap(installmentsEarly);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('On the due day'));
-      await tester.pumpAndSettle();
-      expect(settings.installmentKinds, {InstallmentReminder.dueDay});
-    });
+        final installmentsEarly = find
+            .text('3 days before')
+            .last; // installments
+        await tester.ensureVisible(installmentsEarly);
+        await tester.pumpAndSettle();
+        await tester.tap(installmentsEarly);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('On the due day'));
+        await tester.pumpAndSettle();
+        expect(settings.installmentKinds, {InstallmentReminder.dueDay});
+      },
+    );
 
     testWidgets('choosing how early warranty reminders come', (tester) async {
       final (_, lead) = await open(tester);

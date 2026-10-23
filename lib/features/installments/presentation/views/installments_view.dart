@@ -39,7 +39,10 @@ class _InstallmentsViewState extends State<InstallmentsView> {
 
   void _add() {
     if (!ProActions.ensureCanAdd(context, LimitedItem.installments)) return;
-    context.push(AppRoutes.installmentForm, extra: const InstallmentFormArgs.add());
+    context.push(
+      AppRoutes.installmentForm,
+      extra: const InstallmentFormArgs.add(),
+    );
   }
 
   void _open(InstallmentPlan plan) =>
@@ -145,7 +148,11 @@ class _InstallmentsViewState extends State<InstallmentsView> {
           if (index == 0) {
             return RemainingTotalCard(
               remaining: remainingByCurrency(items),
-              dueThisMonth: dueInMonthByCurrency(items, today.year, today.month),
+              dueThisMonth: dueInMonthByCurrency(
+                items,
+                today.year,
+                today.month,
+              ),
               overdue: overdueByCurrency(items, today),
               activeCount: items.where((p) => p.isActive).length,
             );

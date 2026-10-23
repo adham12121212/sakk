@@ -36,7 +36,9 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _focusNode.requestFocus(),
+    );
     context.read<ProductsCubit>().loadRecentSearches();
   }
 
@@ -87,11 +89,15 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                         decoration: InputDecoration(
                           hintText: l10n.searchProductsHint,
                           prefixIcon: const Icon(AppIcons.search),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
                           suffixIcon: value.text.isEmpty
                               ? null
                               : IconButton(
-                                  tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                                  tooltip: MaterialLocalizations.of(
+                                    context,
+                                  ).deleteButtonTooltip,
                                   icon: const Icon(AppIcons.close, size: 20),
                                   onPressed: () {
                                     _controller.clear();
@@ -104,7 +110,8 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                   ),
                 ],
               ),
-            ), Expanded(
+            ),
+            Expanded(
               child: BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   if (!state.hasSearched) {
@@ -144,8 +151,12 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                             // product straight from search results.
                             builder: (_) => MultiBlocProvider(
                               providers: [
-                                BlocProvider.value(value: context.read<ProductsCubit>()),
-                                BlocProvider(create: (_) => getIt<DetailsCubit>()),
+                                BlocProvider.value(
+                                  value: context.read<ProductsCubit>(),
+                                ),
+                                BlocProvider(
+                                  create: (_) => getIt<DetailsCubit>(),
+                                ),
                               ],
                               child: DetailsView(product: product),
                             ),
@@ -180,7 +191,9 @@ class _RecentSearches extends StatelessWidget {
       children: [
         Text(
           AppLocalizations.of(context)!.recentSearches,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 12),
         for (final query in recentSearches) ...[
@@ -189,7 +202,11 @@ class _RecentSearches extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
-                Icon(AppIcons.recentSearch, size: 20, color: colorScheme.onSurfaceVariant),
+                Icon(
+                  AppIcons.recentSearch,
+                  size: 20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -199,7 +216,11 @@ class _RecentSearches extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                Icon(AppIcons.fillSuggestion, size: 18, color: colorScheme.onSurfaceVariant),
+                Icon(
+                  AppIcons.fillSuggestion,
+                  size: 18,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ],
             ),
           ),

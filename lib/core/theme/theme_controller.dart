@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class ThemeController extends ValueNotifier<ThemeMode> {
   ThemeController() : super(ThemeMode.system) {
     _loadSaved();
@@ -14,7 +13,7 @@ class ThemeController extends ValueNotifier<ThemeMode> {
     final saved = prefs.getString(_key);
     if (saved == null) return;
     value = ThemeMode.values.firstWhere(
-          (m) => m.name == saved,
+      (m) => m.name == saved,
       orElse: () => ThemeMode.system,
     );
   }

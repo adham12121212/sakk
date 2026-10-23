@@ -31,11 +31,7 @@ class ExpiringBanner extends StatelessWidget {
               color: colorScheme.surface,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              AppIcons.expiring,
-              color: palette.warning,
-              size: 20,
-            ),
+            child: Icon(AppIcons.expiring, color: palette.warning, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
@@ -8,17 +7,12 @@ abstract class DeleteProductUseCase {
   Future<Either<Failure, void>> call(String id);
 }
 
-
-class DeleteProductUsecaseImpl implements DeleteProductUseCase{
+class DeleteProductUsecaseImpl implements DeleteProductUseCase {
   final ProductRepo _repository;
   DeleteProductUsecaseImpl(this._repository);
 
   @override
   Future<Either<Failure, void>> call(String id) {
-    return  _repository.deleteProduct(id);
+    return _repository.deleteProduct(id);
   }
-
 }
-
-
-
