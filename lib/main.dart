@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,7 @@ import 'core/route/app_router.dart';
 import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
 import 'core/service/reminder_settings.dart';
+import 'core/service/temp_file_cleaner.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/widgets/route_aware_connectivity_banner.dart';
@@ -102,6 +105,9 @@ Future<void> _bootstrap() async {
   }
 
   runApp(const MyApp());
+
+  // Leftover photos and share files from earlier sessions.
+  unawaited(TempFileCleaner().clean());
 
   final launch = await notificationService.getLaunchResponse();
   if (launch != null && (launch.payload ?? '').isNotEmpty) {
