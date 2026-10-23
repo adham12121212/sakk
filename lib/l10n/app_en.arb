@@ -1086,5 +1086,6 @@
   "voiceYouSaid": "You said",
   "paywallHeadlineVoice": "Add products just by saying them",
   "featureVoice": "Add by voice",
-  "limitReachedVoice": "Add by voice is part of Sakk Pro."
+  "limitReachedVoice": "Add by voice is part of Sakk Pro.",
+  "voiceUnheardTitle": "We didn't catch that"
 }

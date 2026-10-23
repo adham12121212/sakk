@@ -640,5 +640,6 @@
   "voiceYouSaid": "إنت قلت",
   "paywallHeadlineVoice": "ضيف منتجاتك بصوتك بس",
   "featureVoice": "الإضافة بالصوت",
-  "limitReachedVoice": "الإضافة بالصوت متاحة في Sakk Pro."
+  "limitReachedVoice": "الإضافة بالصوت متاحة في Sakk Pro.",
+  "voiceUnheardTitle": "مسمعناش كويس"
 }

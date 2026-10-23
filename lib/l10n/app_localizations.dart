@@ -3947,6 +3947,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add by voice is part of Sakk Pro.'**
   String get limitReachedVoice;
+
+  /// No description provided for @voiceUnheardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We didn\'t catch that'**
+  String get voiceUnheardTitle;
 }
 
 class _AppLocalizationsDelegate

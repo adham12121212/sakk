@@ -2450,4 +2450,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get limitReachedVoice => 'الإضافة بالصوت متاحة في Sakk Pro.';
+
+  @override
+  String get voiceUnheardTitle => 'مسمعناش كويس';
 }

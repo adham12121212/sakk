@@ -4,7 +4,9 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../products/data/product_data_source/product_data_source.dart';
 
+/// A scan (photo, PDF or voice) that failed, with the reason.
 class ScanFailedView extends StatelessWidget {
   const ScanFailedView({
     super.key,
@@ -19,6 +21,7 @@ class ScanFailedView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final isVoice = message == ProductDataSourceImpl.voiceUnheard;
 
     return Scaffold(
       body: SafeArea(
@@ -36,14 +39,14 @@ class ScanFailedView extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    AppIcons.receipt,
+                    isVoice ? AppIcons.microphone : AppIcons.receipt,
                     color: context.palette.danger,
                     size: 40.sp,
                   ),
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  l10n.couldNotReadReceipt,
+                  isVoice ? l10n.voiceUnheardTitle : l10n.couldNotReadReceipt,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
@@ -63,7 +66,7 @@ class ScanFailedView extends StatelessWidget {
                   height: 54,
                   child: FilledButton(
                     onPressed: onBack,
-                    child: Text(l10n.tryAnotherPhoto),
+                    child: Text(isVoice ? l10n.retry : l10n.tryAnotherPhoto),
                   ),
                 ),
               ],

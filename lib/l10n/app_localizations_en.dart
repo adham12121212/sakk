@@ -2397,4 +2397,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get limitReachedVoice => 'Add by voice is part of Sakk Pro.';
+
+  @override
+  String get voiceUnheardTitle => 'We didn\'t catch that';
 }
