@@ -19,12 +19,16 @@ jobs:
           channel: stable
           cache: true
 
-      # .env holds secrets and isn't in git, but pubspec lists it as an
-      # asset; an empty one lets the app build for tests.
+      # .env isn't in git (it holds per-project keys, all public: it ships
+      # inside the app), but pubspec lists it as an asset; an empty one lets
+      # the app build for tests.
       - name: Create empty .env
         run: touch .env
 
       - run: flutter pub get
+
+      - name: Format
+        run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Analyze
         run: flutter analyze

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -51,9 +52,12 @@ class ProfileAvatar extends StatelessWidget {
                         image: NetworkImage(avatarUrl!),
                         fit: BoxFit.cover,
                         onError: (exception, stackTrace) {
-                          debugPrint(
-                            '[ProfileAvatar] Failed to load $avatarUrl: $exception',
-                          );
+                          // Debug only: the URL identifies the user.
+                          if (kDebugMode) {
+                            debugPrint(
+                              '[ProfileAvatar] Failed to load $avatarUrl: $exception',
+                            );
+                          }
                         },
                       )
                     : null,

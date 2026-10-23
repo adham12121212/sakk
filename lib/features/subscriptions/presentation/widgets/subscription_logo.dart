@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -339,7 +340,7 @@ class _LetterAvatar extends StatelessWidget {
 final _loggedFailures = <String>{};
 
 void _logFailure(String url, Object error) {
-  if (_loggedFailures.add(url)) {
+  if (kDebugMode && _loggedFailures.add(url)) {
     debugPrint('[SubscriptionLogo] Failed to load $url: $error');
   }
 }

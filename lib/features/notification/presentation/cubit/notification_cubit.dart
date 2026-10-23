@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entities/notification_enitiy.dart';
+import '../../domain/entities/notification_entity.dart';
 import '../../domain/usecase/delete_notification_use_case.dart';
 import '../../domain/usecase/get_notification_use_case.dart';
 import '../../domain/usecase/mark_notification_read_use_case.dart';

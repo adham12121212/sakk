@@ -5,7 +5,7 @@ import 'package:sakk/core/error/exceptions.dart';
 import 'package:sakk/core/error/failure.dart';
 import 'package:sakk/core/error/network_info.dart';
 import 'package:sakk/core/logger/app_logger.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 
 import '../../domain/notification_repo/notification_repo.dart';
 import '../notification_data_source/notification_data_source.dart';

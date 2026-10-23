@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' show Locale;
 
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
-import '../../features/notification/domain/entities/notification_enitiy.dart';
+import '../../features/notification/domain/entities/notification_entity.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/subscriptions/domain/entities/billing_cycle.dart';
 import '../../features/subscriptions/domain/entities/user_subscription.dart';

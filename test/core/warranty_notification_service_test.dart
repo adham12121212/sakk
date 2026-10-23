@@ -12,7 +12,7 @@ import 'package:sakk/core/util/notification_ids.dart';
 import 'package:sakk/core/util/notified_warranties_tracker.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 import 'package:sakk/features/products/domain/entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';

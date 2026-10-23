@@ -1,4 +1,4 @@
-import '../../domain/entities/notification_enitiy.dart';
+import '../../domain/entities/notification_entity.dart';
 
 class NotificationModel extends NotificationEntity {
   const NotificationModel({

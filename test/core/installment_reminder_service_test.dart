@@ -17,7 +17,7 @@ import 'package:sakk/features/installments/domain/entities/installment_plan.dart
 import 'package:sakk/features/installments/domain/usecase/get_installment_plans_usecase.dart';
 import 'package:sakk/features/installments/domain/usecase/set_payment_paid_usecase.dart';
 import 'package:sakk/features/installments/presentation/cubit/installments_cubit.dart';
-import 'package:sakk/features/notification/domain/entities/notification_enitiy.dart';
+import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 
 import '../features/installments/installment_fixtures.dart';

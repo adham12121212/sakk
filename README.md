@@ -7,6 +7,9 @@ A Flutter app for tracking purchases, warranties, returns and receipts. Availabl
 - **Products** — record purchases with their warranty and return window. Each product can hold documents (receipt, warranty card, photos, manual), extra warranties from other providers, and warranty claims tracked from submitted to resolved or rejected. The app warns before you save a likely duplicate (same invoice number, serial number, or name and date). Search by name, brand, store, serial or invoice number, and share all products as a CSV file.
 - **Receipt scanning** — take a photo, pick an image, or choose a PDF of a receipt, invoice or warranty card (Arabic, English or both). AI fills in the product, brand, store, price, purchase date, warranty length, serial and invoice numbers and category for you to review before saving. Prices are in EGP; receipts in another currency show the original amount.
 - **AI chat** — an assistant that knows your products and their warranty dates. It helps with using the app, warranty rights, what to do when something breaks, and buying advice, and declines unrelated topics.
+- **Subscriptions** — online services you pay for (Netflix, Shahid...) with price, billing cycle and next renewal date, added from a list of known services, a screenshot or bank SMS, or by hand; reminders before each renewal and the total per month.
+- **Installments** — purchases paid off monthly (bank, Valu, Contact, Sympl, the store...), optionally linked to a product, with each payment's due date, reminders before it's due and a "Mark as paid" button on the notification.
+- **Sakk Pro** — a paid plan (monthly or yearly, 7-day free trial) that removes the free plan's limits and adds the monthly summary with a PDF report and earlier reminders. See [Sakk Pro](#sakk-pro-free-plan-limits).
 - **Households** — create a household or join one with a 10-character invite code; members see each other's products. The owner can remove members and generate a new code.
 - **Reminders** — local notifications before a warranty ends (90, 30, 7 or 1 days ahead, your choice) and 2 days before a return window closes, plus an in-app notifications list. You can also add the warranty end or return deadline to your calendar.
 - **Home screen widget** — shows the next warranty to end and its end date, on Android and iOS.
@@ -91,7 +94,7 @@ Features use clean architecture layers, but only the ones they need:
 
 ### Environment
 
-Create a `.env` file in the project root. It is git-ignored, but it is listed as an asset in `pubspec.yaml`, so **the app will not build without it**:
+Create a `.env` file in the project root. It is git-ignored, but it is listed as an asset in `pubspec.yaml`, so **the app will not build without it**. It is bundled into the app, so anyone can read it from the APK: put only public keys here, never a secret (service role key, Groq key, webhook secret):
 
 ```
 SUPABASE_URL=
@@ -121,7 +124,10 @@ On iOS, `flutter run` installs the pods automatically. Translations are generate
 ```
 flutter test
 flutter analyze
+dart format lib test
 ```
+
+CI (`.github/workflows/checks.yml`) fails if any file isn't formatted.
 
 ### iOS home screen widget
 
@@ -212,4 +218,4 @@ supabase secrets set REVENUECAT_WEBHOOK_SECRET=... REVENUECAT_API_KEY=...
 - Enforced on the server: `BEFORE INSERT` triggers on `products`, `user_subscriptions` and `installment_plans` raise `LIMIT_REACHED:<item>`, and the AI functions (`extract-receipt`, `ai-chat`) take one from `consume_quota` before calling Groq and answer 402 when none are left. Days start at midnight Cairo time.
 - Pro is `pro_subscriptions.active_until > now()`, kept up to date by `revenuecat-webhook`. When Pro ends nothing is deleted or hidden; only new items above the free limits are refused.
 - The app logs in to RevenueCat with the Supabase user id, so RevenueCat's `app_user_id` is the user's id.
-- Pro-only in the app: the monthly summary, an earlier reminder for subscriptions and installments (5, 7, 10 or 14 days ahead, on the Reminders screen; notification slot 9, shared and told apart by payload), and the JSON backup export from Profile (the user's own products, subscriptions and installment plans, with 7-day links to their documents). Free users keep every reminder they had.
+- Pro-only in the app: the monthly summary (with a PDF report) and an earlier reminder for subscriptions and installments (5, 7, 10 or 14 days ahead, on the Reminders screen; notification slot 9, shared and told apart by payload). Free users keep every reminder they had.

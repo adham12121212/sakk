@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart' show Locale;
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/installments/domain/entities/installment_payment.dart';
 import '../../features/installments/domain/entities/installment_plan.dart';
-import '../../features/notification/domain/entities/notification_enitiy.dart';
+import '../../features/notification/domain/entities/notification_entity.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';

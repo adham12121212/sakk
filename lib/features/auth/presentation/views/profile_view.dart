@@ -69,9 +69,6 @@ class ProfileView extends StatelessWidget {
                 final updatedUser = state is AuthAvatarUpdated
                     ? state.user
                     : null;
-                debugPrint(
-                  '[ProfileView] updatedUser.avatarUrl = ${updatedUser?.avatarUrl}',
-                );
                 final isUploadingAvatar = state is AuthAvatarUpdating;
                 final l10n = AppLocalizations.of(context)!;
 

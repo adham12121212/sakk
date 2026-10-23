@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
-import '../entities/notification_enitiy.dart';
+import '../entities/notification_entity.dart';
 import '../notification_repo/notification_repo.dart';
 
 abstract class GetNotificationsUseCase {

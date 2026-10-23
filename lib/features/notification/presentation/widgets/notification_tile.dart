@@ -4,7 +4,7 @@ import '../../../../core/widgets/app_card.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
-import '../../domain/entities/notification_enitiy.dart';
+import '../../domain/entities/notification_entity.dart';
 import 'notification_type_icon.dart';
 
 class NotificationTile extends StatelessWidget {

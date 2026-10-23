@@ -51,3 +51,7 @@ supabase/.temp/
 
 # Firebase deploy cache
 .firebase/
+
+# Stray local state from running tools inside ios/
+/ios/build/
+/ios/supabase/
