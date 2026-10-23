@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/util/avatar_image.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({
@@ -42,7 +43,7 @@ class Avatar extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: avatarUrl != null
                     ? DecorationImage(
-                        image: NetworkImage(avatarUrl!),
+                        image: avatarImage(avatarUrl!),
                         fit: BoxFit.cover,
                       )
                     : null,

@@ -4,6 +4,7 @@ import 'package:sakk/features/auth/data/models/user_model.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/service/storage_service.dart';
 import '../../../../core/service/supabase_client.dart';
+import '../../../../core/util/avatar_image.dart';
 
 abstract class AuthDataSource {
   Future<UserModel> signIn({required String email, required String password});
@@ -149,12 +150,12 @@ class AuthDataSourceImpl implements AuthDataSource {
         upsert: true,
       );
 
-      final publicUrl = _storageService.getPublicUrl(
-        bucket: 'avatars',
-        path: storagePath,
-      );
-      final bustedUrl =
-          '$publicUrl?updated=${DateTime.now().millisecondsSinceEpoch}';
+      // The bucket is private: the app loads this link with the user's
+      // token (see avatarImage).
+      final url = authenticatedAvatarUrl(
+        _storageService.getPublicUrl(bucket: 'avatars', path: storagePath),
+      )!;
+      final bustedUrl = '$url?updated=${DateTime.now().millisecondsSinceEpoch}';
 
       // Not 'avatar_url': Google sign-in rewrites that key on every login.
       final updatedUser = await _supabaseService.updateUserMetadata({

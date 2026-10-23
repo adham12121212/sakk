@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/util/avatar_image.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -49,7 +50,7 @@ class ProfileAvatar extends StatelessWidget {
                 border: Border.all(color: AppColors.white, width: 2.r),
                 image: hasPhoto
                     ? DecorationImage(
-                        image: NetworkImage(avatarUrl!),
+                        image: avatarImage(avatarUrl!),
                         fit: BoxFit.cover,
                         onError: (exception, stackTrace) {
                           // Debug only: the URL identifies the user.
