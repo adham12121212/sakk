@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakk/core/service/supabase_client.dart';
@@ -149,6 +152,13 @@ class SupabaseServiceImpl implements SupabaseService {
     try {
       googleUser = await GoogleSignIn.instance.authenticate();
     } on GoogleSignInException catch (e) {
+      // Google refuses the app itself (e.g. its signing key isn't registered
+      // in the Sign-in project): sign in through the browser instead, which
+      // doesn't depend on the app's signing key. Android only; iOS uses its
+      // own client ID, which the key can't break.
+      if (Platform.isAndroid && isGoogleSetupProblem(e)) {
+        return _signInWithGoogleInBrowser();
+      }
       if (e.code == GoogleSignInExceptionCode.canceled) {
         throw GoogleSignInCancelledException(e.description);
       }
@@ -166,5 +176,69 @@ class SupabaseServiceImpl implements SupabaseService {
       idToken: idToken,
       nonce: _googleRawNonce,
     );
+  }
+
+  /// Where the browser sign-in returns to the app. Also an intent filter in
+  /// AndroidManifest.xml and a redirect URL allowed in Supabase Auth.
+  static const googleRedirectUrl = 'com.sakk.app://login-callback';
+
+  /// After the user comes back from the browser, how long to wait for the
+  /// sign-in to finish before treating it as cancelled.
+  static const _browserReturnGrace = Duration(seconds: 10);
+
+  /// True when native sign-in failed because of how the app is set up with
+  /// Google, not because the user cancelled. Google reports an unregistered
+  /// signing key as a cancel ("[16] Account reauth failed"), so a cancel
+  /// only counts when its description says so.
+  @visibleForTesting
+  static bool isGoogleSetupProblem(GoogleSignInException e) {
+    switch (e.code) {
+      case GoogleSignInExceptionCode.clientConfigurationError:
+      case GoogleSignInExceptionCode.providerConfigurationError:
+        return true;
+      case GoogleSignInExceptionCode.canceled:
+        final text = (e.description ?? '').toLowerCase();
+        return text.contains('reauth failed') || text.startsWith('[10]');
+      default:
+        return false;
+    }
+  }
+
+  /// Google sign-in in the browser (Supabase's OAuth flow). Completes when
+  /// Supabase has the session from the redirect, or throws
+  /// [GoogleSignInCancelledException] if the user comes back without one.
+  Future<AuthResponse> _signInWithGoogleInBrowser() async {
+    final signedIn = _client.auth.onAuthStateChange.firstWhere(
+      (s) => s.event == AuthChangeEvent.signedIn && s.session != null,
+    );
+    final returned = Completer<void>();
+    final lifecycle = AppLifecycleListener(
+      onResume: () {
+        if (!returned.isCompleted) returned.complete();
+      },
+    );
+    try {
+      final opened = await _client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: googleRedirectUrl,
+        authScreenLaunchMode: LaunchMode.externalApplication,
+      );
+      if (!opened) {
+        throw ServerException('Google sign-in failed: no browser to open');
+      }
+      final state = await Future.any<AuthState?>([
+        signedIn,
+        returned.future
+            .then((_) => Future<void>.delayed(_browserReturnGrace))
+            .then((_) => null),
+      ]).timeout(const Duration(minutes: 5), onTimeout: () => null);
+      final session = state?.session;
+      if (session == null) {
+        throw GoogleSignInCancelledException('Browser sign-in not completed');
+      }
+      return AuthResponse(session: session, user: session.user);
+    } finally {
+      lifecycle.dispose();
+    }
   }
 }

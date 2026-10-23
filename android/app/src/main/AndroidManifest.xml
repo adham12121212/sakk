@@ -31,6 +31,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Google sign-in in the browser (the fallback when native
+                 sign-in is refused) comes back here; Supabase reads the
+                 session from the link (SupabaseServiceImpl.googleRedirectUrl). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.sakk.app" android:host="login-callback"/>
+            </intent-filter>
             <!-- Share → Sakk: a receipt photo or PDF invoice from another app
                  opens Scan (receive_sharing_intent; see ShareIntake).
                  singleTask above, so a share reaches the running app instead
