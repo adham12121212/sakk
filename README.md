@@ -187,7 +187,8 @@ Without it, release builds fall back to the debug key.
 
 ## Supabase
 
-Apply the schema from `supabase/migrations` and deploy the edge functions with the Supabase CLI:
+Apply the schema from `supabase/migrations` and deploy the edge functions with the Supabase CLI. On a new project `supabase db push` builds everything, starting from `20261001000000_base_schema.sql` (the products and notifications tables and storage buckets that were first made in the dashboard). The live project already had those, so that one migration is marked as applied there rather than run (`supabase migration repair --status applied 20261001000000`).
+
 
 ```
 supabase db push
