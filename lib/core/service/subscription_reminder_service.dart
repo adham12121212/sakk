@@ -8,9 +8,9 @@ import '../../features/notification/domain/entities/notification_entity.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/subscriptions/domain/entities/billing_cycle.dart';
 import '../../features/subscriptions/domain/entities/user_subscription.dart';
-import '../../features/subscriptions/domain/renewal_schedule.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
+import '../util/date_math.dart';
 import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
@@ -69,9 +69,6 @@ class SubscriptionReminderService {
 
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
-
-  /// Same short delay as warranty pushes shown on app open.
-  static const _immediateDelay = Duration(seconds: 4);
 
   Locale get _currentLocale => _locale?.value ?? const Locale('en');
   AppLocalizations get _l10n => lookupAppLocalizations(_currentLocale);
@@ -189,12 +186,20 @@ class SubscriptionReminderService {
     await _settings?.ready;
     final now = DateTime.now();
     final userId = _getUserUseCase()?.id;
-    final wanted = [
-      for (final s in subscriptions)
-        ..._remindersFor(
-          s,
-        ).where((r) => _wants(r.kind) && r.dateTime.isAfter(now)),
-    ];
+    final wanted = <_Reminder>[];
+    for (final s in subscriptions) {
+      for (final r in _remindersFor(s)) {
+        if (!_wants(r.kind) || !r.dateTime.isAfter(now)) continue;
+        // Already shown when the app was opened inside its window.
+        if (await _tracker.hasNotified(
+          _trackerId(r.subscriptionId),
+          _notifiedKey(r.kind, r.renewal),
+        )) {
+          continue;
+        }
+        wanted.add(r);
+      }
+    }
     final wantedIds = {for (final r in wanted) r.id};
 
     for (final pending in await _localNotifications.pendingNotifications()) {
@@ -261,9 +266,10 @@ class SubscriptionReminderService {
   /// Call when the list is (re)loaded. Adds one in-app notification per
   /// reminder per renewal when the app is opened inside its window: 2–3
   /// days before ("in 3 days"), 0–1 days before ("tomorrow"), 1–2 days
-  /// after ("renewed"). It also pushes right away, but only if this device
-  /// never scheduled that reminder ahead (e.g. a subscription added the day
-  /// before it renews), so nobody gets the same push twice.
+  /// after ("renewed"), and shows it as a banner right away, like the
+  /// in-app list. The banner is skipped only if this device already
+  /// delivered it (scheduled ahead, and its time has passed); one still
+  /// waiting for its time is replaced, so nobody gets the same push twice.
   Future<void> checkAndNotify(
     List<UserSubscription> subscriptions, {
     DateTime? today,
@@ -271,6 +277,7 @@ class SubscriptionReminderService {
     final user = _getUserUseCase();
     if (user == null) return;
     final day = today ?? DateTime.now();
+    _openedAt = nowOn(today);
 
     final customDays = _customDays;
     for (final s in subscriptions) {
@@ -324,6 +331,10 @@ class SubscriptionReminderService {
     }
   }
 
+  /// When [checkAndNotify] runs (on the day it's told), for telling
+  /// whether a reminder scheduled ahead has been delivered yet.
+  DateTime _openedAt = DateTime.now();
+
   Future<void> _notifyNow(
     UserSubscription s,
     RenewalReminder kind,
@@ -341,16 +352,23 @@ class SubscriptionReminderService {
 
     final title = _title(kind);
     final body = _body(s, kind, days);
+    final id = notificationId(s.id, kind, previous: previous);
     try {
-      if (!await _tracker.hasNotified(
-        trackerId,
-        _scheduledKey(kind, renewal),
-      )) {
-        await _localNotifications.scheduleNotification(
-          id: notificationId(s.id, kind, previous: previous),
+      final delivered =
+          await _tracker.hasNotified(trackerId, _scheduledKey(kind, renewal)) &&
+          !reminderTime(
+            kind,
+            renewal,
+            customDays: _customDays ?? 0,
+          ).isAfter(_openedAt);
+      // First, so a sync running meanwhile doesn't schedule it again.
+      await _tracker.markNotified(trackerId, _notifiedKey(kind, renewal));
+      if (!delivered) {
+        await _localNotifications.cancelNotification(id);
+        await _localNotifications.showNotification(
+          id: id,
           title: title,
           body: body,
-          dateTime: DateTime.now().add(_immediateDelay),
           payload: userId,
         );
       }
@@ -362,7 +380,6 @@ class SubscriptionReminderService {
             ? NotificationType.success
             : NotificationType.warning,
       );
-      await _tracker.markNotified(trackerId, _notifiedKey(kind, renewal));
     } catch (e, st) {
       _logger.error(
         'Failed to send subscription reminder',

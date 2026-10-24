@@ -53,6 +53,21 @@ class _Tracker implements NotifiedWarrantiesTracker {
 class _Notifications implements NotificationService {
   final scheduled = <int, DateTime>{};
   final bodies = <int, String>{};
+
+  /// Banners shown right away (not scheduled), by id.
+  final shown = <int>[];
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    String? markPaidLabel,
+  }) async {
+    shown.add(id);
+    bodies[id] = body;
+  }
+
   final payloads = <int, String?>{};
 
   @override

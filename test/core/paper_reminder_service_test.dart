@@ -50,6 +50,21 @@ class _Tracker implements NotifiedWarrantiesTracker {
 class _Notifications implements NotificationService {
   final scheduled = <int, DateTime>{};
   final bodies = <int, String>{};
+
+  /// Banners shown right away (not scheduled), by id.
+  final shown = <int>[];
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    String? markPaidLabel,
+  }) async {
+    shown.add(id);
+    bodies[id] = body;
+  }
+
   final payloads = <int, String?>{};
   @override
   Future<void> scheduleNotification({
@@ -211,15 +226,15 @@ void main() {
       expect(notifications.scheduled, isEmpty);
     });
 
-    test('pushes now when the reminder was due today and never '
-        'scheduled ahead', () async {
-      await service.checkAndNotify([expiringIn('p', 7)]);
+    test(
+      'shows it as a banner now when it was never scheduled ahead',
+      () async {
+        await service.checkAndNotify([expiringIn('p', 7)]);
 
-      expect(notifications.scheduled.keys, [
-        idOf('p', PaperReminder.weekBefore),
-      ]);
-      expect(added.added, ['Passport expires in 7 days. Time to renew it.']);
-    });
+        expect(notifications.shown, [idOf('p', PaperReminder.weekBefore)]);
+        expect(added.added, ['Passport expires in 7 days. Time to renew it.']);
+      },
+    );
 
     test('says so once it has expired', () async {
       await service.checkAndNotify([

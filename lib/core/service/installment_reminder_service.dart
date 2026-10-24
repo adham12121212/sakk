@@ -104,9 +104,6 @@ class InstallmentReminderService {
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
 
-  /// Same short delay as warranty pushes shown on app open.
-  static const _immediateDelay = Duration(seconds: 4);
-
   Locale get _currentLocale => _locale?.value ?? const Locale('en');
   AppLocalizations get _l10n => lookupAppLocalizations(_currentLocale);
 
@@ -214,7 +211,15 @@ class InstallmentReminderService {
       if (payment == null) continue;
       for (final kind in InstallmentReminder.values.where(_wants)) {
         final r = _reminder(plan, payment, kind, userId: userId);
-        if (r.dateTime.isAfter(now)) wanted.add(r);
+        if (!r.dateTime.isAfter(now)) continue;
+        // Already shown when the app was opened inside its window.
+        if (await _tracker.hasNotified(
+          _trackerId(r.paymentId),
+          _notifiedKey(r.kind, r.due),
+        )) {
+          continue;
+        }
+        wanted.add(r);
       }
     }
     final wantedIds = {for (final r in wanted) r.id};
@@ -280,6 +285,7 @@ class InstallmentReminderService {
     final user = _getUserUseCase();
     if (user == null) return;
     final day = dateOnly(today ?? DateTime.now());
+    _openedAt = nowOn(today);
 
     for (final plan in plans) {
       final payment = upcomingPayment(plan, day);
@@ -313,6 +319,10 @@ class InstallmentReminderService {
     }
   }
 
+  /// When [checkAndNotify] runs (on the day it's told), for telling
+  /// whether a reminder scheduled ahead has been delivered yet.
+  DateTime _openedAt = DateTime.now();
+
   Future<void> _notifyNow(
     InstallmentPlan plan,
     InstallmentPayment payment,
@@ -332,16 +342,31 @@ class InstallmentReminderService {
 
     final title = _title(kind);
     final body = _body(plan, payment, days);
+    final id = notificationId(payment.id, kind);
     try {
-      if (!await _tracker.hasNotified(
+      // Skipped only if this device already delivered it (scheduled
+      // ahead, and its time has passed); one still waiting is replaced.
+      final delivered =
+          await _tracker.hasNotified(
+            trackerId,
+            _scheduledKey(kind, payment.dueDate),
+          ) &&
+          !reminderTime(
+            kind,
+            payment.dueDate,
+            customDays: daysBefore(kind, customDays: _customDays ?? 0),
+          ).isAfter(_openedAt);
+      // First, so a sync running meanwhile doesn't schedule it again.
+      await _tracker.markNotified(
         trackerId,
-        _scheduledKey(kind, payment.dueDate),
-      )) {
-        await _localNotifications.scheduleNotification(
-          id: notificationId(payment.id, kind),
+        _notifiedKey(kind, payment.dueDate),
+      );
+      if (!delivered) {
+        await _localNotifications.cancelNotification(id);
+        await _localNotifications.showNotification(
+          id: id,
           title: title,
           body: body,
-          dateTime: DateTime.now().add(_immediateDelay),
           payload: InstallmentReminderPayload(
             userId: userId,
             planId: plan.id,
@@ -355,10 +380,6 @@ class InstallmentReminderService {
         title: title,
         subtitle: body,
         type: NotificationType.warning,
-      );
-      await _tracker.markNotified(
-        trackerId,
-        _notifiedKey(kind, payment.dueDate),
       );
     } catch (e, st) {
       _logger.error(

@@ -10,6 +10,7 @@ import '../../features/papers/domain/entities/paper.dart';
 import '../../features/papers/presentation/util/paper_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
+import '../util/date_math.dart';
 import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
@@ -88,9 +89,6 @@ class PaperReminderService {
   /// Reminders arrive mid-morning rather than at midnight.
   static const _reminderHour = 10;
 
-  /// Same short delay as the other reminders shown on app open.
-  static const _immediateDelay = Duration(seconds: 4);
-
   Locale get _currentLocale => _locale?.value ?? const Locale('en');
   AppLocalizations get _l10n => lookupAppLocalizations(_currentLocale);
 
@@ -156,10 +154,21 @@ class PaperReminderService {
     await _settings?.ready;
     final now = DateTime.now();
     final userId = _getUserUseCase()?.id;
-    final wanted = [
-      if (userId != null)
-        for (final p in papers) ?_nextReminder(p, now),
-    ];
+    final wanted = <_Reminder>[];
+    if (userId != null) {
+      for (final p in papers) {
+        final r = _nextReminder(p, now);
+        if (r == null) continue;
+        // Already shown when the app was opened inside its window.
+        if (await _tracker.hasNotified(
+          _trackerId(r.paperId),
+          _notifiedKey(r.kind, r.expiry),
+        )) {
+          continue;
+        }
+        wanted.add(r);
+      }
+    }
     final wantedIds = {for (final r in wanted) r.id};
 
     for (final pending in await _localNotifications.pendingNotifications()) {
@@ -205,10 +214,11 @@ class PaperReminderService {
   }
 
   /// Call when the list is (re)loaded. Adds one in-app notification per
-  /// reminder per expiry date when a paper is inside a reminder's window.
-  /// It also pushes right away if the reminder was due today or yesterday
-  /// and this device never scheduled it ahead (e.g. the paper was added on
-  /// the day), so nobody gets the same push twice.
+  /// reminder per expiry date when a paper is inside a reminder's window,
+  /// and shows it as a banner right away, like the in-app list. The banner
+  /// is skipped only if this device already delivered it (scheduled ahead,
+  /// and its time has passed); one still waiting is replaced, so nobody
+  /// gets the same push twice.
   Future<void> checkAndNotify(List<Paper> papers, {DateTime? today}) async {
     final user = _getUserUseCase();
     if (user == null) return;
@@ -228,18 +238,22 @@ class PaperReminderService {
       }
       final title = _title(kind);
       final body = _body(paper, daysLeft);
+      final id = notificationId(paper.id, kind);
       try {
-        final dueRecently = daysBefore(kind) - daysLeft <= 1;
-        if (dueRecently &&
-            !await _tracker.hasNotified(
+        final delivered =
+            await _tracker.hasNotified(
               trackerId,
               _scheduledKey(kind, expiry),
-            )) {
-          await _localNotifications.scheduleNotification(
-            id: notificationId(paper.id, kind),
+            ) &&
+            !reminderTime(kind, expiry).isAfter(nowOn(today));
+        // First, so a sync running meanwhile doesn't schedule it again.
+        await _tracker.markNotified(trackerId, _notifiedKey(kind, expiry));
+        if (!delivered) {
+          await _localNotifications.cancelNotification(id);
+          await _localNotifications.showNotification(
+            id: id,
             title: title,
             body: body,
-            dateTime: DateTime.now().add(_immediateDelay),
             payload: PaperReminderPayload(user.id).encode(),
           );
         }
@@ -251,7 +265,6 @@ class PaperReminderService {
               ? NotificationType.error
               : NotificationType.warning,
         );
-        await _tracker.markNotified(trackerId, _notifiedKey(kind, expiry));
       } catch (e, st) {
         _logger.error(
           'Failed to send paper reminder',
