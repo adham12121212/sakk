@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../constant/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../error/network_info.dart';
 import '../theme/app_icons.dart';
 
@@ -122,8 +123,12 @@ class _Strip extends StatelessWidget {
     final label = offline ? l10n.offlineBanner : l10n.backOnlineBanner;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      // Light status-bar icons on the dark/green strip.
-      value: SystemUiOverlayStyle.light,
+      // Light status-bar icons on the dark/green strip; the navigation bar
+      // stays as the rest of the app has it.
+      value: AppTheme.systemBars(Theme.of(context).brightness).copyWith(
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
       child: Material(
         color: background,
         child: Semantics(
