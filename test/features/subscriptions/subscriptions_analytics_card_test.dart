@@ -53,26 +53,29 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'monthly and yearly totals, other currencies apart, breakdown by category',
-    (tester) async {
-      await tester.pumpWidget(app(state));
-      expect(find.text('400 EGP'), findsOneWidget); // 240 + 100 + 60
-      expect(find.text('4,800 EGP'), findsOneWidget);
-      expect(find.text('+ 20 USD / month'), findsOneWidget);
+  testWidgets('monthly and yearly totals per currency, breakdown by category', (
+    tester,
+  ) async {
+    await tester.pumpWidget(app(state));
+    expect(find.text('400 EGP'), findsOneWidget); // 240 + 100 + 60
+    expect(find.text('4,800 EGP'), findsOneWidget);
 
-      expect(find.text('Streaming'), findsOneWidget);
-      expect(find.text('340 EGP'), findsOneWidget);
-      expect(find.text('85%'), findsOneWidget);
-      expect(find.text('Music'), findsOneWidget);
-      expect(find.text('15%'), findsOneWidget);
-      expect(
-        find.text('AI'),
-        findsNothing,
-      ); // USD only: not in the EGP breakdown
-      expect(find.text('Breakdown of EGP subscriptions'), findsOneWidget);
-    },
-  );
+    expect(find.text('Streaming'), findsOneWidget);
+    expect(find.text('340 EGP'), findsOneWidget);
+    expect(find.text('85%'), findsOneWidget);
+    expect(find.text('Music'), findsOneWidget);
+    expect(find.text('15%'), findsOneWidget);
+    expect(find.text('AI'), findsNothing); // USD only: not in the EGP breakdown
+
+    // The switch shows USD on its own, never added to EGP.
+    await tester.tap(find.text('USD'));
+    await tester.pumpAndSettle();
+    expect(find.text('20 USD'), findsWidgets);
+    expect(find.text('240 USD'), findsOneWidget);
+    expect(find.text('AI'), findsOneWidget);
+    expect(find.text('100%'), findsOneWidget);
+    expect(find.text('Streaming'), findsNothing);
+  });
 
   testWidgets('Arabic digits, no overflow', (tester) async {
     await tester.pumpWidget(app(state, locale: const Locale('ar')));

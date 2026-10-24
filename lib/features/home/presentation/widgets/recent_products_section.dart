@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sakk/features/home/presentation/widgets/recent_product_data.dart';
+import '../../../products/domain/entities/product_entity.dart';
+import '../../../products/presentation/widgets/product_list_card.dart';
 
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/section_header.dart';
@@ -14,7 +15,7 @@ class RecentProductsSection extends StatelessWidget {
     this.onItemTap,
   });
 
-  final List<RecentProductData> items;
+  final List<ProductEntity> items;
   final VoidCallback? onSeeAllTap;
   final ValueChanged<int>? onItemTap;
 
@@ -36,14 +37,15 @@ class RecentProductsSection extends StatelessWidget {
           if (items.isEmpty)
             const _EmptyState()
           else
+            // The same card as the Products screen.
             ListView.separated(
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: items.length,
               separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (context, index) => RecentProductTile(
-                data: items[index],
+              itemBuilder: (context, index) => ProductListCard(
+                product: items[index],
                 onTap: onItemTap == null ? null : () => onItemTap!(index),
               ),
             ),

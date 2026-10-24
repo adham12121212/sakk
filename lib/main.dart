@@ -19,6 +19,7 @@ import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
 import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
+import 'core/service/paper_reminder_service.dart';
 import 'core/service/reminder_settings.dart';
 import 'core/service/share_intake.dart';
 import 'core/service/temp_file_cleaner.dart';
@@ -140,6 +141,14 @@ void _handleNotificationTap(
 }) {
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
+  final paper = PaperReminderPayload.tryParse(payload);
+  if (paper != null) {
+    // Another account's reminder (signed out before this device re-synced).
+    if (!coldStart && getIt<GetUserUseCase>()()?.id == paper.userId) {
+      appRouter.push(AppRoutes.papers);
+    }
+    return;
+  }
   final installment = InstallmentReminderPayload.tryParse(payload);
   if (installment != null) {
     _openInstallment(

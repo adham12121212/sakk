@@ -205,7 +205,15 @@ class AppTheme {
         selectedColor: AppColors.primary,
         side: BorderSide(color: colorScheme.outline),
         shape: const StadiumBorder(),
-        labelStyle: textTheme.labelLarge,
+        // White on the brand colour once selected; grey while not.
+        labelStyle: WidgetStateTextStyle.resolveWith(
+          (states) => textTheme.labelLarge!.copyWith(
+            color: states.contains(WidgetState.selected)
+                ? Colors.white
+                : colorScheme.onSurfaceVariant,
+          ),
+        ),
+        checkmarkColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
 

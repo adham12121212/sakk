@@ -16,7 +16,6 @@ import '../cubit/auth_cubit.dart';
 import '../widgets/profile_account_section.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_settings_card.dart';
-import '../widgets/profile_stats_section.dart';
 import '../widgets/section_label.dart';
 
 class ProfileView extends StatelessWidget {
@@ -59,6 +58,12 @@ class ProfileView extends StatelessWidget {
             );
         },
         child: Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.profile),
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: false,
+          ),
           body: SingleChildScrollView(
             child: BlocBuilder<AuthCubit, AuthState>(
               buildWhen: (previous, current) =>
@@ -85,45 +90,39 @@ class ProfileView extends StatelessWidget {
                 final effectiveAvatarUrl =
                     updatedUser?.avatarUrl ?? fallbackUser?.avatarUrl;
 
-                return Column(
-                  children: [
-                    ProfileHeader(
-                      displayName: effectiveName,
-                      displayEmail: effectiveEmail,
-                      avatarUrl: effectiveAvatarUrl,
-                      onBack: () => Navigator.pop(context),
-                      onPickAvatar: () => _pickAndUploadAvatar(context),
-                      isUploadingAvatar: isUploadingAvatar,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        AppSizes.s20,
-                        AppSizes.s20,
-                        AppSizes.s20,
-                        AppSizes.s8,
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppSizes.s20,
+                    AppSizes.s8,
+                    AppSizes.s20,
+                    AppSizes.s8,
+                  ),
+                  child: Column(
+                    children: [
+                      ProfileHeader(
+                        displayName: effectiveName,
+                        displayEmail: effectiveEmail,
+                        avatarUrl: effectiveAvatarUrl,
+                        onPickAvatar: () => _pickAndUploadAvatar(context),
+                        isUploadingAvatar: isUploadingAvatar,
                       ),
-                      child: Column(
-                        children: [
-                          const ProfileStatsSection(),
-                          AppSpacing.h32,
-                          SectionLabel(l10n.sakkPro),
-                          AppSpacing.h12,
-                          const ProPlanCard(),
-                          AppSpacing.h24,
-                          SectionLabel(l10n.preferences),
-                          AppSpacing.h12,
-                          const ProfileSettingsCard(),
-                          AppSpacing.h24,
-                          SectionLabel(l10n.familySharing),
-                          AppSpacing.h12,
-                          const HouseholdCard(),
-                          AppSpacing.h24,
-                          const ProfileAccountSection(),
-                          AppSpacing.h24,
-                        ],
-                      ),
-                    ),
-                  ],
+                      AppSpacing.h24,
+                      SectionLabel(l10n.sakkPro),
+                      AppSpacing.h12,
+                      const ProPlanCard(),
+                      AppSpacing.h24,
+                      SectionLabel(l10n.preferences),
+                      AppSpacing.h12,
+                      const ProfileSettingsCard(),
+                      AppSpacing.h24,
+                      SectionLabel(l10n.familySharing),
+                      AppSpacing.h12,
+                      const HouseholdCard(),
+                      AppSpacing.h24,
+                      const ProfileAccountSection(),
+                      AppSpacing.h24,
+                    ],
+                  ),
                 );
               },
             ),

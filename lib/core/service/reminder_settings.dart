@@ -2,11 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'installment_reminder_service.dart';
+import 'paper_reminder_service.dart';
 import 'subscription_reminder_service.dart';
 
 /// Which reminders the user wants, from the Reminders screen: warranties on
-/// or off, and for subscriptions and installments on or off plus which of
-/// their reminders. Saved per device, like the theme. Everything is on by
+/// or off, and for subscriptions, installments and papers on or off plus
+/// which of their reminders. Saved per device, like the theme. Everything is on by
 /// default. (How early the warranty reminder comes is [ReminderController].)
 ///
 /// Sakk Pro adds one more reminder for subscriptions and installments, a
@@ -26,8 +27,10 @@ class ReminderSettings extends ChangeNotifier {
   bool _warrantyEnabled = true;
   bool _subscriptionsEnabled = true;
   bool _installmentsEnabled = true;
+  bool _papersEnabled = true;
   Set<RenewalReminder> _subscriptionKinds = _defaultSubscriptionKinds;
   Set<InstallmentReminder> _installmentKinds = _defaultInstallmentKinds;
+  Set<PaperReminder> _paperKinds = PaperReminder.values.toSet();
   int? _subscriptionCustomDays;
   int? _installmentCustomDays;
   bool _proActive = false;
@@ -47,6 +50,7 @@ class ReminderSettings extends ChangeNotifier {
   bool get warrantyEnabled => _warrantyEnabled;
   bool get subscriptionsEnabled => _subscriptionsEnabled;
   bool get installmentsEnabled => _installmentsEnabled;
+  bool get papersEnabled => _papersEnabled;
 
   /// The subscription reminders chosen; kept while the switch is off, so
   /// turning it back on restores them.
@@ -54,6 +58,7 @@ class ReminderSettings extends ChangeNotifier {
       Set.unmodifiable(_subscriptionKinds);
   Set<InstallmentReminder> get installmentKinds =>
       Set.unmodifiable(_installmentKinds);
+  Set<PaperReminder> get paperKinds => Set.unmodifiable(_paperKinds);
 
   /// The Pro reminder's days ahead as chosen (null: off), whether or not
   /// Pro is active now.
@@ -79,12 +84,16 @@ class ReminderSettings extends ChangeNotifier {
       (kind == InstallmentReminder.custom
           ? activeInstallmentCustomDays != null
           : _installmentKinds.contains(kind));
+  bool wantsPaper(PaperReminder kind) =>
+      _papersEnabled && _paperKinds.contains(kind);
 
   static const _warrantyKey = 'reminders_warranty_enabled';
   static const _subscriptionsKey = 'reminders_subscriptions_enabled';
   static const _subscriptionKindsKey = 'reminders_subscription_kinds';
   static const _installmentsKey = 'reminders_installments_enabled';
   static const _installmentKindsKey = 'reminders_installment_kinds';
+  static const _papersKey = 'reminders_papers_enabled';
+  static const _paperKindsKey = 'reminders_paper_kinds';
   static const _subscriptionCustomDaysKey =
       'reminders_subscription_custom_days';
   static const _installmentCustomDaysKey = 'reminders_installment_custom_days';
@@ -94,6 +103,7 @@ class ReminderSettings extends ChangeNotifier {
     _warrantyEnabled = prefs.getBool(_warrantyKey) ?? true;
     _subscriptionsEnabled = prefs.getBool(_subscriptionsKey) ?? true;
     _installmentsEnabled = prefs.getBool(_installmentsKey) ?? true;
+    _papersEnabled = prefs.getBool(_papersKey) ?? true;
     _subscriptionKinds = _kinds(
       prefs.getStringList(_subscriptionKindsKey),
       _defaultSubscriptionKinds,
@@ -101,6 +111,10 @@ class ReminderSettings extends ChangeNotifier {
     _installmentKinds = _kinds(
       prefs.getStringList(_installmentKindsKey),
       _defaultInstallmentKinds,
+    );
+    _paperKinds = _kinds(
+      prefs.getStringList(_paperKindsKey),
+      PaperReminder.values.toSet(),
     );
     _subscriptionCustomDays = _days(prefs.getInt(_subscriptionCustomDaysKey));
     _installmentCustomDays = _days(prefs.getInt(_installmentCustomDaysKey));
@@ -159,6 +173,11 @@ class ReminderSettings extends ChangeNotifier {
     (p) => p.setBool(_installmentsKey, enabled),
   );
 
+  Future<void> setPapersEnabled(bool enabled) => _save(
+    () => _papersEnabled = enabled,
+    (p) => p.setBool(_papersKey, enabled),
+  );
+
   /// Turns one subscription reminder on or off. The last one can't be
   /// turned off: the switch is for stopping them all.
   Future<void> setSubscriptionKind(RenewalReminder kind, bool on) async {
@@ -182,6 +201,17 @@ class ReminderSettings extends ChangeNotifier {
       () => _installmentKinds = next,
       (p) =>
           p.setStringList(_installmentKindsKey, [for (final k in next) k.name]),
+    );
+  }
+
+  /// Turns one paper reminder on or off; the last one stays on.
+  Future<void> setPaperKind(PaperReminder kind, bool on) async {
+    final next = {..._paperKinds};
+    on ? next.add(kind) : next.remove(kind);
+    if (next.isEmpty) return;
+    await _save(
+      () => _paperKinds = next,
+      (p) => p.setStringList(_paperKindsKey, [for (final k in next) k.name]),
     );
   }
 

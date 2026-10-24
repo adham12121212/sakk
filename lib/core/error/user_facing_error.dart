@@ -52,6 +52,7 @@ String _limitMessage(AppLocalizations l10n, String kind) {
     'products' => l10n.limitReachedProducts,
     'subscriptions' => l10n.limitReachedSubscriptions,
     'installments' => l10n.limitReachedInstallments,
+    'papers' => l10n.limitReachedPapers,
     'scan' => l10n.limitReachedScan,
     'chat' => l10n.limitReachedChat,
     'voice' => l10n.limitReachedVoice,

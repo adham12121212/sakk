@@ -245,9 +245,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get atleast8characters => 'ثمانية أحرف على الأقل';
 
   @override
-  String get categories => 'فئات';
-
-  @override
   String get product => 'منتج';
 
   @override
@@ -723,12 +720,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get search => 'بحث';
-
-  @override
-  String get filterByCategory => 'تصفية حسب الفئة';
-
-  @override
-  String get clearCategoryFilter => 'إزالة تصفية الفئة';
 
   @override
   String get openProfile => 'فتح الملف الشخصي';
@@ -1534,11 +1525,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get subscriptionsAnalyticsEmpty =>
       'لا توجد اشتراكات بعد. اضغط لإضافة نتفليكس وسبوتيفاي وغيرها.';
-
-  @override
-  String subscriptionsBreakdownNote(String currency) {
-    return 'توزيع الاشتراكات بعملة $currency';
-  }
 
   @override
   String get notifRenewedTitle => 'تم تجديد الاشتراك';
@@ -2462,4 +2448,284 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get changePhoto => 'غيّر الصورة';
+
+  @override
+  String get myPapers => 'أوراقي';
+
+  @override
+  String get papersHomeEmpty => 'البطاقة والباسبور والرخص';
+
+  @override
+  String get addPaper => 'ضيف ورقة';
+
+  @override
+  String get editPaper => 'عدّل الورقة';
+
+  @override
+  String get noPapersYet => 'مفيش أوراق لسه';
+
+  @override
+  String get noPapersBody =>
+      'احفظ البطاقة والباسبور والرخص وكروت التأمين بصورة وتاريخ الانتهاء، وصك هيفكرك قبل ما كل ورقة تخلص بشهر.';
+
+  @override
+  String get papersPrivacyNote =>
+      'أوراقك خاصة بحسابك: مش بتتشارك مع أهل البيت، ومحدش من المستخدمين التانيين يقدر يفتحها، ومش بتتبعت للذكاء الاصطناعي.';
+
+  @override
+  String get paperNationalId => 'البطاقة الشخصية';
+
+  @override
+  String get paperPassport => 'جواز السفر';
+
+  @override
+  String get paperDrivingLicence => 'رخصة القيادة';
+
+  @override
+  String get paperCarLicence => 'رخصة العربية';
+
+  @override
+  String get paperCarInsurance => 'تأمين العربية';
+
+  @override
+  String get paperHealthInsurance => 'التأمين الطبي';
+
+  @override
+  String get paperRentalContract => 'عقد الإيجار';
+
+  @override
+  String get paperOther => 'حاجة تانية';
+
+  @override
+  String get paperType => 'النوع';
+
+  @override
+  String get paperName => 'الاسم';
+
+  @override
+  String get paperNameOptional => 'الاسم (اختياري)';
+
+  @override
+  String get paperViewPhoto => 'اعرض الصورة';
+
+  @override
+  String get paperNameRequired => 'اكتب اسم للورقة';
+
+  @override
+  String get paperNumberOptional => 'الرقم (اختياري)';
+
+  @override
+  String get paperExpiryDate => 'تاريخ الانتهاء';
+
+  @override
+  String get paperPickDate => 'اختار التاريخ';
+
+  @override
+  String get paperNoExpiry => 'مالهاش تاريخ انتهاء';
+
+  @override
+  String get paperPhotos => 'الصور (اختياري)';
+
+  @override
+  String get paperFront => 'الوش';
+
+  @override
+  String get paperBack => 'الضهر';
+
+  @override
+  String get paperRemovePhoto => 'شيل الصورة';
+
+  @override
+  String get paperSaved => 'تم حفظ الورقة';
+
+  @override
+  String get paperDeleted => 'تم حذف الورقة';
+
+  @override
+  String get deletePaperQuestion => 'تحذف الورقة؟';
+
+  @override
+  String deletePaperBody(String name) {
+    return 'هيتم حذف $name وصورها.';
+  }
+
+  @override
+  String get paperExpiresToday => 'بتخلص النهارده';
+
+  @override
+  String paperExpiresInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'بتخلص بعد $daysText يوم',
+      few: 'بتخلص بعد $daysText أيام',
+      two: 'بتخلص بعد يومين',
+      one: 'بتخلص بكرة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paperValidUntil(String date) {
+    return 'سارية لحد $date';
+  }
+
+  @override
+  String paperExpiredOn(String date) {
+    return 'انتهت في $date';
+  }
+
+  @override
+  String get paperNoExpiryDate => 'من غير تاريخ انتهاء';
+
+  @override
+  String get paperStatusValid => 'سارية';
+
+  @override
+  String get paperStatusExpiringSoon => 'قربت تخلص';
+
+  @override
+  String get paperStatusExpired => 'منتهية';
+
+  @override
+  String get paperNumber => 'الرقم';
+
+  @override
+  String get copyPaperNumber => 'انسخ الرقم';
+
+  @override
+  String get paperNumberCopied => 'تم نسخ الرقم';
+
+  @override
+  String get paperNoPhotos => 'مفيش صور. اضغط تعديل عشان تضيف الوش والضهر.';
+
+  @override
+  String get notifPaperExpiringTitle => 'ورقة قربت تخلص';
+
+  @override
+  String get notifPaperExpiredTitle => 'ورقة خلصت';
+
+  @override
+  String notifPaperExpiringBody(int days, String daysText, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name بتخلص بعد $daysText يوم. وقت التجديد.',
+      few: '$name بتخلص بعد $daysText أيام. وقت التجديد.',
+      two: '$name بتخلص بعد يومين. وقت التجديد.',
+      one: '$name بتخلص بكرة. وقت التجديد.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifPaperExpiresTodayBody(String name) {
+    return '$name بتخلص النهارده.';
+  }
+
+  @override
+  String notifPaperExpiredBody(String name) {
+    return '$name خلصت. جدّدها في أقرب وقت.';
+  }
+
+  @override
+  String get reminderPapersHint => 'قبل ما كل ورقة تخلص';
+
+  @override
+  String get reminderMonthBefore => 'قبلها بشهر';
+
+  @override
+  String get reminderWeekBefore => 'قبلها بأسبوع';
+
+  @override
+  String get reminderOnExpiryDay => 'في يوم الانتهاء';
+
+  @override
+  String get featurePapers => 'الأوراق';
+
+  @override
+  String get paywallHeadlinePapers => 'كل أوراقك في مكان واحد';
+
+  @override
+  String get limitReachedPapers =>
+      'وصلت لحد الأوراق في الخطة المجانية. اشترك في Sakk Pro عشان تضيف أكتر.';
+
+  @override
+  String get statProducts => 'منتجات';
+
+  @override
+  String get statActive => 'سارية';
+
+  @override
+  String get statExpiring => 'قربت تخلص';
+
+  @override
+  String get statExpired => 'منتهية';
+
+  @override
+  String get moneyThisMonth => 'فلوس الشهر ده';
+
+  @override
+  String get subscriptionPlan => 'الباقة';
+
+  @override
+  String get subscriptionPaymentMethod => 'طريقة الدفع';
+
+  @override
+  String subscriptionMonthlyEquivalent(String amount) {
+    return 'يعني $amount في الشهر';
+  }
+
+  @override
+  String get papersNeedRenewing => 'محتاجة تجديد';
+
+  @override
+  String get profile => 'حسابي';
+
+  @override
+  String papersToRenewCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText محتاجين تجديد',
+      few: '$countText محتاجين تجديد',
+      two: 'ورقتين محتاجين تجديد',
+      one: 'ورقة محتاجة تجديد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get papersAllUpToDate => 'كلها سارية';
+
+  @override
+  String papersCountLabel(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText ورقة',
+      few: '$countText ورق',
+      two: 'ورقتين',
+      one: 'ورقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scanCameraHint => 'وجّه الكاميرا على الفاتورة أو كارت الضمان';
+
+  @override
+  String get scanOtherWays => 'طرق تانية للإضافة';
+
+  @override
+  String get scanGalleryHint => 'صورة عندك على الموبايل';
+
+  @override
+  String get scanPdfHint => 'فاتورة جاتلك على الإيميل';
+
+  @override
+  String get scanVoiceHint => 'قول اشتريت إيه واحنا نملا الباقي';
+
+  @override
+  String get scanManualHint => 'مفيش فاتورة؟ اكتب التفاصيل بنفسك';
 }

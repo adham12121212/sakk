@@ -68,6 +68,14 @@ import '../../features/installments/domain/usecase/update_installment_plan_useca
 import '../../features/installments/presentation/cubit/installment_form_cubit.dart';
 import '../../features/installments/presentation/cubit/installment_smart_add_cubit.dart';
 import '../../features/installments/presentation/cubit/installments_cubit.dart';
+import '../../features/papers/data/paper_data_source/paper_data_source.dart';
+import '../../features/papers/data/paper_repo_impl/paper_repo_impl.dart';
+import '../../features/papers/domain/paper_repo/paper_repo.dart';
+import '../../features/papers/domain/usecase/delete_paper_usecase.dart';
+import '../../features/papers/domain/usecase/get_papers_usecase.dart';
+import '../../features/papers/domain/usecase/save_paper_usecase.dart';
+import '../../features/papers/presentation/cubit/paper_form_cubit.dart';
+import '../../features/papers/presentation/cubit/papers_cubit.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_data_source.dart';
 import '../../features/subscriptions/data/subscription_data_source/subscription_local_data_source.dart';
 import '../../features/subscriptions/data/subscription_repo_impl/subscription_repo_impl.dart';
@@ -101,6 +109,7 @@ import '../service/review_prompter.dart';
 import '../service/share_intake.dart';
 import '../service/storage_service.dart';
 import '../service/installment_reminder_service.dart';
+import '../service/paper_reminder_service.dart';
 import '../service/subscription_reminder_service.dart';
 import '../service/storage_service_impl.dart';
 import '../service/supabase_client.dart';
@@ -304,6 +313,52 @@ void setupLocator() {
       getIt<UpdateSubscriptionUseCase>(),
       getIt<DeleteSubscriptionUseCase>(),
       getIt<SubscriptionsCubit>(),
+    ),
+  );
+
+  // ---- Papers ----
+  getIt.registerLazySingleton<PaperDataSource>(
+    () => PaperDataSourceImpl(Supabase.instance.client),
+  );
+  getIt.registerLazySingleton<PaperRepo>(
+    () => PaperRepoImpl(
+      getIt<PaperDataSource>(),
+      getIt<NetworkInfo>(),
+      getIt<AppLogger>(),
+    ),
+  );
+  getIt.registerLazySingleton<GetPapersUseCase>(
+    () => GetPapersUseCaseImpl(getIt<PaperRepo>()),
+  );
+  getIt.registerLazySingleton<SavePaperUseCase>(
+    () => SavePaperUseCaseImpl(getIt<PaperRepo>()),
+  );
+  getIt.registerLazySingleton<DeletePaperUseCase>(
+    () => DeletePaperUseCaseImpl(getIt<PaperRepo>()),
+  );
+  getIt.registerLazySingleton<PaperReminderService>(
+    () => PaperReminderService(
+      getUserUseCase: getIt<GetUserUseCase>(),
+      addNotificationUseCase: getIt<AddNotificationUseCase>(),
+      tracker: getIt<NotifiedWarrantiesTracker>(),
+      localNotifications: getIt<NotificationService>(),
+      logger: getIt<AppLogger>(),
+      locale: getIt<LocaleController>(),
+      settings: getIt<ReminderSettings>(),
+    ),
+  );
+  // Singleton: the Home card and the My papers screen share its list.
+  getIt.registerLazySingleton<PapersCubit>(
+    () => PapersCubit(
+      getIt<GetPapersUseCase>(),
+      reminders: getIt<PaperReminderService>(),
+    ),
+  );
+  getIt.registerFactory<PaperFormCubit>(
+    () => PaperFormCubit(
+      getIt<SavePaperUseCase>(),
+      getIt<DeletePaperUseCase>(),
+      getIt<PapersCubit>(),
     ),
   );
 

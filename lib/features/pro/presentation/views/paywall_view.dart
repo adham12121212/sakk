@@ -147,6 +147,7 @@ class _Hero extends StatelessWidget {
       PaywallReason.productsLimit => l10n.paywallHeadlineProducts,
       PaywallReason.subscriptionsLimit => l10n.paywallHeadlineSubscriptions,
       PaywallReason.installmentsLimit => l10n.paywallHeadlineInstallments,
+      PaywallReason.papersLimit => l10n.paywallHeadlinePapers,
       PaywallReason.monthlySummary => l10n.paywallHeadlineSummary,
       PaywallReason.pdfReport => l10n.paywallHeadlinePdfReport,
       PaywallReason.voice => l10n.paywallHeadlineVoice,
@@ -240,6 +241,11 @@ class _ComparisonTable extends StatelessWidget {
       (
         l10n.featureInstallments,
         freeKnown ? count(status.item(LimitedItem.installments).limit) : '–',
+        l10n.valueUnlimited,
+      ),
+      (
+        l10n.featurePapers,
+        freeKnown ? count(status.item(LimitedItem.papers).limit) : '–',
         l10n.valueUnlimited,
       ),
       (

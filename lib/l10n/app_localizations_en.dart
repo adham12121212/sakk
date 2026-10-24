@@ -245,9 +245,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get atleast8characters => 'At least 8 characters';
 
   @override
-  String get categories => 'Categories';
-
-  @override
   String get product => 'product';
 
   @override
@@ -720,12 +717,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get search => 'Search';
-
-  @override
-  String get filterByCategory => 'Filter by category';
-
-  @override
-  String get clearCategoryFilter => 'Clear category filter';
 
   @override
   String get openProfile => 'Open profile';
@@ -1514,11 +1505,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionsAnalyticsEmpty =>
       'No subscriptions yet. Tap to add Netflix, Spotify and more.';
-
-  @override
-  String subscriptionsBreakdownNote(String currency) {
-    return 'Breakdown of $currency subscriptions';
-  }
 
   @override
   String get notifRenewedTitle => 'Subscription renewed';
@@ -2409,4 +2395,277 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changePhoto => 'Change photo';
+
+  @override
+  String get myPapers => 'My papers';
+
+  @override
+  String get papersHomeEmpty => 'Your ID, passport and licences';
+
+  @override
+  String get addPaper => 'Add paper';
+
+  @override
+  String get editPaper => 'Edit paper';
+
+  @override
+  String get noPapersYet => 'No papers yet';
+
+  @override
+  String get noPapersBody =>
+      'Save your ID, passport, licences and insurance cards with a photo and the expiry date. Sakk reminds you a month before each one expires.';
+
+  @override
+  String get papersPrivacyNote =>
+      'Your papers are private to your account: they aren\'t shared with your household, other users can\'t open them, and they\'re never sent to the AI.';
+
+  @override
+  String get paperNationalId => 'National ID';
+
+  @override
+  String get paperPassport => 'Passport';
+
+  @override
+  String get paperDrivingLicence => 'Driving licence';
+
+  @override
+  String get paperCarLicence => 'Car licence';
+
+  @override
+  String get paperCarInsurance => 'Car insurance';
+
+  @override
+  String get paperHealthInsurance => 'Medical insurance';
+
+  @override
+  String get paperRentalContract => 'Rental contract';
+
+  @override
+  String get paperOther => 'Other';
+
+  @override
+  String get paperType => 'Type';
+
+  @override
+  String get paperName => 'Name';
+
+  @override
+  String get paperNameOptional => 'Name (optional)';
+
+  @override
+  String get paperViewPhoto => 'View photo';
+
+  @override
+  String get paperNameRequired => 'Enter a name for this paper';
+
+  @override
+  String get paperNumberOptional => 'Number (optional)';
+
+  @override
+  String get paperExpiryDate => 'Expiry date';
+
+  @override
+  String get paperPickDate => 'Pick a date';
+
+  @override
+  String get paperNoExpiry => 'Doesn\'t expire';
+
+  @override
+  String get paperPhotos => 'Photos (optional)';
+
+  @override
+  String get paperFront => 'Front';
+
+  @override
+  String get paperBack => 'Back';
+
+  @override
+  String get paperRemovePhoto => 'Remove photo';
+
+  @override
+  String get paperSaved => 'Paper saved';
+
+  @override
+  String get paperDeleted => 'Paper deleted';
+
+  @override
+  String get deletePaperQuestion => 'Delete paper?';
+
+  @override
+  String deletePaperBody(String name) {
+    return '$name and its photos will be deleted.';
+  }
+
+  @override
+  String get paperExpiresToday => 'Expires today';
+
+  @override
+  String paperExpiresInDays(int days, String daysText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expires in $daysText days',
+      one: 'Expires tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paperValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String paperExpiredOn(String date) {
+    return 'Expired on $date';
+  }
+
+  @override
+  String get paperNoExpiryDate => 'No expiry date';
+
+  @override
+  String get paperStatusValid => 'Valid';
+
+  @override
+  String get paperStatusExpiringSoon => 'Expiring soon';
+
+  @override
+  String get paperStatusExpired => 'Expired';
+
+  @override
+  String get paperNumber => 'Number';
+
+  @override
+  String get copyPaperNumber => 'Copy number';
+
+  @override
+  String get paperNumberCopied => 'Number copied';
+
+  @override
+  String get paperNoPhotos => 'No photos. Tap Edit to add the front and back.';
+
+  @override
+  String get notifPaperExpiringTitle => 'Paper expiring soon';
+
+  @override
+  String get notifPaperExpiredTitle => 'Paper expired';
+
+  @override
+  String notifPaperExpiringBody(int days, String daysText, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$name expires in $daysText days. Time to renew it.',
+      one: '$name expires tomorrow. Time to renew it.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifPaperExpiresTodayBody(String name) {
+    return '$name expires today.';
+  }
+
+  @override
+  String notifPaperExpiredBody(String name) {
+    return '$name has expired. Renew it as soon as you can.';
+  }
+
+  @override
+  String get reminderPapersHint => 'Before each paper expires';
+
+  @override
+  String get reminderMonthBefore => 'A month before';
+
+  @override
+  String get reminderWeekBefore => 'A week before';
+
+  @override
+  String get reminderOnExpiryDay => 'On the expiry day';
+
+  @override
+  String get featurePapers => 'Papers';
+
+  @override
+  String get paywallHeadlinePapers => 'Keep all your papers in one place';
+
+  @override
+  String get limitReachedPapers =>
+      'You\'ve reached the free plan\'s paper limit. Upgrade to Sakk Pro to add more.';
+
+  @override
+  String get statProducts => 'Products';
+
+  @override
+  String get statActive => 'Active';
+
+  @override
+  String get statExpiring => 'Expiring';
+
+  @override
+  String get statExpired => 'Expired';
+
+  @override
+  String get moneyThisMonth => 'Money this month';
+
+  @override
+  String get subscriptionPlan => 'Plan';
+
+  @override
+  String get subscriptionPaymentMethod => 'Payment method';
+
+  @override
+  String subscriptionMonthlyEquivalent(String amount) {
+    return 'That\'s $amount a month';
+  }
+
+  @override
+  String get papersNeedRenewing => 'Needs renewing';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String papersToRenewCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText need renewing',
+      one: '1 needs renewing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get papersAllUpToDate => 'All up to date';
+
+  @override
+  String papersCountLabel(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText papers',
+      one: '1 paper',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scanCameraHint =>
+      'Point the camera at the receipt or warranty card';
+
+  @override
+  String get scanOtherWays => 'Other ways to add';
+
+  @override
+  String get scanGalleryHint => 'A photo you already have';
+
+  @override
+  String get scanPdfHint => 'An invoice a store emailed you';
+
+  @override
+  String get scanVoiceHint => 'Say what you bought and we fill it in';
+
+  @override
+  String get scanManualHint => 'No receipt? Type the details in';
 }

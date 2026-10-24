@@ -11,7 +11,8 @@
 ///               installments alike; told apart by the payload (an
 ///               installment's starts with "installment|")
 /// Each service only touches its own slots, so syncing one never cancels the
-/// other's reminders.
+/// other's reminders. Paper reminders are below zero (see
+/// [paperReminderNotificationId]), outside every slot.
 ///
 /// FNV-1a rather than String.hashCode, which Dart doesn't guarantee across
 /// releases, so an app update can still find and cancel what an older
@@ -26,8 +27,16 @@ int reminderNotificationId(String entityId, int slot) {
   return (hash & 0x7FFFFFFF) ~/ 10 * 10 + slot;
 }
 
-/// The slot of a reminder id (see [reminderNotificationId]).
-int reminderSlot(int id) => id % 10;
+/// The slot of a reminder id (see [reminderNotificationId]); -1, no slot,
+/// for a paper reminder.
+int reminderSlot(int id) => id < 0 ? -1 : id % 10;
+
+/// Paper reminders: the same hash, made negative so they never share an id
+/// or a slot with the reminders above. [index] is the reminder (0–9).
+int paperReminderNotificationId(String paperId, int index) =>
+    -1 - reminderNotificationId(paperId, index);
+
+bool isPaperReminderId(int id) => id < 0;
 
 const warrantyReminderSlots = {0, 1, 2};
 const subscriptionReminderSlots = {5, 6, 7, 8};
