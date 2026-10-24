@@ -15,8 +15,8 @@ import '../../../../core/constant/app_colors.dart';
 /// Which purchases the total counts, by purchase date.
 enum SpentPeriod { thisMonth, thisYear, allTime }
 
-/// What was spent on the products bought in [period] of [now]'s calendar.
-double totalSpentIn(
+/// The products bought in [period] of [now]'s calendar.
+List<ProductEntity> productsIn(
   List<ProductEntity> products,
   SpentPeriod period,
   DateTime now,
@@ -27,9 +27,20 @@ double totalSpentIn(
     SpentPeriod.thisMonth =>
       p.purchaseDate.year == now.year && p.purchaseDate.month == now.month,
   };
-  return products
-      .where(counts)
-      .fold<double>(0, (sum, p) => sum + (p.price ?? 0));
+  return products.where(counts).toList();
+}
+
+/// What was spent on the products bought in [period] of [now]'s calendar.
+double totalSpentIn(
+  List<ProductEntity> products,
+  SpentPeriod period,
+  DateTime now,
+) {
+  return productsIn(
+    products,
+    period,
+    now,
+  ).fold<double>(0, (sum, p) => sum + (p.price ?? 0));
 }
 
 /// Brand-gradient hero card with what was spent this month, this year or
@@ -64,9 +75,12 @@ class _TotalSpentCardState extends State<TotalSpentCard> {
     final locale = appLocale.languageCode == 'ar'
         ? 'ar_EG'
         : appLocale.toLanguageTag();
-    final amount = NumberFormat.decimalPattern(
-      locale,
-    ).format(totalSpentIn(state.products, _period, DateTime.now()).round());
+    final format = NumberFormat.decimalPattern(locale);
+    final inPeriod = productsIn(state.products, _period, DateTime.now());
+    final total = inPeriod.fold<double>(0, (sum, p) => sum + (p.price ?? 0));
+    final amount = format.format(total.round());
+    // Averaged over the products that have a price.
+    final priced = inPeriod.where((p) => p.price != null).length;
     final visibility = getIt<AmountVisibilityController>();
 
     return Container(
@@ -202,6 +216,31 @@ class _TotalSpentCardState extends State<TotalSpentCard> {
                       ),
                     ),
                   ),
+                  if (!isInitialLoading) ...[
+                    const SizedBox(height: 2),
+                    // The average would give the total away, so it hides
+                    // with it.
+                    ValueListenableBuilder<bool>(
+                      valueListenable: visibility,
+                      builder: (context, hidden, _) => Text(
+                        [
+                          l10n.analyticsProductsCount(
+                            inPeriod.length,
+                            format.format(inPeriod.length),
+                          ),
+                          if (!hidden && priced > 0)
+                            l10n.analyticsAverage(
+                              '${format.format((total / priced).round())} EGP',
+                            ),
+                        ].join(' · '),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withValues(alpha: 0.85),
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 14),
                   _PeriodSwitch(
                     selected: _period,

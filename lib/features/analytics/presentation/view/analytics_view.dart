@@ -25,6 +25,7 @@ import '../../../subscriptions/presentation/widgets/subscriptions_analytics_card
 import '../../domain/spending_insights.dart';
 import '../widgets/category_break_down_card.dart';
 import '../widgets/spending_insights_card.dart';
+import '../widgets/stat_tiles.dart';
 import '../widgets/total_spent_card.dart';
 import '../widgets/warranty_status_card.dart';
 
@@ -38,6 +39,9 @@ class AnalyticsView extends StatefulWidget {
 class _AnalyticsViewState extends State<AnalyticsView> {
   /// In a household: only my products (default) or everyone's.
   bool _householdScope = false;
+
+  /// Space between cards.
+  static const _gap = 12.0;
   final _subscriptionsCubit = getIt<SubscriptionsCubit>();
   final _installmentsCubit = getIt<InstallmentsCubit>();
 
@@ -76,6 +80,8 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                         .where((p) => p.isOwnedBy(myId))
                         .toList(),
                   );
+            final years = spendingByYear(state.products);
+            final stores = topStores(state.products);
             return AppRefreshIndicator(
               onRefresh: refresh,
               child: Column(
@@ -118,10 +124,8 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                   onChanged: (v) =>
                                       setState(() => _householdScope = v),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: _gap),
                               ],
-                              SectionHeader(title: l10n.products),
-                              const SizedBox(height: 4),
                               // One empty state instead of a stack of
                               // empty cards.
                               if (state.products.isEmpty && !state.isLoading)
@@ -142,25 +146,24 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                 )
                               else ...[
                                 TotalSpentCard(state: state, l10n: l10n),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: _gap),
+                                StatTiles(state: state, l10n: l10n),
+                                const SizedBox(height: _gap),
                                 WarrantyStatusCard(state: state, l10n: l10n),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: _gap),
                                 CategoryBreakdownCard(
                                   products: state.products,
                                   isLoading: state.isLoading,
                                   l10n: l10n,
                                 ),
-                                // Products without prices have no insights.
-                                if (spendingByYear(
-                                  state.products,
-                                ).isNotEmpty) ...[
-                                  const SizedBox(height: 24),
-                                  SectionHeader(title: l10n.analyticsInsights),
-                                  const SizedBox(height: 4),
-                                  SpendingInsightsCard(
-                                    products: state.products,
-                                    l10n: l10n,
-                                  ),
+                                // Products without prices have no spending.
+                                if (years.isNotEmpty) ...[
+                                  const SizedBox(height: _gap),
+                                  SpendingByYearCard(years: years, l10n: l10n),
+                                ],
+                                if (stores.isNotEmpty) ...[
+                                  const SizedBox(height: _gap),
+                                  TopStoresCard(stores: stores, l10n: l10n),
                                 ],
                               ],
                               // Subscriptions and installments are private, so only in "Mine".
@@ -181,7 +184,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                         ),
                                       ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: _gap),
                                 BlocBuilder<
                                   InstallmentsCubit,
                                   InstallmentsState

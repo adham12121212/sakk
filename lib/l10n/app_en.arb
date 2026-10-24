@@ -1248,10 +1248,15 @@
   "periodThisYear": "This year",
   "periodAllTime": "All time",
   "analyticsMoney": "Money",
-  "analyticsInsights": "Insights",
   "installmentSectionDetails": "Details",
   "installmentSectionPrice": "Price",
   "installmentSectionPayments": "Payments",
   "analyticsEmptyTitle": "No stats yet",
-  "analyticsEmptyMessage": "Add your first product to see your spending, warranties and categories here."
+  "analyticsEmptyMessage": "Add your first product to see your spending, warranties and categories here.",
+  "analyticsProductsCount": "{count, plural, one{1 product} other{{countText} products}}",
+  "@analyticsProductsCount": {"placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}},
+  "analyticsAverage": "avg {amount}",
+  "@analyticsAverage": {"placeholders": {"amount": {"type": "String"}}},
+  "analyticsShowAllCategories": "{count, plural, other{Show all {countText}}}",
+  "@analyticsShowAllCategories": {"placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}}
 }

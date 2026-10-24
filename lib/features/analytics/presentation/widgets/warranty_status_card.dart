@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:sakk/features/analytics/presentation/widgets/segment.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/util/warranty_progress_color.dart';
-import '../../../products/domain/entities/product_entity.dart';
 import '../../../../core/util/localized_number.dart';
+import '../../../../core/util/warranty_progress_color.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_state.dart';
-import 'donut_chart_painter.dart';
 import 'legend_row.dart';
 
-/// Donut of active / expiring / expired warranties with the total inside.
+/// One bar split into active / expiring / expired warranties, with a
+/// legend of counts and shares below.
 class WarrantyStatusCard extends StatelessWidget {
   const WarrantyStatusCard({
     super.key,
@@ -25,12 +24,19 @@ class WarrantyStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isInitialLoading = state.isLoading && state.products.isEmpty;
-    // Fake but plausible proportions purely so the donut has a shape to
+    // Fake but plausible proportions purely so the bar has a shape to
     // skeletonize — never shown as real data.
-    final active = isInitialLoading ? 2 : state.active;
-    final expiring = isInitialLoading ? 1 : state.expiring;
-    final expired = isInitialLoading ? 1 : state.expired;
-    final total = active + expiring + expired;
+    final counts = {
+      WarrantyStatus.active: isInitialLoading ? 2 : state.active,
+      WarrantyStatus.expiring: isInitialLoading ? 1 : state.expiring,
+      WarrantyStatus.expired: isInitialLoading ? 1 : state.expired,
+    };
+    final total = counts.values.fold(0, (a, b) => a + b);
+    final labels = {
+      WarrantyStatus.active: l10n.active,
+      WarrantyStatus.expiring: l10n.expiring,
+      WarrantyStatus.expired: l10n.expired,
+    };
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final locale = Localizations.localeOf(context);
@@ -39,105 +45,58 @@ class WarrantyStatusCard extends StatelessWidget {
     return AppCard(
       padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(l10n.warrantyStatus, style: textTheme.titleMedium),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           if (total == 0)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                l10n.noProductsYet,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+            Text(
+              l10n.noProductsYet,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
               ),
             )
           else
             Skeletonizer(
               enabled: isInitialLoading,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    width: 120,
-                    height: 120,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Skeleton.leaf(
-                          child: CustomPaint(
-                            size: const Size.square(120),
-                            painter: DonutChartPainter(
-                              trackColor: colorScheme.surfaceContainerHighest,
-                              segments: [
-                                Segment(
-                                  active.toDouble(),
-                                  warrantyStatusColor(
-                                    context,
-                                    WarrantyStatus.active,
-                                  ),
-                                ),
-                                Segment(
-                                  expiring.toDouble(),
-                                  warrantyStatusColor(
-                                    context,
-                                    WarrantyStatus.expiring,
-                                  ),
-                                ),
-                                Segment(
-                                  expired.toDouble(),
-                                  warrantyStatusColor(
-                                    context,
-                                    WarrantyStatus.expired,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
+                  Skeleton.leaf(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(99),
+                      child: SizedBox(
+                        height: 12,
+                        child: Row(
                           children: [
-                            Text(n(total), style: textTheme.headlineSmall),
-                            Text(l10n.products, style: textTheme.bodySmall),
+                            for (final (i, e)
+                                in counts.entries
+                                    .where((e) => e.value > 0)
+                                    .indexed) ...[
+                              // A sliver of surface between segments.
+                              if (i > 0) const SizedBox(width: 2),
+                              Expanded(
+                                flex: e.value,
+                                child: ColoredBox(
+                                  color: warrantyStatusColor(context, e.key),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 24),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        LegendRow(
-                          color: warrantyStatusColor(
-                            context,
-                            WarrantyStatus.active,
-                          ),
-                          label: l10n.active,
-                          value: n(active),
-                        ),
-                        const SizedBox(height: 14),
-                        LegendRow(
-                          color: warrantyStatusColor(
-                            context,
-                            WarrantyStatus.expiring,
-                          ),
-                          label: l10n.expiring,
-                          value: n(expiring),
-                        ),
-                        const SizedBox(height: 14),
-                        LegendRow(
-                          color: warrantyStatusColor(
-                            context,
-                            WarrantyStatus.expired,
-                          ),
-                          label: l10n.expired,
-                          value: n(expired),
-                        ),
-                      ],
+                  const SizedBox(height: 16),
+                  for (final (i, e) in counts.entries.indexed) ...[
+                    if (i > 0) const SizedBox(height: 10),
+                    LegendRow(
+                      color: warrantyStatusColor(context, e.key),
+                      label: labels[e.key]!,
+                      value:
+                          '${n(e.value)}  ·  ${n((e.value / total * 100).round())}%',
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

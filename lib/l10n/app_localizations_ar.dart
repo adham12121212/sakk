@@ -2742,9 +2742,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get analyticsMoney => 'الفلوس';
 
   @override
-  String get analyticsInsights => 'تحليلات';
-
-  @override
   String get installmentSectionDetails => 'التفاصيل';
 
   @override
@@ -2759,4 +2756,33 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get analyticsEmptyMessage =>
       'أضف أول منتج لترى مصروفاتك وضماناتك وفئاتك هنا.';
+
+  @override
+  String analyticsProductsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText منتج',
+      many: '$countText منتجًا',
+      few: '$countText منتجات',
+      two: 'منتجان',
+      one: 'منتج واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsAverage(String amount) {
+    return 'متوسط $amount';
+  }
+
+  @override
+  String analyticsShowAllCategories(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض الكل ($countText)',
+    );
+    return '$_temp0';
+  }
 }

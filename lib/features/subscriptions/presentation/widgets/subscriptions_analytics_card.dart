@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/util/localized_number.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/empty_card_prompt.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/widgets/segmented_toggle.dart';
 import '../../domain/entities/subscription_category.dart';
@@ -38,7 +40,6 @@ class _SubscriptionsAnalyticsCardState
     final state = widget.state;
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context);
     final isInitialLoading = state.isLoading && !state.hasLoadedOnce;
 
@@ -70,6 +71,17 @@ class _SubscriptionsAnalyticsCardState
     final entries = byCategory.entries.where((e) => e.value > 0).toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
+    if (!isInitialLoading && state.subscriptions.isEmpty) {
+      return AppCard(
+        onTap: widget.onTap,
+        child: EmptyCardPrompt(
+          icon: AppIcons.subscriptions,
+          title: l10n.subscriptionsAnalyticsTitle,
+          message: l10n.subscriptionsAnalyticsEmpty,
+        ),
+      );
+    }
+
     return AppCard(
       onTap: widget.onTap,
       padding: const EdgeInsets.all(20),
@@ -89,52 +101,44 @@ class _SubscriptionsAnalyticsCardState
             ),
           ],
           const SizedBox(height: 16),
-          if (!isInitialLoading && state.subscriptions.isEmpty)
-            Text(
-              l10n.subscriptionsAnalyticsEmpty,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            )
-          else
-            Skeletonizer(
-              enabled: isInitialLoading,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _Figure(
-                          label: l10n.billingMonthly,
-                          value: formatMoney(context, mainMonthly, main),
-                        ),
+          Skeletonizer(
+            enabled: isInitialLoading,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Figure(
+                        label: l10n.billingMonthly,
+                        value: formatMoney(context, mainMonthly, main),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _Figure(
-                          label: l10n.billingYearly,
-                          value: formatMoney(context, mainMonthly * 12, main),
-                        ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _Figure(
+                        label: l10n.billingYearly,
+                        value: formatMoney(context, mainMonthly * 12, main),
                       ),
-                    ],
-                  ),
-                  if (entries.isNotEmpty) ...[
-                    const SizedBox(height: 20),
-                    for (final (i, entry) in entries.indexed) ...[
-                      if (i > 0) const SizedBox(height: 14),
-                      _CategoryRow(
-                        category: entry.key,
-                        amount: formatMoney(context, entry.value, main),
-                        share: mainMonthly == 0 ? 0 : entry.value / mainMonthly,
-                        percent:
-                            '${formatLocalizedInt(locale, mainMonthly == 0 ? 0 : (entry.value / mainMonthly * 100).round())}%',
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+                if (entries.isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  for (final (i, entry) in entries.indexed) ...[
+                    if (i > 0) const SizedBox(height: 14),
+                    _CategoryRow(
+                      category: entry.key,
+                      amount: formatMoney(context, entry.value, main),
+                      share: mainMonthly == 0 ? 0 : entry.value / mainMonthly,
+                      percent:
+                          '${formatLocalizedInt(locale, mainMonthly == 0 ? 0 : (entry.value / mainMonthly * 100).round())}%',
+                    ),
                   ],
                 ],
-              ),
+              ],
             ),
+          ),
         ],
       ),
     );

@@ -2682,9 +2682,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analyticsMoney => 'Money';
 
   @override
-  String get analyticsInsights => 'Insights';
-
-  @override
   String get installmentSectionDetails => 'Details';
 
   @override
@@ -2699,4 +2696,30 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get analyticsEmptyMessage =>
       'Add your first product to see your spending, warranties and categories here.';
+
+  @override
+  String analyticsProductsCount(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countText products',
+      one: '1 product',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analyticsAverage(String amount) {
+    return 'avg $amount';
+  }
+
+  @override
+  String analyticsShowAllCategories(int count, String countText) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show all $countText',
+    );
+    return '$_temp0';
+  }
 }

@@ -720,10 +720,12 @@
   "periodThisYear": "السنة دي",
   "periodAllTime": "كل الوقت",
   "analyticsMoney": "الفلوس",
-  "analyticsInsights": "تحليلات",
   "installmentSectionDetails": "التفاصيل",
   "installmentSectionPrice": "السعر",
   "installmentSectionPayments": "الأقساط",
   "analyticsEmptyTitle": "لا توجد إحصائيات بعد",
-  "analyticsEmptyMessage": "أضف أول منتج لترى مصروفاتك وضماناتك وفئاتك هنا."
+  "analyticsEmptyMessage": "أضف أول منتج لترى مصروفاتك وضماناتك وفئاتك هنا.",
+  "analyticsProductsCount": "{count, plural, one{منتج واحد} two{منتجان} few{{countText} منتجات} many{{countText} منتجًا} other{{countText} منتج}}",
+  "analyticsAverage": "متوسط {amount}",
+  "analyticsShowAllCategories": "{count, plural, other{عرض الكل ({countText})}}"
 }

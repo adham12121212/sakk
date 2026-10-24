@@ -4422,12 +4422,6 @@ abstract class AppLocalizations {
   /// **'Money'**
   String get analyticsMoney;
 
-  /// No description provided for @analyticsInsights.
-  ///
-  /// In en, this message translates to:
-  /// **'Insights'**
-  String get analyticsInsights;
-
   /// No description provided for @installmentSectionDetails.
   ///
   /// In en, this message translates to:
@@ -4457,6 +4451,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add your first product to see your spending, warranties and categories here.'**
   String get analyticsEmptyMessage;
+
+  /// No description provided for @analyticsProductsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 product} other{{countText} products}}'**
+  String analyticsProductsCount(int count, String countText);
+
+  /// No description provided for @analyticsAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'avg {amount}'**
+  String analyticsAverage(String amount);
+
+  /// No description provided for @analyticsShowAllCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{Show all {countText}}}'**
+  String analyticsShowAllCategories(int count, String countText);
 }
 
 class _AppLocalizationsDelegate
