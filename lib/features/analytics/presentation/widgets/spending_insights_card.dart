@@ -30,9 +30,12 @@ class SpendingInsightsCard extends StatelessWidget {
 
     final textTheme = Theme.of(context).textTheme;
     final appLocale = Localizations.localeOf(context);
-    final format = NumberFormat.decimalPattern(
-      appLocale.languageCode == 'ar' ? 'ar_EG' : appLocale.toLanguageTag(),
-    );
+    final tag = appLocale.languageCode == 'ar'
+        ? 'ar_EG'
+        : appLocale.toLanguageTag();
+    final format = NumberFormat.decimalPattern(tag);
+    // Years without a thousands separator ("2026", not "2,026").
+    final yearFormat = NumberFormat('0', tag);
 
     return ValueListenableBuilder<bool>(
       valueListenable: getIt<AmountVisibilityController>(),
@@ -45,7 +48,7 @@ class SpendingInsightsCard extends StatelessWidget {
             const SizedBox(height: 12),
             for (final e in years)
               _BarRow(
-                label: format.format(e.key),
+                label: yearFormat.format(e.key),
                 amount: '${format.format(e.value.round())} EGP',
                 share:
                     e.value /

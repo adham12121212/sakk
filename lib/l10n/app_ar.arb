@@ -720,5 +720,8 @@
   "periodThisYear": "السنة دي",
   "periodAllTime": "كل الوقت",
   "analyticsMoney": "الفلوس",
-  "analyticsInsights": "تحليلات"
+  "analyticsInsights": "تحليلات",
+  "installmentSectionDetails": "التفاصيل",
+  "installmentSectionPrice": "السعر",
+  "installmentSectionPayments": "الأقساط"
 }

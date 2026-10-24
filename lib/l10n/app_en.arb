@@ -1248,5 +1248,8 @@
   "periodThisYear": "This year",
   "periodAllTime": "All time",
   "analyticsMoney": "Money",
-  "analyticsInsights": "Insights"
+  "analyticsInsights": "Insights",
+  "installmentSectionDetails": "Details",
+  "installmentSectionPrice": "Price",
+  "installmentSectionPayments": "Payments"
 }

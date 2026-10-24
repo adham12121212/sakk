@@ -2683,4 +2683,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analyticsInsights => 'Insights';
+
+  @override
+  String get installmentSectionDetails => 'Details';
+
+  @override
+  String get installmentSectionPrice => 'Price';
+
+  @override
+  String get installmentSectionPayments => 'Payments';
 }

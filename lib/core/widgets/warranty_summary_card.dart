@@ -137,6 +137,8 @@ class _SplitBar extends StatelessWidget {
         child: shown.isEmpty
             ? ColoredBox(color: empty)
             : Row(
+                // Full height: an empty ColoredBox is otherwise 0 tall.
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   for (final (i, (count, color)) in shown.indexed) ...[
                     if (i > 0) const SizedBox(width: 3),

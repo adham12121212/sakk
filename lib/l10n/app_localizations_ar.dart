@@ -2743,4 +2743,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get analyticsInsights => 'تحليلات';
+
+  @override
+  String get installmentSectionDetails => 'التفاصيل';
+
+  @override
+  String get installmentSectionPrice => 'السعر';
+
+  @override
+  String get installmentSectionPayments => 'الأقساط';
 }

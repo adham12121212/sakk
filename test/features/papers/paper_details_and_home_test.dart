@@ -133,6 +133,15 @@ void main() {
     expect(find.text('9 Active', findRichText: true), findsOneWidget);
     expect(find.text('2 Expiring', findRichText: true), findsOneWidget);
     expect(find.text('1 Expired', findRichText: true), findsOneWidget);
+    // The split bar's parts are drawn (they were 0 tall once).
+    final parts = find.descendant(
+      of: find.byType(WarrantySummaryCard),
+      matching: find.byType(ColoredBox),
+    );
+    expect(parts, findsNWidgets(3));
+    for (final part in parts.evaluate()) {
+      expect(tester.getSize(find.byWidget(part.widget)).height, 8);
+    }
 
     // Nothing yet, in Arabic on a small phone.
     tester.view.physicalSize = const Size(320, 640);

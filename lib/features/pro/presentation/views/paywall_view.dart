@@ -227,42 +227,50 @@ class _ComparisonTable extends StatelessWidget {
         ? l10n.valueUnlimited
         : l10n.valuePerDay(formatLocalizedInt(locale, n));
 
-    final rows = <(String, String, String)>[
-      (
-        l10n.featureProducts,
-        freeKnown ? count(status.item(LimitedItem.products).limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (
-        l10n.featureSubscriptions,
-        freeKnown ? count(status.item(LimitedItem.subscriptions).limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (
-        l10n.featureInstallments,
-        freeKnown ? count(status.item(LimitedItem.installments).limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (
-        l10n.featurePapers,
-        freeKnown ? count(status.item(LimitedItem.papers).limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (
-        l10n.featureScans,
-        freeKnown ? perDay(status.scan.limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (
-        l10n.featureChat,
-        freeKnown ? perDay(status.chat.limit) : '–',
-        l10n.valueUnlimited,
-      ),
-      (l10n.featureReminders, l10n.valueBasic, l10n.valueSmart),
-      (l10n.featureSummary, '✕', '✓'),
-      (l10n.featurePdfReport, '✕', '✓'),
-      (l10n.featureVoice, '✕', '✓'),
-    ];
+    final rows =
+        <(String, String, String)>[
+            (
+              l10n.featureProducts,
+              freeKnown ? count(status.item(LimitedItem.products).limit) : '–',
+              l10n.valueUnlimited,
+            ),
+            (
+              l10n.featureSubscriptions,
+              freeKnown
+                  ? count(status.item(LimitedItem.subscriptions).limit)
+                  : '–',
+              l10n.valueUnlimited,
+            ),
+            (
+              l10n.featureInstallments,
+              freeKnown
+                  ? count(status.item(LimitedItem.installments).limit)
+                  : '–',
+              l10n.valueUnlimited,
+            ),
+            (
+              l10n.featurePapers,
+              freeKnown ? count(status.item(LimitedItem.papers).limit) : '–',
+              l10n.valueUnlimited,
+            ),
+            (
+              l10n.featureScans,
+              freeKnown ? perDay(status.scan.limit) : '–',
+              l10n.valueUnlimited,
+            ),
+            (
+              l10n.featureChat,
+              freeKnown ? perDay(status.chat.limit) : '–',
+              l10n.valueUnlimited,
+            ),
+            (l10n.featureReminders, l10n.valueBasic, l10n.valueSmart),
+            (l10n.featureSummary, '✕', '✓'),
+            (l10n.featurePdfReport, '✕', '✓'),
+            (l10n.featureVoice, '✕', '✓'),
+          ]
+          // A row where the free plan already gets the same as Pro (e.g. no
+          // product limit right now) doesn't say what Pro adds.
+          ..removeWhere((row) => row.$2 == row.$3);
 
     final header = textTheme.labelLarge?.copyWith(
       color: colorScheme.onSurfaceVariant,

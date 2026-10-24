@@ -4427,6 +4427,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insights'**
   String get analyticsInsights;
+
+  /// No description provided for @installmentSectionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get installmentSectionDetails;
+
+  /// No description provided for @installmentSectionPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get installmentSectionPrice;
+
+  /// No description provided for @installmentSectionPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get installmentSectionPayments;
 }
 
 class _AppLocalizationsDelegate
