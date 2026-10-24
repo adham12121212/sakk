@@ -8,8 +8,8 @@ import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/entities/product_entity.dart';
 
-/// Categories ranked by product count: tinted icon, name, count, percentage
-/// and a slim bar in the category colour.
+/// Categories ranked by product count, as rows in one card: tinted icon,
+/// name, count, percentage and a slim bar in the category colour.
 class CategoryBreakdownCard extends StatelessWidget {
   const CategoryBreakdownCard({
     super.key,
@@ -44,40 +44,46 @@ class CategoryBreakdownCard extends StatelessWidget {
     final entries = counts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    return AppCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.categoryBreakdown, style: textTheme.titleMedium),
-          const SizedBox(height: 16),
-          if (!isInitialLoading && total == 0)
-            Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: 2, bottom: 8),
+          child: Text(l10n.categoryBreakdown, style: textTheme.titleMedium),
+        ),
+        if (!isInitialLoading && total == 0)
+          AppCard(
+            child: Text(
               l10n.noProductsYet,
               style: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
-            )
-          else
-            Skeletonizer(
-              enabled: isInitialLoading,
-              child: Column(
-                children: [
-                  for (final (i, entry) in entries.indexed) ...[
-                    if (i > 0) const SizedBox(height: 16),
-                    _CategoryRow(
+            ),
+          )
+        else
+          Skeletonizer(
+            enabled: isInitialLoading,
+            // One row per category, a hairline between them.
+            child: GroupedCard(
+              children: [
+                for (final entry in entries)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    child: _CategoryRow(
                       category: entry.key,
                       count: formatLocalizedInt(locale, entry.value),
                       share: entry.value / total,
                       percent:
                           '${formatLocalizedInt(locale, (entry.value / total * 100).round())}%',
                     ),
-                  ],
-                ],
-              ),
+                  ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

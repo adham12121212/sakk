@@ -1243,5 +1243,10 @@
   "scanGalleryHint": "A photo you already have",
   "scanPdfHint": "An invoice a store emailed you",
   "scanVoiceHint": "Say what you bought and we fill it in",
-  "scanManualHint": "No receipt? Type the details in"
+  "scanManualHint": "No receipt? Type the details in",
+  "periodThisMonth": "This month",
+  "periodThisYear": "This year",
+  "periodAllTime": "All time",
+  "analyticsMoney": "Money",
+  "analyticsInsights": "Insights"
 }

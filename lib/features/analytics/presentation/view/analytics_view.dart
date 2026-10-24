@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/section_header.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -115,6 +116,8 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                 ),
                                 const SizedBox(height: 16),
                               ],
+                              SectionHeader(title: l10n.products),
+                              const SizedBox(height: 4),
                               TotalSpentCard(state: state, l10n: l10n),
                               const SizedBox(height: 16),
                               WarrantyStatusCard(state: state, l10n: l10n),
@@ -124,14 +127,18 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                                 isLoading: state.isLoading,
                                 l10n: l10n,
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 24),
+                              SectionHeader(title: l10n.analyticsInsights),
+                              const SizedBox(height: 4),
                               SpendingInsightsCard(
                                 products: state.products,
                                 l10n: l10n,
                               ),
                               // Subscriptions and installments are private, so only in "Mine".
                               if (!(inHousehold && _householdScope)) ...[
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 24),
+                                SectionHeader(title: l10n.analyticsMoney),
+                                const SizedBox(height: 4),
                                 BlocBuilder<
                                   SubscriptionsCubit,
                                   SubscriptionsState

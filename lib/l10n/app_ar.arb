@@ -715,5 +715,10 @@
   "scanGalleryHint": "صورة عندك على الموبايل",
   "scanPdfHint": "فاتورة جاتلك على الإيميل",
   "scanVoiceHint": "قول اشتريت إيه واحنا نملا الباقي",
-  "scanManualHint": "مفيش فاتورة؟ اكتب التفاصيل بنفسك"
+  "scanManualHint": "مفيش فاتورة؟ اكتب التفاصيل بنفسك",
+  "periodThisMonth": "الشهر ده",
+  "periodThisYear": "السنة دي",
+  "periodAllTime": "كل الوقت",
+  "analyticsMoney": "الفلوس",
+  "analyticsInsights": "تحليلات"
 }

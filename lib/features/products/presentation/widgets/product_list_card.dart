@@ -107,9 +107,7 @@ class ProductListCard extends StatelessWidget {
                           minHeight: 6,
                           backgroundColor: colorScheme.surfaceContainerHighest,
                           valueColor: AlwaysStoppedAnimation(
-                            product.isExpired
-                                ? colorScheme.outlineVariant
-                                : warrantyProgressColor(context, remaining),
+                            warrantyStatusColor(context, product.status),
                           ),
                         ),
                       ),

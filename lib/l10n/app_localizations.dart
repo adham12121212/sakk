@@ -4397,6 +4397,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No receipt? Type the details in'**
   String get scanManualHint;
+
+  /// No description provided for @periodThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get periodThisMonth;
+
+  /// No description provided for @periodThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get periodThisYear;
+
+  /// No description provided for @periodAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get periodAllTime;
+
+  /// No description provided for @analyticsMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get analyticsMoney;
+
+  /// No description provided for @analyticsInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get analyticsInsights;
 }
 
 class _AppLocalizationsDelegate

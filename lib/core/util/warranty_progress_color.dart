@@ -1,13 +1,17 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
+import '../../features/products/domain/entities/product_entity.dart';
 import '../theme/app_palette.dart';
 
-/// Colour for a warranty progress ring, from the share of the warranty left
-/// (0.0–1.0), like a battery: green from 50%, amber from 20%, red below.
-/// Used by the Details header ring and the product list rings.
-Color warrantyProgressColor(BuildContext context, double remaining) {
+/// Colour of a warranty's progress bar or ring, by its status: green while
+/// active, yellow once expiring, red when expired.
+Color warrantyStatusColor(BuildContext context, WarrantyStatus status) {
   final palette = context.palette;
-  if (remaining >= 0.5) return palette.success;
-  if (remaining >= 0.2) return palette.warning;
-  return palette.danger;
+  final dark = Theme.of(context).brightness == Brightness.dark;
+  return switch (status) {
+    WarrantyStatus.active => palette.success,
+    WarrantyStatus.expiring =>
+      dark ? const Color(0xFFFACC15) : const Color(0xFFEAB308),
+    WarrantyStatus.expired => palette.danger,
+  };
 }

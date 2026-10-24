@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sakk/features/analytics/presentation/widgets/segment.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/theme/app_palette.dart';
+import '../../../../core/util/warranty_progress_color.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -32,7 +33,6 @@ class WarrantyStatusCard extends StatelessWidget {
     final total = active + expiring + expired;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final palette = context.palette;
     final locale = Localizations.localeOf(context);
     String n(int v) => formatLocalizedInt(locale, v);
 
@@ -70,9 +70,27 @@ class WarrantyStatusCard extends StatelessWidget {
                             painter: DonutChartPainter(
                               trackColor: colorScheme.surfaceContainerHighest,
                               segments: [
-                                Segment(active.toDouble(), palette.success),
-                                Segment(expiring.toDouble(), palette.warning),
-                                Segment(expired.toDouble(), palette.danger),
+                                Segment(
+                                  active.toDouble(),
+                                  warrantyStatusColor(
+                                    context,
+                                    WarrantyStatus.active,
+                                  ),
+                                ),
+                                Segment(
+                                  expiring.toDouble(),
+                                  warrantyStatusColor(
+                                    context,
+                                    WarrantyStatus.expiring,
+                                  ),
+                                ),
+                                Segment(
+                                  expired.toDouble(),
+                                  warrantyStatusColor(
+                                    context,
+                                    WarrantyStatus.expired,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -92,19 +110,28 @@ class WarrantyStatusCard extends StatelessWidget {
                     child: Column(
                       children: [
                         LegendRow(
-                          color: palette.success,
+                          color: warrantyStatusColor(
+                            context,
+                            WarrantyStatus.active,
+                          ),
                           label: l10n.active,
                           value: n(active),
                         ),
                         const SizedBox(height: 14),
                         LegendRow(
-                          color: palette.warning,
+                          color: warrantyStatusColor(
+                            context,
+                            WarrantyStatus.expiring,
+                          ),
                           label: l10n.expiring,
                           value: n(expiring),
                         ),
                         const SizedBox(height: 14),
                         LegendRow(
-                          color: palette.danger,
+                          color: warrantyStatusColor(
+                            context,
+                            WarrantyStatus.expired,
+                          ),
                           label: l10n.expired,
                           value: n(expired),
                         ),

@@ -62,4 +62,23 @@ void main() {
       expect(again.value, isFalse);
     },
   );
+
+  test('the period counts purchases by date', () {
+    final now = DateTime(2026, 10, 24);
+    ProductEntity bought(DateTime date, double price) => ProductEntity(
+      id: '$date',
+      name: 'x',
+      price: price,
+      purchaseDate: date,
+      warrantyMonths: 12,
+    );
+    final products = [
+      bought(DateTime(2026, 10, 2), 100),
+      bought(DateTime(2026, 3, 1), 200),
+      bought(DateTime(2025, 10, 5), 400),
+    ];
+    expect(totalSpentIn(products, SpentPeriod.thisMonth, now), 100);
+    expect(totalSpentIn(products, SpentPeriod.thisYear, now), 300);
+    expect(totalSpentIn(products, SpentPeriod.allTime, now), 700);
+  });
 }

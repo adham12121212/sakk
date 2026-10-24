@@ -2728,4 +2728,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scanManualHint => 'مفيش فاتورة؟ اكتب التفاصيل بنفسك';
+
+  @override
+  String get periodThisMonth => 'الشهر ده';
+
+  @override
+  String get periodThisYear => 'السنة دي';
+
+  @override
+  String get periodAllTime => 'كل الوقت';
+
+  @override
+  String get analyticsMoney => 'الفلوس';
+
+  @override
+  String get analyticsInsights => 'تحليلات';
 }

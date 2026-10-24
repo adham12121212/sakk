@@ -2668,4 +2668,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanManualHint => 'No receipt? Type the details in';
+
+  @override
+  String get periodThisMonth => 'This month';
+
+  @override
+  String get periodThisYear => 'This year';
+
+  @override
+  String get periodAllTime => 'All time';
+
+  @override
+  String get analyticsMoney => 'Money';
+
+  @override
+  String get analyticsInsights => 'Insights';
 }

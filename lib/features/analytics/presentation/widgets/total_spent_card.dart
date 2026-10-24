@@ -7,17 +7,48 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/service/amount_visibility_controller.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 
-/// Brand-gradient hero card with the total spent across all products. The
-/// eye button hides the amount (remembered on this device).
-class TotalSpentCard extends StatelessWidget {
+/// Which purchases the total counts, by purchase date.
+enum SpentPeriod { thisMonth, thisYear, allTime }
+
+/// What was spent on the products bought in [period] of [now]'s calendar.
+double totalSpentIn(
+  List<ProductEntity> products,
+  SpentPeriod period,
+  DateTime now,
+) {
+  bool counts(ProductEntity p) => switch (period) {
+    SpentPeriod.allTime => true,
+    SpentPeriod.thisYear => p.purchaseDate.year == now.year,
+    SpentPeriod.thisMonth =>
+      p.purchaseDate.year == now.year && p.purchaseDate.month == now.month,
+  };
+  return products
+      .where(counts)
+      .fold<double>(0, (sum, p) => sum + (p.price ?? 0));
+}
+
+/// Brand-gradient hero card with what was spent this month, this year or
+/// in all. The eye button hides the amount (remembered on this device).
+class TotalSpentCard extends StatefulWidget {
   const TotalSpentCard({super.key, required this.state, required this.l10n});
 
   final ProductsState state;
   final AppLocalizations l10n;
+
+  @override
+  State<TotalSpentCard> createState() => _TotalSpentCardState();
+}
+
+class _TotalSpentCardState extends State<TotalSpentCard> {
+  SpentPeriod _period = SpentPeriod.allTime;
+
+  ProductsState get state => widget.state;
+  AppLocalizations get l10n => widget.l10n;
 
   static const _gradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -35,7 +66,7 @@ class TotalSpentCard extends StatelessWidget {
         : appLocale.toLanguageTag();
     final amount = NumberFormat.decimalPattern(
       locale,
-    ).format(state.totalPrice.round());
+    ).format(totalSpentIn(state.products, _period, DateTime.now()).round());
     final visibility = getIt<AmountVisibilityController>();
 
     return Container(
@@ -171,6 +202,16 @@ class TotalSpentCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 14),
+                  _PeriodSwitch(
+                    selected: _period,
+                    labels: {
+                      SpentPeriod.thisMonth: l10n.periodThisMonth,
+                      SpentPeriod.thisYear: l10n.periodThisYear,
+                      SpentPeriod.allTime: l10n.periodAllTime,
+                    },
+                    onChanged: (p) => setState(() => _period = p),
+                  ),
                 ],
               ),
             ),
@@ -195,4 +236,67 @@ class _Circle extends StatelessWidget {
       shape: BoxShape.circle,
     ),
   );
+}
+
+/// Three pills on the gradient: white with brand text when picked,
+/// translucent otherwise.
+class _PeriodSwitch extends StatelessWidget {
+  const _PeriodSwitch({
+    required this.selected,
+    required this.labels,
+    required this.onChanged,
+  });
+
+  final SpentPeriod selected;
+  final Map<SpentPeriod, String> labels;
+  final ValueChanged<SpentPeriod> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        children: [
+          for (final MapEntry(key: period, value: label) in labels.entries)
+            Expanded(
+              child: Semantics(
+                button: true,
+                selected: period == selected,
+                child: GestureDetector(
+                  onTap: () => onChanged(period),
+                  behavior: HitTestBehavior.opaque,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: period == selected
+                          ? Colors.white
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: period == selected
+                            ? AppColors.primary
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }

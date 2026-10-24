@@ -152,16 +152,14 @@ class DetailsHeader extends StatelessWidget {
                           SizedBox.square(
                             dimension: 56,
                             child: CircularProgressIndicator(
-                              value: warrantyProgress,
+                              // Expired: a full red ring.
+                              value: product.isExpired ? 1 : warrantyProgress,
                               strokeWidth: 5,
                               strokeCap: StrokeCap.round,
                               backgroundColor:
                                   colorScheme.surfaceContainerHighest,
                               valueColor: AlwaysStoppedAnimation(
-                                warrantyProgressColor(
-                                  context,
-                                  warrantyProgress,
-                                ),
+                                warrantyStatusColor(context, product.status),
                               ),
                             ),
                           ),
