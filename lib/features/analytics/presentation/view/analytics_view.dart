@@ -126,6 +126,8 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                               // empty cards.
                               if (state.products.isEmpty && !state.isLoading)
                                 AppCard(
+                                  // The empty view brings its own padding.
+                                  padding: EdgeInsets.zero,
                                   child: Center(
                                     child: AppEmptyView(
                                       icon: AppIcons.analytics,
