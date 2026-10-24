@@ -2692,4 +2692,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get installmentSectionPayments => 'Payments';
+
+  @override
+  String get analyticsEmptyTitle => 'No stats yet';
+
+  @override
+  String get analyticsEmptyMessage =>
+      'Add your first product to see your spending, warranties and categories here.';
 }

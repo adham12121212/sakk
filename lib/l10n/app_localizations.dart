@@ -4445,6 +4445,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Payments'**
   String get installmentSectionPayments;
+
+  /// No description provided for @analyticsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No stats yet'**
+  String get analyticsEmptyTitle;
+
+  /// No description provided for @analyticsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product to see your spending, warranties and categories here.'**
+  String get analyticsEmptyMessage;
 }
 
 class _AppLocalizationsDelegate

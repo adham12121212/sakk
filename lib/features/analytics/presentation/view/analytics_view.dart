@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
+import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_empty_view.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -19,6 +22,7 @@ import '../../../products/presentation/cubit/product_state.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_state.dart';
 import '../../../subscriptions/presentation/widgets/subscriptions_analytics_card.dart';
+import '../../domain/spending_insights.dart';
 import '../widgets/category_break_down_card.dart';
 import '../widgets/spending_insights_card.dart';
 import '../widgets/total_spent_card.dart';
@@ -118,22 +122,45 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                               ],
                               SectionHeader(title: l10n.products),
                               const SizedBox(height: 4),
-                              TotalSpentCard(state: state, l10n: l10n),
-                              const SizedBox(height: 16),
-                              WarrantyStatusCard(state: state, l10n: l10n),
-                              const SizedBox(height: 16),
-                              CategoryBreakdownCard(
-                                products: state.products,
-                                isLoading: state.isLoading,
-                                l10n: l10n,
-                              ),
-                              const SizedBox(height: 24),
-                              SectionHeader(title: l10n.analyticsInsights),
-                              const SizedBox(height: 4),
-                              SpendingInsightsCard(
-                                products: state.products,
-                                l10n: l10n,
-                              ),
+                              // One empty state instead of a stack of
+                              // empty cards.
+                              if (state.products.isEmpty && !state.isLoading)
+                                AppCard(
+                                  child: Center(
+                                    child: AppEmptyView(
+                                      icon: AppIcons.analytics,
+                                      title: l10n.analyticsEmptyTitle,
+                                      message: l10n.analyticsEmptyMessage,
+                                      actionLabel: l10n.scanReceiptTitle,
+                                      actionIcon: AppIcons.scan,
+                                      onAction: () =>
+                                          context.push(AppRoutes.scan),
+                                    ),
+                                  ),
+                                )
+                              else ...[
+                                TotalSpentCard(state: state, l10n: l10n),
+                                const SizedBox(height: 16),
+                                WarrantyStatusCard(state: state, l10n: l10n),
+                                const SizedBox(height: 16),
+                                CategoryBreakdownCard(
+                                  products: state.products,
+                                  isLoading: state.isLoading,
+                                  l10n: l10n,
+                                ),
+                                // Products without prices have no insights.
+                                if (spendingByYear(
+                                  state.products,
+                                ).isNotEmpty) ...[
+                                  const SizedBox(height: 24),
+                                  SectionHeader(title: l10n.analyticsInsights),
+                                  const SizedBox(height: 4),
+                                  SpendingInsightsCard(
+                                    products: state.products,
+                                    l10n: l10n,
+                                  ),
+                                ],
+                              ],
                               // Subscriptions and installments are private, so only in "Mine".
                               if (!(inHousehold && _householdScope)) ...[
                                 const SizedBox(height: 24),

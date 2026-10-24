@@ -2752,4 +2752,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get installmentSectionPayments => 'الأقساط';
+
+  @override
+  String get analyticsEmptyTitle => 'لا توجد إحصائيات بعد';
+
+  @override
+  String get analyticsEmptyMessage =>
+      'أضف أول منتج لترى مصروفاتك وضماناتك وفئاتك هنا.';
 }

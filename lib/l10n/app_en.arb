@@ -1251,5 +1251,7 @@
   "analyticsInsights": "Insights",
   "installmentSectionDetails": "Details",
   "installmentSectionPrice": "Price",
-  "installmentSectionPayments": "Payments"
+  "installmentSectionPayments": "Payments",
+  "analyticsEmptyTitle": "No stats yet",
+  "analyticsEmptyMessage": "Add your first product to see your spending, warranties and categories here."
 }

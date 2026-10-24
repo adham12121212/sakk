@@ -723,5 +723,7 @@
   "analyticsInsights": "تحليلات",
   "installmentSectionDetails": "التفاصيل",
   "installmentSectionPrice": "السعر",
-  "installmentSectionPayments": "الأقساط"
+  "installmentSectionPayments": "الأقساط",
+  "analyticsEmptyTitle": "لا توجد إحصائيات بعد",
+  "analyticsEmptyMessage": "أضف أول منتج لترى مصروفاتك وضماناتك وفئاتك هنا."
 }
