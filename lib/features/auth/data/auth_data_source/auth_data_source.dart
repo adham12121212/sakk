@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:sakk/core/error/supabase_error_mapper.dart';
 import 'package:sakk/features/auth/data/models/user_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/service/storage_service.dart';
 import '../../../../core/service/supabase_client.dart';
@@ -31,6 +32,14 @@ class AuthDataSourceImpl implements AuthDataSource {
   final SupabaseService _supabaseService;
   final StorageService _storageService;
   AuthDataSourceImpl(this._supabaseService, this._storageService);
+
+  /// Password-reset error codes, passed up as the failure message so the UI
+  /// can explain them (see userFacingError). None of them says whether an
+  /// account exists for the email.
+  static const resetRateLimited = 'reset_rate_limited';
+  static const resetInvalidEmail = 'reset_invalid_email';
+  static const resetInvalidCode = 'reset_invalid_code';
+  static const resetSamePassword = 'reset_same_password';
 
   @override
   Future<UserModel> signIn({
@@ -107,7 +116,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       await _supabaseService.resetPasswordForEmail(email);
     } catch (e, s) {
-      SupabaseErrorMapper.handle(e, s);
+      _handleResetError(e, s);
     }
   }
 
@@ -119,7 +128,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       await _supabaseService.verifyRecoveryOtp(email: email, token: otp);
     } catch (e, s) {
-      SupabaseErrorMapper.handle(e, s);
+      _handleResetError(e, s);
     }
   }
 
@@ -128,8 +137,23 @@ class AuthDataSourceImpl implements AuthDataSource {
     try {
       await _supabaseService.updatePassword(newPassword);
     } catch (e, s) {
-      SupabaseErrorMapper.handle(e, s);
+      _handleResetError(e, s);
     }
+  }
+
+  static Never _handleResetError(Object error, StackTrace stackTrace) {
+    if (error is AuthException) {
+      final code = switch (error.code) {
+        'over_email_send_rate_limit' ||
+        'over_request_rate_limit' => resetRateLimited,
+        'email_address_invalid' || 'validation_failed' => resetInvalidEmail,
+        'otp_expired' || 'otp_disabled' => resetInvalidCode,
+        'same_password' => resetSamePassword,
+        _ => null,
+      };
+      if (code != null) throw ServerException(code);
+    }
+    SupabaseErrorMapper.handle(error, stackTrace);
   }
 
   @override

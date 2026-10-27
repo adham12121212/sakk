@@ -7,8 +7,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/route/app_router.dart';
-import '../../../../core/theme/app_palette.dart';
-import '../../../../core/util/localized_number.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/usecase/get_user_usecase.dart';
@@ -19,14 +17,12 @@ import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../products/presentation/view/product_search_view.dart';
 import '../../../installments/presentation/cubit/installments_cubit.dart';
-import '../../../installments/presentation/widgets/installments_home_card.dart';
+import '../../../papers/presentation/cubit/papers_cubit.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
-import '../../../subscriptions/presentation/widgets/subscriptions_home_card.dart';
 import '../widgets/home_header.dart';
-import '../widgets/recent_product_data.dart';
+import '../widgets/home_sections.dart';
 import '../widgets/recent_products_section.dart';
-import '../widgets/stat_card.dart';
-import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/warranty_summary_card.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -51,6 +47,7 @@ class _HomeContentState extends State<_HomeContent> {
   final _notificationCubit = getIt<NotificationCubit>();
   final _subscriptionsCubit = getIt<SubscriptionsCubit>();
   final _installmentsCubit = getIt<InstallmentsCubit>();
+  final _papersCubit = getIt<PapersCubit>();
 
   @override
   void initState() {
@@ -58,6 +55,7 @@ class _HomeContentState extends State<_HomeContent> {
     context.read<ProductsCubit>().loadIfNeeded();
     _subscriptionsCubit.loadIfNeeded();
     _installmentsCubit.loadIfNeeded();
+    _papersCubit.loadIfNeeded();
     // Member names for "Added by ..." on shared products.
     getIt<HouseholdCubit>().load();
     final userId = getIt<GetUserUseCase>()()?.id;
@@ -123,10 +121,6 @@ class _HomeContentState extends State<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final palette = context.palette;
-    final locale = Localizations.localeOf(context);
     return Scaffold(
       body: SafeArea(
         bottom: false,
@@ -140,10 +134,7 @@ class _HomeContentState extends State<_HomeContent> {
                 ? ProductsState(products: displayProducts)
                 : state;
 
-            final sourceProducts = displayProducts.take(5).toList();
-            final recentProducts = sourceProducts
-                .map(RecentProductData.fromEntity)
-                .toList();
+            final sourceProducts = displayProducts.take(3).toList();
 
             return AppRefreshIndicator(
               onRefresh: () => Future.wait([
@@ -151,6 +142,7 @@ class _HomeContentState extends State<_HomeContent> {
                 _notificationCubit.refresh(),
                 _subscriptionsCubit.refresh(),
                 _installmentsCubit.refresh(),
+                _papersCubit.refresh(),
               ]),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -180,7 +172,7 @@ class _HomeContentState extends State<_HomeContent> {
                             context.go(AppRoutes.products),
                       ),
                     ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 8.h),
 
                     if (state.error != null && state.products.isEmpty)
                       AppErrorView(
@@ -190,90 +182,34 @@ class _HomeContentState extends State<_HomeContent> {
                     else
                       Skeletonizer(
                         enabled: isInitialLoading,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Column(
-                                children: [
-                                  _statRow(
-                                    StatCard(
-                                      value: formatLocalizedInt(
-                                        locale,
-                                        displayState.total,
-                                      ),
-                                      label: l10n.totalProducts,
-                                      icon: AppIcons.products,
-                                      iconColor: colorScheme.primary,
-                                      iconBackgroundColor:
-                                          colorScheme.primaryContainer,
-                                      onTap: isInitialLoading
-                                          ? null
-                                          : () =>
-                                                context.go(AppRoutes.products),
-                                    ),
-                                    StatCard(
-                                      value: formatLocalizedInt(
-                                        locale,
-                                        displayState.active,
-                                      ),
-                                      label: l10n.activeWarranties,
-                                      icon: AppIcons.warranty,
-                                      iconColor: palette.success,
-                                      iconBackgroundColor:
-                                          palette.successContainer,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _statRow(
-                                    StatCard(
-                                      value: formatLocalizedInt(
-                                        locale,
-                                        displayState.expiring,
-                                      ),
-                                      label: l10n.expiringSoon,
-                                      icon: AppIcons.expiring,
-                                      iconColor: palette.warning,
-                                      iconBackgroundColor:
-                                          palette.warningContainer,
-                                    ),
-                                    StatCard(
-                                      value: formatLocalizedInt(
-                                        locale,
-                                        displayState.expired,
-                                      ),
-                                      label: l10n.expired,
-                                      icon: AppIcons.error,
-                                      iconColor: palette.danger,
-                                      iconBackgroundColor:
-                                          palette.dangerContainer,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: WarrantySummaryCard(
+                            active: displayState.active,
+                            expiring: displayState.expiring,
+                            expired: displayState.expired,
+                            onTap: isInitialLoading
+                                ? null
+                                : () => context.go(AppRoutes.products),
+                          ),
                         ),
                       ),
-                    // Outside the products skeleton: it has its own loading state.
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: BlocProvider.value(
-                        value: _subscriptionsCubit,
-                        child: SubscriptionsHomeCard(
-                          onTap: () => context.push(AppRoutes.subscriptions),
-                        ),
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      child: HomeMoneySection(
+                        subscriptions: _subscriptionsCubit,
+                        installments: _installmentsCubit,
+                        onSubscriptionsTap: () =>
+                            context.push(AppRoutes.subscriptions),
+                        onInstallmentsTap: () =>
+                            context.push(AppRoutes.installments),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: BlocProvider.value(
-                        value: _installmentsCubit,
-                        child: InstallmentsHomeCard(
-                          onTap: () => context.push(AppRoutes.installments),
-                        ),
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                      child: HomePapersSection(
+                        papers: _papersCubit,
+                        onOpen: () => context.push(AppRoutes.papers),
                       ),
                     ),
                     if (!(state.error != null && state.products.isEmpty))
@@ -281,9 +217,9 @@ class _HomeContentState extends State<_HomeContent> {
                         enabled: isInitialLoading,
                         child: Column(
                           children: [
-                            const SizedBox(height: 28),
+                            const SizedBox(height: 16),
                             RecentProductsSection(
-                              items: recentProducts,
+                              items: sourceProducts,
                               onSeeAllTap: isInitialLoading
                                   ? null
                                   : () {
@@ -308,19 +244,6 @@ class _HomeContentState extends State<_HomeContent> {
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _statRow(Widget start, Widget end) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: start),
-          const SizedBox(width: 12),
-          Expanded(child: end),
-        ],
       ),
     );
   }

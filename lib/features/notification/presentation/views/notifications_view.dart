@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/app_palette.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_empty_view.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
@@ -63,12 +64,16 @@ class _NotificationsViewState extends State<NotificationsView> {
             final placeholders = _placeholderNotifications();
             return Skeletonizer(
               enabled: true,
-              child: ListView.separated(
+              child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                itemCount: placeholders.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (context, index) =>
-                    NotificationTile(notification: placeholders[index]),
+                children: [
+                  GroupedCard(
+                    children: [
+                      for (final n in placeholders)
+                        NotificationTile(notification: n),
+                    ],
+                  ),
+                ],
               ),
             );
           }
@@ -91,44 +96,45 @@ class _NotificationsViewState extends State<NotificationsView> {
                     title: l10n.nonotificationsyet,
                     fillRemaining: true,
                   )
-                : ListView.separated(
+                : ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                    itemCount: notifications.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final notification = notifications[index];
-                      return Dismissible(
-                        key: ValueKey(notification.id),
-                        direction: DismissDirection.endToStart,
-                        // Rounded red panel on the trailing side (mirrors in RTL).
-                        background: Container(
-                          alignment: AlignmentDirectional.centerEnd,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          decoration: BoxDecoration(
-                            color: context.palette.danger,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            AppIcons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onDismissed: (_) => cubit.deleteNotification(
-                          widget.userId,
-                          notification.id,
-                        ),
-                        child: NotificationTile(
-                          notification: notification,
-                          onTap: notification.isRead
-                              ? null
-                              : () => cubit.markAsRead(
-                                  widget.userId,
-                                  notification.id,
+                    children: [
+                      GroupedCard(
+                        children: [
+                          for (final notification in notifications)
+                            Dismissible(
+                              key: ValueKey(notification.id),
+                              direction: DismissDirection.endToStart,
+                              // Red panel on the trailing side (mirrors in RTL).
+                              background: Container(
+                                alignment: AlignmentDirectional.centerEnd,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
                                 ),
-                        ),
-                      );
-                    },
+                                color: context.palette.danger,
+                                child: const Icon(
+                                  AppIcons.delete,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onDismissed: (_) => cubit.deleteNotification(
+                                widget.userId,
+                                notification.id,
+                              ),
+                              child: NotificationTile(
+                                notification: notification,
+                                onTap: notification.isRead
+                                    ? null
+                                    : () => cubit.markAsRead(
+                                        widget.userId,
+                                        notification.id,
+                                      ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
           );
         },

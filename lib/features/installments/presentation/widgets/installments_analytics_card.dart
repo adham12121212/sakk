@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/empty_card_prompt.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/installment_totals.dart';
 import '../cubit/installments_state.dart';
@@ -41,7 +42,6 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
     final state = widget.state;
     final today = widget.today ?? DateTime.now();
     final isInitialLoading = state.isLoading && !state.hasLoadedOnce;
@@ -64,6 +64,17 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
           ]
         : dueByMonth(state.plans, from: today, currency: main);
 
+    if (!isInitialLoading && !hasPlans) {
+      return AppCard(
+        onTap: widget.onTap,
+        child: EmptyCardPrompt(
+          icon: AppIcons.installments,
+          title: l10n.installments,
+          message: l10n.installmentsAnalyticsEmpty,
+        ),
+      );
+    }
+
     return AppCard(
       onTap: widget.onTap,
       padding: const EdgeInsets.all(20),
@@ -72,101 +83,86 @@ class _InstallmentsAnalyticsCardState extends State<InstallmentsAnalyticsCard> {
         children: [
           Text(l10n.installments, style: textTheme.titleMedium),
           const SizedBox(height: 16),
-          if (!isInitialLoading && !hasPlans)
-            Text(
-              l10n.installmentsAnalyticsEmpty,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            )
-          else
-            Skeletonizer(
-              enabled: isInitialLoading,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _Figure(
-                          label: l10n.installmentsLeftToPay,
-                          value: formatMoney(
-                            context,
-                            isInitialLoading ? 12000 : remaining[main] ?? 0,
-                            main,
-                          ),
+          Skeletonizer(
+            enabled: isInitialLoading,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Figure(
+                        label: l10n.installmentsLeftToPay,
+                        value: formatMoney(
+                          context,
+                          isInitialLoading ? 12000 : remaining[main] ?? 0,
+                          main,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _Figure(
+                        label: l10n.installmentsThisMonth,
+                        value: formatMoney(context, months.first.amount, main),
+                      ),
+                    ),
+                  ],
+                ),
+                for (final other in others)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      '+ ${formatMoney(context, other.value, other.key)}',
+                      style: textTheme.bodySmall,
+                    ),
+                  ),
+                if (overdue.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  // Status: red with an icon and words, never colour alone.
+                  Row(
+                    children: [
+                      Icon(
+                        AppIcons.warning,
+                        size: 16,
+                        color: context.palette.danger,
+                      ),
+                      const SizedBox(width: 6),
                       Expanded(
-                        child: _Figure(
-                          label: l10n.installmentsThisMonth,
-                          value: formatMoney(
-                            context,
-                            months.first.amount,
-                            main,
+                        child: Text(
+                          l10n.installmentsOverdueTotal(
+                            formatTotals(context, overdue),
+                          ),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: context.palette.danger,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  for (final other in others)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        '+ ${formatMoney(context, other.value, other.key)}',
-                        style: textTheme.bodySmall,
-                      ),
-                    ),
-                  if (overdue.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    // Status: red with an icon and words, never colour alone.
-                    Row(
-                      children: [
-                        Icon(
-                          AppIcons.warning,
-                          size: 16,
-                          color: context.palette.danger,
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            l10n.installmentsOverdueTotal(
-                              formatTotals(context, overdue),
-                            ),
-                            style: textTheme.bodySmall?.copyWith(
-                              color: context.palette.danger,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.installmentsDuePerMonth,
-                    style: textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 12),
-                  _MonthlyBars(
-                    months: months,
-                    currency: main,
-                    selected: _selected.clamp(0, months.length - 1),
-                    onSelect: (i) => setState(() => _selected = i),
-                  ),
-                  if (others.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.installmentsChartCurrencyNote(
-                        main == 'EGP' ? l10n.currencyEgp : main,
-                      ),
-                      style: textTheme.bodySmall,
-                    ),
-                  ],
                 ],
-              ),
+                const SizedBox(height: 20),
+                Text(l10n.installmentsDuePerMonth, style: textTheme.titleSmall),
+                const SizedBox(height: 12),
+                _MonthlyBars(
+                  months: months,
+                  currency: main,
+                  selected: _selected.clamp(0, months.length - 1),
+                  onSelect: (i) => setState(() => _selected = i),
+                ),
+                if (others.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.installmentsChartCurrencyNote(
+                      main == 'EGP' ? l10n.currencyEgp : main,
+                    ),
+                    style: textTheme.bodySmall,
+                  ),
+                ],
+              ],
             ),
+          ),
         ],
       ),
     );

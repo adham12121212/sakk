@@ -79,11 +79,11 @@ class WarrantyBanner extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(99),
             child: LinearProgressIndicator(
-              value: warrantyProgress,
+              value: product.isExpired ? 1 : warrantyProgress,
               minHeight: 6,
               backgroundColor: colorScheme.surfaceContainerHighest,
               valueColor: AlwaysStoppedAnimation(
-                warrantyProgressColor(context, warrantyProgress),
+                warrantyStatusColor(context, product.status),
               ),
             ),
           ),

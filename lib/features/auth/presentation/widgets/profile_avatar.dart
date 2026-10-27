@@ -46,8 +46,7 @@ class ProfileAvatar extends StatelessWidget {
               height: size.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.white,
-                border: Border.all(color: AppColors.white, width: 2.r),
+                color: Theme.of(context).colorScheme.primaryContainer,
                 image: hasPhoto
                     ? DecorationImage(
                         image: avatarImage(avatarUrl!),
@@ -105,7 +104,10 @@ class ProfileAvatar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.primary,
-                    border: Border.all(color: AppColors.white, width: 2.r),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.surface,
+                      width: 2.r,
+                    ),
                   ),
                   child: Icon(
                     AppIcons.camera,

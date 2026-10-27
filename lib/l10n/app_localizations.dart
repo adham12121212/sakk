@@ -566,12 +566,6 @@ abstract class AppLocalizations {
   /// **'At least 8 characters'**
   String get atleast8characters;
 
-  /// No description provided for @categories.
-  ///
-  /// In en, this message translates to:
-  /// **'Categories'**
-  String get categories;
-
   /// No description provided for @product.
   ///
   /// In en, this message translates to:
@@ -860,11 +854,41 @@ abstract class AppLocalizations {
   /// **'Enter Code'**
   String get enterCode;
 
-  /// No description provided for @weSentCodeTo.
+  /// No description provided for @resetCodeSentIfAccountExists.
   ///
   /// In en, this message translates to:
-  /// **'We sent a {length}-digit code to {email}'**
-  String weSentCodeTo(Object email, Object length);
+  /// **'If an account exists for {email}, we\'ve sent it a {length}-digit code. Check your inbox and spam folder.'**
+  String resetCodeSentIfAccountExists(String email, int length);
+
+  /// No description provided for @resendCodeIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {seconds}s'**
+  String resendCodeIn(int seconds);
+
+  /// No description provided for @resetRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Wait a minute, then try again.'**
+  String get resetRateLimited;
+
+  /// No description provided for @resetInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is wrong or has expired. Check it or request a new one.'**
+  String get resetInvalidCode;
+
+  /// No description provided for @resetSamePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from your old one.'**
+  String get resetSamePassword;
+
+  /// No description provided for @resetGoogleAccountNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.'**
+  String get resetGoogleAccountNote;
 
   /// No description provided for @newCodeSentToEmail.
   ///
@@ -1357,18 +1381,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search'**
   String get search;
-
-  /// No description provided for @filterByCategory.
-  ///
-  /// In en, this message translates to:
-  /// **'Filter by category'**
-  String get filterByCategory;
-
-  /// No description provided for @clearCategoryFilter.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear category filter'**
-  String get clearCategoryFilter;
 
   /// No description provided for @openProfile.
   ///
@@ -2629,12 +2641,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No subscriptions yet. Tap to add Netflix, Spotify and more.'**
   String get subscriptionsAnalyticsEmpty;
-
-  /// No description provided for @subscriptionsBreakdownNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Breakdown of {currency} subscriptions'**
-  String subscriptionsBreakdownNote(String currency);
 
   /// No description provided for @notifRenewedTitle.
   ///
@@ -3971,6 +3977,528 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change photo'**
   String get changePhoto;
+
+  /// No description provided for @myPapers.
+  ///
+  /// In en, this message translates to:
+  /// **'My papers'**
+  String get myPapers;
+
+  /// No description provided for @papersHomeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ID, passport and licences'**
+  String get papersHomeEmpty;
+
+  /// No description provided for @addPaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Add paper'**
+  String get addPaper;
+
+  /// No description provided for @editPaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit paper'**
+  String get editPaper;
+
+  /// No description provided for @noPapersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No papers yet'**
+  String get noPapersYet;
+
+  /// No description provided for @noPapersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your ID, passport, licences and insurance cards with a photo and the expiry date. Sakk reminds you a month before each one expires.'**
+  String get noPapersBody;
+
+  /// No description provided for @papersPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your papers are private to your account: they aren\'t shared with your household, other users can\'t open them, and they\'re never sent to the AI.'**
+  String get papersPrivacyNote;
+
+  /// No description provided for @paperNationalId.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID'**
+  String get paperNationalId;
+
+  /// No description provided for @paperPassport.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport'**
+  String get paperPassport;
+
+  /// No description provided for @paperDrivingLicence.
+  ///
+  /// In en, this message translates to:
+  /// **'Driving licence'**
+  String get paperDrivingLicence;
+
+  /// No description provided for @paperCarLicence.
+  ///
+  /// In en, this message translates to:
+  /// **'Car licence'**
+  String get paperCarLicence;
+
+  /// No description provided for @paperCarInsurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Car insurance'**
+  String get paperCarInsurance;
+
+  /// No description provided for @paperHealthInsurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical insurance'**
+  String get paperHealthInsurance;
+
+  /// No description provided for @paperRentalContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental contract'**
+  String get paperRentalContract;
+
+  /// No description provided for @paperOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get paperOther;
+
+  /// No description provided for @paperType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get paperType;
+
+  /// No description provided for @paperName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get paperName;
+
+  /// No description provided for @paperNameOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (optional)'**
+  String get paperNameOptional;
+
+  /// No description provided for @paperViewPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'View photo'**
+  String get paperViewPhoto;
+
+  /// No description provided for @paperNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name for this paper'**
+  String get paperNameRequired;
+
+  /// No description provided for @paperNumberOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Number (optional)'**
+  String get paperNumberOptional;
+
+  /// No description provided for @paperExpiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry date'**
+  String get paperExpiryDate;
+
+  /// No description provided for @paperPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get paperPickDate;
+
+  /// No description provided for @paperNoExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t expire'**
+  String get paperNoExpiry;
+
+  /// No description provided for @paperPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos (optional)'**
+  String get paperPhotos;
+
+  /// No description provided for @paperFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Front'**
+  String get paperFront;
+
+  /// No description provided for @paperBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get paperBack;
+
+  /// No description provided for @paperRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get paperRemovePhoto;
+
+  /// No description provided for @paperSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper saved'**
+  String get paperSaved;
+
+  /// No description provided for @paperDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper deleted'**
+  String get paperDeleted;
+
+  /// No description provided for @deletePaperQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete paper?'**
+  String get deletePaperQuestion;
+
+  /// No description provided for @deletePaperBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} and its photos will be deleted.'**
+  String deletePaperBody(String name);
+
+  /// No description provided for @paperExpiresToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires today'**
+  String get paperExpiresToday;
+
+  /// daysText is the day count in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Expires tomorrow} other{Expires in {daysText} days}}'**
+  String paperExpiresInDays(int days, String daysText);
+
+  /// No description provided for @paperValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {date}'**
+  String paperValidUntil(String date);
+
+  /// No description provided for @paperExpiredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired on {date}'**
+  String paperExpiredOn(String date);
+
+  /// No description provided for @paperNoExpiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No expiry date'**
+  String get paperNoExpiryDate;
+
+  /// No description provided for @paperStatusValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid'**
+  String get paperStatusValid;
+
+  /// No description provided for @paperStatusExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get paperStatusExpiringSoon;
+
+  /// No description provided for @paperStatusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get paperStatusExpired;
+
+  /// No description provided for @paperNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get paperNumber;
+
+  /// No description provided for @copyPaperNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy number'**
+  String get copyPaperNumber;
+
+  /// No description provided for @paperNumberCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Number copied'**
+  String get paperNumberCopied;
+
+  /// No description provided for @paperNoPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos. Tap Edit to add the front and back.'**
+  String get paperNoPhotos;
+
+  /// No description provided for @notifPaperExpiringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper expiring soon'**
+  String get notifPaperExpiringTitle;
+
+  /// No description provided for @notifPaperExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper expired'**
+  String get notifPaperExpiredTitle;
+
+  /// daysText is the day count in the app's digits; days picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{{name} expires tomorrow. Time to renew it.} other{{name} expires in {daysText} days. Time to renew it.}}'**
+  String notifPaperExpiringBody(int days, String daysText, String name);
+
+  /// No description provided for @notifPaperExpiresTodayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} expires today.'**
+  String notifPaperExpiresTodayBody(String name);
+
+  /// No description provided for @notifPaperExpiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has expired. Renew it as soon as you can.'**
+  String notifPaperExpiredBody(String name);
+
+  /// No description provided for @reminderPapersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Before each paper expires'**
+  String get reminderPapersHint;
+
+  /// No description provided for @reminderMonthBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'A month before'**
+  String get reminderMonthBefore;
+
+  /// No description provided for @reminderWeekBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'A week before'**
+  String get reminderWeekBefore;
+
+  /// No description provided for @reminderOnExpiryDay.
+  ///
+  /// In en, this message translates to:
+  /// **'On the expiry day'**
+  String get reminderOnExpiryDay;
+
+  /// No description provided for @featurePapers.
+  ///
+  /// In en, this message translates to:
+  /// **'Papers'**
+  String get featurePapers;
+
+  /// No description provided for @paywallHeadlinePapers.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep all your papers in one place'**
+  String get paywallHeadlinePapers;
+
+  /// No description provided for @limitReachedPapers.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the free plan\'s paper limit. Upgrade to Sakk Pro to add more.'**
+  String get limitReachedPapers;
+
+  /// No description provided for @statProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get statProducts;
+
+  /// No description provided for @statActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statActive;
+
+  /// No description provided for @statExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring'**
+  String get statExpiring;
+
+  /// No description provided for @statExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get statExpired;
+
+  /// No description provided for @moneyThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Money this month'**
+  String get moneyThisMonth;
+
+  /// No description provided for @subscriptionPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get subscriptionPlan;
+
+  /// No description provided for @subscriptionPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get subscriptionPaymentMethod;
+
+  /// No description provided for @subscriptionMonthlyEquivalent.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s {amount} a month'**
+  String subscriptionMonthlyEquivalent(String amount);
+
+  /// No description provided for @papersNeedRenewing.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs renewing'**
+  String get papersNeedRenewing;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 needs renewing} other{{countText} need renewing}}'**
+  String papersToRenewCount(int count, String countText);
+
+  /// No description provided for @papersAllUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'All up to date'**
+  String get papersAllUpToDate;
+
+  /// countText is the count in the app's digits; count picks the plural form.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 paper} other{{countText} papers}}'**
+  String papersCountLabel(int count, String countText);
+
+  /// No description provided for @scanCameraHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at the receipt or warranty card'**
+  String get scanCameraHint;
+
+  /// No description provided for @scanOtherWays.
+  ///
+  /// In en, this message translates to:
+  /// **'Other ways to add'**
+  String get scanOtherWays;
+
+  /// No description provided for @scanGalleryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo you already have'**
+  String get scanGalleryHint;
+
+  /// No description provided for @scanPdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An invoice a store emailed you'**
+  String get scanPdfHint;
+
+  /// No description provided for @scanVoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what you bought and we fill it in'**
+  String get scanVoiceHint;
+
+  /// No description provided for @scanManualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No receipt? Type the details in'**
+  String get scanManualHint;
+
+  /// No description provided for @periodThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get periodThisMonth;
+
+  /// No description provided for @periodThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get periodThisYear;
+
+  /// No description provided for @periodAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get periodAllTime;
+
+  /// No description provided for @analyticsMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get analyticsMoney;
+
+  /// No description provided for @installmentSectionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get installmentSectionDetails;
+
+  /// No description provided for @installmentSectionPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get installmentSectionPrice;
+
+  /// No description provided for @installmentSectionPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get installmentSectionPayments;
+
+  /// No description provided for @analyticsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No stats yet'**
+  String get analyticsEmptyTitle;
+
+  /// No description provided for @analyticsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product to see your spending, warranties and categories here.'**
+  String get analyticsEmptyMessage;
+
+  /// No description provided for @analyticsProductsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 product} other{{countText} products}}'**
+  String analyticsProductsCount(int count, String countText);
+
+  /// No description provided for @analyticsAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'avg {amount}'**
+  String analyticsAverage(String amount);
+
+  /// No description provided for @analyticsShowAllCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{Show all {countText}}}'**
+  String analyticsShowAllCategories(int count, String countText);
 }
 
 class _AppLocalizationsDelegate

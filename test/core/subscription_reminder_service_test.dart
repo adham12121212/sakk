@@ -50,6 +50,21 @@ class _Tracker implements NotifiedWarrantiesTracker {
 class _Notifications implements NotificationService {
   final scheduled = <int, DateTime>{};
   final bodies = <int, String>{};
+
+  /// Banners shown right away (not scheduled), by id.
+  final shown = <int>[];
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    String? markPaidLabel,
+  }) async {
+    shown.add(id);
+    bodies[id] = body;
+  }
+
   @override
   Future<void> scheduleNotification({
     required int id,
@@ -275,15 +290,14 @@ void main() {
       expect(added.added, [
         'Shahid renewed yesterday for 100 EGP. Check you were charged the right amount.',
       ]);
-      // This device never scheduled it ahead, so it pushes now, once.
-      expect(notifications.scheduled.keys, [
+      // This device never scheduled it ahead, so it shows now, once.
+      expect(notifications.shown, [
         idOf('Shahid', RenewalReminder.dayAfter, previous: true),
       ]);
 
-      notifications.scheduled.clear();
       await service.checkAndNotify([sub]);
       expect(added.added, hasLength(1));
-      expect(notifications.scheduled, isEmpty);
+      expect(notifications.shown, hasLength(1));
     },
   );
 
@@ -299,19 +313,17 @@ void main() {
         if (beforeTen) idOf('Shahid', RenewalReminder.dayBefore),
         idOf('Shahid', RenewalReminder.dayAfter),
       });
-      notifications.scheduled.clear();
 
       await service.checkAndNotify([shahid]);
-      // Already scheduled for 10:00: no extra push now. Too late: pushed now.
-      expect(
-        notifications.scheduled.keys,
-        beforeTen ? isEmpty : [idOf('Shahid', RenewalReminder.dayBefore)],
-      );
+      // Shown now either way; one still waiting for 10:00 is dropped.
+      expect(notifications.shown, [idOf('Shahid', RenewalReminder.dayBefore)]);
+      expect(notifications.scheduled.keys, [
+        idOf('Shahid', RenewalReminder.dayAfter),
+      ]);
       expect(added.added, ['Shahid renews tomorrow for 100 EGP']);
 
-      notifications.scheduled.clear();
       await service.checkAndNotify([shahid]);
-      expect(notifications.scheduled, isEmpty);
+      expect(notifications.shown, hasLength(1));
       expect(added.added, hasLength(1));
     },
   );

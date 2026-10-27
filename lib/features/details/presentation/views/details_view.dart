@@ -318,8 +318,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
               child: DetailsHeader(
                 product: product,
                 imageUrl: imageUrl,
-                statusColor: _statusColor,
-                statusLabel: _statusLabel,
                 warrantyProgress: _warrantyProgress,
                 onBack: () => Navigator.of(context).pop(),
                 onShare: isBusy ? () {} : _share,

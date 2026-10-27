@@ -23,7 +23,7 @@ import '../widgets/voice_record_sheet.dart';
 import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
 import '../../../../core/theme/app_icons.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key, this.shared});
@@ -201,87 +201,58 @@ class ScanViewState extends State<ScanView> {
         ),
       ),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+          children: [
+            Text(l10n.scanYourWarrantyReceipt, style: textTheme.headlineSmall),
+            const SizedBox(height: 4),
+            Text(
+              l10n.scanInstructions,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ScanCameraCard(
+              title: l10n.takePhoto,
+              subtitle: l10n.scanCameraHint,
+              onPressed: () => pickAndScan(ImageSource.camera),
+            ),
+            const SizedBox(height: 12),
+            const QuotaHint(type: QuotaType.scan),
+            const SizedBox(height: 16),
+            Text(l10n.scanOtherWays, style: textTheme.titleMedium),
+            const SizedBox(height: 8),
+            GroupedCard(
               children: [
-                Container(
-                  width: 112,
-                  height: 112,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: AppColors.brandGradientColors,
-                    ),
-                    borderRadius: BorderRadius.circular(32),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x404A5CFA),
-                        blurRadius: 28,
-                        offset: Offset(0, 12),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    AppIcons.scan,
-                    size: 52,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 28),
-                Text(
-                  l10n.scanYourWarrantyReceipt,
-                  textAlign: TextAlign.center,
-                  style: textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.scanInstructions,
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const QuotaHint(type: QuotaType.scan),
-                const SizedBox(height: 16),
-                ScanSourceButton.filled(
-                  icon: AppIcons.camera,
-                  label: l10n.takePhoto,
-                  onPressed: () => pickAndScan(ImageSource.camera),
-                ),
-                const SizedBox(height: 12),
-                ScanSourceButton.outlined(
+                ScanOptionRow(
                   icon: AppIcons.gallery,
                   label: l10n.chooseFromGallery,
+                  hint: l10n.scanGalleryHint,
                   onPressed: () => pickAndScan(ImageSource.gallery),
                 ),
-                const SizedBox(height: 12),
-                ScanSourceButton.outlined(
+                ScanOptionRow(
                   icon: AppIcons.pdf,
                   label: l10n.uploadPdfInvoice,
+                  hint: l10n.scanPdfHint,
                   onPressed: pickPdf,
                 ),
-                const SizedBox(height: 12),
-                ScanSourceButton.outlined(
+                ScanOptionRow(
                   icon: AppIcons.microphone,
                   label: l10n.addByVoice,
+                  hint: l10n.scanVoiceHint,
                   badge: l10n.paywallPro,
                   onPressed: addByVoice,
                 ),
-                const SizedBox(height: 8),
-                TextButton.icon(
+                ScanOptionRow(
+                  icon: AppIcons.edit,
+                  label: l10n.enterDetailsManually,
+                  hint: l10n.scanManualHint,
                   onPressed: enterManually,
-                  icon: const Icon(AppIcons.edit),
-                  label: Text(l10n.enterDetailsManually),
-                  style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

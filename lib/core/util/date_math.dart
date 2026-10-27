@@ -23,3 +23,11 @@ int daysBetween(DateTime from, DateTime to) => DateTime.utc(
   to.month,
   to.day,
 ).difference(DateTime.utc(from.year, from.month, from.day)).inDays;
+
+/// The current time of day on [day] (today when null): "now", for code
+/// that can be told which day it is.
+DateTime nowOn(DateTime? day) {
+  final now = DateTime.now();
+  if (day == null) return now;
+  return DateTime(day.year, day.month, day.day, now.hour, now.minute);
+}

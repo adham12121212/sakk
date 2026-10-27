@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/widgets/app_choice_chip.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/service/pdf_invoice_reader.dart';
@@ -550,6 +551,7 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
                             const SizedBox(height: 16),
                           ],
 
+                          _SectionTitle(l10n.installmentSectionDetails),
                           FieldLabel(l10n.installmentFor),
                           SegmentedToggle<bool>(
                             options: {
@@ -624,8 +626,8 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
                                 l10n.providerBank,
                                 l10n.providerStore,
                               ])
-                                ChoiceChip(
-                                  label: Text(p),
+                                AppChoiceChip(
+                                  label: p,
                                   selected:
                                       _providerController.text.trim() == p,
                                   onSelected: (_) => setState(
@@ -636,6 +638,8 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
                           ),
                           const SizedBox(height: 20),
 
+                          const SizedBox(height: 8),
+                          _SectionTitle(l10n.installmentSectionPrice),
                           FieldLabel(l10n.totalPrice),
                           CapsuleField(
                             semanticLabel: l10n.totalPrice,
@@ -712,6 +716,8 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
                           ),
                           const SizedBox(height: 20),
 
+                          const SizedBox(height: 8),
+                          _SectionTitle(l10n.installmentSectionPayments),
                           FieldLabel(l10n.installmentsCountLabel),
                           CapsuleField(
                             semanticLabel: l10n.installmentsCountLabel,
@@ -743,12 +749,10 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
                             runSpacing: 4,
                             children: [
                               for (final n in _counts)
-                                ChoiceChip(
-                                  label: Text(
-                                    l10n.monthsCount(
-                                      n,
-                                      formatCount(context, n),
-                                    ),
+                                AppChoiceChip(
+                                  label: l10n.monthsCount(
+                                    n,
+                                    formatCount(context, n),
                                   ),
                                   selected: _count == n,
                                   onSelected: (_) =>
@@ -945,6 +949,32 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// A group's heading in the form (Details, Price, Payments), with a
+/// hairline under it.
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(text, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ],
       ),
     );
   }

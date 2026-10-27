@@ -19,6 +19,7 @@ import 'core/observer/app_bloc_observer.dart';
 import 'core/route/app_router.dart';
 import 'core/service/installment_reminder_service.dart';
 import 'core/service/notification_service.dart';
+import 'core/service/paper_reminder_service.dart';
 import 'core/service/reminder_settings.dart';
 import 'core/service/share_intake.dart';
 import 'core/service/temp_file_cleaner.dart';
@@ -52,6 +53,8 @@ Future<void> _bootstrap() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  // Draw behind the status and navigation bars (see AppTheme.systemBars).
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     publishableKey: dotenv.env['SUPABASE_ANON_KEY']!,
@@ -140,6 +143,14 @@ void _handleNotificationTap(
 }) {
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
+  final paper = PaperReminderPayload.tryParse(payload);
+  if (paper != null) {
+    // Another account's reminder (signed out before this device re-synced).
+    if (!coldStart && getIt<GetUserUseCase>()()?.id == paper.userId) {
+      appRouter.push(AppRoutes.papers);
+    }
+    return;
+  }
   final installment = InstallmentReminderPayload.tryParse(payload);
   if (installment != null) {
     _openInstallment(
@@ -201,22 +212,28 @@ class MyApp extends StatelessWidget {
               routerConfig: appRouter,
 
               // App-wide offline strip; reloads data when the connection returns.
-              builder: (context, child) => AppSkeletonConfig(
-                child: RouteAwareConnectivityBanner(
-                  routerDelegate: appRouter.routerDelegate,
-                  isSuppressed: () =>
-                      appRouter.routerDelegate.currentConfiguration.uri.path ==
-                      AppRoutes.splash,
-                  networkInfo: getIt<NetworkInfo>(),
-                  onReconnected: _reloadAfterReconnect,
-                  // A free-plan limit hit anywhere opens the paywall.
-                  child: ProLimitListener(
-                    router: appRouter,
-                    // A receipt shared from another app opens Scan.
-                    child: SharedReceiptListener(
+              builder: (context, child) => _AppFrame(
+                child: AppSkeletonConfig(
+                  child: RouteAwareConnectivityBanner(
+                    routerDelegate: appRouter.routerDelegate,
+                    isSuppressed: () =>
+                        appRouter
+                            .routerDelegate
+                            .currentConfiguration
+                            .uri
+                            .path ==
+                        AppRoutes.splash,
+                    networkInfo: getIt<NetworkInfo>(),
+                    onReconnected: _reloadAfterReconnect,
+                    // A free-plan limit hit anywhere opens the paywall.
+                    child: ProLimitListener(
                       router: appRouter,
-                      intake: getIt<ShareIntake>(),
-                      child: child ?? const SizedBox.shrink(),
+                      // A receipt shared from another app opens Scan.
+                      child: SharedReceiptListener(
+                        router: appRouter,
+                        intake: getIt<ShareIntake>(),
+                        child: child ?? const SizedBox.shrink(),
+                      ),
                     ),
                   ),
                 ),
@@ -254,6 +271,33 @@ class MyApp extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+/// Around every screen: transparent system bars (screens without an app
+/// bar included), and text that keeps the design's proportions. The
+/// phone's font size still counts, but only between 90% and 115%, and text
+/// shrinks a little on screens narrower than the 390-wide design.
+class _AppFrame extends StatelessWidget {
+  const _AppFrame({required this.child});
+
+  final Widget child;
+
+  static const _designWidth = 390.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final system = media.textScaler.scale(16) / 16;
+    final width = (media.size.width / _designWidth).clamp(0.85, 1.0);
+    final scale = system.clamp(0.9, 1.15) * width;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppTheme.systemBars(Theme.of(context).brightness),
+      child: MediaQuery(
+        data: media.copyWith(textScaler: TextScaler.linear(scale)),
+        child: child,
+      ),
     );
   }
 }

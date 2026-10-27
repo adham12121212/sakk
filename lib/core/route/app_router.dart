@@ -10,6 +10,12 @@ import '../../features/auth/presentation/views/biometric_lock_view.dart';
 import '../../features/auth/presentation/views/profile_view.dart';
 import '../../features/chat/presentation/cubit/chat_cubit.dart';
 import '../../features/chat/presentation/views/chat_view.dart';
+import '../../features/papers/domain/entities/paper.dart';
+import '../../features/papers/presentation/cubit/paper_form_cubit.dart';
+import '../../features/papers/presentation/cubit/papers_cubit.dart';
+import '../../features/papers/presentation/views/paper_details_view.dart';
+import '../../features/papers/presentation/views/paper_form_view.dart';
+import '../../features/papers/presentation/views/papers_view.dart';
 import '../../features/details/presentation/cubit/details_cubit.dart';
 import '../../features/details/presentation/views/details_view.dart';
 import '../../features/forget_password/presentation/views/forgot_password_view.dart';
@@ -36,6 +42,8 @@ import '../../features/subscriptions/presentation/cubit/smart_add_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscription_form_cubit.dart';
 import '../../features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../features/subscriptions/presentation/views/catalog_picker_view.dart';
+import '../../features/subscriptions/domain/entities/user_subscription.dart';
+import '../../features/subscriptions/presentation/views/subscription_details_view.dart';
 import '../../features/subscriptions/presentation/views/subscription_form_view.dart';
 import '../../features/subscriptions/presentation/views/subscriptions_view.dart';
 import '../../features/pro/domain/pro_limit.dart';
@@ -66,10 +74,14 @@ class AppRoutes {
   static const subscriptions = '/subscriptions';
   static const subscriptionCatalog = '/subscriptions/catalog';
   static const subscriptionForm = '/subscriptions/form';
+  static const subscriptionDetails = '/subscriptions/details';
   static const reminders = '/reminders';
   static const installments = '/installments';
   static const installmentForm = '/installments/form';
   static const installmentDetails = '/installments/plan';
+  static const papers = '/papers';
+  static const paperForm = '/papers/form';
+  static const paperDetails = '/papers/details';
   static const paywall = '/pro';
   static const monthlySummary = '/pro/monthly-summary';
 }
@@ -176,6 +188,18 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: AppRoutes.subscriptionDetails,
+      // Opened with the UserSubscription as `extra`; same fallback as details.
+      redirect: (context, state) =>
+          state.extra is UserSubscription ? null : AppRoutes.subscriptions,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<SubscriptionsCubit>(),
+        child: SubscriptionDetailsView(
+          subscription: state.extra as UserSubscription,
+        ),
+      ),
+    ),
+    GoRoute(
       path: AppRoutes.subscriptionForm,
       // Opened with SubscriptionFormArgs as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -183,6 +207,32 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<SubscriptionFormCubit>(),
         child: SubscriptionFormView(args: state.extra as SubscriptionFormArgs),
+      ),
+    ),
+
+    GoRoute(
+      path: AppRoutes.papers,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<PapersCubit>(),
+        child: const PapersView(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.paperDetails,
+      // Opened with the Paper as `extra`; same fallback as details.
+      redirect: (context, state) =>
+          state.extra is Paper ? null : AppRoutes.papers,
+      builder: (context, state) => BlocProvider.value(
+        value: getIt<PapersCubit>(),
+        child: PaperDetailsView(paper: state.extra as Paper),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.paperForm,
+      // A Paper as `extra` to edit it; nothing to add a new one.
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<PaperFormCubit>(),
+        child: PaperFormView(existing: state.extra as Paper?),
       ),
     ),
 

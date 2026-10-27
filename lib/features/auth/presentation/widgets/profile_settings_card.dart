@@ -68,12 +68,13 @@ class _ProfileSettingsCardState extends State<ProfileSettingsCard> {
     setState(() => _biometricEnabled = value);
   }
 
-  /// "Warranties, Subscriptions, Installments", the ones that are on.
+  /// "Warranties, Subscriptions, Installments, My papers", the ones on.
   String _remindersSummary(AppLocalizations l10n, ReminderSettings settings) {
     final on = [
       if (settings.warrantyEnabled) l10n.reminderWarranties,
       if (settings.subscriptionsEnabled) l10n.subscriptions,
       if (settings.installmentsEnabled) l10n.installments,
+      if (settings.papersEnabled) l10n.myPapers,
     ];
     return on.isEmpty ? l10n.remindersAllOff : on.join(l10n.listSeparator);
   }

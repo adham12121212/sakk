@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/widgets/app_choice_chip.dart';
 import '../../../../core/service/pdf_invoice_reader.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_snackbar.dart';
@@ -328,8 +329,8 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
               runSpacing: 8,
               children: [
                 for (final kind in DocumentKind.values)
-                  ChoiceChip(
-                    label: Text(documentKindLabel(l10n, kind)),
+                  AppChoiceChip(
+                    label: documentKindLabel(l10n, kind),
                     selected: _kind == kind,
                     onSelected: _working
                         ? null

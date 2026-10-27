@@ -8,9 +8,10 @@ import '../../../category/domain/entities/product_category.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/entities/product_entity.dart';
 
-/// Categories ranked by product count: tinted icon, name, count, percentage
-/// and a slim bar in the category colour.
-class CategoryBreakdownCard extends StatelessWidget {
+/// Categories ranked by product count in one card: tinted icon, name,
+/// count, percentage and a slim bar in the category colour. The top five
+/// show until "Show all" is tapped.
+class CategoryBreakdownCard extends StatefulWidget {
   const CategoryBreakdownCard({
     super.key,
     required this.products,
@@ -23,8 +24,18 @@ class CategoryBreakdownCard extends StatelessWidget {
   final AppLocalizations l10n;
 
   @override
+  State<CategoryBreakdownCard> createState() => _CategoryBreakdownCardState();
+}
+
+class _CategoryBreakdownCardState extends State<CategoryBreakdownCard> {
+  static const _collapsedCount = 5;
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final isInitialLoading = isLoading && products.isEmpty;
+    final l10n = widget.l10n;
+    final products = widget.products;
+    final isInitialLoading = widget.isLoading && products.isEmpty;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final locale = Localizations.localeOf(context);
@@ -43,11 +54,12 @@ class CategoryBreakdownCard extends StatelessWidget {
     }
     final entries = counts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
+    final shown = _expanded ? entries : entries.take(_collapsedCount);
 
     return AppCard(
       padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(l10n.categoryBreakdown, style: textTheme.titleMedium),
           const SizedBox(height: 16),
@@ -63,8 +75,8 @@ class CategoryBreakdownCard extends StatelessWidget {
               enabled: isInitialLoading,
               child: Column(
                 children: [
-                  for (final (i, entry) in entries.indexed) ...[
-                    if (i > 0) const SizedBox(height: 16),
+                  for (final (i, entry) in shown.indexed) ...[
+                    if (i > 0) const SizedBox(height: 14),
                     _CategoryRow(
                       category: entry.key,
                       count: formatLocalizedInt(locale, entry.value),
@@ -76,6 +88,27 @@ class CategoryBreakdownCard extends StatelessWidget {
                 ],
               ),
             ),
+          if (entries.length > _collapsedCount) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton(
+                onPressed: () => setState(() => _expanded = !_expanded),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
+                ),
+                child: Text(
+                  _expanded
+                      ? l10n.showLess
+                      : l10n.analyticsShowAllCategories(
+                          entries.length,
+                          formatLocalizedInt(locale, entries.length),
+                        ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

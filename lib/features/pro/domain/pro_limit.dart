@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/error/exceptions.dart';
 
 /// What the free plan limits by count (database triggers refuse more).
-enum LimitedItem { products, subscriptions, installments }
+enum LimitedItem { products, subscriptions, installments, papers }
 
 /// What the free plan limits per day (the AI edge functions refuse more).
 enum QuotaType { scan, chat }
@@ -18,6 +18,7 @@ enum PaywallReason {
   productsLimit,
   subscriptionsLimit,
   installmentsLimit,
+  papersLimit,
   monthlySummary,
   pdfReport,
   voice,
@@ -98,6 +99,7 @@ class ProLimit {
     'products' => PaywallReason.productsLimit,
     'subscriptions' => PaywallReason.subscriptionsLimit,
     'installments' => PaywallReason.installmentsLimit,
+    'papers' => PaywallReason.papersLimit,
     // Add by voice is Pro only: the free plan's quota is 0.
     'voice' => PaywallReason.voice,
     _ => null,
@@ -107,5 +109,6 @@ class ProLimit {
     LimitedItem.products => PaywallReason.productsLimit,
     LimitedItem.subscriptions => PaywallReason.subscriptionsLimit,
     LimitedItem.installments => PaywallReason.installmentsLimit,
+    LimitedItem.papers => PaywallReason.papersLimit,
   };
 }

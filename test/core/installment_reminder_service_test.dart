@@ -54,6 +54,21 @@ class _Tracker implements NotifiedWarrantiesTracker {
 class _Notifications implements NotificationService {
   final scheduled = <int, DateTime>{};
   final bodies = <int, String>{};
+
+  /// Banners shown right away (not scheduled), by id.
+  final shown = <int>[];
+  @override
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    String? markPaidLabel,
+  }) async {
+    shown.add(id);
+    bodies[id] = body;
+  }
+
   final payloads = <int, String?>{};
   final buttons = <int, String?>{};
   @override
@@ -248,13 +263,10 @@ void main() {
     await service.checkAndNotify([tv], today: today);
     await service.checkAndNotify([tv], today: today);
     expect(added.added, ['tv: 1,000 EGP is due in 2 days']);
-    // Not scheduled ahead on this device, so it also pushes now.
-    expect(
-      notifications.scheduled.containsKey(
-        idOf('tv-p0', InstallmentReminder.threeDaysBefore),
-      ),
-      isTrue,
-    );
+    // Shown as a banner now, once (opening again doesn't repeat it).
+    expect(notifications.shown, [
+      idOf('tv-p0', InstallmentReminder.threeDaysBefore),
+    ]);
 
     await service.checkAndNotify([dueIn('tv', 0)], today: today);
     expect(added.added.last, 'tv: 1,000 EGP is due today');
@@ -264,10 +276,14 @@ void main() {
     final tv = dueIn('tv', 10);
     await service.syncAll([tv]);
     notifications.scheduled.clear();
+    // Opened 2 days before: the 3-day push fired yesterday at 10:00.
+    final due = tv.payments.first.dueDate;
     await service.checkAndNotify([
       tv,
-    ], today: tv.payments.first.dueDate.subtract(const Duration(days: 3)));
+    ], today: DateTime(due.year, due.month, due.day - 2));
     expect(added.added, hasLength(1));
+    // Its scheduled push already fired that morning: no second banner.
+    expect(notifications.shown, isEmpty);
     expect(notifications.scheduled, isEmpty);
   });
 

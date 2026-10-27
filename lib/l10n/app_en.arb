@@ -85,7 +85,6 @@
   "welcomeback" : "Welcome back!",
   "welcometoSakk" : "Welcome to Sakk!",
   "atleast8characters" : "At least 8 characters",
-  "categories" : "Categories",
   "product" : "product",
   "electronics" : "Electronics",
   "appliances" : "Appliances",
@@ -140,7 +139,14 @@
   "sendCode" : "Send Code",
   "passwordupdatedpleasesigninagain" : "Password updated please sign in again",
   "enterCode": "Enter Code",
-  "weSentCodeTo": "We sent a {length}-digit code to {email}",
+  "resetCodeSentIfAccountExists": "If an account exists for {email}, we've sent it a {length}-digit code. Check your inbox and spam folder.",
+  "@resetCodeSentIfAccountExists": {"placeholders": {"email": {"type": "String"}, "length": {"type": "int"}}},
+  "resendCodeIn": "Resend code in {seconds}s",
+  "@resendCodeIn": {"placeholders": {"seconds": {"type": "int"}}},
+  "resetRateLimited": "Too many requests. Wait a minute, then try again.",
+  "resetInvalidCode": "That code is wrong or has expired. Check it or request a new one.",
+  "resetSamePassword": "Your new password must be different from your old one.",
+  "resetGoogleAccountNote": "Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.",
   "newCodeSentToEmail": "A new code was sent to your email",
   "verify": "Verify",
   "resendCode": "Resend code",
@@ -228,8 +234,6 @@
   "deleteAccountConfirm": "Delete forever",
   "accountDeleted": "Your account has been deleted",
   "search": "Search",
-  "filterByCategory": "Filter by category",
-  "clearCategoryFilter": "Clear category filter",
   "openProfile": "Open profile",
   "changeProfilePhoto": "Change profile photo",
   "sendMessage": "Send message",
@@ -513,14 +517,6 @@
   },
   "subscriptionsAnalyticsTitle": "Subscriptions",
   "subscriptionsAnalyticsEmpty": "No subscriptions yet. Tap to add Netflix, Spotify and more.",
-  "subscriptionsBreakdownNote": "Breakdown of {currency} subscriptions",
-  "@subscriptionsBreakdownNote": {
-    "placeholders": {
-      "currency": {
-        "type": "String"
-      }
-    }
-  },
   "notifRenewedTitle": "Subscription renewed",
   "notifRenewedBody": "{days, plural, =1{{name} renewed yesterday for {price}. Check you were charged the right amount.} other{{name} renewed {daysText} days ago for {price}. Check you were charged the right amount.}}",
   "@notifRenewedBody": {
@@ -1090,5 +1086,184 @@
   "voiceUnheardTitle": "We didn't catch that",
   "addPhoto": "Add a photo (optional)",
   "addPhotoHint": "The receipt, the box or the product",
-  "changePhoto": "Change photo"
+  "changePhoto": "Change photo",
+  "myPapers": "My papers",
+  "papersHomeEmpty": "Your ID, passport and licences",
+  "addPaper": "Add paper",
+  "editPaper": "Edit paper",
+  "noPapersYet": "No papers yet",
+  "noPapersBody": "Save your ID, passport, licences and insurance cards with a photo and the expiry date. Sakk reminds you a month before each one expires.",
+  "papersPrivacyNote": "Your papers are private to your account: they aren't shared with your household, other users can't open them, and they're never sent to the AI.",
+  "paperNationalId": "National ID",
+  "paperPassport": "Passport",
+  "paperDrivingLicence": "Driving licence",
+  "paperCarLicence": "Car licence",
+  "paperCarInsurance": "Car insurance",
+  "paperHealthInsurance": "Medical insurance",
+  "paperRentalContract": "Rental contract",
+  "paperOther": "Other",
+  "paperType": "Type",
+  "paperName": "Name",
+  "paperNameOptional": "Name (optional)",
+  "paperViewPhoto": "View photo",
+  "paperNameRequired": "Enter a name for this paper",
+  "paperNumberOptional": "Number (optional)",
+  "paperExpiryDate": "Expiry date",
+  "paperPickDate": "Pick a date",
+  "paperNoExpiry": "Doesn't expire",
+  "paperPhotos": "Photos (optional)",
+  "paperFront": "Front",
+  "paperBack": "Back",
+  "paperRemovePhoto": "Remove photo",
+  "paperSaved": "Paper saved",
+  "paperDeleted": "Paper deleted",
+  "deletePaperQuestion": "Delete paper?",
+  "deletePaperBody": "{name} and its photos will be deleted.",
+  "@deletePaperBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paperExpiresToday": "Expires today",
+  "paperExpiresInDays": "{days, plural, =1{Expires tomorrow} other{Expires in {daysText} days}}",
+  "@paperExpiresInDays": {
+    "description": "daysText is the day count in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      }
+    }
+  },
+  "paperValidUntil": "Valid until {date}",
+  "@paperValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paperExpiredOn": "Expired on {date}",
+  "@paperExpiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paperNoExpiryDate": "No expiry date",
+  "paperStatusValid": "Valid",
+  "paperStatusExpiringSoon": "Expiring soon",
+  "paperStatusExpired": "Expired",
+  "paperNumber": "Number",
+  "copyPaperNumber": "Copy number",
+  "paperNumberCopied": "Number copied",
+  "paperNoPhotos": "No photos. Tap Edit to add the front and back.",
+  "notifPaperExpiringTitle": "Paper expiring soon",
+  "notifPaperExpiredTitle": "Paper expired",
+  "notifPaperExpiringBody": "{days, plural, =1{{name} expires tomorrow. Time to renew it.} other{{name} expires in {daysText} days. Time to renew it.}}",
+  "@notifPaperExpiringBody": {
+    "description": "daysText is the day count in the app's digits; days picks the plural form.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "daysText": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifPaperExpiresTodayBody": "{name} expires today.",
+  "@notifPaperExpiresTodayBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifPaperExpiredBody": "{name} has expired. Renew it as soon as you can.",
+  "@notifPaperExpiredBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPapersHint": "Before each paper expires",
+  "reminderMonthBefore": "A month before",
+  "reminderWeekBefore": "A week before",
+  "reminderOnExpiryDay": "On the expiry day",
+  "featurePapers": "Papers",
+  "paywallHeadlinePapers": "Keep all your papers in one place",
+  "limitReachedPapers": "You've reached the free plan's paper limit. Upgrade to Sakk Pro to add more.",
+  "statProducts": "Products",
+  "statActive": "Active",
+  "statExpiring": "Expiring",
+  "statExpired": "Expired",
+  "moneyThisMonth": "Money this month",
+  "subscriptionPlan": "Plan",
+  "subscriptionPaymentMethod": "Payment method",
+  "subscriptionMonthlyEquivalent": "That's {amount} a month",
+  "@subscriptionMonthlyEquivalent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "papersNeedRenewing": "Needs renewing",
+  "profile": "Profile",
+  "papersToRenewCount": "{count, plural, =1{1 needs renewing} other{{countText} need renewing}}",
+  "@papersToRenewCount": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "papersAllUpToDate": "All up to date",
+  "papersCountLabel": "{count, plural, =1{1 paper} other{{countText} papers}}",
+  "@papersCountLabel": {
+    "description": "countText is the count in the app's digits; count picks the plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "scanCameraHint": "Point the camera at the receipt or warranty card",
+  "scanOtherWays": "Other ways to add",
+  "scanGalleryHint": "A photo you already have",
+  "scanPdfHint": "An invoice a store emailed you",
+  "scanVoiceHint": "Say what you bought and we fill it in",
+  "scanManualHint": "No receipt? Type the details in",
+  "periodThisMonth": "This month",
+  "periodThisYear": "This year",
+  "periodAllTime": "All time",
+  "analyticsMoney": "Money",
+  "installmentSectionDetails": "Details",
+  "installmentSectionPrice": "Price",
+  "installmentSectionPayments": "Payments",
+  "analyticsEmptyTitle": "No stats yet",
+  "analyticsEmptyMessage": "Add your first product to see your spending, warranties and categories here.",
+  "analyticsProductsCount": "{count, plural, one{1 product} other{{countText} products}}",
+  "@analyticsProductsCount": {"placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}},
+  "analyticsAverage": "avg {amount}",
+  "@analyticsAverage": {"placeholders": {"amount": {"type": "String"}}},
+  "analyticsShowAllCategories": "{count, plural, other{Show all {countText}}}",
+  "@analyticsShowAllCategories": {"placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}}
 }

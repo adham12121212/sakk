@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/util/pii_masker.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -30,9 +33,31 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     _length,
     (_) => FocusNode(),
   );
+  Timer? _cooldownTimer;
+  Duration _cooldownLeft = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _startCooldown();
+  }
+
+  /// Counts down the cubit's resend cooldown, once a second.
+  void _startCooldown() {
+    _cooldownTimer?.cancel();
+    void tick() {
+      final left = context.read<PasswordResetCubit>().resendCooldownLeft;
+      setState(() => _cooldownLeft = left);
+      if (left == Duration.zero) _cooldownTimer?.cancel();
+    }
+
+    _cooldownLeft = context.read<PasswordResetCubit>().resendCooldownLeft;
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (_) => tick());
+  }
 
   @override
   void dispose() {
+    _cooldownTimer?.cancel();
     for (final c in _controllers) {
       c.dispose();
     }
@@ -77,12 +102,13 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     if (ModalRoute.of(context)?.isCurrent != true) return;
     final l10n = AppLocalizations.of(context)!;
     if (state is PasswordResetError) {
-      AppSnackBar.error(context, state.message);
+      AppSnackBar.error(context, userFacingError(l10n, state.message));
     } else if (state is PasswordResetOtpSent) {
-      AppSnackBar.success(context, l10n.newCodeSentToEmail);
+      if (state.resent) AppSnackBar.success(context, l10n.newCodeSentToEmail);
       for (final c in _controllers) {
         c.clear();
       }
+      _startCooldown();
     } else if (state is PasswordResetOtpVerified) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -123,9 +149,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    l10n.weSentCodeTo(
-                      _length,
+                    l10n.resetCodeSentIfAccountExists(
                       PiiMasker.maskEmail(widget.email),
+                      _length,
                     ),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -158,8 +184,16 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   SizedBox(height: 16.h),
                   Center(
                     child: TextButton(
-                      onPressed: isLoading ? null : _resend,
-                      child: Text(l10n.resendCode),
+                      onPressed: isLoading || _cooldownLeft > Duration.zero
+                          ? null
+                          : _resend,
+                      child: Text(
+                        _cooldownLeft > Duration.zero
+                            ? l10n.resendCodeIn(
+                                (_cooldownLeft.inMilliseconds / 1000).ceil(),
+                              )
+                            : l10n.resendCode,
+                      ),
                     ),
                   ),
                 ],

@@ -23,23 +23,44 @@ class PasswordResetCubit extends Cubit<PasswordResetState> {
   final SignOutUseCase _signOutUseCase;
   final PasswordRecoveryService _recoveryService;
 
+  /// How long before another code can be requested. Supabase limits
+  /// recovery emails per address too; this keeps the app from hitting it.
+  static const resendCooldown = Duration(seconds: 60);
+
   String? _email;
   String? get email => _email;
+  DateTime? _sentAt;
+
+  /// Time left before [sendOtp] will send another code; zero when it can.
+  Duration get resendCooldownLeft {
+    final sentAt = _sentAt;
+    if (sentAt == null) return Duration.zero;
+    final left = resendCooldown - DateTime.now().difference(sentAt);
+    return left.isNegative ? Duration.zero : left;
+  }
 
   Future<void> sendOtp(String email) async {
+    if (state is PasswordResetLoading) return;
+    // Back on the email screen and sent again to the same address: the code
+    // that's already on its way still works, so go straight to entering it.
+    if (email == _email && resendCooldownLeft > Duration.zero) {
+      emit(PasswordResetOtpSent(resent: false));
+      return;
+    }
     emit(PasswordResetLoading());
-    _email = email;
+    final resent = email == _email;
     final result = await _sendOtpUseCase(email: email);
-    result.fold(
-      (failure) => emit(PasswordResetError(failure.message)),
-      (_) => emit(PasswordResetOtpSent()),
-    );
+    result.fold((failure) => emit(PasswordResetError(failure.message)), (_) {
+      _email = email;
+      _sentAt = DateTime.now();
+      emit(PasswordResetOtpSent(resent: resent));
+    });
   }
 
   Future<void> verifyOtp(String otp) async {
     final email = _email;
     if (email == null) {
-      emit(PasswordResetError('Something went wrong — please start over.'));
+      emit(PasswordResetError('No email to verify the code for'));
       return;
     }
     emit(PasswordResetLoading());

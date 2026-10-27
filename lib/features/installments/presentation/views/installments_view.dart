@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/route/app_router.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_empty_view.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../core/widgets/app_refresh_indicator.dart';
@@ -138,32 +139,30 @@ class _InstallmentsViewState extends State<InstallmentsView> {
 
     return Skeletonizer(
       enabled: isInitialLoading,
-      child: ListView.separated(
+      child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         // Bottom room so the last row clears the floating button.
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 96),
-        itemCount: items.length + 1,
-        separatorBuilder: (_, index) => SizedBox(height: index == 0 ? 20 : 12),
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return RemainingTotalCard(
-              remaining: remainingByCurrency(items),
-              dueThisMonth: dueInMonthByCurrency(
-                items,
-                today.year,
-                today.month,
-              ),
-              overdue: overdueByCurrency(items, today),
-              activeCount: items.where((p) => p.isActive).length,
-            );
-          }
-          final plan = items[index - 1];
-          return InstallmentTile(
-            plan: plan,
-            today: today,
-            onTap: isInitialLoading ? null : () => _open(plan),
-          );
-        },
+        children: [
+          RemainingTotalCard(
+            remaining: remainingByCurrency(items),
+            dueThisMonth: dueInMonthByCurrency(items, today.year, today.month),
+            overdue: overdueByCurrency(items, today),
+            activeCount: items.where((p) => p.isActive).length,
+          ),
+          const SizedBox(height: 20),
+          GroupedCard(
+            dividerIndent: 0,
+            children: [
+              for (final plan in items)
+                InstallmentTile(
+                  plan: plan,
+                  today: today,
+                  onTap: isInitialLoading ? null : () => _open(plan),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

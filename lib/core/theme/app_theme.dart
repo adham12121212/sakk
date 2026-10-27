@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/app_colors.dart';
@@ -23,6 +24,24 @@ class AppTheme {
 
   static ThemeData light() => _themeFor(Brightness.light);
   static ThemeData dark() => _themeFor(Brightness.dark);
+
+  /// Transparent status and navigation bars with icons that read on the
+  /// page, so the app draws edge to edge: no black strip under Android's
+  /// gesture bar, and the bottom menu's white reaches the screen's edge.
+  static SystemUiOverlayStyle systemBars(Brightness brightness) {
+    final dark = brightness == Brightness.dark;
+    return SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: brightness,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: dark
+          ? Brightness.light
+          : Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+    );
+  }
 
   static const double radiusCard = 20;
   static const double radiusControl = 16;
@@ -104,6 +123,7 @@ class AppTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: textTheme.titleLarge,
+        systemOverlayStyle: systemBars(brightness),
       ),
 
       cardTheme: CardThemeData(
@@ -205,7 +225,15 @@ class AppTheme {
         selectedColor: AppColors.primary,
         side: BorderSide(color: colorScheme.outline),
         shape: const StadiumBorder(),
-        labelStyle: textTheme.labelLarge,
+        // White on the brand colour once selected; grey while not.
+        labelStyle: WidgetStateTextStyle.resolveWith(
+          (states) => textTheme.labelLarge!.copyWith(
+            color: states.contains(WidgetState.selected)
+                ? Colors.white
+                : colorScheme.onSurfaceVariant,
+          ),
+        ),
+        checkmarkColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
 

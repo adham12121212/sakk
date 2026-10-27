@@ -9,8 +9,8 @@
 import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 // ⚠️ Check these match your project (Dashboard → Storage / Table Editor).
-// Every file is expected under "<user_id>/..." (that's how avatars are stored today).
-const BUCKETS = ["avatars", "receipts"];
+// Every file is expected under "<user_id>/..." (that's how avatars, receipts and paper photos are stored).
+const BUCKETS = ["avatars", "receipts", "papers"];
 // Tables with a `user_id` column. Children first, parents last.
 // installment_payments goes before installment_plans, and plans before
 // products. (Rows with user_id also cascade when the auth user is deleted;
@@ -18,7 +18,7 @@ const BUCKETS = ["avatars", "receipts"];
 // household_members goes first: removing the row runs the same trigger as
 // leaving, so an owner's household passes to its longest-standing member
 // (or is deleted if nobody is left).
-const TABLES = ["household_members", "notifications", "chat_messages", "installment_payments", "installment_plans", "products"];
+const TABLES = ["household_members", "notifications", "chat_messages", "installment_payments", "installment_plans", "products", "papers"];
 
 const cors = {
   "Access-Control-Allow-Origin": "*",

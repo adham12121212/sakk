@@ -10,6 +10,7 @@ import '../../../household/presentation/cubit/household_cubit.dart';
 import '../../../installments/domain/usecase/clear_cached_installments_usecase.dart';
 import '../../../installments/presentation/cubit/installments_cubit.dart';
 import '../../../notification/presentation/cubit/notification_cubit.dart';
+import '../../../papers/presentation/cubit/papers_cubit.dart';
 import '../../../products/domain/usecase/clear_cached_products_usecase.dart';
 import '../../../subscriptions/domain/usecase/clear_cached_subscriptions_usecase.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
@@ -47,6 +48,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       getIt<SubscriptionsCubit>().reset();
       getIt<InstallmentsCubit>().reset();
+      getIt<PapersCubit>().reset();
       emit(AuthSuccess(user));
     });
   }
@@ -74,6 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
         getIt<ProductsCubit>().reset();
         getIt<SubscriptionsCubit>().reset();
         getIt<InstallmentsCubit>().reset();
+        getIt<PapersCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -92,6 +95,7 @@ class AuthCubit extends Cubit<AuthState> {
       getIt<ProductsCubit>().reset();
       getIt<SubscriptionsCubit>().reset();
       getIt<InstallmentsCubit>().reset();
+      getIt<PapersCubit>().reset();
       getIt<NotificationCubit>().reset();
       getIt<HouseholdCubit>().reset();
       try {
@@ -128,6 +132,7 @@ class AuthCubit extends Cubit<AuthState> {
         getIt<ProductsCubit>().reset();
         getIt<SubscriptionsCubit>().reset();
         getIt<InstallmentsCubit>().reset();
+        getIt<PapersCubit>().reset();
         emit(AuthSuccess(user));
       },
     );
@@ -143,6 +148,7 @@ class AuthCubit extends Cubit<AuthState> {
       getIt<ProductsCubit>().reset();
       getIt<SubscriptionsCubit>().reset();
       getIt<InstallmentsCubit>().reset();
+      getIt<PapersCubit>().reset();
       getIt<NotificationCubit>().reset();
       getIt<HouseholdCubit>().reset();
       await getIt<ClearCachedProductsUseCase>()();

@@ -8,7 +8,7 @@ import '../../../../core/di/get_it.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../details/presentation/cubit/details_cubit.dart';
 import '../../../details/presentation/views/details_view.dart';
-import '../../../home/presentation/widgets/recent_product_data.dart';
+import '../widgets/product_list_card.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
 import '../../../../core/theme/app_icons.dart';
@@ -132,38 +132,38 @@ class _ProductSearchBodyState extends State<_ProductSearchBody> {
                     );
                   }
 
-                  return ListView.separated(
+                  return ListView(
                     padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-                    itemCount: state.results.length,
-                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
-                    itemBuilder: (context, index) {
-                      final product = state.results[index];
-                      return RecentProductTile(
-                        data: RecentProductData.fromEntity(product),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            // Was only providing ProductsCubit here — DetailsView's
-                            // body reads/watches DetailsCubit directly, and unlike
-                            // the '/details' GoRoute (which wraps both in a
-                            // MultiBlocProvider), this Navigator.push path never
-                            // provided one. That's what threw "Could not find the
-                            // correct Provider<DetailsCubit>" when opening a
-                            // product straight from search results.
-                            builder: (_) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(
-                                  value: context.read<ProductsCubit>(),
-                                ),
-                                BlocProvider(
-                                  create: (_) => getIt<DetailsCubit>(),
-                                ),
-                              ],
-                              child: DetailsView(product: product),
+                    children: [
+                      for (final (i, product) in state.results.indexed) ...[
+                        if (i > 0) SizedBox(height: 12.h),
+                        ProductListCard(
+                          product: product,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              // Was only providing ProductsCubit here — DetailsView's
+                              // body reads/watches DetailsCubit directly, and unlike
+                              // the '/details' GoRoute (which wraps both in a
+                              // MultiBlocProvider), this Navigator.push path never
+                              // provided one. That's what threw "Could not find the
+                              // correct Provider<DetailsCubit>" when opening a
+                              // product straight from search results.
+                              builder: (_) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(
+                                    value: context.read<ProductsCubit>(),
+                                  ),
+                                  BlocProvider(
+                                    create: (_) => getIt<DetailsCubit>(),
+                                  ),
+                                ],
+                                child: DetailsView(product: product),
+                              ),
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ],
+                    ],
                   );
                 },
               ),
@@ -196,36 +196,42 @@ class _RecentSearches extends StatelessWidget {
           ).textTheme.labelLarge?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 12),
-        for (final query in recentSearches) ...[
-          AppCard(
-            onTap: () => onTap(query),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                Icon(
-                  AppIcons.recentSearch,
-                  size: 20,
-                  color: colorScheme.onSurfaceVariant,
+        GroupedCard(
+          dividerIndent: 48,
+          children: [
+            for (final query in recentSearches)
+              AppCard(
+                onTap: () => onTap(query),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    query,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                child: Row(
+                  children: [
+                    Icon(
+                      AppIcons.recentSearch,
+                      size: 20,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        query,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    Icon(
+                      AppIcons.fillSuggestion,
+                      size: 18,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ],
                 ),
-                Icon(
-                  AppIcons.fillSuggestion,
-                  size: 18,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-        ],
+              ),
+          ],
+        ),
       ],
     );
   }

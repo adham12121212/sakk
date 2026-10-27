@@ -202,11 +202,14 @@ class NotificationService {
     return _permissionGranted;
   }
 
+  /// Shows a notification now (a banner, also while the app is open).
+  /// Set [markPaidLabel] to add a "Mark as paid" button (installments).
   Future<void> showNotification({
     required int id,
     required String title,
     required String body,
     String? payload,
+    String? markPaidLabel,
   }) async {
     if (!_permissionGranted) {
       developer.log(
@@ -217,44 +220,54 @@ class NotificationService {
       );
     }
 
-    const androidDetails = AndroidNotificationDetails(
-      _channelId,
-      _channelName,
-      channelDescription: _channelDescription,
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-    );
-    // presentAlert is Apple's OLD foreground-presentation API; newer iOS
-    // versions expect presentBanner/presentList instead (Apple deprecated
-    // .alert in favor of .banner + .list). Setting only presentAlert can
-    // silently produce no banner at all on current iOS — no error, it just
-    // doesn't render. Set all of them so foreground display works
-    // regardless of which API path the OS actually consults.
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBanner: true,
-      presentList: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
     try {
       await _notifications.show(
         id: id,
         title: title,
         body: body,
-        notificationDetails: details,
+        notificationDetails: _details(markPaidLabel),
         payload: payload,
       );
       developer.log('>>> showNotification CALLED OK: id=$id title="$title"');
     } catch (e, stack) {
       developer.log('>>> showNotification THREW: $e', stackTrace: stack);
     }
+  }
+
+  /// How every reminder looks: high importance on Android; banner, list,
+  /// badge and sound on iOS, also in the foreground. With [markPaidLabel],
+  /// a "Mark as paid" button that opens the app.
+  ///
+  /// presentAlert is Apple's old foreground API; newer iOS versions read
+  /// presentBanner/presentList instead, and setting only presentAlert can
+  /// silently show nothing. All of them are set.
+  NotificationDetails _details(String? markPaidLabel) {
+    final androidDetails = AndroidNotificationDetails(
+      _channelId,
+      _channelName,
+      channelDescription: _channelDescription,
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      actions: markPaidLabel == null
+          ? null
+          : [
+              AndroidNotificationAction(
+                markPaidActionId,
+                markPaidLabel,
+                showsUserInterface: true,
+              ),
+            ],
+    );
+    final iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBanner: true,
+      presentList: true,
+      presentBadge: true,
+      presentSound: true,
+      categoryIdentifier: markPaidLabel == null ? null : _installmentCategoryId,
+    );
+    return NotificationDetails(android: androidDetails, iOS: iosDetails);
   }
 
   /// Schedules a one-off notification at [dateTime].
@@ -287,37 +300,7 @@ class NotificationService {
       );
     }
 
-    // With [markPaidLabel], a "Mark as paid" button that opens the app.
-    final androidDetails = AndroidNotificationDetails(
-      _channelId,
-      _channelName,
-      channelDescription: _channelDescription,
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      actions: markPaidLabel == null
-          ? null
-          : [
-              AndroidNotificationAction(
-                markPaidActionId,
-                markPaidLabel,
-                showsUserInterface: true,
-              ),
-            ],
-    );
-    final iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBanner: true,
-      presentList: true,
-      presentBadge: true,
-      presentSound: true,
-      categoryIdentifier: markPaidLabel == null ? null : _installmentCategoryId,
-    );
-    final details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
+    final details = _details(markPaidLabel);
     final scheduledDate = tz.TZDateTime.from(dateTime, tz.local);
 
     // Inexact on purpose: Play only allows the exact-alarm permission for
