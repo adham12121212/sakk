@@ -7,6 +7,9 @@ abstract class NotificationDataSource {
   Future<void> markNotificationAsRead(String notificationId);
   Future<void> deleteNotification(String notificationId);
   Future<void> createNotification(Map<String, dynamic> insertJson);
+
+  /// Whether [userId] already has a notification for the reminder [key].
+  Future<bool> hasNotificationWithKey(String userId, String key);
 }
 
 class NotificationDataSourceImpl implements NotificationDataSource {
@@ -50,6 +53,19 @@ class NotificationDataSourceImpl implements NotificationDataSource {
         matchColumn: 'id',
         matchValue: notificationId,
       );
+    } catch (e, st) {
+      SupabaseErrorMapper.handle(e, st);
+    }
+  }
+
+  @override
+  Future<bool> hasNotificationWithKey(String userId, String key) async {
+    try {
+      final rows = await supabaseService.get(
+        _table,
+        filters: {'user_id': userId, 'message->>key': key},
+      );
+      return rows.isNotEmpty;
     } catch (e, st) {
       SupabaseErrorMapper.handle(e, st);
     }

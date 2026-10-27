@@ -117,6 +117,12 @@ class NotificationRepoImpl implements NotificationRepo {
       return const Left(NetworkFailure('No internet connection'));
     }
     try {
+      // Another device (or this one before a reinstall) already added it.
+      final key = message?.key;
+      if (key != null &&
+          await _dataSource.hasNotificationWithKey(userId, key)) {
+        return const Right(null);
+      }
       await _dataSource.createNotification({
         'user_id': userId,
         'title': title,

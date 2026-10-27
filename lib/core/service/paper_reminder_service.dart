@@ -264,7 +264,11 @@ class PaperReminderService {
           type: daysLeft <= 0
               ? NotificationType.error
               : NotificationType.warning,
-          message: _message(paper, kind, daysLeft),
+          message: _message(
+            paper,
+            kind,
+            daysLeft,
+          ).keyed('$trackerId:${_notifiedKey(kind, expiry)}'),
         );
       } catch (e, st) {
         _logger.error(
