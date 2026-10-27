@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/util/localized_number.dart';
 import '../../domain/entities/notification_entity.dart';
+import '../util/notification_text.dart';
 import 'notification_type_icon.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -19,6 +20,7 @@ class NotificationTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final unread = !notification.isRead;
+    final (title, subtitle) = _text(context);
 
     return AppCard(
       onTap: onTap,
@@ -36,7 +38,7 @@ class NotificationTile extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        notification.title,
+                        title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.titleSmall?.copyWith(
@@ -56,7 +58,7 @@ class NotificationTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  notification.subtitle,
+                  subtitle,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: textTheme.bodyMedium?.copyWith(
@@ -83,6 +85,23 @@ class NotificationTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// In the app's current language when the notification says what it is;
+  /// otherwise (older rows) as it was stored.
+  (String, String) _text(BuildContext context) {
+    final message = notification.message;
+    if (message == null) return (notification.title, notification.subtitle);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      return (
+        notificationTitle(l10n, message.kind),
+        notificationBody(l10n, message),
+      );
+    } catch (_) {
+      // Args a newer version wrote differently: the stored text still works.
+      return (notification.title, notification.subtitle);
+    }
   }
 
   String _timeAgo(BuildContext context, DateTime dateTime) {

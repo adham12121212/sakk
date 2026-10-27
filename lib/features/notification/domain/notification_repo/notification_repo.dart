@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
 import '../entities/notification_entity.dart';
+import '../entities/notification_message.dart';
 
 abstract class NotificationRepo {
   Future<Either<Failure, List<NotificationEntity>>> getNotifications(
@@ -15,6 +16,7 @@ abstract class NotificationRepo {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   });
 
   /// Emits the user id each time [addNotification] succeeds on this device,

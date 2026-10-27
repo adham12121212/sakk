@@ -18,6 +18,7 @@ import 'package:sakk/features/installments/domain/usecase/get_installment_plans_
 import 'package:sakk/features/installments/domain/usecase/set_payment_paid_usecase.dart';
 import 'package:sakk/features/installments/presentation/cubit/installments_cubit.dart';
 import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
+import 'package:sakk/features/notification/domain/entities/notification_message.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 
 import '../features/installments/installment_fixtures.dart';
@@ -36,6 +37,7 @@ class _AddNotification implements AddNotificationUseCase {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   }) async {
     added.add(subtitle);
     return const Right(null);

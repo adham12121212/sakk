@@ -9,6 +9,7 @@ import 'package:sakk/features/notification/domain/entities/notification_entity.d
 
 import '../../domain/notification_repo/notification_repo.dart';
 import '../notification_data_source/notification_data_source.dart';
+import '../../domain/entities/notification_message.dart';
 
 class NotificationRepoImpl implements NotificationRepo {
   final NotificationDataSource _dataSource;
@@ -110,6 +111,7 @@ class NotificationRepoImpl implements NotificationRepo {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   }) async {
     if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
@@ -122,6 +124,7 @@ class NotificationRepoImpl implements NotificationRepo {
         'type': type.name,
         'is_read': false,
         'product_id': ?productId,
+        'message': ?message?.toJson(),
       });
       _addedController.add(userId);
       return const Right(null);

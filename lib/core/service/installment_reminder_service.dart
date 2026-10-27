@@ -7,11 +7,12 @@ import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/installments/domain/entities/installment_payment.dart';
 import '../../features/installments/domain/entities/installment_plan.dart';
 import '../../features/notification/domain/entities/notification_entity.dart';
+import '../../features/notification/presentation/util/notification_text.dart';
+import '../../features/notification/domain/entities/notification_message.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/date_math.dart';
-import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
@@ -260,7 +261,7 @@ class InstallmentReminderService {
       kind: kind,
       due: payment.dueDate,
       title: _title(kind),
-      body: _body(plan, payment, days),
+      body: _body(plan, payment, kind, days),
       dateTime: reminderTime(kind, payment.dueDate, customDays: days),
       payload: userId == null
           ? null
@@ -341,7 +342,7 @@ class InstallmentReminderService {
     }
 
     final title = _title(kind);
-    final body = _body(plan, payment, days);
+    final body = _body(plan, payment, kind, days);
     final id = notificationId(payment.id, kind);
     try {
       // Skipped only if this device already delivered it (scheduled
@@ -380,6 +381,7 @@ class InstallmentReminderService {
         title: title,
         subtitle: body,
         type: NotificationType.warning,
+        message: _message(plan, payment, kind, days),
       );
     } catch (e, st) {
       _logger.error(
@@ -390,23 +392,33 @@ class InstallmentReminderService {
     }
   }
 
-  String _title(InstallmentReminder kind) => kind == InstallmentReminder.dueDay
-      ? _l10n.notifInstallmentDueTodayTitle
-      : _l10n.notifInstallmentDueSoonTitle;
+  String _title(InstallmentReminder kind) =>
+      notificationTitle(_l10n, _messageKind(kind));
 
   /// [days] is days until the installment is due.
-  String _body(InstallmentPlan plan, InstallmentPayment payment, int days) {
-    final l10n = _l10n;
-    final amount = formatLocalizedAmount(_currentLocale, payment.amount);
-    final price =
-        '$amount ${plan.currency == 'EGP' ? l10n.currencyEgp : plan.currency}';
-    return l10n.notifInstallmentDueBody(
-      days,
-      formatLocalizedInt(_currentLocale, days),
-      plan.name,
-      price,
-    );
-  }
+  String _body(
+    InstallmentPlan plan,
+    InstallmentPayment payment,
+    InstallmentReminder kind,
+    int days,
+  ) => notificationBody(_l10n, _message(plan, payment, kind, days));
+
+  NotificationKind _messageKind(InstallmentReminder kind) =>
+      kind == InstallmentReminder.dueDay
+      ? NotificationKind.installmentDueToday
+      : NotificationKind.installmentDueSoon;
+
+  NotificationMessage _message(
+    InstallmentPlan plan,
+    InstallmentPayment payment,
+    InstallmentReminder kind,
+    int days,
+  ) => NotificationMessage(_messageKind(kind), {
+    'name': plan.name,
+    'days': days,
+    'amount': payment.amount,
+    'currency': plan.currency,
+  });
 }
 
 class _Reminder {

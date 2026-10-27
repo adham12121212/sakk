@@ -1,4 +1,5 @@
 import '../../domain/entities/notification_entity.dart';
+import '../../domain/entities/notification_message.dart';
 
 class NotificationModel extends NotificationEntity {
   const NotificationModel({
@@ -10,6 +11,7 @@ class NotificationModel extends NotificationEntity {
     required super.createdAt,
     super.isRead,
     super.productId,
+    super.message,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class NotificationModel extends NotificationEntity {
       ),
       isRead: (json['isRead'] ?? json['is_read']) as bool? ?? false,
       productId: json['product_id'] as String?,
+      message: NotificationMessage.fromJson(json['message']),
     );
   }
 
@@ -40,6 +43,7 @@ class NotificationModel extends NotificationEntity {
       'created_at': createdAt.toIso8601String(),
       'is_read': isRead,
       'product_id': productId,
+      'message': message?.toJson(),
     };
   }
 
@@ -53,6 +57,7 @@ class NotificationModel extends NotificationEntity {
       'type': type.name,
       'is_read': isRead,
       if (productId != null) 'product_id': productId,
+      if (message != null) 'message': message!.toJson(),
     };
   }
 }
