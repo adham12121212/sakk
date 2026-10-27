@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/util/pii_masker.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -67,6 +68,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     super.dispose();
   }
 
+  /// [value] in the app's digits.
+  String _count(int value) =>
+      formatLocalizedInt(Localizations.localeOf(context), value);
+
   String get _otp => _controllers.map((c) => c.text).join();
 
   void _onChanged(int index, String value) {
@@ -85,7 +90,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     if (_otp.length != _length) {
       AppSnackBar.error(
         context,
-        AppLocalizations.of(context)!.enterDigitCode(_length),
+        AppLocalizations.of(context)!.enterDigitCode(_count(_length)),
       );
       return;
     }
@@ -151,7 +156,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   Text(
                     l10n.resetCodeSentIfAccountExists(
                       PiiMasker.maskEmail(widget.email),
-                      _length,
+                      _count(_length),
                     ),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -190,7 +195,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       child: Text(
                         _cooldownLeft > Duration.zero
                             ? l10n.resendCodeIn(
-                                (_cooldownLeft.inMilliseconds / 1000).ceil(),
+                                _count(
+                                  (_cooldownLeft.inMilliseconds / 1000).ceil(),
+                                ),
                               )
                             : l10n.resendCode,
                       ),

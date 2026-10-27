@@ -4,6 +4,7 @@ import '../../../../core/widgets/app_card.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
+import '../../../../core/util/localized_number.dart';
 import '../../domain/entities/notification_entity.dart';
 import 'notification_type_icon.dart';
 
@@ -87,10 +88,16 @@ class NotificationTile extends StatelessWidget {
   String _timeAgo(BuildContext context, DateTime dateTime) {
     final l10n = AppLocalizations.of(context)!;
     final diff = DateTime.now().difference(dateTime);
+    String n(int value) =>
+        formatLocalizedInt(Localizations.localeOf(context), value);
     if (diff.inMinutes < 1) return l10n.timeJustNow;
-    if (diff.inMinutes < 60) return l10n.timeMinutesAgo(diff.inMinutes);
-    if (diff.inHours < 24) return l10n.timeHoursAgo(diff.inHours);
-    if (diff.inDays < 7) return l10n.timeDaysAgo(diff.inDays);
+    if (diff.inMinutes < 60) {
+      return l10n.timeMinutesAgo(diff.inMinutes, n(diff.inMinutes));
+    }
+    if (diff.inHours < 24) {
+      return l10n.timeHoursAgo(diff.inHours, n(diff.inHours));
+    }
+    if (diff.inDays < 7) return l10n.timeDaysAgo(diff.inDays, n(diff.inDays));
     // Older than a week: a short date in the app's locale.
     return DateFormat.yMd(
       Localizations.localeOf(context).toLanguageTag(),

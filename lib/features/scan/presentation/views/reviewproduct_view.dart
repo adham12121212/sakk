@@ -23,6 +23,7 @@ import '../widgets/product_photo_picker.dart';
 import '../widgets/review_header.dart';
 import 'scan_failed_view.dart';
 import '../widgets/scan_skeleton_loader.dart';
+import '../../../../core/util/localized_number.dart';
 
 class ReviewProductView extends StatelessWidget {
   const ReviewProductView({super.key});
@@ -326,7 +327,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                                 padding: EdgeInsets.only(top: 6.h),
                                 child: Text(
                                   l10n.foreignPriceHint(
-                                    '${scanned.foreignPrice} ${scanned.foreignCurrency}',
+                                    '${formatLocalizedAmount(Localizations.localeOf(context), scanned.foreignPrice!)} ${scanned.foreignCurrency}',
                                   ),
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(

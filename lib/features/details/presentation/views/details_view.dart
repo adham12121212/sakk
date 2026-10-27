@@ -32,6 +32,7 @@ import '../widgets/product_documents_section.dart';
 import '../widgets/warranty_extras_section.dart';
 import '../widgets/warranty_banner.dart';
 import 'edit_view.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class DetailsView extends StatelessWidget {
@@ -122,7 +123,13 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
           '${NumberFormat.decimalPattern(_dateLocale).format(product.price!.round())} $_currencyLabel',
         ),
       (l10n.purchaseDate, date.format(product.purchaseDate)),
-      (l10n.warrantyPeriod, '${product.warrantyMonths} ${l10n.months}'),
+      (
+        l10n.warrantyPeriod,
+        l10n.monthsCount(
+          product.warrantyMonths,
+          _count(product.warrantyMonths),
+        ),
+      ),
       (l10n.warrantyEnds, date.format(product.warrantyEndDate)),
       if (daysToReturn != null && daysToReturn >= 0)
         (l10n.returnBy, date.format(product.returnByDate!)),
@@ -147,12 +154,16 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     CategoryUi.label(context, product.category),
   ].join(' · ');
 
+  /// [value] in the app's digits.
+  String _count(int value) =>
+      formatLocalizedInt(Localizations.localeOf(context), value);
+
   /// "Active · 412 days left" / "Expired"
   String get _shareStatus {
     final l10n = AppLocalizations.of(context)!;
     return product.isExpired
         ? _statusLabel
-        : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining)}';
+        : '$_statusLabel · ${l10n.daysLeft(product.daysRemaining, _count(product.daysRemaining))}';
   }
 
   /// Shares the product as one image: the details card, with the receipt
@@ -251,7 +262,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         content: Text(
           linkedPlans == 0
               ? l10n.deleteProductConfirmBody(product.name)
-              : '${l10n.deleteProductConfirmBody(product.name)}\n\n${l10n.deleteProductLinkedPlans(linkedPlans)}',
+              : '${l10n.deleteProductConfirmBody(product.name)}\n\n${l10n.deleteProductLinkedPlans(linkedPlans, _count(linkedPlans))}',
         ),
         actions: [
           TextButton(

@@ -6,6 +6,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../category/presentation/widgets/category_ui.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../domain/entities/product_entity.dart';
 
 /// A product in the Products list: its photo on the side, the name, brand
@@ -118,7 +119,13 @@ class ProductListCard extends StatelessWidget {
                       child: Text(
                         product.isExpired
                             ? l10n.warrantyExpired
-                            : l10n.daysLeft(product.daysRemaining),
+                            : l10n.daysLeft(
+                                product.daysRemaining,
+                                formatLocalizedInt(
+                                  Localizations.localeOf(context),
+                                  product.daysRemaining,
+                                ),
+                              ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.labelMedium?.copyWith(

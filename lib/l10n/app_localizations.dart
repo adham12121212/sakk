@@ -680,11 +680,11 @@ abstract class AppLocalizations {
   /// **'\"{productName}\" will be permanently removed. This can\'t be undone.'**
   String deleteProductConfirmBody(Object productName);
 
-  /// No description provided for @deleteProductLinkedPlans.
+  /// countText is the number in the app's digits; count picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}'**
-  String deleteProductLinkedPlans(int count);
+  /// **'{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{countText} installment plans are linked to this product. They will be kept, without the link.}}'**
+  String deleteProductLinkedPlans(int count, String countText);
 
   /// No description provided for @delete.
   ///
@@ -758,11 +758,11 @@ abstract class AppLocalizations {
   /// **'Invoice'**
   String get invoiceTab;
 
-  /// No description provided for @daysLeft.
+  /// daysText is the number in the app's digits; days picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, one{1 day left} other{{days} days left}}'**
-  String daysLeft(int days);
+  /// **'{days, plural, one{1 day left} other{{daysText} days left}}'**
+  String daysLeft(int days, String daysText);
 
   /// No description provided for @warrantyExpired.
   ///
@@ -858,13 +858,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'If an account exists for {email}, we\'ve sent it a {length}-digit code. Check your inbox and spam folder.'**
-  String resetCodeSentIfAccountExists(String email, int length);
+  String resetCodeSentIfAccountExists(String email, String length);
 
   /// No description provided for @resendCodeIn.
   ///
   /// In en, this message translates to:
   /// **'Resend code in {seconds}s'**
-  String resendCodeIn(int seconds);
+  String resendCodeIn(String seconds);
 
   /// No description provided for @resetRateLimited.
   ///
@@ -974,11 +974,11 @@ abstract class AppLocalizations {
   /// **'Expiring Soon'**
   String get expiringSoon;
 
-  /// No description provided for @warrantiesExpiringSoon.
+  /// countText is the number in the app's digits; count picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, one{1 warranty is expiring soon} other{{count} warranties are expiring soon}}'**
-  String warrantiesExpiringSoon(int count);
+  /// **'{count, plural, one{1 warranty is expiring soon} other{{countText} warranties are expiring soon}}'**
+  String warrantiesExpiringSoon(int count, String countText);
 
   /// No description provided for @goodMorning.
   ///
@@ -1238,12 +1238,6 @@ abstract class AppLocalizations {
   /// **'Warranty Duration'**
   String get warrantyDuration;
 
-  /// No description provided for @warrantyMonthsValue.
-  ///
-  /// In en, this message translates to:
-  /// **'{months} months'**
-  String warrantyMonthsValue(Object months);
-
   /// No description provided for @verifyDetails.
   ///
   /// In en, this message translates to:
@@ -1424,23 +1418,23 @@ abstract class AppLocalizations {
   /// **'Just now'**
   String get timeJustNow;
 
-  /// No description provided for @timeMinutesAgo.
+  /// minutesText is the number in the app's digits; minutes picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{minutes, plural, one{1 minute ago} other{{minutes} minutes ago}}'**
-  String timeMinutesAgo(int minutes);
+  /// **'{minutes, plural, one{1 minute ago} other{{minutesText} minutes ago}}'**
+  String timeMinutesAgo(int minutes, String minutesText);
 
-  /// No description provided for @timeHoursAgo.
+  /// hoursText is the number in the app's digits; hours picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{hours, plural, one{1 hour ago} other{{hours} hours ago}}'**
-  String timeHoursAgo(int hours);
+  /// **'{hours, plural, one{1 hour ago} other{{hoursText} hours ago}}'**
+  String timeHoursAgo(int hours, String hoursText);
 
-  /// No description provided for @timeDaysAgo.
+  /// daysText is the number in the app's digits; days picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, one{1 day ago} other{{days} days ago}}'**
-  String timeDaysAgo(int days);
+  /// **'{days, plural, one{1 day ago} other{{daysText} days ago}}'**
+  String timeDaysAgo(int days, String daysText);
 
   /// No description provided for @errorNoInternet.
   ///
@@ -1604,11 +1598,11 @@ abstract class AppLocalizations {
   /// **'Return by'**
   String get returnBy;
 
-  /// No description provided for @returnByValue.
+  /// daysText is the number in the app's digits; days picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{date} ({days, plural, =0{last day} one{1 day left} other{{days} days left}})'**
-  String returnByValue(Object date, num days);
+  /// **'{date} ({days, plural, =0{last day} one{1 day left} other{{daysText} days left}})'**
+  String returnByValue(String date, int days, String daysText);
 
   /// No description provided for @returnWindowClosed.
   ///
@@ -2222,11 +2216,11 @@ abstract class AppLocalizations {
   /// **'{product}\'s warranty is ending soon'**
   String notifExpiringBody(Object product);
 
-  /// No description provided for @notifExpiringInDays.
+  /// daysText is the number in the app's digits; days picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{product}\'s warranty ends in {days, plural, one{1 day} other{{days} days}}'**
-  String notifExpiringInDays(num days, Object product);
+  /// **'{product}\'s warranty ends in {days, plural, one{1 day} other{{daysText} days}}'**
+  String notifExpiringInDays(int days, String daysText, String product);
 
   /// No description provided for @notifExpiredTitle.
   ///
@@ -2276,11 +2270,11 @@ abstract class AppLocalizations {
   /// **'{amount} a year'**
   String subscriptionsYearlyTotal(String amount);
 
-  /// No description provided for @subscriptionsCount.
+  /// countText is the number in the app's digits; count picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0{No subscriptions} one{1 subscription} other{{count} subscriptions}}'**
-  String subscriptionsCount(int count);
+  /// **'{count, plural, =0{No subscriptions} one{1 subscription} other{{countText} subscriptions}}'**
+  String subscriptionsCount(int count, String countText);
 
   /// No description provided for @noSubscriptionsYet.
   ///
@@ -2450,11 +2444,11 @@ abstract class AppLocalizations {
   /// **'Renews tomorrow'**
   String get renewsTomorrow;
 
-  /// No description provided for @renewsInDays.
+  /// daysText is the number in the app's digits; days picks the plural form.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, one{Renews in 1 day} other{Renews in {days} days}}'**
-  String renewsInDays(int days);
+  /// **'{days, plural, one{Renews in 1 day} other{Renews in {daysText} days}}'**
+  String renewsInDays(int days, String daysText);
 
   /// No description provided for @renewalPassed.
   ///

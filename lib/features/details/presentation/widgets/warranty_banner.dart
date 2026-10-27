@@ -7,6 +7,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entities/product_entity.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/theme/app_icons.dart';
 
 /// Warranty summary card: days left, expiry date, status shield and a slim
@@ -30,7 +31,12 @@ class WarrantyBanner extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final status = WarrantyStatusColors.of(context, product.status);
     final days = product.daysRemaining;
-    final label = days > 0 ? l10n.daysLeft(days) : l10n.warrantyExpired;
+    final label = days > 0
+        ? l10n.daysLeft(
+            days,
+            formatLocalizedInt(Localizations.localeOf(context), days),
+          )
+        : l10n.warrantyExpired;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final expiresLabel = l10n.expiresOnLabel(
       DateFormat.yMMMd(locale).format(product.warrantyEndDate),

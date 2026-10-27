@@ -305,12 +305,14 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String deleteProductLinkedPlans(int count) {
+  String deleteProductLinkedPlans(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'هناك $count خطة تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
-      few: 'هناك $count خطط تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      other:
+          'هناك $countText خطة تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
+      few:
+          'هناك $countText خطط تقسيط مرتبطة بهذا المنتج. ستبقى ولكن بدون الربط.',
       two: 'هناك خطتا تقسيط مرتبطتان بهذا المنتج. ستبقيان ولكن بدون الربط.',
       one: 'هناك خطة تقسيط مرتبطة بهذا المنتج. ستبقى الخطة ولكن بدون الربط.',
     );
@@ -359,13 +361,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invoiceTab => 'الفاتورة';
 
   @override
-  String daysLeft(int days) {
+  String daysLeft(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days يوم متبقٍ',
-      many: '$days يومًا متبقيًا',
-      few: '$days أيام متبقية',
+      other: '$daysText يوم متبقٍ',
+      many: '$daysText يومًا متبقيًا',
+      few: '$daysText أيام متبقية',
       two: 'يومان متبقيان',
       one: 'يوم واحد متبقٍ',
     );
@@ -438,12 +440,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterCode => 'أدخل الرمز';
 
   @override
-  String resetCodeSentIfAccountExists(String email, int length) {
+  String resetCodeSentIfAccountExists(String email, String length) {
     return 'إذا كان هناك حساب مسجّل بالبريد $email، فقد أرسلنا إليه رمزًا مكونًا من $length أرقام. تحقّق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها.';
   }
 
   @override
-  String resendCodeIn(int seconds) {
+  String resendCodeIn(String seconds) {
     return 'إعادة إرسال الرمز بعد $seconds ث';
   }
 
@@ -509,13 +511,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expiringSoon => 'تنتهي قريبًا';
 
   @override
-  String warrantiesExpiringSoon(int count) {
+  String warrantiesExpiringSoon(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ضمان تنتهي قريبًا',
-      many: '$count ضمانًا تنتهي قريبًا',
-      few: '$count ضمانات تنتهي قريبًا',
+      other: '$countText ضمان تنتهي قريبًا',
+      many: '$countText ضمانًا تنتهي قريبًا',
+      few: '$countText ضمانات تنتهي قريبًا',
       two: 'ضمانان ينتهيان قريبًا',
       one: 'ضمان واحد ينتهي قريبًا',
       zero: 'لا توجد ضمانات تنتهي قريبًا',
@@ -660,11 +662,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get warrantyDuration => 'مدة الضمان';
 
   @override
-  String warrantyMonthsValue(Object months) {
-    return '$months شهرًا';
-  }
-
-  @override
   String get verifyDetails => 'تحقق من التفاصيل';
 
   @override
@@ -765,12 +762,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timeJustNow => 'الآن';
 
   @override
-  String timeMinutesAgo(int minutes) {
+  String timeMinutesAgo(int minutes, String minutesText) {
     String _temp0 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
-      other: 'منذ $minutes دقيقة',
-      few: 'منذ $minutes دقائق',
+      other: 'منذ $minutesText دقيقة',
+      few: 'منذ $minutesText دقائق',
       two: 'منذ دقيقتين',
       one: 'منذ دقيقة',
     );
@@ -778,12 +775,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String timeHoursAgo(int hours) {
+  String timeHoursAgo(int hours, String hoursText) {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
-      other: 'منذ $hours ساعة',
-      few: 'منذ $hours ساعات',
+      other: 'منذ $hoursText ساعة',
+      few: 'منذ $hoursText ساعات',
       two: 'منذ ساعتين',
       one: 'منذ ساعة',
     );
@@ -791,12 +788,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String timeDaysAgo(int days) {
+  String timeDaysAgo(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'منذ $days يومًا',
-      few: 'منذ $days أيام',
+      other: 'منذ $daysText يومًا',
+      few: 'منذ $daysText أيام',
       two: 'منذ يومين',
       one: 'منذ يوم',
     );
@@ -898,13 +895,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get returnBy => 'آخر موعد للاسترجاع';
 
   @override
-  String returnByValue(Object date, num days) {
+  String returnByValue(String date, int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'باقي $days يوم',
-      many: 'باقي $days يومًا',
-      few: 'باقي $days أيام',
+      other: 'باقي $daysText يوم',
+      many: 'باقي $daysText يومًا',
+      few: 'باقي $daysText أيام',
       two: 'باقي يومان',
       one: 'باقي يوم',
       zero: 'آخر يوم',
@@ -1269,13 +1266,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String notifExpiringInDays(num days, Object product) {
+  String notifExpiringInDays(int days, String daysText, String product) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'بعد $days يوم',
-      many: 'بعد $days يومًا',
-      few: 'بعد $days أيام',
+      other: 'بعد $daysText يوم',
+      many: 'بعد $daysText يومًا',
+      few: 'بعد $daysText أيام',
       two: 'بعد يومين',
       one: 'غدًا',
     );
@@ -1314,13 +1311,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String subscriptionsCount(int count) {
+  String subscriptionsCount(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count اشتراك',
-      many: '$count اشتراكًا',
-      few: '$count اشتراكات',
+      other: '$countText اشتراك',
+      many: '$countText اشتراكًا',
+      few: '$countText اشتراكات',
       two: 'اشتراكان',
       one: 'اشتراك واحد',
       zero: 'لا توجد اشتراكات',
@@ -1420,13 +1417,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get renewsTomorrow => 'يتجدد غدًا';
 
   @override
-  String renewsInDays(int days) {
+  String renewsInDays(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'يتجدد خلال $days يوم',
-      many: 'يتجدد خلال $days يومًا',
-      few: 'يتجدد خلال $days أيام',
+      other: 'يتجدد خلال $daysText يوم',
+      many: 'يتجدد خلال $daysText يومًا',
+      few: 'يتجدد خلال $daysText أيام',
       two: 'يتجدد خلال يومين',
       one: 'يتجدد خلال يوم',
     );

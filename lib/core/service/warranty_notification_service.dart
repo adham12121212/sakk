@@ -10,6 +10,7 @@ import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/notification_ids.dart';
+import '../util/localized_number.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
 import 'reminder_controller.dart';
@@ -101,7 +102,14 @@ class WarrantyNotificationService {
           : l10n.notifExpiringTitle;
       final subtitle = isExpired
           ? l10n.notifExpiredBody(product.name)
-          : l10n.notifExpiringInDays(product.daysRemaining, product.name);
+          : l10n.notifExpiringInDays(
+              product.daysRemaining,
+              formatLocalizedInt(
+                Locale(l10n.localeName),
+                product.daysRemaining,
+              ),
+              product.name,
+            );
 
       try {
         await _localNotifications.scheduleNotification(
