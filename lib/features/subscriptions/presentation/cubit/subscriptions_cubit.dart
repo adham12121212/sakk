@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/service/subscription_reminder_service.dart';
+import '../../../../core/util/date_math.dart';
+import '../../domain/entities/billing_cycle.dart';
 import '../../domain/entities/user_subscription.dart';
 import '../../domain/renewal_schedule.dart';
 import '../../domain/subscription_totals.dart';
@@ -77,6 +81,26 @@ class SubscriptionsCubit extends Cubit<SubscriptionsState> {
     final current = _advance([...others, saved]);
     _safeEmit(state.copyWith(subscriptions: current, clearError: true));
     unawaited(_reminders?.syncAll(current));
+  }
+
+  /// Logs a renewal paid on [renewedOn]: the next one is a billing cycle
+  /// later. Returns the saved next renewal; on failure the list is left as
+  /// it was.
+  Future<Either<Failure, DateTime>> markRenewed(
+    UserSubscription subscription,
+    DateTime renewedOn,
+  ) async {
+    final useCase = _updateRenewalDateUseCase;
+    if (useCase == null) return const Left(UnknownFailure('No renewal saver'));
+    final next = addMonthsClamped(
+      dateOnly(renewedOn),
+      subscription.billingCycle.months,
+    );
+    final result = await useCase(subscription.id, next);
+    return result.map((_) {
+      upsert(subscription.copyWith(nextRenewalDate: next));
+      return next;
+    });
   }
 
   void remove(String id) {

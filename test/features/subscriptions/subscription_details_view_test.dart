@@ -8,6 +8,7 @@ import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
+import 'package:sakk/features/subscriptions/domain/usecase/update_renewal_date_usecase.dart';
 import 'package:sakk/features/subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import 'package:sakk/features/subscriptions/presentation/views/subscription_details_view.dart';
 import 'package:sakk/l10n/app_localizations.dart';
@@ -17,6 +18,15 @@ class _Get implements GetSubscriptionsUseCase {
   final List<UserSubscription> list;
   @override
   Future<Either<Failure, List<UserSubscription>>> call() async => Right(list);
+}
+
+class _SaveRenewal implements UpdateRenewalDateUseCase {
+  final calls = <String, DateTime>{};
+  @override
+  Future<Either<Failure, void>> call(String id, DateTime next) async {
+    calls[id] = next;
+    return const Right(null);
+  }
 }
 
 DateTime inDays(int days) {
@@ -75,5 +85,38 @@ void main() {
     await tester.pumpWidget(app(cubit, gym, locale: const Locale('ar')));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Renewed asks for the date and moves the next renewal', (
+    tester,
+  ) async {
+    final netflix = UserSubscription(
+      id: 'n',
+      customName: 'Netflix',
+      price: 240,
+      billingCycle: BillingCycle.monthly,
+      nextRenewalDate: inDays(2),
+    );
+    final saved = _SaveRenewal();
+    final cubit = SubscriptionsCubit(
+      _Get([netflix]),
+      updateRenewalDateUseCase: saved,
+    );
+    await cubit.refresh();
+    await tester.pumpWidget(app(cubit, netflix));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Renewed'));
+    await tester.pumpAndSettle();
+    expect(find.text('When did it renew?'), findsOneWidget);
+    await tester.tap(find.text('OK')); // today
+    await tester.pumpAndSettle();
+
+    final today = DateTime.now();
+    final next = DateTime(today.year, today.month + 1, today.day);
+    expect(saved.calls.keys, ['n']);
+    expect(saved.calls['n']!.month, next.month);
+    expect(find.textContaining('Next renewal:'), findsOneWidget);
+    expect(find.text('Renews in 2 days'), findsNothing);
   });
 }

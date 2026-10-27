@@ -1405,6 +1405,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nextRenewal => 'التجديد القادم';
 
   @override
+  String get subscriptionRenewed => 'تم التجديد';
+
+  @override
+  String get subscriptionRenewedOnQuestion => 'اتجدد إمتى؟';
+
+  @override
+  String subscriptionNextRenewalOn(String date) {
+    return 'التجديد القادم: $date';
+  }
+
+  @override
   String get paymentMethodOptional => 'طريقة الدفع (اختياري)';
 
   @override
