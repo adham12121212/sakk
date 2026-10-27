@@ -24,7 +24,7 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-  static const _length = 8;
+  static const _length = 6;
   final List<TextEditingController> _controllers = List.generate(
     _length,
     (_) => TextEditingController(),

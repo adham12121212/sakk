@@ -18,7 +18,7 @@ class OtpBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 34.w,
+      width: 44.w,
       height: 48.h,
       child: TextFormField(
         controller: controller,
