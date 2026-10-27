@@ -1,3 +1,5 @@
+import 'notification_message.dart';
+
 enum NotificationType { success, warning, info, error }
 
 class NotificationEntity {
@@ -10,6 +12,10 @@ class NotificationEntity {
   final bool isRead;
   final String? productId;
 
+  /// What it says, to show in the current language; null on rows made
+  /// before it was saved, which show [title] and [subtitle] as stored.
+  final NotificationMessage? message;
+
   const NotificationEntity({
     required this.id,
     required this.userId,
@@ -19,6 +25,7 @@ class NotificationEntity {
     required this.createdAt,
     this.isRead = false,
     this.productId,
+    this.message,
   });
 
   NotificationEntity copyWith({
@@ -40,6 +47,7 @@ class NotificationEntity {
       createdAt: createdAt ?? this.createdAt,
       isRead: isRead ?? this.isRead,
       productId: productId ?? this.productId,
+      message: message,
     );
   }
 

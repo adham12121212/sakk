@@ -13,6 +13,7 @@ import 'package:sakk/core/util/notified_warranties_tracker.dart';
 import 'package:sakk/features/auth/domain/entities/user_entity.dart';
 import 'package:sakk/features/auth/domain/usecase/get_user_usecase.dart';
 import 'package:sakk/features/notification/domain/entities/notification_entity.dart';
+import 'package:sakk/features/notification/domain/entities/notification_message.dart';
 import 'package:sakk/features/notification/domain/usecase/add_notification_use_case.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
@@ -34,6 +35,7 @@ class _AddNotification implements AddNotificationUseCase {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   }) async {
     added.add(subtitle);
     return const Right(null);

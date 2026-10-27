@@ -5,13 +5,14 @@ import 'package:flutter/widgets.dart' show Locale;
 
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/notification/domain/entities/notification_entity.dart';
+import '../../features/notification/presentation/util/notification_text.dart';
+import '../../features/notification/domain/entities/notification_message.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/subscriptions/domain/entities/billing_cycle.dart';
 import '../../features/subscriptions/domain/entities/user_subscription.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/date_math.dart';
-import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'installment_reminder_service.dart' show InstallmentReminderPayload;
@@ -379,6 +380,7 @@ class SubscriptionReminderService {
         type: kind == RenewalReminder.dayAfter
             ? NotificationType.success
             : NotificationType.warning,
+        message: _message(s, kind, days),
       );
     } catch (e, st) {
       _logger.error(
@@ -389,21 +391,28 @@ class SubscriptionReminderService {
     }
   }
 
-  String _title(RenewalReminder kind) => kind == RenewalReminder.dayAfter
-      ? _l10n.notifRenewedTitle
-      : _l10n.notifRenewalTitle;
+  String _title(RenewalReminder kind) =>
+      notificationTitle(_l10n, _messageKind(kind));
 
   /// [days] is days until the renewal, or since it for [RenewalReminder.dayAfter].
-  String _body(UserSubscription s, RenewalReminder kind, int days) {
-    final l10n = _l10n;
-    final amount = formatLocalizedAmount(_currentLocale, s.price);
-    final price =
-        '$amount ${s.currency == 'EGP' ? l10n.currencyEgp : s.currency}';
-    final daysText = formatLocalizedInt(_currentLocale, days);
-    return kind == RenewalReminder.dayAfter
-        ? l10n.notifRenewedBody(days, daysText, s.name, price)
-        : l10n.notifRenewalBody(days, daysText, s.name, price);
-  }
+  String _body(UserSubscription s, RenewalReminder kind, int days) =>
+      notificationBody(_l10n, _message(s, kind, days));
+
+  NotificationKind _messageKind(RenewalReminder kind) =>
+      kind == RenewalReminder.dayAfter
+      ? NotificationKind.subscriptionRenewed
+      : NotificationKind.subscriptionRenewal;
+
+  NotificationMessage _message(
+    UserSubscription s,
+    RenewalReminder kind,
+    int days,
+  ) => NotificationMessage(_messageKind(kind), {
+    'name': s.name,
+    'days': days,
+    'price': s.price,
+    'currency': s.currency,
+  });
 }
 
 class _Reminder {

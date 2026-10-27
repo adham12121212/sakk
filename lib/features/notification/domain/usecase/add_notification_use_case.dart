@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failure.dart';
 import '../entities/notification_entity.dart';
 import '../notification_repo/notification_repo.dart';
+import '../entities/notification_message.dart';
 
 abstract class AddNotificationUseCase {
   Future<Either<Failure, void>> call({
@@ -11,6 +12,7 @@ abstract class AddNotificationUseCase {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   });
 }
 
@@ -25,6 +27,7 @@ class AddNotificationUseCaseImpl implements AddNotificationUseCase {
     required String subtitle,
     required NotificationType type,
     String? productId,
+    NotificationMessage? message,
   }) {
     return notificationRepo.addNotification(
       userId: userId,
@@ -32,6 +35,7 @@ class AddNotificationUseCaseImpl implements AddNotificationUseCase {
       subtitle: subtitle,
       type: type,
       productId: productId,
+      message: message,
     );
   }
 }

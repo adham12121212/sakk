@@ -5,13 +5,13 @@ import 'package:flutter/widgets.dart' show Locale;
 
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/notification/domain/entities/notification_entity.dart';
+import '../../features/notification/presentation/util/notification_text.dart';
+import '../../features/notification/domain/entities/notification_message.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/papers/domain/entities/paper.dart';
-import '../../features/papers/presentation/util/paper_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/date_math.dart';
-import '../util/localized_number.dart';
 import '../util/notification_ids.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
@@ -206,7 +206,7 @@ class PaperReminderService {
         kind: kind,
         expiry: expiry,
         title: _title(kind),
-        body: _body(paper, daysBefore(kind)),
+        body: _body(paper, kind, daysBefore(kind)),
         dateTime: at,
       );
     }
@@ -237,7 +237,7 @@ class PaperReminderService {
         continue;
       }
       final title = _title(kind);
-      final body = _body(paper, daysLeft);
+      final body = _body(paper, kind, daysLeft);
       final id = notificationId(paper.id, kind);
       try {
         final delivered =
@@ -264,6 +264,7 @@ class PaperReminderService {
           type: daysLeft <= 0
               ? NotificationType.error
               : NotificationType.warning,
+          message: _message(paper, kind, daysLeft),
         );
       } catch (e, st) {
         _logger.error(
@@ -275,22 +276,24 @@ class PaperReminderService {
     }
   }
 
-  String _title(PaperReminder kind) => kind == PaperReminder.expiryDay
-      ? _l10n.notifPaperExpiredTitle
-      : _l10n.notifPaperExpiringTitle;
+  String _title(PaperReminder kind) =>
+      notificationTitle(_l10n, _messageKind(kind));
 
   /// [days] is days until the expiry date; 0 or less is "today" or passed.
-  String _body(Paper paper, int days) {
-    final l10n = _l10n;
-    final name = PaperUi.name(l10n, paper);
-    if (days < 0) return l10n.notifPaperExpiredBody(name);
-    if (days == 0) return l10n.notifPaperExpiresTodayBody(name);
-    return l10n.notifPaperExpiringBody(
-      days,
-      formatLocalizedInt(_currentLocale, days),
-      name,
-    );
-  }
+  String _body(Paper paper, PaperReminder kind, int days) =>
+      notificationBody(_l10n, _message(paper, kind, days));
+
+  NotificationKind _messageKind(PaperReminder kind) =>
+      kind == PaperReminder.expiryDay
+      ? NotificationKind.paperExpired
+      : NotificationKind.paperExpiring;
+
+  NotificationMessage _message(Paper paper, PaperReminder kind, int days) =>
+      NotificationMessage(_messageKind(kind), {
+        'paperKind': paper.kind.name,
+        'title': paper.title,
+        'days': days,
+      });
 }
 
 class _Reminder {

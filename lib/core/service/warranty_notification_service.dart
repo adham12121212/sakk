@@ -5,12 +5,13 @@ import 'package:flutter/widgets.dart' show Locale;
 
 import '../../features/auth/domain/usecase/get_user_usecase.dart';
 import '../../features/notification/domain/entities/notification_entity.dart';
+import '../../features/notification/domain/entities/notification_message.dart';
+import '../../features/notification/presentation/util/notification_text.dart';
 import '../../features/notification/domain/usecase/add_notification_use_case.dart';
 import '../../features/products/domain/entities/product_entity.dart';
 import '../../l10n/app_localizations.dart';
 import '../logger/app_logger.dart';
 import '../util/notification_ids.dart';
-import '../util/localized_number.dart';
 import '../util/notified_warranties_tracker.dart';
 import 'notification_service.dart';
 import 'reminder_controller.dart';
@@ -96,20 +97,14 @@ class WarrantyNotificationService {
           : WarrantyStatus.expiring.name;
       if (await _tracker.hasNotified(product.id, statusKey)) continue;
 
-      final l10n = _l10n;
-      final title = isExpired
-          ? l10n.notifExpiredTitle
-          : l10n.notifExpiringTitle;
-      final subtitle = isExpired
-          ? l10n.notifExpiredBody(product.name)
-          : l10n.notifExpiringInDays(
-              product.daysRemaining,
-              formatLocalizedInt(
-                Locale(l10n.localeName),
-                product.daysRemaining,
-              ),
-              product.name,
-            );
+      final message = NotificationMessage(
+        isExpired
+            ? NotificationKind.warrantyExpired
+            : NotificationKind.warrantyExpiring,
+        {'product': product.name, 'days': product.daysRemaining},
+      );
+      final title = notificationTitle(_l10n, message.kind);
+      final subtitle = notificationBody(_l10n, message);
 
       try {
         await _localNotifications.scheduleNotification(
@@ -128,6 +123,7 @@ class WarrantyNotificationService {
           subtitle: subtitle,
           type: isExpired ? NotificationType.error : NotificationType.warning,
           productId: product.id,
+          message: message,
         );
 
         await _tracker.markNotified(product.id, statusKey);
