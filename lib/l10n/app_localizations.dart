@@ -2420,6 +2420,24 @@ abstract class AppLocalizations {
   /// **'Next renewal'**
   String get nextRenewal;
 
+  /// No description provided for @subscriptionRenewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewed'**
+  String get subscriptionRenewed;
+
+  /// No description provided for @subscriptionRenewedOnQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'When did it renew?'**
+  String get subscriptionRenewedOnQuestion;
+
+  /// No description provided for @subscriptionNextRenewalOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next renewal: {date}'**
+  String subscriptionNextRenewalOn(String date);
+
   /// No description provided for @paymentMethodOptional.
   ///
   /// In en, this message translates to:

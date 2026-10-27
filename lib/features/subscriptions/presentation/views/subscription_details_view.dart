@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/billing_cycle.dart';
 import '../../domain/entities/user_subscription.dart';
@@ -18,7 +20,7 @@ import '../widgets/subscription_logo.dart';
 import 'subscription_form_view.dart';
 
 /// One subscription: what it costs, when it renews, the plan, how it's paid
-/// and notes. Edit is in the app bar.
+/// and notes. Edit is in the app bar; "Renewed" logs a renewal.
 class SubscriptionDetailsView extends StatelessWidget {
   const SubscriptionDetailsView({super.key, required this.subscription});
 
@@ -37,6 +39,38 @@ class SubscriptionDetailsView extends StatelessWidget {
         !cubit.state.subscriptions.any((s) => s.id == subscription.id)) {
       context.pop();
     }
+  }
+
+  /// Asks when it renewed (today by default, never later) and moves the
+  /// next renewal a billing cycle after that.
+  Future<void> _markRenewed(
+    BuildContext context,
+    UserSubscription current,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final cubit = context.read<SubscriptionsCubit>();
+    final today = DateTime.now();
+    final renewedOn = await showDatePicker(
+      context: context,
+      helpText: l10n.subscriptionRenewedOnQuestion,
+      initialDate: today,
+      firstDate: DateTime(today.year - 1, today.month, today.day),
+      lastDate: today,
+    );
+    if (renewedOn == null || !context.mounted) return;
+
+    final result = await cubit.markRenewed(current, renewedOn);
+    if (!context.mounted) return;
+    final locale = Localizations.localeOf(context);
+    final tag = locale.languageCode == 'ar' ? 'ar_EG' : locale.toLanguageTag();
+    result.fold(
+      (failure) =>
+          AppSnackBar.error(context, userFacingError(l10n, failure.message)),
+      (next) => AppSnackBar.success(
+        context,
+        l10n.subscriptionNextRenewalOn(DateFormat.yMMMd(tag).format(next)),
+      ),
+    );
   }
 
   @override
@@ -78,6 +112,12 @@ class SubscriptionDetailsView extends StatelessWidget {
                 _Price(subscription: current),
                 const SizedBox(height: 16),
                 _Details(subscription: current, today: today),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () => _markRenewed(context, current),
+                  icon: const Icon(AppIcons.check, size: 18),
+                  label: Text(l10n.subscriptionRenewed),
+                ),
               ],
             ),
           ),

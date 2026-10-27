@@ -1389,6 +1389,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextRenewal => 'Next renewal';
 
   @override
+  String get subscriptionRenewed => 'Renewed';
+
+  @override
+  String get subscriptionRenewedOnQuestion => 'When did it renew?';
+
+  @override
+  String subscriptionNextRenewalOn(String date) {
+    return 'Next renewal: $date';
+  }
+
+  @override
   String get paymentMethodOptional => 'Payment method (optional)';
 
   @override

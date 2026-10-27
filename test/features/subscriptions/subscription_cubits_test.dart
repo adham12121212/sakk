@@ -210,6 +210,49 @@ void main() {
       );
     });
 
+    test('marking renewed sets the next renewal a cycle later', () async {
+      final saved = _FakeUpdateRenewal();
+      final cubit = SubscriptionsCubit(
+        _FakeGet()..result = Right([sub('n', DateTime(2026, 10, 14))]),
+        updateRenewalDateUseCase: saved,
+        clock: () => today,
+      );
+      await cubit.refresh();
+
+      final result = await cubit.markRenewed(
+        cubit.state.subscriptions.single,
+        DateTime(2026, 10, 10, 18, 30), // renewed early, in the evening
+      );
+
+      expect(result, Right<Failure, DateTime>(DateTime(2026, 11, 10)));
+      expect(saved.calls, {'n': DateTime(2026, 11, 10)});
+      expect(
+        cubit.state.subscriptions.single.nextRenewalDate,
+        DateTime(2026, 11, 10),
+      );
+    });
+
+    test('a failed renewal save leaves the list as it was', () async {
+      final saved = _FakeUpdateRenewal()..fail = true;
+      final cubit = SubscriptionsCubit(
+        _FakeGet()..result = Right([sub('n', DateTime(2026, 10, 14))]),
+        updateRenewalDateUseCase: saved,
+        clock: () => today,
+      );
+      await cubit.refresh();
+
+      final result = await cubit.markRenewed(
+        cubit.state.subscriptions.single,
+        DateTime(2026, 10, 10),
+      );
+
+      expect(result.isLeft(), isTrue);
+      expect(
+        cubit.state.subscriptions.single.nextRenewalDate,
+        DateTime(2026, 10, 14),
+      );
+    });
+
     test('saving a past date from the form moves it too', () async {
       final saved = _FakeUpdateRenewal();
       final cubit = SubscriptionsCubit(

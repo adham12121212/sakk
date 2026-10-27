@@ -439,6 +439,10 @@
     }
   },
   "nextRenewal": "Next renewal",
+  "subscriptionRenewed": "Renewed",
+  "subscriptionRenewedOnQuestion": "When did it renew?",
+  "subscriptionNextRenewalOn": "Next renewal: {date}",
+  "@subscriptionNextRenewalOn": {"placeholders": {"date": {"type": "String"}}},
   "paymentMethodOptional": "Payment method (optional)",
   "notesOptional": "Notes (optional)",
   "renewsToday": "Renews today",
