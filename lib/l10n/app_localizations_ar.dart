@@ -227,7 +227,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noProductsYet => 'لا توجد منتجات حتى الآن';
 
   @override
-  String get expiring => 'تاريخ الانتهاء';
+  String get expiring => 'ينتهي قريبًا';
 
   @override
   String get expired => 'منتهي الصلاحية';
