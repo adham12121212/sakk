@@ -68,6 +68,8 @@ class WarrantyStatusCard extends StatelessWidget {
                       child: SizedBox(
                         height: 12,
                         child: Row(
+                          // Full height: an empty ColoredBox is otherwise 0 tall.
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             for (final (i, e)
                                 in counts.entries
