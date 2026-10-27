@@ -40,6 +40,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   static const resetInvalidEmail = 'reset_invalid_email';
   static const resetInvalidCode = 'reset_invalid_code';
   static const resetSamePassword = 'reset_same_password';
+  static const resetWeakPassword = 'reset_weak_password';
 
   @override
   Future<UserModel> signIn({
@@ -149,6 +150,8 @@ class AuthDataSourceImpl implements AuthDataSource {
         'email_address_invalid' || 'validation_failed' => resetInvalidEmail,
         'otp_expired' || 'otp_disabled' => resetInvalidCode,
         'same_password' => resetSamePassword,
+        // Includes passwords found in data breaches (leaked password protection).
+        'weak_password' => resetWeakPassword,
         _ => null,
       };
       if (code != null) throw ServerException(code);
