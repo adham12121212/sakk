@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../home/presentation/widgets/circle_icon_button.dart';
 import '../../../../core/di/get_it.dart';
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../core/util/validators.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -54,7 +55,10 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
     // should react (otherwise "resend code" pushes a second code screen).
     if (ModalRoute.of(context)?.isCurrent != true) return;
     if (state is PasswordResetError) {
-      AppSnackBar.error(context, state.message);
+      AppSnackBar.error(
+        context,
+        userFacingError(AppLocalizations.of(context)!, state.message),
+      );
     } else if (state is PasswordResetOtpSent) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -80,45 +84,63 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
           builder: (context, state) {
             final isLoading = state is PasswordResetLoading;
             return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleIconButton(
-                        icon: AppIcons.back,
-                        semanticLabel: l10n.back,
-                        onTap: () => Navigator.of(context).pop(),
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      SizedBox(height: 28.h),
-                      Text(
-                        l10n.forgotPassword,
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        l10n.enteryouremailandwellsendyouacodetoresetyourpassword,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleIconButton(
+                          icon: AppIcons.back,
+                          semanticLabel: l10n.back,
+                          onTap: () => Navigator.of(context).pop(),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
-                      ),
-                      SizedBox(height: 32.h),
-                      EmailTextField(
-                        controller: _emailController,
-                        enabled: !isLoading,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _submit(),
-                      ),
-                      SizedBox(height: 28.h),
-                      AuthPrimaryButton(
-                        label: l10n.sendCode,
-                        isLoading: isLoading,
-                        onPressed: _submit,
-                      ),
-                    ],
+                        SizedBox(height: 28.h),
+                        Text(
+                          l10n.forgotPassword,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          l10n.enteryouremailandwellsendyouacodetoresetyourpassword,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        SizedBox(height: 32.h),
+                        EmailTextField(
+                          controller: _emailController,
+                          enabled: !isLoading,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _submit(),
+                        ),
+                        SizedBox(height: 28.h),
+                        AuthPrimaryButton(
+                          label: l10n.sendCode,
+                          isLoading: isLoading,
+                          onPressed: _submit,
+                        ),
+                        SizedBox(height: 20.h),
+                        Text(
+                          l10n.resetGoogleAccountNote,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

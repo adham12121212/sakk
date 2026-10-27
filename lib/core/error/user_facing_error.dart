@@ -1,3 +1,4 @@
+import '../../features/auth/data/auth_data_source/auth_data_source.dart';
 import '../../features/chat/data/chat_data_source/chat_data_source.dart';
 import '../../features/products/data/product_data_source/product_data_source.dart';
 import '../../features/pro/domain/pro_limit.dart';
@@ -41,6 +42,16 @@ String userFacingError(AppLocalizations l10n, String? message) {
     return l10n.installmentsCountBelowPaidGeneric;
   }
   if (message == ChatDataSourceImpl.aiBusy) return l10n.chatBusy;
+  if (message == AuthDataSourceImpl.resetRateLimited) {
+    return l10n.resetRateLimited;
+  }
+  if (message == AuthDataSourceImpl.resetInvalidEmail) return l10n.invalidEmail;
+  if (message == AuthDataSourceImpl.resetInvalidCode) {
+    return l10n.resetInvalidCode;
+  }
+  if (message == AuthDataSourceImpl.resetSamePassword) {
+    return l10n.resetSamePassword;
+  }
   final limit = ProLimit.kindOf(message);
   if (limit != null) return _limitMessage(l10n, limit);
   return l10n.errorGeneric;

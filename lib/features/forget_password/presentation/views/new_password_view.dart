@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/error/user_facing_error.dart';
 import '../../../../core/route/app_router.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -39,7 +40,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
   void _handleStateChange(BuildContext context, PasswordResetState state) {
     final l10n = AppLocalizations.of(context)!;
     if (state is PasswordResetError) {
-      AppSnackBar.error(context, state.message);
+      AppSnackBar.error(context, userFacingError(l10n, state.message));
     } else if (state is PasswordResetCompleted) {
       AppSnackBar.success(context, l10n.passwordupdatedpleasesigninagain);
       context.go(AppRoutes.signin);

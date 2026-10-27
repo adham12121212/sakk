@@ -437,9 +437,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterCode => 'Enter Code';
 
   @override
-  String weSentCodeTo(Object email, Object length) {
-    return 'We sent a $length-digit code to $email';
+  String resetCodeSentIfAccountExists(String email, int length) {
+    return 'If an account exists for $email, we\'ve sent it a $length-digit code. Check your inbox and spam folder.';
   }
+
+  @override
+  String resendCodeIn(int seconds) {
+    return 'Resend code in ${seconds}s';
+  }
+
+  @override
+  String get resetRateLimited =>
+      'Too many requests. Wait a minute, then try again.';
+
+  @override
+  String get resetInvalidCode =>
+      'That code is wrong or has expired. Check it or request a new one.';
+
+  @override
+  String get resetSamePassword =>
+      'Your new password must be different from your old one.';
+
+  @override
+  String get resetGoogleAccountNote =>
+      'Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.';
 
   @override
   String get newCodeSentToEmail => 'A new code was sent to your email';

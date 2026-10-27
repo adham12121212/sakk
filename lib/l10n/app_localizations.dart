@@ -854,11 +854,41 @@ abstract class AppLocalizations {
   /// **'Enter Code'**
   String get enterCode;
 
-  /// No description provided for @weSentCodeTo.
+  /// No description provided for @resetCodeSentIfAccountExists.
   ///
   /// In en, this message translates to:
-  /// **'We sent a {length}-digit code to {email}'**
-  String weSentCodeTo(Object email, Object length);
+  /// **'If an account exists for {email}, we\'ve sent it a {length}-digit code. Check your inbox and spam folder.'**
+  String resetCodeSentIfAccountExists(String email, int length);
+
+  /// No description provided for @resendCodeIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {seconds}s'**
+  String resendCodeIn(int seconds);
+
+  /// No description provided for @resetRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Wait a minute, then try again.'**
+  String get resetRateLimited;
+
+  /// No description provided for @resetInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is wrong or has expired. Check it or request a new one.'**
+  String get resetInvalidCode;
+
+  /// No description provided for @resetSamePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from your old one.'**
+  String get resetSamePassword;
+
+  /// No description provided for @resetGoogleAccountNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.'**
+  String get resetGoogleAccountNote;
 
   /// No description provided for @newCodeSentToEmail.
   ///

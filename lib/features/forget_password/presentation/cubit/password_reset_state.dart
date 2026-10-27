@@ -7,7 +7,11 @@ final class PasswordResetIdle extends PasswordResetState {}
 
 final class PasswordResetLoading extends PasswordResetState {}
 
-final class PasswordResetOtpSent extends PasswordResetState {}
+final class PasswordResetOtpSent extends PasswordResetState {
+  /// A new code went to an address that already had one.
+  final bool resent;
+  PasswordResetOtpSent({required this.resent});
+}
 
 final class PasswordResetOtpVerified extends PasswordResetState {}
 

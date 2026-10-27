@@ -438,9 +438,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterCode => 'أدخل الرمز';
 
   @override
-  String weSentCodeTo(Object email, Object length) {
-    return 'أرسلنا رمزًا مكونًا من $length أرقام إلى $email';
+  String resetCodeSentIfAccountExists(String email, int length) {
+    return 'إذا كان هناك حساب مسجّل بالبريد $email، فقد أرسلنا إليه رمزًا مكونًا من $length أرقام. تحقّق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها.';
   }
+
+  @override
+  String resendCodeIn(int seconds) {
+    return 'إعادة إرسال الرمز بعد $seconds ث';
+  }
+
+  @override
+  String get resetRateLimited =>
+      'طلبات كثيرة جدًا. انتظر دقيقة ثم حاول مرة أخرى.';
+
+  @override
+  String get resetInvalidCode =>
+      'الرمز غير صحيح أو انتهت صلاحيته. تحقّق منه أو اطلب رمزًا جديدًا.';
+
+  @override
+  String get resetSamePassword =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن القديمة.';
+
+  @override
+  String get resetGoogleAccountNote =>
+      'سجّلت باستخدام جوجل؟ ليس لحسابك كلمة مرور. ارجع وسجّل الدخول بزر جوجل بدلًا من ذلك.';
 
   @override
   String get newCodeSentToEmail => 'تم إرسال رمز جديد إلى بريدك الإلكتروني';
