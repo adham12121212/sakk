@@ -381,7 +381,12 @@ class InstallmentReminderService {
         title: title,
         subtitle: body,
         type: NotificationType.warning,
-        message: _message(plan, payment, kind, days),
+        message: _message(
+          plan,
+          payment,
+          kind,
+          days,
+        ).keyed('$trackerId:${_notifiedKey(kind, payment.dueDate)}'),
       );
     } catch (e, st) {
       _logger.error(

@@ -102,6 +102,7 @@ class WarrantyNotificationService {
             ? NotificationKind.warrantyExpired
             : NotificationKind.warrantyExpiring,
         {'product': product.name, 'days': product.daysRemaining},
+        key: 'warranty:${product.id}:$statusKey',
       );
       final title = notificationTitle(_l10n, message.kind);
       final subtitle = notificationBody(_l10n, message);

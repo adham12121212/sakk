@@ -380,7 +380,11 @@ class SubscriptionReminderService {
         type: kind == RenewalReminder.dayAfter
             ? NotificationType.success
             : NotificationType.warning,
-        message: _message(s, kind, days),
+        message: _message(
+          s,
+          kind,
+          days,
+        ).keyed('$trackerId:${_notifiedKey(kind, renewal)}'),
       );
     } catch (e, st) {
       _logger.error(

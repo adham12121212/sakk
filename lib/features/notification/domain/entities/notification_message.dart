@@ -22,12 +22,23 @@ enum NotificationKind {
 /// - installment: `name`, `days`, `amount`, `currency`
 /// - paper: `paperKind`, `title` (may be null), `days`
 class NotificationMessage {
-  const NotificationMessage(this.kind, this.args);
+  const NotificationMessage(this.kind, this.args, {this.key});
 
   final NotificationKind kind;
   final Map<String, Object?> args;
 
-  Map<String, Object?> toJson() => {'kind': kind.name, 'args': args};
+  /// Which reminder this is for the account (e.g. one renewal's 3-day
+  /// reminder), so another device doesn't add it to the list again.
+  final String? key;
+
+  NotificationMessage keyed(String key) =>
+      NotificationMessage(kind, args, key: key);
+
+  Map<String, Object?> toJson() => {
+    'kind': kind.name,
+    'args': args,
+    if (key != null) 'key': key,
+  };
 
   /// Null for a row without one (made before this existed) or a kind this
   /// version doesn't know.
@@ -36,6 +47,11 @@ class NotificationMessage {
     final kind = NotificationKind.values.asNameMap()[json['kind']];
     final args = json['args'];
     if (kind == null || args is! Map) return null;
-    return NotificationMessage(kind, Map<String, Object?>.from(args));
+    final key = json['key'];
+    return NotificationMessage(
+      kind,
+      Map<String, Object?>.from(args),
+      key: key is String ? key : null,
+    );
   }
 }
