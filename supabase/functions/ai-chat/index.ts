@@ -137,7 +137,11 @@ serve(async (req) => {
       loadUserContext(supabase, user.id),
       loadHistory(supabase),
     ]);
-    const reply = await runChat(`${SYSTEM_PROMPT}\n\n${context}`, text, history);
+    const reply = await runChat(
+      `${SYSTEM_PROMPT}\n\n${context}\n\n${replyLanguageRule(text)}`,
+      text,
+      history,
+    );
 
     // Saved together after a reply, so the history never has a question
     // without its answer.
@@ -159,6 +163,19 @@ serve(async (req) => {
     return jsonResponse({ error: "internal_error" }, 500);
   }
 });
+
+/**
+ * The reply language for [message], as the prompt's last line. The general
+ * rule sits above the user's data and the history (often Arabic), which
+ * outweighed it: English questions got Arabic answers.
+ */
+function replyLanguageRule(message: string): string {
+  // Any Arabic letter means Arabic: questions often name products in English
+  // ("ضمان Samsung Crystal UHD TV"), English ones rarely contain Arabic.
+  return /[A-Za-z]/.test(message) && !/[\u0600-\u06FF]/.test(message)
+    ? "The user wrote this message in English: reply in English."
+    : "The user wrote this message in Arabic: reply in Egyptian Arabic (عامية مصرية).";
+}
 
 /** The last [HISTORY_FOR_MODEL] messages, oldest first. */
 async function loadHistory(supabase: SupabaseClient): Promise<{ role: string; content: string }[]> {
