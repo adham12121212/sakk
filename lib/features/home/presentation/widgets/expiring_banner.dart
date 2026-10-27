@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/theme/app_icons.dart';
 
 /// Soft amber card: "N warranties expiring soon" with a chevron.
@@ -14,7 +15,10 @@ class ExpiringBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = AppLocalizations.of(context)!.warrantiesExpiringSoon(count);
+    final label = AppLocalizations.of(context)!.warrantiesExpiringSoon(
+      count,
+      formatLocalizedInt(Localizations.localeOf(context), count),
+    );
     final palette = context.palette;
     final colorScheme = Theme.of(context).colorScheme;
 

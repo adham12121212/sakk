@@ -30,7 +30,10 @@ String renewalLabel(AppLocalizations l10n, int daysLeft) {
   if (daysLeft < 0) return l10n.renewalPassed;
   if (daysLeft == 0) return l10n.renewsToday;
   if (daysLeft == 1) return l10n.renewsTomorrow;
-  return l10n.renewsInDays(daysLeft);
+  return l10n.renewsInDays(
+    daysLeft,
+    formatLocalizedInt(Locale(l10n.localeName), daysLeft),
+  );
 }
 
 /// Logo source when a service has no logo_url: Google's favicon service.

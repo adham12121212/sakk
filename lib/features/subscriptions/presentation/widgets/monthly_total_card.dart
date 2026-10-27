@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/brand_gradient_card.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/util/localized_number.dart';
 import '../util/subscription_format.dart';
 
 /// Brand-gradient hero card (like Analytics' total spent): what the
@@ -58,7 +59,10 @@ class MonthlyTotalCard extends StatelessWidget {
                 ),
               ),
               Text(
-                l10n.subscriptionsCount(count),
+                l10n.subscriptionsCount(
+                  count,
+                  formatLocalizedInt(Localizations.localeOf(context), count),
+                ),
                 style: textTheme.bodySmall?.copyWith(
                   color: Colors.white.withValues(alpha: 0.85),
                 ),

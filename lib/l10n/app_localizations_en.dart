@@ -306,12 +306,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String deleteProductLinkedPlans(int count) {
+  String deleteProductLinkedPlans(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
       other:
-          '$count installment plans are linked to this product. They will be kept, without the link.',
+          '$countText installment plans are linked to this product. They will be kept, without the link.',
       one:
           '1 installment plan is linked to this product. It will be kept, without the link.',
     );
@@ -361,11 +361,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invoiceTab => 'Invoice';
 
   @override
-  String daysLeft(int days) {
+  String daysLeft(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days left',
+      other: '$daysText days left',
       one: '1 day left',
     );
     return '$_temp0';
@@ -437,12 +437,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterCode => 'Enter Code';
 
   @override
-  String resetCodeSentIfAccountExists(String email, int length) {
+  String resetCodeSentIfAccountExists(String email, String length) {
     return 'If an account exists for $email, we\'ve sent it a $length-digit code. Check your inbox and spam folder.';
   }
 
   @override
-  String resendCodeIn(int seconds) {
+  String resendCodeIn(String seconds) {
     return 'Resend code in ${seconds}s';
   }
 
@@ -509,11 +509,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expiringSoon => 'Expiring Soon';
 
   @override
-  String warrantiesExpiringSoon(int count) {
+  String warrantiesExpiringSoon(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count warranties are expiring soon',
+      other: '$countText warranties are expiring soon',
       one: '1 warranty is expiring soon',
     );
     return '$_temp0';
@@ -656,11 +656,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get warrantyDuration => 'Warranty Duration';
 
   @override
-  String warrantyMonthsValue(Object months) {
-    return '$months months';
-  }
-
-  @override
   String get verifyDetails => 'Verify Details';
 
   @override
@@ -762,33 +757,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeJustNow => 'Just now';
 
   @override
-  String timeMinutesAgo(int minutes) {
+  String timeMinutesAgo(int minutes, String minutesText) {
     String _temp0 = intl.Intl.pluralLogic(
       minutes,
       locale: localeName,
-      other: '$minutes minutes ago',
+      other: '$minutesText minutes ago',
       one: '1 minute ago',
     );
     return '$_temp0';
   }
 
   @override
-  String timeHoursAgo(int hours) {
+  String timeHoursAgo(int hours, String hoursText) {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
-      other: '$hours hours ago',
+      other: '$hoursText hours ago',
       one: '1 hour ago',
     );
     return '$_temp0';
   }
 
   @override
-  String timeDaysAgo(int days) {
+  String timeDaysAgo(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days ago',
+      other: '$daysText days ago',
       one: '1 day ago',
     );
     return '$_temp0';
@@ -890,11 +885,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get returnBy => 'Return by';
 
   @override
-  String returnByValue(Object date, num days) {
+  String returnByValue(String date, int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days left',
+      other: '$daysText days left',
       one: '1 day left',
       zero: 'last day',
     );
@@ -1261,11 +1256,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String notifExpiringInDays(num days, Object product) {
+  String notifExpiringInDays(int days, String daysText, String product) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days',
+      other: '$daysText days',
       one: '1 day',
     );
     return '$product\'s warranty ends in $_temp0';
@@ -1303,11 +1298,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String subscriptionsCount(int count) {
+  String subscriptionsCount(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count subscriptions',
+      other: '$countText subscriptions',
       one: '1 subscription',
       zero: 'No subscriptions',
     );
@@ -1406,11 +1401,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renewsTomorrow => 'Renews tomorrow';
 
   @override
-  String renewsInDays(int days) {
+  String renewsInDays(int days, String daysText) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'Renews in $days days',
+      other: 'Renews in $daysText days',
       one: 'Renews in 1 day',
     );
     return '$_temp0';

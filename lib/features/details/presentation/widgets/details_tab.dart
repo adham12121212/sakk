@@ -6,6 +6,7 @@ import '../../../category/presentation/widgets/category_ui.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../../../subscriptions/presentation/util/subscription_format.dart';
 import 'detail_row.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../../../core/theme/app_icons.dart';
 
 class DetailsTab extends StatelessWidget {
@@ -47,7 +48,10 @@ class DetailsTab extends StatelessWidget {
           DetailRow(
             icon: AppIcons.shield,
             label: l10n.warrantyPeriod,
-            value: '${product.warrantyMonths} ${l10n.months}',
+            value: l10n.monthsCount(
+              product.warrantyMonths,
+              formatLocalizedInt(appLocale, product.warrantyMonths),
+            ),
           ),
           // An extra warranty can push coverage past the manufacturer's date.
           if (product.extraWarranties.isNotEmpty)
@@ -67,6 +71,7 @@ class DetailsTab extends StatelessWidget {
                   : l10n.returnByValue(
                       DateFormat.yMMMd(locale).format(product.returnByDate!),
                       product.daysToReturn!,
+                      formatLocalizedInt(appLocale, product.daysToReturn!),
                     ),
             ),
           if (product.serialNumber != null)

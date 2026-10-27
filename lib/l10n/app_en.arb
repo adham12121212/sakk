@@ -104,10 +104,8 @@
   "productUpdated": "Product updated",
   "deleteProductQuestion": "Delete product?",
   "deleteProductConfirmBody": "\"{productName}\" will be permanently removed. This can't be undone.",
-  "deleteProductLinkedPlans": "{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{count} installment plans are linked to this product. They will be kept, without the link.}}",
-  "@deleteProductLinkedPlans": {
-    "placeholders": { "count": { "type": "int" } }
-  },
+  "deleteProductLinkedPlans": "{count, plural, =1{1 installment plan is linked to this product. It will be kept, without the link.} other{{countText} installment plans are linked to this product. They will be kept, without the link.}}",
+  "@deleteProductLinkedPlans": {"description": "countText is the number in the app's digits; count picks the plural form.", "placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}},
   "delete": "Delete",
   "edit": "Edit",
   "share": "Share",
@@ -120,10 +118,8 @@
   "warrantyPeriod": "Warranty Period",
   "detailsTab": "Details",
   "invoiceTab": "Invoice",
-  "daysLeft": "{days, plural, one{1 day left} other{{days} days left}}",
-  "@daysLeft": {
-    "placeholders": { "days": { "type": "int" } }
-  },
+  "daysLeft": "{days, plural, one{1 day left} other{{daysText} days left}}",
+  "@daysLeft": {"description": "daysText is the number in the app's digits; days picks the plural form.", "placeholders": {"days": {"type": "int"}, "daysText": {"type": "String"}}},
   "warrantyExpired": "Warranty expired",
   "expiresOnLabel": "Expires on: {date}",
   "shareBrand": "Brand: {brand}",
@@ -140,9 +136,9 @@
   "passwordupdatedpleasesigninagain" : "Password updated please sign in again",
   "enterCode": "Enter Code",
   "resetCodeSentIfAccountExists": "If an account exists for {email}, we've sent it a {length}-digit code. Check your inbox and spam folder.",
-  "@resetCodeSentIfAccountExists": {"placeholders": {"email": {"type": "String"}, "length": {"type": "int"}}},
+  "@resetCodeSentIfAccountExists": {"placeholders": {"email": {"type": "String"}, "length": {"type": "String"}}},
   "resendCodeIn": "Resend code in {seconds}s",
-  "@resendCodeIn": {"placeholders": {"seconds": {"type": "int"}}},
+  "@resendCodeIn": {"placeholders": {"seconds": {"type": "String"}}},
   "resetRateLimited": "Too many requests. Wait a minute, then try again.",
   "resetInvalidCode": "That code is wrong or has expired. Check it or request a new one.",
   "resetSamePassword": "Your new password must be different from your old one.",
@@ -161,10 +157,8 @@
   "totalProducts": "Total Products",
   "activeWarranties": "Active Warranties",
   "expiringSoon": "Expiring Soon",
-  "warrantiesExpiringSoon": "{count, plural, one{1 warranty is expiring soon} other{{count} warranties are expiring soon}}",
-  "@warrantiesExpiringSoon": {
-    "placeholders": { "count": { "type": "int" } }
-  },
+  "warrantiesExpiringSoon": "{count, plural, one{1 warranty is expiring soon} other{{countText} warranties are expiring soon}}",
+  "@warrantiesExpiringSoon": {"description": "countText is the number in the app's digits; count picks the plural form.", "placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}},
   "goodMorning": "Good morning,",
   "goodAfternoon": "Good afternoon,",
   "goodEvening": "Good evening,",
@@ -208,7 +202,6 @@
   "lowConfidenceWarning": "We weren't fully confident reading this receipt — please double-check every field.",
   "invoicePreviewLabel": "Invoice Preview",
   "warrantyDuration": "Warranty Duration",
-  "warrantyMonthsValue": "{months} months",
   "verifyDetails": "Verify Details",
   "reviewAndEditExtractedData": "Review and edit extracted data",
 
@@ -241,12 +234,12 @@
   "showPassword": "Show password",
   "hidePassword": "Hide password",
   "timeJustNow": "Just now",
-  "timeMinutesAgo": "{minutes, plural, one{1 minute ago} other{{minutes} minutes ago}}",
-  "@timeMinutesAgo": { "placeholders": { "minutes": { "type": "int" } } },
-  "timeHoursAgo": "{hours, plural, one{1 hour ago} other{{hours} hours ago}}",
-  "@timeHoursAgo": { "placeholders": { "hours": { "type": "int" } } },
-  "timeDaysAgo": "{days, plural, one{1 day ago} other{{days} days ago}}",
-  "@timeDaysAgo": { "placeholders": { "days": { "type": "int" } } },
+  "timeMinutesAgo": "{minutes, plural, one{1 minute ago} other{{minutesText} minutes ago}}",
+  "@timeMinutesAgo": {"description": "minutesText is the number in the app's digits; minutes picks the plural form.", "placeholders": {"minutes": {"type": "int"}, "minutesText": {"type": "String"}}},
+  "timeHoursAgo": "{hours, plural, one{1 hour ago} other{{hoursText} hours ago}}",
+  "@timeHoursAgo": {"description": "hoursText is the number in the app's digits; hours picks the plural form.", "placeholders": {"hours": {"type": "int"}, "hoursText": {"type": "String"}}},
+  "timeDaysAgo": "{days, plural, one{1 day ago} other{{daysText} days ago}}",
+  "@timeDaysAgo": {"description": "daysText is the number in the app's digits; days picks the plural form.", "placeholders": {"days": {"type": "int"}, "daysText": {"type": "String"}}},
   "errorNoInternet": "No internet connection. Check your connection and try again.",
   "errorGeneric": "Something went wrong. Please try again.",
   "couldNotShare": "Couldn't open the share sheet. Please try again.",
@@ -278,7 +271,8 @@
   "returnWindowDays": "Return window (days, optional)",
   "invalidReturnDays": "Enter a number from 1 to 365, or leave it empty",
   "returnBy": "Return by",
-  "returnByValue": "{date} ({days, plural, =0{last day} one{1 day left} other{{days} days left}})",
+  "returnByValue": "{date} ({days, plural, =0{last day} one{1 day left} other{{daysText} days left}})",
+  "@returnByValue": {"description": "daysText is the number in the app's digits; days picks the plural form.", "placeholders": {"date": {"type": "String"}, "days": {"type": "int"}, "daysText": {"type": "String"}}},
   "returnWindowClosed": "Closed on {date}",
   "coveredUntil": "Covered until",
   "extraWarranties": "Extra warranties",
@@ -381,7 +375,8 @@
   "onboardingFamilyDescription": "Create a household so everyone sees the family's warranties, and ask the AI assistant anything about your products.",
   "notifExpiringTitle": "Warranty expiring soon",
   "notifExpiringBody": "{product}'s warranty is ending soon",
-  "notifExpiringInDays": "{product}'s warranty ends in {days, plural, one{1 day} other{{days} days}}",
+  "notifExpiringInDays": "{product}'s warranty ends in {days, plural, one{1 day} other{{daysText} days}}",
+  "@notifExpiringInDays": {"description": "daysText is the number in the app's digits; days picks the plural form.", "placeholders": {"days": {"type": "int"}, "daysText": {"type": "String"}, "product": {"type": "String"}}},
   "notifExpiredTitle": "Warranty expired",
   "notifExpiredBody": "{product}'s warranty has expired",
   "notifReturnTitle": "Return window closing",
@@ -397,14 +392,8 @@
       }
     }
   },
-  "subscriptionsCount": "{count, plural, =0{No subscriptions} one{1 subscription} other{{count} subscriptions}}",
-  "@subscriptionsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "subscriptionsCount": "{count, plural, =0{No subscriptions} one{1 subscription} other{{countText} subscriptions}}",
+  "@subscriptionsCount": {"description": "countText is the number in the app's digits; count picks the plural form.", "placeholders": {"count": {"type": "int"}, "countText": {"type": "String"}}},
   "noSubscriptionsYet": "No subscriptions yet",
   "noSubscriptionsBody": "Add Netflix, Spotify and the rest to see what you pay each month and get reminded before each renewal.",
   "subscriptionsHomeEmpty": "Track Netflix, Spotify and more",
@@ -454,14 +443,8 @@
   "notesOptional": "Notes (optional)",
   "renewsToday": "Renews today",
   "renewsTomorrow": "Renews tomorrow",
-  "renewsInDays": "{days, plural, one{Renews in 1 day} other{Renews in {days} days}}",
-  "@renewsInDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
+  "renewsInDays": "{days, plural, one{Renews in 1 day} other{Renews in {daysText} days}}",
+  "@renewsInDays": {"description": "daysText is the number in the app's digits; days picks the plural form.", "placeholders": {"days": {"type": "int"}, "daysText": {"type": "String"}}},
   "renewalPassed": "Renewal date passed",
   "subscriptionSaved": "Subscription saved",
   "subscriptionDeleted": "Subscription deleted",

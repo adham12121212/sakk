@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../products/domain/entities/scanned_receipt.dart';
+import '../../../../core/util/localized_number.dart';
 import 'datex.dart';
 
 class ProcessingFieldSpec {
@@ -17,7 +18,8 @@ class ProcessingFieldSpec {
 
 List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
-  final locale = Localizations.localeOf(context).languageCode;
+  final appLocale = Localizations.localeOf(context);
+  final locale = appLocale.languageCode;
 
   return [
     ProcessingFieldSpec(
@@ -38,7 +40,7 @@ List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
       // price during the reveal animation.
       valueOf: (d) => d.price == null
           ? null
-          : l10n.scannedPriceValue(d.price!.toStringAsFixed(2)),
+          : l10n.scannedPriceValue(formatLocalizedAmount(appLocale, d.price!)),
       skeletonWidth: 110,
     ),
     ProcessingFieldSpec(
@@ -50,7 +52,10 @@ List<ProcessingFieldSpec> buildScanProcessingFields(BuildContext context) {
       label: l10n.warrantyDuration,
       valueOf: (d) => d.warrantyMonths == null
           ? null
-          : l10n.warrantyMonthsValue(d.warrantyMonths!),
+          : l10n.monthsCount(
+              d.warrantyMonths!,
+              formatLocalizedInt(appLocale, d.warrantyMonths!),
+            ),
       skeletonWidth: 100,
     ),
     ProcessingFieldSpec(

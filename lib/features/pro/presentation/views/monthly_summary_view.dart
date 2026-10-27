@@ -18,6 +18,7 @@ import '../../../products/presentation/cubit/product_cubit.dart';
 import '../../../products/presentation/cubit/product_state.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_cubit.dart';
 import '../../../subscriptions/presentation/cubit/subscriptions_state.dart';
+import '../../../../core/util/localized_number.dart';
 import '../../domain/monthly_summary.dart';
 
 /// Sakk Pro's "What will I pay this month": the total still to pay, the
@@ -123,7 +124,13 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
                             ),
                           ),
                           trailing: Text(
-                            l10n.daysLeft(product.daysRemaining),
+                            l10n.daysLeft(
+                              product.daysRemaining,
+                              formatLocalizedInt(
+                                Localizations.localeOf(context),
+                                product.daysRemaining,
+                              ),
+                            ),
                             style: TextStyle(
                               color: context.palette.warning,
                               fontWeight: FontWeight.w600,
