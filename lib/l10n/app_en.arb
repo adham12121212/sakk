@@ -146,6 +146,7 @@
   "resetRateLimited": "Too many requests. Wait a minute, then try again.",
   "resetInvalidCode": "That code is wrong or has expired. Check it or request a new one.",
   "resetSamePassword": "Your new password must be different from your old one.",
+  "resetWeakPassword": "This password is too common or has appeared in a data breach. Choose a different one.",
   "resetGoogleAccountNote": "Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.",
   "newCodeSentToEmail": "A new code was sent to your email",
   "verify": "Verify",

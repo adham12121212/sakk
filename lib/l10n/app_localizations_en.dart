@@ -459,6 +459,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your new password must be different from your old one.';
 
   @override
+  String get resetWeakPassword =>
+      'This password is too common or has appeared in a data breach. Choose a different one.';
+
+  @override
   String get resetGoogleAccountNote =>
       'Signed up with Google? Your account has no password. Go back and sign in with the Google button instead.';
 

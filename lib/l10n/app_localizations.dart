@@ -884,6 +884,12 @@ abstract class AppLocalizations {
   /// **'Your new password must be different from your old one.'**
   String get resetSamePassword;
 
+  /// No description provided for @resetWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'This password is too common or has appeared in a data breach. Choose a different one.'**
+  String get resetWeakPassword;
+
   /// No description provided for @resetGoogleAccountNote.
   ///
   /// In en, this message translates to:

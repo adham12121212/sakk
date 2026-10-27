@@ -52,6 +52,9 @@ String userFacingError(AppLocalizations l10n, String? message) {
   if (message == AuthDataSourceImpl.resetSamePassword) {
     return l10n.resetSamePassword;
   }
+  if (message == AuthDataSourceImpl.resetWeakPassword) {
+    return l10n.resetWeakPassword;
+  }
   final limit = ProLimit.kindOf(message);
   if (limit != null) return _limitMessage(l10n, limit);
   return l10n.errorGeneric;

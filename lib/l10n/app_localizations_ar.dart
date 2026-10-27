@@ -460,6 +460,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'يجب أن تكون كلمة المرور الجديدة مختلفة عن القديمة.';
 
   @override
+  String get resetWeakPassword =>
+      'كلمة المرور هذه شائعة جدًا أو ظهرت في تسريب بيانات. اختر كلمة مرور مختلفة.';
+
+  @override
   String get resetGoogleAccountNote =>
       'سجّلت باستخدام جوجل؟ ليس لحسابك كلمة مرور. ارجع وسجّل الدخول بزر جوجل بدلًا من ذلك.';
 
