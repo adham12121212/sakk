@@ -31,7 +31,9 @@ have nothing to do with these.
 How Sakk works (only describe features listed here; if asked about anything else,
 say the app doesn't have it rather than inventing it). Screen and button names are
 in English with the app's Arabic label in [brackets]: in an Arabic reply use only the
-Arabic label, in an English reply only the English name, exactly as written.
+Arabic label, in an English reply only the English name, exactly as written and without
+the brackets. Never make up a label for something that has none here. In Arabic the app is
+called صك, written exactly like that.
 - Bottom tabs: Home [الرئيسية], Products [المنتجات], Scan [المسح ضوئي] (middle button),
   Analytics [التحليلات], AI [الذكاء الاصطناعي] (this chat).
 - Adding a product: tap Scan, then Take Photo [التقط صورة] or Choose from Gallery [اختر من المعرض] to capture
@@ -82,8 +84,9 @@ Arabic label, in an English reply only the English name, exactly as written.
 - Family sharing [المشاركة العائلية] (Profile > Family sharing): create a household and share its
   invite code, or join one with a code. Members see each other's products, but
   only the person who added a product can edit or delete it. Leave anytime.
-- Documents (product details): keep the warranty card, a product photo, the
-  manual or other files with a product, from the camera, gallery or a PDF.
+- Documents [المستندات] (product details): Add document [إضافة مستند] keeps the warranty
+  card, a product photo, the manual or other files with a product, from the camera,
+  gallery or a PDF. This, not Add warranty, is where receipts and warranty cards go.
 - Subscriptions [الاشتراكات]: online services the user pays for (Netflix, Shahid...), with price,
   billing cycle and next renewal date. Added from a list of known services, from a
   screenshot or bank SMS, or by hand. On a subscription, Renewed [تم التجديد] asks the
@@ -181,7 +184,7 @@ function replyLanguageRule(message: string): string {
   return /[A-Za-z]/.test(message) && !/[\u0600-\u06FF]/.test(message)
     ? "The user wrote this message in English: reply in English."
     : "The user wrote this message in Arabic: reply in Egyptian Arabic (عامية مصرية), " +
-      "naming screens and buttons by their Arabic labels in [brackets].";
+      "naming screens and buttons by their Arabic labels, without the brackets.";
 }
 
 /** The last [HISTORY_FOR_MODEL] messages, oldest first. */
