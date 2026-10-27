@@ -313,19 +313,17 @@ void main() {
         if (beforeTen) idOf('Shahid', RenewalReminder.dayBefore),
         idOf('Shahid', RenewalReminder.dayAfter),
       });
-      notifications.scheduled.clear();
 
       await service.checkAndNotify([shahid]);
-      // Already scheduled for 10:00: no extra push now. Too late: pushed now.
-      expect(
-        notifications.scheduled.keys,
-        beforeTen ? isEmpty : [idOf('Shahid', RenewalReminder.dayBefore)],
-      );
+      // Shown now either way; one still waiting for 10:00 is dropped.
+      expect(notifications.shown, [idOf('Shahid', RenewalReminder.dayBefore)]);
+      expect(notifications.scheduled.keys, [
+        idOf('Shahid', RenewalReminder.dayAfter),
+      ]);
       expect(added.added, ['Shahid renews tomorrow for 100 EGP']);
 
-      notifications.scheduled.clear();
       await service.checkAndNotify([shahid]);
-      expect(notifications.scheduled, isEmpty);
+      expect(notifications.shown, hasLength(1));
       expect(added.added, hasLength(1));
     },
   );
