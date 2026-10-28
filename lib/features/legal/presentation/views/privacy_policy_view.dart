@@ -27,8 +27,8 @@ class PrivacyPolicyView extends StatelessWidget {
             children: [
               Text(
                 isArabic
-                    ? 'آخر تحديث: 21 أكتوبر 2026'
-                    : 'Last updated: October 21, 2026',
+                    ? 'آخر تحديث: 28 أكتوبر 2026'
+                    : 'Last updated: October 28, 2026',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -123,6 +123,8 @@ const List<_LegalSection> _enSections = [
         'When you scan, Groq receives the receipt or invoice photo, the pages '
         'and text of a PDF you pick, and, for adding a subscription or '
         'installment plan, the screenshot, contract or message you share. When '
+        'you add a product by voice, Groq receives your recording to turn it '
+        'into text; we delete the recording as soon as it is transcribed. When '
         'you use the AI assistant, Groq receives your message, recent messages '
         'in the conversation, and the details of the products you can see in '
         'the app (yours and, if you are in a household, your household\'s). '
@@ -145,7 +147,8 @@ const List<_LegalSection> _enSections = [
   _LegalSection(
     'Device permissions',
     'Camera and photos: only when you scan a receipt or add a document. Files: '
-        'only the PDF you pick. Notifications: for warranty and return '
+        'only the PDF you pick. Microphone: only while you record a product by '
+        'voice. Notifications: for warranty and return '
         'reminders. Calendar: only when you tap "Add to calendar", which opens '
         'your calendar app with the event for you to save. On iPhone, the '
         'calendar\'s own screen may offer place suggestions from your contacts; '
@@ -257,7 +260,8 @@ const List<_LegalSection> _arSections = [
     'تعالج Groq، مزوّد الذكاء الاصطناعي لدينا، ميزات الذكاء الاصطناعي عبر '
         'خادمنا. عند المسح، تتلقى Groq صورة الفاتورة، وصفحات ونص ملف PDF الذي '
         'تختاره، وعند إضافة اشتراك أو خطة تقسيط، لقطة الشاشة أو العقد أو '
-        'الرسالة التي تشاركها. وعند استخدام المساعد الذكي، تتلقى Groq رسالتك '
+        'الرسالة التي تشاركها. وعند إضافة منتج بصوتك، تتلقى Groq تسجيلك '
+        'الصوتي لتحويله إلى نص، ونحذف التسجيل فور تحويله. وعند استخدام المساعد الذكي، تتلقى Groq رسالتك '
         'والرسائل الأخيرة في المحادثة وتفاصيل المنتجات التي تراها في التطبيق '
         '(منتجاتك ومنتجات عائلتك إذا كنت في عائلة). يُحفظ سجل المحادثة في '
         'قاعدة بياناتنا حتى تحذف حسابك. قد تكون إجابات الذكاء الاصطناعي خاطئة، '
@@ -276,7 +280,7 @@ const List<_LegalSection> _arSections = [
   _LegalSection(
     'أذونات الجهاز',
     'الكاميرا والصور: فقط عند مسح فاتورة أو إضافة مستند. الملفات: فقط ملف '
-        'PDF الذي تختاره. الإشعارات: لتذكيرات الضمان والاسترجاع. التقويم: فقط '
+        'PDF الذي تختاره. الميكروفون: فقط أثناء تسجيل منتج بصوتك. الإشعارات: لتذكيرات الضمان والاسترجاع. التقويم: فقط '
         'عند الضغط على "إضافة إلى التقويم"، فيُفتح تطبيق التقويم بالحدث لتحفظه '
         'بنفسك. على iPhone قد تقترح شاشة التقويم أماكن من جهات اتصالك، أما صك '
         'نفسه فلا يقرأ جهات اتصالك. البصمة وFace ID: انظر أدناه.',
