@@ -89,9 +89,9 @@ void main() {
         // Free limits come from the server; ٣ في اليوم for scans.
         expect(find.text(l10n.valuePerDay('٣')), findsOneWidget);
         // Prices exactly as the store formats them, never hard-coded.
-        expect(find.text(l10n.pricePerYear('EGP 249')), findsOneWidget);
+        expect(find.text(l10n.pricePerYear('EGP 260')), findsOneWidget);
         expect(find.text(l10n.pricePerMonth('EGP 29')), findsOneWidget);
-        expect(find.text(l10n.savePercent('٢٨')), findsOneWidget);
+        expect(find.text(l10n.savePercent('٢٥')), findsOneWidget);
         expect(find.text(l10n.bestValue), findsOneWidget);
         expect(find.text(l10n.featurePdfReport), findsOneWidget);
         expect(find.text(l10n.startFreeTrial), findsOneWidget);

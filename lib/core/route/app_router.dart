@@ -288,20 +288,25 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.monthlySummary,
-      // Pro only: free users get the paywall in its place.
-      builder: (context, state) => getIt<ProCubit>().isPro
-          ? MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: getIt<SubscriptionsCubit>()),
-                BlocProvider.value(value: getIt<InstallmentsCubit>()),
-                BlocProvider.value(value: getIt<ProductsCubit>()),
-              ],
-              child: const MonthlySummaryView(),
-            )
-          : BlocProvider(
-              create: (_) => getIt<PaywallCubit>(),
-              child: const PaywallView(reason: PaywallReason.monthlySummary),
-            ),
+      // Pro only: free users get the paywall in its place. Follows the plan,
+      // so it turns into the summary once the plan loads or after buying.
+      builder: (context, state) => BlocBuilder<ProCubit, ProState>(
+        bloc: getIt<ProCubit>(),
+        buildWhen: (a, b) => a.isPro != b.isPro,
+        builder: (context, pro) => pro.isPro
+            ? MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: getIt<SubscriptionsCubit>()),
+                  BlocProvider.value(value: getIt<InstallmentsCubit>()),
+                  BlocProvider.value(value: getIt<ProductsCubit>()),
+                ],
+                child: const MonthlySummaryView(),
+              )
+            : BlocProvider(
+                create: (_) => getIt<PaywallCubit>(),
+                child: const PaywallView(reason: PaywallReason.monthlySummary),
+              ),
+      ),
     ),
     GoRoute(
       path: AppRoutes.reminders,

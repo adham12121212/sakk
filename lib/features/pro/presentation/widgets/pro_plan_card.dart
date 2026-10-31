@@ -126,15 +126,17 @@ class ProPlanCard extends StatelessWidget {
                     icon: const Icon(AppIcons.pdf, size: 18),
                     label: Text(l10n.pdfReportExport),
                   ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: ProActions.manageSubscription,
-                    child: Text(
-                      plan == PlanKind.billingIssue
-                          ? l10n.updatePaymentMethod
-                          : l10n.manageSubscription,
+                  if (ProActions.canManageSubscription) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: ProActions.manageSubscription,
+                      child: Text(
+                        plan == PlanKind.billingIssue
+                            ? l10n.updatePaymentMethod
+                            : l10n.manageSubscription,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ],
             ),

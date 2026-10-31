@@ -9,8 +9,12 @@ import 'pro_cubit.dart';
 enum PaywallMessage {
   purchased,
   purchaseFailed,
+
+  /// The store took the order but hasn't confirmed the payment yet.
+  purchasePending,
   restored,
   nothingToRestore,
+  restoreFailed,
   unavailable,
 }
 
@@ -129,15 +133,24 @@ class PaywallCubit extends Cubit<PaywallState> {
       _safeEmit(
         state.copyWith(
           isPurchasing: false,
+          // Bought but not active yet: the payment is still clearing.
+          // Saying it failed would invite paying twice.
           message: entitlement.isActive
               ? PaywallMessage.purchased
-              : PaywallMessage.purchaseFailed,
+              : PaywallMessage.purchasePending,
         ),
       );
       // Not awaited: it keeps re-reading the server for a few seconds.
       _pro.applyPurchase(entitlement);
     } on PurchaseCancelledException {
       _safeEmit(state.copyWith(isPurchasing: false));
+    } on PurchasePendingException {
+      _safeEmit(
+        state.copyWith(
+          isPurchasing: false,
+          message: PaywallMessage.purchasePending,
+        ),
+      );
     } catch (e, st) {
       _logger.error('Pro purchase failed', error: e, stackTrace: st);
       _safeEmit(
@@ -172,7 +185,7 @@ class PaywallCubit extends Cubit<PaywallState> {
       _safeEmit(
         state.copyWith(
           isRestoring: false,
-          message: PaywallMessage.purchaseFailed,
+          message: PaywallMessage.restoreFailed,
         ),
       );
     }

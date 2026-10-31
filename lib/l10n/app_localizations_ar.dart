@@ -2293,8 +2293,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subscribe => 'اشترك';
 
   @override
-  String autoRenewTrialDisclosure(String days, String price) {
-    return 'مجانًا لمدة $days أيام، وبعدها $price. لو لغيت قبل ما التجربة تخلص مش هيتخصم منك حاجة.';
+  String autoRenewTrialDisclosure(int count, String days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'مجانًا لمدة $days يوم',
+      few: 'مجانًا لمدة $days أيام',
+      two: 'مجانًا لمدة يومين',
+      one: 'مجانًا لمدة يوم',
+    );
+    return '$_temp0، وبعدها $price. لو لغيت قبل ما التجربة تخلص مش هيتخصم منك حاجة.';
   }
 
   @override
@@ -2306,6 +2314,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get purchaseFailed => 'الدفع ما تمّش. جرّب تاني.';
+
+  @override
+  String get purchasePending =>
+      'الدفع لسه مستني تأكيد. Sakk Pro هيتفعّل أول ما جوجل بلاي يأكده.';
+
+  @override
+  String get restoreFailed => 'ما قدرناش نستعيد مشترياتك. جرّب تاني.';
 
   @override
   String get purchasesUnavailable =>
