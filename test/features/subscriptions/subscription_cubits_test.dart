@@ -5,6 +5,7 @@ import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/catalog_service.dart';
 import 'package:sakk/features/subscriptions/domain/entities/subscription_category.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
+import 'package:sakk/features/subscriptions/domain/renewal_schedule.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/add_subscription_usecase.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/delete_subscription_usecase.dart';
 import 'package:sakk/features/subscriptions/domain/usecase/get_subscriptions_usecase.dart';
@@ -226,9 +227,37 @@ void main() {
 
       expect(result, Right<Failure, DateTime>(DateTime(2026, 11, 10)));
       expect(saved.calls, {'n': DateTime(2026, 11, 10)});
+      expect(saved.days, {'n': 10});
       expect(
         cubit.state.subscriptions.single.nextRenewalDate,
         DateTime(2026, 11, 10),
+      );
+      expect(cubit.state.subscriptions.single.renewalDay, 10);
+    });
+
+    test('renewed on the 31st: it renews on the 31st from then on', () async {
+      final saved = _FakeUpdateRenewal();
+      final cubit = SubscriptionsCubit(
+        _FakeGet()..result = Right([sub('n', DateTime(2026, 10, 30))]),
+        updateRenewalDateUseCase: saved,
+        clock: () => DateTime(2026, 10, 31),
+      );
+      await cubit.refresh();
+
+      await cubit.markRenewed(
+        cubit.state.subscriptions.single,
+        DateTime(2026, 10, 31),
+      );
+
+      expect(saved.calls['n'], DateTime(2026, 11, 30));
+      expect(saved.days['n'], 31);
+      // Past Nov 30 it goes back to the 31st, not the 30th.
+      expect(
+        advancePassedRenewals(
+          cubit.state.subscriptions,
+          DateTime(2026, 12, 1),
+        ).single.nextRenewalDate,
+        DateTime(2026, 12, 31),
       );
     });
 
@@ -359,13 +388,16 @@ void main() {
 
 class _FakeUpdateRenewal implements UpdateRenewalDateUseCase {
   final calls = <String, DateTime>{};
+  final days = <String, int?>{};
   bool fail = false;
   @override
   Future<Either<Failure, void>> call(
     String id,
-    DateTime nextRenewalDate,
-  ) async {
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  }) async {
     calls[id] = nextRenewalDate;
+    days[id] = renewalDay;
     return fail
         ? const Left(NetworkFailure(NetworkFailure.noConnectionMessage))
         : const Right(null);

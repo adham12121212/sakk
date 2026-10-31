@@ -131,6 +131,53 @@ void main() {
         DateTime(2026, 2, 28),
       );
     });
+
+    test('with the renewal day, a stored short-month date goes back to it', () {
+      // Stored as Feb 28 after a short month; it renews on the 31st.
+      expect(
+        nextRenewalOnOrAfter(
+          DateTime(2026, 2, 28),
+          BillingCycle.monthly,
+          DateTime(2026, 3, 1),
+          day: 31,
+        ),
+        DateTime(2026, 3, 31),
+      );
+      expect(
+        nextRenewalOnOrAfter(
+          DateTime(2026, 11, 30),
+          BillingCycle.monthly,
+          DateTime(2026, 12, 1),
+          day: 31,
+        ),
+        DateTime(2026, 12, 31),
+      );
+      // Into another short month it's that month's last day again.
+      expect(
+        nextRenewalOnOrAfter(
+          DateTime(2026, 3, 31),
+          BillingCycle.monthly,
+          DateTime(2026, 4, 1),
+          day: 31,
+        ),
+        DateTime(2026, 4, 30),
+      );
+    });
+
+    test('advancePassedRenewals counts from the renewal day', () {
+      final moved = advancePassedRenewals([
+        UserSubscription(
+          id: 'a',
+          customName: 'a',
+          price: 1,
+          billingCycle: BillingCycle.monthly,
+          nextRenewalDate: DateTime(2026, 11, 30),
+          renewalDay: 31,
+        ),
+      ], DateTime(2026, 12, 2));
+      expect(moved.single.nextRenewalDate, DateTime(2026, 12, 31));
+      expect(moved.single.renewalDay, 31);
+    });
   });
 
   test('advancePassedRenewals moves only renewals that passed', () {

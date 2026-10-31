@@ -4,7 +4,11 @@ import '../../../../core/error/failure.dart';
 import '../subscription_repo/subscription_repo.dart';
 
 abstract class UpdateRenewalDateUseCase {
-  Future<Either<Failure, void>> call(String id, DateTime nextRenewalDate);
+  Future<Either<Failure, void>> call(
+    String id,
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  });
 }
 
 class UpdateRenewalDateUseCaseImpl implements UpdateRenewalDateUseCase {
@@ -12,7 +16,15 @@ class UpdateRenewalDateUseCaseImpl implements UpdateRenewalDateUseCase {
   UpdateRenewalDateUseCaseImpl(this._repository);
 
   @override
-  Future<Either<Failure, void>> call(String id, DateTime nextRenewalDate) {
-    return _repository.updateRenewalDate(id, nextRenewalDate);
+  Future<Either<Failure, void>> call(
+    String id,
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  }) {
+    return _repository.updateRenewalDate(
+      id,
+      nextRenewalDate,
+      renewalDay: renewalDay,
+    );
   }
 }

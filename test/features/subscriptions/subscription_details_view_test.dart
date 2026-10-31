@@ -24,7 +24,11 @@ class _Get implements GetSubscriptionsUseCase {
 class _SaveRenewal implements UpdateRenewalDateUseCase {
   final calls = <String, DateTime>{};
   @override
-  Future<Either<Failure, void>> call(String id, DateTime next) async {
+  Future<Either<Failure, void>> call(
+    String id,
+    DateTime next, {
+    int? renewalDay,
+  }) async {
     calls[id] = next;
     return const Right(null);
   }

@@ -77,8 +77,11 @@ class _FakeRemote implements SubscriptionDataSource {
 
   final renewalUpdates = <String, DateTime>{};
   @override
-  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async =>
-      renewalUpdates[id] = nextRenewalDate;
+  Future<void> updateRenewalDate(
+    String id,
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  }) async => renewalUpdates[id] = nextRenewalDate;
 
   @override
   Future<List<CatalogServiceModel>> getCatalog() async => [];

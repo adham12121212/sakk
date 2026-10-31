@@ -156,10 +156,15 @@ class SubscriptionRepoImpl with OnlineRepo implements SubscriptionRepo {
   @override
   Future<Either<Failure, void>> updateRenewalDate(
     String id,
-    DateTime nextRenewalDate,
-  ) {
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  }) {
     return online('updateRenewalDate', () async {
-      await _dataSource.updateRenewalDate(id, nextRenewalDate);
+      await _dataSource.updateRenewalDate(
+        id,
+        nextRenewalDate,
+        renewalDay: renewalDay,
+      );
       await _updateCache(
         (current) => [
           for (final s in current)
@@ -170,6 +175,7 @@ class SubscriptionRepoImpl with OnlineRepo implements SubscriptionRepo {
                         .toIso8601String()
                         .split('T')
                         .first,
+                    'renewal_day': ?renewalDay,
                   })
                 : s,
         ],

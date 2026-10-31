@@ -92,13 +92,15 @@ class SubscriptionsCubit extends Cubit<SubscriptionsState> {
   ) async {
     final useCase = _updateRenewalDateUseCase;
     if (useCase == null) return const Left(UnknownFailure('No renewal saver'));
+    // It renews on that day from now on (Oct 31 → Nov 30 → Dec 31).
+    final day = renewedOn.day;
     final next = addMonthsClamped(
       dateOnly(renewedOn),
       subscription.billingCycle.months,
     );
-    final result = await useCase(subscription.id, next);
+    final result = await useCase(subscription.id, next, renewalDay: day);
     return result.map((_) {
-      upsert(subscription.copyWith(nextRenewalDate: next));
+      upsert(subscription.copyWith(nextRenewalDate: next, renewalDay: day));
       return next;
     });
   }
