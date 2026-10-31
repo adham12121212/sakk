@@ -981,10 +981,13 @@
   },
   "startFreeTrial": "Start free trial",
   "subscribe": "Subscribe",
-  "autoRenewTrialDisclosure": "Free for {days} days, then {price}. Cancel before the trial ends and you won't be charged.",
+  "autoRenewTrialDisclosure": "{count, plural, =1{Free for 1 day} other{Free for {days} days}}, then {price}. Cancel before the trial ends and you won't be charged.",
   "@autoRenewTrialDisclosure": {
-    "description": "days is the trial length in the app's digits; price is e.g. \"EGP 29.00 / month\".",
+    "description": "days is the trial length in the app's digits; count picks the plural form; price is e.g. \"EGP 29.00 / month\".",
     "placeholders": {
+      "count": {
+        "type": "int"
+      },
       "days": {
         "type": "String"
       },
@@ -996,6 +999,8 @@
   "autoRenewDisclosure": "Payment is charged to your Google Play account. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the current period ends. Manage or cancel anytime in Google Play → Payments & subscriptions.",
   "purchaseSuccess": "Welcome to Sakk Pro!",
   "purchaseFailed": "The purchase didn't go through. Please try again.",
+  "purchasePending": "Your payment is pending. Sakk Pro unlocks as soon as Google Play confirms it.",
+  "restoreFailed": "Couldn't restore your purchases. Please try again.",
   "purchasesUnavailable": "Subscriptions aren't available right now. Please try again later.",
   "proComingSoonIos": "Sakk Pro is coming soon on iPhone. You can keep using the free plan until then.",
   "alreadyPro": "You're on Sakk Pro",

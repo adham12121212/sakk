@@ -16,6 +16,7 @@ class ProPackage extends Equatable {
     required this.price,
     required this.priceString,
     required this.currencyCode,
+    this.pricePerMonthString,
     this.freeTrialDays,
     this.raw,
   });
@@ -27,6 +28,10 @@ class ProPackage extends Equatable {
   /// As the store formats it, e.g. "EGP 29.00".
   final String priceString;
   final String currencyCode;
+
+  /// The price spread over a month, as the store formats it (yearly plan:
+  /// "EGP 21.67"); null where the store doesn't give it.
+  final String? pricePerMonthString;
 
   /// Length of the free trial this user can still get, or null.
   final int? freeTrialDays;
@@ -41,6 +46,7 @@ class ProPackage extends Equatable {
     price,
     priceString,
     currencyCode,
+    pricePerMonthString,
     freeTrialDays,
   ];
 }
@@ -77,6 +83,12 @@ class PurchaseCancelledException implements Exception {
   const PurchaseCancelledException();
 }
 
+/// The store took the order but the payment isn't through yet (cash at a
+/// shop, carrier billing): Pro unlocks when the store confirms it.
+class PurchasePendingException implements Exception {
+  const PurchasePendingException();
+}
+
 /// The store, through RevenueCat. Behind an interface so tests and builds
 /// without a RevenueCat key (the app then stays on the free plan) work.
 abstract class PurchasesGateway {
@@ -95,7 +107,8 @@ abstract class PurchasesGateway {
   Future<ProEntitlement?> currentEntitlement();
   Future<ProOffer?> loadOffer();
 
-  /// Throws [PurchaseCancelledException] if the user backs out.
+  /// Throws [PurchaseCancelledException] if the user backs out and
+  /// [PurchasePendingException] if the payment is still pending.
   Future<ProEntitlement> purchase(ProPackage package);
   Future<ProEntitlement> restore();
 
@@ -175,11 +188,14 @@ class RevenueCatGateway implements PurchasesGateway {
       );
       return _entitlementOf(result.customerInfo);
     } on PlatformException catch (e) {
-      if (PurchasesErrorHelper.getErrorCode(e) ==
-          PurchasesErrorCode.purchaseCancelledError) {
-        throw const PurchaseCancelledException();
+      switch (PurchasesErrorHelper.getErrorCode(e)) {
+        case PurchasesErrorCode.purchaseCancelledError:
+          throw const PurchaseCancelledException();
+        case PurchasesErrorCode.paymentPendingError:
+          throw const PurchasePendingException();
+        default:
+          rethrow;
       }
-      rethrow;
     }
   }
 
@@ -227,6 +243,7 @@ class RevenueCatGateway implements PurchasesGateway {
       price: product.price,
       priceString: product.priceString,
       currencyCode: product.currencyCode,
+      pricePerMonthString: product.pricePerMonthString,
       freeTrialDays: trial == null ? null : _days(trial),
       raw: package,
     );

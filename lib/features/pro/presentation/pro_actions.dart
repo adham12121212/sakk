@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +27,14 @@ abstract final class ProActions {
     BuildContext context, [
     PaywallReason reason = PaywallReason.upgrade,
   ]) => context.push(AppRoutes.paywall, extra: reason);
+
+  /// False where there's no store subscription to manage: Pro granted by
+  /// hand (`manual_grant`), or on iPhone, where nothing is sold yet.
+  static bool get canManageSubscription {
+    if (defaultTargetPlatform == TargetPlatform.iOS) return false;
+    final productId = maybeCubit?.state.status.entitlement?.productId;
+    return !(productId?.startsWith('manual') ?? false);
+  }
 
   /// Google Play's page for this subscription (cancel, change plan, fix
   /// the payment method).

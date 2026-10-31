@@ -3666,11 +3666,11 @@ abstract class AppLocalizations {
   /// **'Subscribe'**
   String get subscribe;
 
-  /// days is the trial length in the app's digits; price is e.g. "EGP 29.00 / month".
+  /// days is the trial length in the app's digits; count picks the plural form; price is e.g. "EGP 29.00 / month".
   ///
   /// In en, this message translates to:
-  /// **'Free for {days} days, then {price}. Cancel before the trial ends and you won\'t be charged.'**
-  String autoRenewTrialDisclosure(String days, String price);
+  /// **'{count, plural, =1{Free for 1 day} other{Free for {days} days}}, then {price}. Cancel before the trial ends and you won\'t be charged.'**
+  String autoRenewTrialDisclosure(int count, String days, String price);
 
   /// No description provided for @autoRenewDisclosure.
   ///
@@ -3689,6 +3689,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The purchase didn\'t go through. Please try again.'**
   String get purchaseFailed;
+
+  /// No description provided for @purchasePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment is pending. Sakk Pro unlocks as soon as Google Play confirms it.'**
+  String get purchasePending;
+
+  /// No description provided for @restoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t restore your purchases. Please try again.'**
+  String get restoreFailed;
 
   /// No description provided for @purchasesUnavailable.
   ///

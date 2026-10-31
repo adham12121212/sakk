@@ -47,19 +47,30 @@ class _PaywallViewState extends State<PaywallView> {
     switch (state.message) {
       case PaywallMessage.purchased:
         AppSnackBar.success(context, l10n.purchaseSuccess);
-        context.pop();
+        _close(context);
       case PaywallMessage.restored:
         AppSnackBar.success(context, l10n.restoreSuccess);
-        context.pop();
+        _close(context);
       case PaywallMessage.nothingToRestore:
         AppSnackBar.error(context, l10n.restoreNothing);
       case PaywallMessage.purchaseFailed:
         AppSnackBar.error(context, l10n.purchaseFailed);
+      case PaywallMessage.purchasePending:
+        AppSnackBar.success(context, l10n.purchasePending);
+        _close(context);
+      case PaywallMessage.restoreFailed:
+        AppSnackBar.error(context, l10n.restoreFailed);
       case PaywallMessage.unavailable:
         AppSnackBar.error(context, l10n.purchasesUnavailable);
       case null:
         break;
     }
+  }
+
+  /// In place of the monthly summary the route turns into the summary by
+  /// itself once Pro is on, so there's nothing to close.
+  void _close(BuildContext context) {
+    if (widget.reason != PaywallReason.monthlySummary) context.pop();
   }
 
   @override
@@ -99,11 +110,20 @@ class _PaywallViewState extends State<PaywallView> {
                   ),
                   const SizedBox(height: 20),
                   if (pro.isPro)
-                    _AlreadyPro(onManage: ProActions.manageSubscription)
+                    _AlreadyPro(
+                      onManage: ProActions.canManageSubscription
+                          ? ProActions.manageSubscription
+                          : null,
+                    )
                   else if (!sellsHere)
                     _Notice(l10n.proComingSoonIos)
                   else
-                    _Plans(state: state),
+                    _Plans(
+                      state: state,
+                      // Until the plan is known a Pro user would be offered
+                      // what they already have; a failed read doesn't block.
+                      waitingForPlan: !pro.hasLoadedOnce && !pro.loadFailed,
+                    ),
                   const SizedBox(height: 16),
                   _Links(
                     isRestoring: state.isRestoring,
@@ -334,9 +354,12 @@ class _ComparisonTable extends StatelessWidget {
 }
 
 class _Plans extends StatelessWidget {
-  const _Plans({required this.state});
+  const _Plans({required this.state, this.waitingForPlan = false});
 
   final PaywallState state;
+
+  /// The user's plan hasn't been read yet: shown as loading.
+  final bool waitingForPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -354,6 +377,7 @@ class _Plans extends StatelessWidget {
         price: 0,
         priceString: 'EGP 260.00',
         currencyCode: '',
+        pricePerMonthString: 'EGP 21.67',
         freeTrialDays: 7,
       ),
       monthly: ProPackage(
@@ -364,20 +388,25 @@ class _Plans extends StatelessWidget {
         currencyCode: '',
       ),
     );
-    final offer = state.isLoading ? placeholder : state.offer!;
-    final selected = state.isLoading ? placeholder.yearly : state.selected;
+    final isLoading = state.isLoading || waitingForPlan;
+    final offer = isLoading ? placeholder : state.offer!;
+    final selected = isLoading ? placeholder.yearly : state.selected;
     final trialDays = selected?.freeTrialDays;
     final savings = offer.yearlySavingsPercent;
 
     return Skeletonizer(
-      enabled: state.isLoading,
+      enabled: isLoading,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (offer.yearly != null)
             _PlanOption(
               title: l10n.planYearly,
-              price: l10n.pricePerYear(offer.yearly!.priceString),
+              price: [
+                l10n.pricePerYear(offer.yearly!.priceString),
+                if (offer.yearly!.pricePerMonthString case final perMonth?)
+                  l10n.pricePerMonth(perMonth),
+              ].join(' · '),
               badge: l10n.bestValue,
               savings: savings == null
                   ? null
@@ -398,6 +427,7 @@ class _Plans extends StatelessWidget {
           if (trialDays != null && selected != null) ...[
             Text(
               l10n.autoRenewTrialDisclosure(
+                trialDays,
                 formatLocalizedInt(locale, trialDays),
                 selected.isYearly
                     ? l10n.pricePerYear(selected.priceString)
@@ -411,9 +441,7 @@ class _Plans extends StatelessWidget {
           SizedBox(
             height: 54,
             child: FilledButton(
-              onPressed: state.isBusy || state.isLoading
-                  ? null
-                  : cubit.purchase,
+              onPressed: state.isBusy || isLoading ? null : cubit.purchase,
               child: state.isPurchasing
                   ? const SizedBox.square(
                       dimension: 22,
@@ -567,7 +595,8 @@ class _Chip extends StatelessWidget {
 class _AlreadyPro extends StatelessWidget {
   const _AlreadyPro({required this.onManage});
 
-  final VoidCallback onManage;
+  /// Null hides the button (no store subscription to manage).
+  final VoidCallback? onManage;
 
   @override
   Widget build(BuildContext context) {
@@ -588,11 +617,13 @@ class _AlreadyPro extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: onManage,
-            child: Text(l10n.manageSubscription),
-          ),
+          if (onManage case final onManage?) ...[
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: onManage,
+              child: Text(l10n.manageSubscription),
+            ),
+          ],
         ],
       ),
     );

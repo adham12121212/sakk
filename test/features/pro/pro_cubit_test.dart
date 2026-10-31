@@ -44,6 +44,8 @@ class FakeStore implements PurchasesGateway {
     productId: 'sakk_pro:yearly',
   );
   bool cancel = false;
+  bool pending = false;
+  bool restoreFails = false;
 
   bool available = true;
 
@@ -80,12 +82,16 @@ class FakeStore implements PurchasesGateway {
   @override
   Future<ProEntitlement> purchase(ProPackage package) async {
     if (cancel) throw const PurchaseCancelledException();
+    if (pending) throw const PurchasePendingException();
     return purchaseResult;
   }
 
   @override
-  Future<ProEntitlement> restore() async =>
-      const ProEntitlement(isActive: false);
+  Future<ProEntitlement> restore() async {
+    if (restoreFails) throw Exception('store down');
+    return const ProEntitlement(isActive: false);
+  }
+
   @override
   Future<Uri> managementUri({String? productId}) async =>
       Uri.parse('https://play.google.com');
@@ -260,6 +266,35 @@ void main() {
       await paywall.purchase();
       expect(paywall.state.message, isNull);
       expect(paywall.state.isPurchasing, isFalse);
+    });
+
+    test('a payment still clearing says pending, not failed', () async {
+      final paywall = PaywallCubit(store, cubit, NoLog());
+      addTearDown(paywall.close);
+      await paywall.load();
+      store.pending = true;
+      await paywall.purchase();
+      expect(paywall.state.message, PaywallMessage.purchasePending);
+      expect(paywall.state.isPurchasing, isFalse);
+    });
+
+    test('a purchase that comes back inactive says pending', () async {
+      users.add('user-1');
+      await settle();
+      final paywall = PaywallCubit(store, cubit, NoLog());
+      addTearDown(paywall.close);
+      await paywall.load();
+      store.purchaseResult = const ProEntitlement(isActive: false);
+      await paywall.purchase();
+      expect(paywall.state.message, PaywallMessage.purchasePending);
+    });
+
+    test('a failed restore says the restore failed', () async {
+      final paywall = PaywallCubit(store, cubit, NoLog());
+      addTearDown(paywall.close);
+      store.restoreFails = true;
+      await paywall.restore();
+      expect(paywall.state.message, PaywallMessage.restoreFailed);
     });
 
     test('restore with nothing to restore says so', () async {

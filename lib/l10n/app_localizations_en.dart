@@ -2238,8 +2238,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscribe => 'Subscribe';
 
   @override
-  String autoRenewTrialDisclosure(String days, String price) {
-    return 'Free for $days days, then $price. Cancel before the trial ends and you won\'t be charged.';
+  String autoRenewTrialDisclosure(int count, String days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Free for $days days',
+      one: 'Free for 1 day',
+    );
+    return '$_temp0, then $price. Cancel before the trial ends and you won\'t be charged.';
   }
 
   @override
@@ -2252,6 +2258,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get purchaseFailed =>
       'The purchase didn\'t go through. Please try again.';
+
+  @override
+  String get purchasePending =>
+      'Your payment is pending. Sakk Pro unlocks as soon as Google Play confirms it.';
+
+  @override
+  String get restoreFailed =>
+      'Couldn\'t restore your purchases. Please try again.';
 
   @override
   String get purchasesUnavailable =>
