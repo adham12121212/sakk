@@ -26,6 +26,11 @@ class UserSubscription extends Equatable {
 
   /// Date only (no time of day).
   final DateTime nextRenewalDate;
+
+  /// The day of the month it renews on (1–31). [nextRenewalDate] is on it,
+  /// or on its month's last day when the month is shorter. Null where it
+  /// isn't known (a cache from before it was stored); see [billingDay].
+  final int? renewalDay;
   final String? paymentMethod;
   final String? notes;
   final DateTime? createdAt;
@@ -43,12 +48,16 @@ class UserSubscription extends Equatable {
     this.currency = 'EGP',
     required this.billingCycle,
     required this.nextRenewalDate,
+    this.renewalDay,
     this.paymentMethod,
     this.notes,
     this.createdAt,
   });
 
   bool get isCustom => catalogId == null;
+
+  /// The day of the month it renews on: [renewalDay], or the date's own.
+  int get billingDay => renewalDay ?? nextRenewalDate.day;
 
   /// What to show as the title. Empty only if the catalog service was deleted
   /// from a subscription that never had a custom name.
@@ -69,7 +78,7 @@ class UserSubscription extends Equatable {
     return to.difference(from).inDays;
   }
 
-  UserSubscription copyWith({DateTime? nextRenewalDate}) {
+  UserSubscription copyWith({DateTime? nextRenewalDate, int? renewalDay}) {
     return UserSubscription(
       id: id,
       catalogId: catalogId,
@@ -83,6 +92,7 @@ class UserSubscription extends Equatable {
       currency: currency,
       billingCycle: billingCycle,
       nextRenewalDate: nextRenewalDate ?? this.nextRenewalDate,
+      renewalDay: renewalDay ?? this.renewalDay,
       paymentMethod: paymentMethod,
       notes: notes,
       createdAt: createdAt,
@@ -103,6 +113,7 @@ class UserSubscription extends Equatable {
     currency,
     billingCycle,
     nextRenewalDate,
+    renewalDay,
     paymentMethod,
     notes,
     createdAt,

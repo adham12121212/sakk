@@ -16,6 +16,7 @@ class UserSubscriptionModel extends UserSubscription {
     super.currency,
     required super.billingCycle,
     required super.nextRenewalDate,
+    super.renewalDay,
     super.paymentMethod,
     super.notes,
     super.createdAt,
@@ -41,6 +42,7 @@ class UserSubscriptionModel extends UserSubscription {
       currency: json['currency'] as String? ?? 'EGP',
       billingCycle: BillingCycleX.fromName(json['billing_cycle'] as String?),
       nextRenewalDate: DateTime.parse(json['next_renewal_date'] as String),
+      renewalDay: (json['renewal_day'] as num?)?.toInt(),
       paymentMethod: json['payment_method'] as String?,
       notes: json['notes'] as String?,
       createdAt: json['created_at'] != null
@@ -50,7 +52,8 @@ class UserSubscriptionModel extends UserSubscription {
   }
 
   /// Insert and update body. user_id is left to the database (defaults to
-  /// auth.uid(), and RLS rejects any other value).
+  /// auth.uid(), and RLS rejects any other value), and so is renewal_day:
+  /// it's kept matching the date there.
   static Map<String, dynamic> writeJson({
     String? catalogId,
     String? customName,
@@ -92,6 +95,7 @@ class UserSubscriptionModel extends UserSubscription {
       paymentMethod: paymentMethod,
       notes: notes,
     ),
+    'renewal_day': renewalDay,
     'created_at': createdAt?.toIso8601String(),
     'subscription_catalog': catalogId == null
         ? null

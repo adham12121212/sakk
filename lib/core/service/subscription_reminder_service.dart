@@ -103,9 +103,16 @@ class SubscriptionReminderService {
   static DateTime? previousRenewal(UserSubscription subscription) {
     final created = subscription.createdAt?.toLocal();
     if (created == null) return null;
-    final previous = addMonthsClamped(
+    // On the renewal day, which a short month may have clamped the next
+    // date away from (Nov 30 for the 31st: the last one was Oct 31).
+    final back = addMonthsClamped(
       subscription.nextRenewalDate,
       -subscription.billingCycle.months,
+    );
+    final previous = clampedDate(
+      back.year,
+      back.month,
+      subscription.billingDay,
     );
     return DateTime(created.year, created.month, created.day).isBefore(previous)
         ? previous

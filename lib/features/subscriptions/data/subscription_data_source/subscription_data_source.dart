@@ -26,7 +26,13 @@ abstract class SubscriptionDataSource {
 
   Future<void> deleteSubscription(String id);
 
-  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate);
+  /// [renewalDay] when it's known to change (a renewal logged on a given
+  /// day); otherwise the database keeps it matching the date.
+  Future<void> updateRenewalDate(
+    String id,
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  });
 
   Future<ScannedSubscription> extractSubscription({
     String? imagePath,
@@ -135,7 +141,11 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
   }
 
   @override
-  Future<void> updateRenewalDate(String id, DateTime nextRenewalDate) async {
+  Future<void> updateRenewalDate(
+    String id,
+    DateTime nextRenewalDate, {
+    int? renewalDay,
+  }) async {
     try {
       await _client
           .from(_table)
@@ -144,6 +154,7 @@ class SubscriptionDataSourceImpl implements SubscriptionDataSource {
                 .toIso8601String()
                 .split('T')
                 .first,
+            'renewal_day': ?renewalDay,
           })
           .eq('id', id);
     } catch (e) {

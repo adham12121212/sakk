@@ -83,6 +83,25 @@ void main() {
       expect(s.billingCycle, BillingCycle.yearly);
     });
 
+    test('reads the renewal day, and falls back to the date\'s day', () {
+      final s = UserSubscriptionModel.fromJson({
+        ...subscriptionRow(),
+        'next_renewal_date': '2026-11-30',
+        'renewal_day': 31,
+      });
+      expect(s.renewalDay, 31);
+      expect(s.billingDay, 31);
+      final cached = UserSubscriptionModel.fromJson(
+        jsonDecode(jsonEncode(s.toCacheJson())) as Map<String, dynamic>,
+      );
+      expect(cached.renewalDay, 31);
+
+      // A cache from before the column.
+      final old = UserSubscriptionModel.fromJson(subscriptionRow());
+      expect(old.renewalDay, isNull);
+      expect(old.billingDay, 1);
+    });
+
     test('round-trips through the offline cache', () {
       final s = UserSubscriptionModel.fromJson(subscriptionRow());
       final cached = UserSubscriptionModel.fromJson(
