@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sakk/core/error/failure.dart';
+import 'package:sakk/core/util/date_math.dart';
 import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/subscriptions/domain/entities/billing_cycle.dart';
 import 'package:sakk/features/subscriptions/domain/entities/user_subscription.dart';
@@ -113,7 +114,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final today = DateTime.now();
-    final next = DateTime(today.year, today.month + 1, today.day);
+    // Clamped like the app: Oct 31 + 1 month is Nov 30, not Dec 1.
+    final next = addMonthsClamped(today, 1);
     expect(saved.calls.keys, ['n']);
     expect(saved.calls['n']!.month, next.month);
     expect(find.textContaining('Next renewal:'), findsOneWidget);

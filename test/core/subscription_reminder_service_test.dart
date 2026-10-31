@@ -103,13 +103,14 @@ DateTime get today {
   return DateTime(now.year, now.month, now.day);
 }
 
-/// A monthly subscription renewing [days] from today. [createdDaysAgo] null
+/// A subscription (monthly unless [cycle] says) renewing [days] from today. [createdDaysAgo] null
 /// means unknown, so no "renewed" reminder for the previous renewal.
 UserSubscription renewingIn(
   String id,
   int days, {
   double price = 240,
   String currency = 'EGP',
+  BillingCycle cycle = BillingCycle.monthly,
   int? createdDaysAgo,
 }) {
   return UserSubscription(
@@ -117,7 +118,7 @@ UserSubscription renewingIn(
     customName: id,
     price: price,
     currency: currency,
-    billingCycle: BillingCycle.monthly,
+    billingCycle: cycle,
     nextRenewalDate: today.add(Duration(days: days)),
     createdAt: createdDaysAgo == null
         ? null
@@ -194,13 +195,17 @@ void main() {
         createdDaysAgo: 60,
       ).copyWith(nextRenewalDate: addMonthsClamped(today, 1));
       await service.syncAll([sub]);
+      // The day after the renewal the app can work out from the next date:
+      // today, except on a 31st before a shorter month (Oct 31 → Nov 30
+      // steps back to Oct 30; see previousRenewal).
+      final renewed = addMonthsClamped(sub.nextRenewalDate, -1);
       expect(
         notifications.scheduled[idOf(
           'Spotify',
           RenewalReminder.dayAfter,
           previous: true,
         )],
-        at10(today, 1),
+        at10(renewed, 1),
       );
       // And the next renewal's reminders are there too.
       expect(
@@ -209,6 +214,38 @@ void main() {
       );
     },
   );
+
+  group('previousRenewal', () {
+    DateTime? prev(DateTime next, [BillingCycle c = BillingCycle.monthly]) =>
+        SubscriptionReminderService.previousRenewal(
+          UserSubscription(
+            id: 's',
+            customName: 's',
+            price: 1,
+            billingCycle: c,
+            nextRenewalDate: next,
+            createdAt: DateTime(2020),
+          ),
+        );
+
+    test('steps back one cycle', () {
+      expect(prev(DateTime(2026, 11, 15)), DateTime(2026, 10, 15));
+      expect(prev(DateTime(2026, 3, 31)), DateTime(2026, 2, 28));
+      expect(
+        prev(DateTime(2027, 2, 28), BillingCycle.yearly),
+        DateTime(2026, 2, 28),
+      );
+    });
+
+    test('a month-end date steps back to the same day, not the 31st', () {
+      // Only the next date is stored, and moved dates are saved, so a
+      // renewal on Oct 31 is stored as Nov 30 and renews on the 30th from
+      // then on. Nov 30 is far more often a 30th renewal than that one
+      // change, so it steps back to Oct 30.
+      expect(prev(DateTime(2026, 11, 30)), DateTime(2026, 10, 30));
+      expect(prev(DateTime(2027, 2, 28)), DateTime(2027, 1, 28));
+    });
+  });
 
   test('a subscription added today never hears "renewed yesterday"', () async {
     final added0 = renewingIn(
@@ -280,11 +317,19 @@ void main() {
     'the day after a renewal: "renewed" in the list, pushed only if not scheduled ahead',
     () async {
       // Renewed yesterday; the app already moved the date on. Existed before.
-      final sub = renewingIn('Shahid', 0, price: 100, createdDaysAgo: 90)
-          .copyWith(
+      // Yearly, so stepping back lands on yesterday on any day the test runs
+      // (monthly can't: a Jan 29 renewal is stored as Feb 28).
+      final sub =
+          renewingIn(
+            'Shahid',
+            0,
+            price: 100,
+            cycle: BillingCycle.yearly,
+            createdDaysAgo: 400,
+          ).copyWith(
             nextRenewalDate: addMonthsClamped(
               today.subtract(const Duration(days: 1)),
-              1,
+              12,
             ),
           );
 
