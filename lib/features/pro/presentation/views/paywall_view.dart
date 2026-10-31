@@ -352,7 +352,7 @@ class _Plans extends StatelessWidget {
         id: 'y',
         isYearly: true,
         price: 0,
-        priceString: 'EGP 000.00',
+        priceString: 'EGP 260.00',
         currencyCode: '',
         freeTrialDays: 7,
       ),
@@ -360,7 +360,7 @@ class _Plans extends StatelessWidget {
         id: 'm',
         isYearly: false,
         price: 0,
-        priceString: 'EGP 00.00',
+        priceString: 'EGP 29.00',
         currencyCode: '',
       ),
     );

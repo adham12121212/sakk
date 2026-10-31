@@ -71,8 +71,8 @@ class FakeStore implements PurchasesGateway {
     yearly: ProPackage(
       id: 'y',
       isYearly: true,
-      price: 249,
-      priceString: 'EGP 249',
+      price: 260,
+      priceString: 'EGP 260',
       currencyCode: 'EGP',
       freeTrialDays: 7,
     ),
@@ -244,7 +244,7 @@ void main() {
       await paywall.load();
       expect(paywall.state.yearlySelected, isTrue);
       expect(paywall.state.selected?.freeTrialDays, 7);
-      expect(paywall.state.offer?.yearlySavingsPercent, 28);
+      expect(paywall.state.offer?.yearlySavingsPercent, 25);
 
       await paywall.purchase();
       expect(paywall.state.message, PaywallMessage.purchased);
