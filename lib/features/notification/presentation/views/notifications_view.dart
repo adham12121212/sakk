@@ -49,13 +49,6 @@ class _NotificationsViewState extends State<NotificationsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    // Edge-to-edge: keep the last items clear of the system nav bar.
-    final listPadding = EdgeInsets.fromLTRB(
-      20,
-      8,
-      20,
-      24 + MediaQuery.paddingOf(context).bottom,
-    );
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -65,86 +58,89 @@ class _NotificationsViewState extends State<NotificationsView> {
         ),
         title: Text(l10n.notifications),
       ),
-      body: BlocBuilder<NotificationCubit, NotificationState>(
-        builder: (context, state) {
-          if (state is NotificationLoading || state is NotificationInitial) {
-            final placeholders = _placeholderNotifications();
-            return Skeletonizer(
-              enabled: true,
-              child: ListView(
-                padding: listPadding,
-                children: [
-                  GroupedCard(
-                    children: [
-                      for (final n in placeholders)
-                        NotificationTile(notification: n),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
-          if (state is NotificationError) {
-            return AppErrorView(
-              message: state.message,
-              onRetry: () => context
-                  .read<NotificationCubit>()
-                  .loadNotifications(widget.userId),
-              fillRemaining: true,
-            );
-          }
-          final notifications = (state as NotificationLoaded).notifications;
-          final cubit = context.read<NotificationCubit>();
-          return AppRefreshIndicator(
-            onRefresh: () => cubit.loadNotifications(widget.userId),
-            child: notifications.isEmpty
-                ? AppEmptyView(
-                    icon: AppIcons.notifications,
-                    title: l10n.nonotificationsyet,
-                    fillRemaining: true,
-                  )
-                : ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: listPadding,
-                    children: [
-                      GroupedCard(
-                        children: [
-                          for (final notification in notifications)
-                            Dismissible(
-                              key: ValueKey(notification.id),
-                              direction: DismissDirection.endToStart,
-                              // Red panel on the trailing side (mirrors in RTL).
-                              background: Container(
-                                alignment: AlignmentDirectional.centerEnd,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
+      body: SafeArea(
+        top: false,
+        child: BlocBuilder<NotificationCubit, NotificationState>(
+          builder: (context, state) {
+            if (state is NotificationLoading || state is NotificationInitial) {
+              final placeholders = _placeholderNotifications();
+              return Skeletonizer(
+                enabled: true,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  children: [
+                    GroupedCard(
+                      children: [
+                        for (final n in placeholders)
+                          NotificationTile(notification: n),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }
+            if (state is NotificationError) {
+              return AppErrorView(
+                message: state.message,
+                onRetry: () => context
+                    .read<NotificationCubit>()
+                    .loadNotifications(widget.userId),
+                fillRemaining: true,
+              );
+            }
+            final notifications = (state as NotificationLoaded).notifications;
+            final cubit = context.read<NotificationCubit>();
+            return AppRefreshIndicator(
+              onRefresh: () => cubit.loadNotifications(widget.userId),
+              child: notifications.isEmpty
+                  ? AppEmptyView(
+                      icon: AppIcons.notifications,
+                      title: l10n.nonotificationsyet,
+                      fillRemaining: true,
+                    )
+                  : ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                      children: [
+                        GroupedCard(
+                          children: [
+                            for (final notification in notifications)
+                              Dismissible(
+                                key: ValueKey(notification.id),
+                                direction: DismissDirection.endToStart,
+                                // Red panel on the trailing side (mirrors in RTL).
+                                background: Container(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
+                                  color: context.palette.danger,
+                                  child: const Icon(
+                                    AppIcons.delete,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                color: context.palette.danger,
-                                child: const Icon(
-                                  AppIcons.delete,
-                                  color: Colors.white,
+                                onDismissed: (_) => cubit.deleteNotification(
+                                  widget.userId,
+                                  notification.id,
+                                ),
+                                child: NotificationTile(
+                                  notification: notification,
+                                  onTap: notification.isRead
+                                      ? null
+                                      : () => cubit.markAsRead(
+                                          widget.userId,
+                                          notification.id,
+                                        ),
                                 ),
                               ),
-                              onDismissed: (_) => cubit.deleteNotification(
-                                widget.userId,
-                                notification.id,
-                              ),
-                              child: NotificationTile(
-                                notification: notification,
-                                onTap: notification.isRead
-                                    ? null
-                                    : () => cubit.markAsRead(
-                                        widget.userId,
-                                        notification.id,
-                                      ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-          );
-        },
+                          ],
+                        ),
+                      ],
+                    ),
+            );
+          },
+        ),
       ),
     );
   }
