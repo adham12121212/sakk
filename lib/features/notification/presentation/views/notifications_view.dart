@@ -49,6 +49,13 @@ class _NotificationsViewState extends State<NotificationsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Edge-to-edge: keep the last items clear of the system nav bar.
+    final listPadding = EdgeInsets.fromLTRB(
+      20,
+      8,
+      20,
+      24 + MediaQuery.paddingOf(context).bottom,
+    );
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -65,7 +72,7 @@ class _NotificationsViewState extends State<NotificationsView> {
             return Skeletonizer(
               enabled: true,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                padding: listPadding,
                 children: [
                   GroupedCard(
                     children: [
@@ -98,7 +105,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                   )
                 : ListView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                    padding: listPadding,
                     children: [
                       GroupedCard(
                         children: [

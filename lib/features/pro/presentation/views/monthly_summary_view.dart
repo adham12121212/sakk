@@ -77,7 +77,13 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
           enabled: loading,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+            // Edge-to-edge: keep the last items clear of the system nav bar.
+            padding: EdgeInsets.fromLTRB(
+              20,
+              8,
+              20,
+              32 + MediaQuery.paddingOf(context).bottom,
+            ),
             children: [
               _TotalCard(summary: summary),
               const SizedBox(height: 24),
