@@ -71,84 +71,83 @@ class _MonthlySummaryViewState extends State<MonthlySummaryView> {
         elevation: 0,
         centerTitle: false,
       ),
-      body: AppRefreshIndicator(
-        onRefresh: _refresh,
-        child: Skeletonizer(
-          enabled: loading,
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            // Edge-to-edge: keep the last items clear of the system nav bar.
-            padding: EdgeInsets.fromLTRB(
-              20,
-              8,
-              20,
-              32 + MediaQuery.paddingOf(context).bottom,
-            ),
-            children: [
-              _TotalCard(summary: summary),
-              const SizedBox(height: 24),
-              SectionHeader(title: l10n.monthlySummaryUpcoming),
-              const SizedBox(height: 12),
-              if (summary.payments.isEmpty && !loading)
-                _EmptyLine(text: l10n.monthlySummaryNothingDue)
-              else
-                AppCard(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Column(
-                    children: [
-                      for (final p
-                          in loading ? _placeholderPayments : summary.payments)
-                        _PaymentRow(payment: p),
-                    ],
+      body: SafeArea(
+        top: false,
+        child: AppRefreshIndicator(
+          onRefresh: _refresh,
+          child: Skeletonizer(
+            enabled: loading,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              children: [
+                _TotalCard(summary: summary),
+                const SizedBox(height: 24),
+                SectionHeader(title: l10n.monthlySummaryUpcoming),
+                const SizedBox(height: 12),
+                if (summary.payments.isEmpty && !loading)
+                  _EmptyLine(text: l10n.monthlySummaryNothingDue)
+                else
+                  AppCard(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      children: [
+                        for (final p
+                            in loading
+                                ? _placeholderPayments
+                                : summary.payments)
+                          _PaymentRow(payment: p),
+                      ],
+                    ),
                   ),
-                ),
-              const SizedBox(height: 24),
-              SectionHeader(title: l10n.monthlySummaryWarranties),
-              const SizedBox(height: 12),
-              if (summary.expiringWarranties.isEmpty)
-                _EmptyLine(text: l10n.monthlySummaryNoWarranties)
-              else
-                AppCard(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Column(
-                    children: [
-                      for (final product in summary.expiringWarranties)
-                        ListTile(
-                          leading: Icon(
-                            AppIcons.warranty,
-                            color: context.palette.warning,
-                          ),
-                          title: Text(
-                            product.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                            formatInstallmentDate(
-                              context,
-                              product.warrantyEndDate,
+                const SizedBox(height: 24),
+                SectionHeader(title: l10n.monthlySummaryWarranties),
+                const SizedBox(height: 12),
+                if (summary.expiringWarranties.isEmpty)
+                  _EmptyLine(text: l10n.monthlySummaryNoWarranties)
+                else
+                  AppCard(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      children: [
+                        for (final product in summary.expiringWarranties)
+                          ListTile(
+                            leading: Icon(
+                              AppIcons.warranty,
+                              color: context.palette.warning,
                             ),
-                          ),
-                          trailing: Text(
-                            l10n.daysLeft(
-                              product.daysRemaining,
-                              formatLocalizedInt(
-                                Localizations.localeOf(context),
-                                product.daysRemaining,
+                            title: Text(
+                              product.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              formatInstallmentDate(
+                                context,
+                                product.warrantyEndDate,
                               ),
                             ),
-                            style: TextStyle(
-                              color: context.palette.warning,
-                              fontWeight: FontWeight.w600,
+                            trailing: Text(
+                              l10n.daysLeft(
+                                product.daysRemaining,
+                                formatLocalizedInt(
+                                  Localizations.localeOf(context),
+                                  product.daysRemaining,
+                                ),
+                              ),
+                              style: TextStyle(
+                                color: context.palette.warning,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
+                            onTap: () =>
+                                context.push(AppRoutes.details, extra: product),
                           ),
-                          onTap: () =>
-                              context.push(AppRoutes.details, extra: product),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

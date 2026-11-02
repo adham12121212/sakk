@@ -92,64 +92,61 @@ class _PaywallViewState extends State<PaywallView> {
           ),
         ],
       ),
-      body: BlocListener<PaywallCubit, PaywallState>(
-        listenWhen: (a, b) => a.messageId != b.messageId,
-        listener: _onMessage,
-        child: BlocBuilder<ProCubit, ProState>(
-          bloc: ProActions.cubit,
-          builder: (context, pro) => BlocBuilder<PaywallCubit, PaywallState>(
-            builder: (context, state) {
-              return ListView(
-                // Edge-to-edge: keep the last items clear of the system nav bar.
-                padding: EdgeInsets.fromLTRB(
-                  20,
-                  0,
-                  20,
-                  32 + MediaQuery.paddingOf(context).bottom,
-                ),
-                children: [
-                  _Hero(reason: widget.reason),
-                  const SizedBox(height: 20),
-                  _ComparisonTable(
-                    status: pro.status,
-                    loaded: pro.hasLoadedOnce,
-                  ),
-                  const SizedBox(height: 20),
-                  if (pro.isPro)
-                    _AlreadyPro(
-                      onManage: ProActions.canManageSubscription
-                          ? ProActions.manageSubscription
-                          : null,
-                    )
-                  else if (!sellsHere)
-                    _Notice(l10n.proComingSoonIos)
-                  else
-                    _Plans(
-                      state: state,
-                      // Until the plan is known a Pro user would be offered
-                      // what they already have; a failed read doesn't block.
-                      waitingForPlan: !pro.hasLoadedOnce && !pro.loadFailed,
+      body: SafeArea(
+        top: false,
+        child: BlocListener<PaywallCubit, PaywallState>(
+          listenWhen: (a, b) => a.messageId != b.messageId,
+          listener: _onMessage,
+          child: BlocBuilder<ProCubit, ProState>(
+            bloc: ProActions.cubit,
+            builder: (context, pro) => BlocBuilder<PaywallCubit, PaywallState>(
+              builder: (context, state) {
+                return ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                  children: [
+                    _Hero(reason: widget.reason),
+                    const SizedBox(height: 20),
+                    _ComparisonTable(
+                      status: pro.status,
+                      loaded: pro.hasLoadedOnce,
                     ),
-                  const SizedBox(height: 16),
-                  _Links(
-                    isRestoring: state.isRestoring,
-                    onRestore: sellsHere
-                        ? context.read<PaywallCubit>().restore
-                        : null,
-                  ),
-                  if (sellsHere && !pro.isPro && !state.isUnavailable) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.autoRenewDisclosure,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 20),
+                    if (pro.isPro)
+                      _AlreadyPro(
+                        onManage: ProActions.canManageSubscription
+                            ? ProActions.manageSubscription
+                            : null,
+                      )
+                    else if (!sellsHere)
+                      _Notice(l10n.proComingSoonIos)
+                    else
+                      _Plans(
+                        state: state,
+                        // Until the plan is known a Pro user would be offered
+                        // what they already have; a failed read doesn't block.
+                        waitingForPlan: !pro.hasLoadedOnce && !pro.loadFailed,
                       ),
+                    const SizedBox(height: 16),
+                    _Links(
+                      isRestoring: state.isRestoring,
+                      onRestore: sellsHere
+                          ? context.read<PaywallCubit>().restore
+                          : null,
                     ),
+                    if (sellsHere && !pro.isPro && !state.isUnavailable) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.autoRenewDisclosure,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

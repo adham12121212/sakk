@@ -64,71 +64,70 @@ class ProfileView extends StatelessWidget {
             elevation: 0,
             centerTitle: false,
           ),
-          body: SingleChildScrollView(
-            // Edge-to-edge: keep the last items clear of the system nav bar.
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.paddingOf(context).bottom,
-            ),
-            child: BlocBuilder<AuthCubit, AuthState>(
-              buildWhen: (previous, current) =>
-                  current is AuthAvatarUpdated ||
-                  current is AuthAvatarUpdating ||
-                  previous is AuthAvatarUpdating,
-              builder: (context, state) {
-                final updatedUser = state is AuthAvatarUpdated
-                    ? state.user
-                    : null;
-                final isUploadingAvatar = state is AuthAvatarUpdating;
-                final l10n = AppLocalizations.of(context)!;
+          body: SafeArea(
+            top: false,
+            child: SingleChildScrollView(
+              child: BlocBuilder<AuthCubit, AuthState>(
+                buildWhen: (previous, current) =>
+                    current is AuthAvatarUpdated ||
+                    current is AuthAvatarUpdating ||
+                    previous is AuthAvatarUpdating,
+                builder: (context, state) {
+                  final updatedUser = state is AuthAvatarUpdated
+                      ? state.user
+                      : null;
+                  final isUploadingAvatar = state is AuthAvatarUpdating;
+                  final l10n = AppLocalizations.of(context)!;
 
-                final effectiveName = updatedUser != null
-                    ? (updatedUser.name.trim().isNotEmpty
-                          ? updatedUser.name.trim()
-                          : updatedUser.email.split('@').first)
-                    : ((fallbackUser?.name.trim().isNotEmpty ?? false)
-                          ? fallbackUser!.name.trim()
-                          : (fallbackUser?.email.split('@').first ??
-                                l10n.guestFallbackName));
-                final effectiveEmail =
-                    updatedUser?.email ?? fallbackUser?.email ?? '';
-                final effectiveAvatarUrl =
-                    updatedUser?.avatarUrl ?? fallbackUser?.avatarUrl;
+                  final effectiveName = updatedUser != null
+                      ? (updatedUser.name.trim().isNotEmpty
+                            ? updatedUser.name.trim()
+                            : updatedUser.email.split('@').first)
+                      : ((fallbackUser?.name.trim().isNotEmpty ?? false)
+                            ? fallbackUser!.name.trim()
+                            : (fallbackUser?.email.split('@').first ??
+                                  l10n.guestFallbackName));
+                  final effectiveEmail =
+                      updatedUser?.email ?? fallbackUser?.email ?? '';
+                  final effectiveAvatarUrl =
+                      updatedUser?.avatarUrl ?? fallbackUser?.avatarUrl;
 
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppSizes.s20,
-                    AppSizes.s8,
-                    AppSizes.s20,
-                    AppSizes.s8,
-                  ),
-                  child: Column(
-                    children: [
-                      ProfileHeader(
-                        displayName: effectiveName,
-                        displayEmail: effectiveEmail,
-                        avatarUrl: effectiveAvatarUrl,
-                        onPickAvatar: () => _pickAndUploadAvatar(context),
-                        isUploadingAvatar: isUploadingAvatar,
-                      ),
-                      AppSpacing.h24,
-                      SectionLabel(l10n.sakkPro),
-                      AppSpacing.h12,
-                      const ProPlanCard(),
-                      AppSpacing.h24,
-                      SectionLabel(l10n.preferences),
-                      AppSpacing.h12,
-                      const ProfileSettingsCard(),
-                      AppSpacing.h24,
-                      SectionLabel(l10n.familySharing),
-                      AppSpacing.h12,
-                      const HouseholdCard(),
-                      AppSpacing.h24,
-                      const ProfileAccountSection(),
-                      AppSpacing.h24,
-                    ],
-                  ),
-                );
-              },
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      AppSizes.s20,
+                      AppSizes.s8,
+                      AppSizes.s20,
+                      AppSizes.s8,
+                    ),
+                    child: Column(
+                      children: [
+                        ProfileHeader(
+                          displayName: effectiveName,
+                          displayEmail: effectiveEmail,
+                          avatarUrl: effectiveAvatarUrl,
+                          onPickAvatar: () => _pickAndUploadAvatar(context),
+                          isUploadingAvatar: isUploadingAvatar,
+                        ),
+                        AppSpacing.h24,
+                        SectionLabel(l10n.sakkPro),
+                        AppSpacing.h12,
+                        const ProPlanCard(),
+                        AppSpacing.h24,
+                        SectionLabel(l10n.preferences),
+                        AppSpacing.h12,
+                        const ProfileSettingsCard(),
+                        AppSpacing.h24,
+                        SectionLabel(l10n.familySharing),
+                        AppSpacing.h12,
+                        const HouseholdCard(),
+                        AppSpacing.h24,
+                        const ProfileAccountSection(),
+                        AppSpacing.h24,
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
