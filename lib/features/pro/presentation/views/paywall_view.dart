@@ -100,7 +100,13 @@ class _PaywallViewState extends State<PaywallView> {
           builder: (context, pro) => BlocBuilder<PaywallCubit, PaywallState>(
             builder: (context, state) {
               return ListView(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                // Edge-to-edge: keep the last items clear of the system nav bar.
+                padding: EdgeInsets.fromLTRB(
+                  20,
+                  0,
+                  20,
+                  32 + MediaQuery.paddingOf(context).bottom,
+                ),
                 children: [
                   _Hero(reason: widget.reason),
                   const SizedBox(height: 20),

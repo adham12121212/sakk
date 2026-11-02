@@ -65,6 +65,10 @@ class ProfileView extends StatelessWidget {
             centerTitle: false,
           ),
           body: SingleChildScrollView(
+            // Edge-to-edge: keep the last items clear of the system nav bar.
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.paddingOf(context).bottom,
+            ),
             child: BlocBuilder<AuthCubit, AuthState>(
               buildWhen: (previous, current) =>
                   current is AuthAvatarUpdated ||
