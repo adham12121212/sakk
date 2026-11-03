@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sakk/core/service/app_permissions.dart';
 import 'package:sakk/core/service/installment_reminder_service.dart';
 import 'package:sakk/core/service/reminder_controller.dart';
 import 'package:sakk/core/service/reminder_settings.dart';
@@ -9,6 +11,16 @@ import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/features/notification/presentation/views/reminder_settings_view.dart';
 import 'package:sakk/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _DeniedBackend extends PermissionBackend {
+  PermissionStatus current = PermissionStatus.permanentlyDenied;
+
+  @override
+  Future<PermissionStatus> status(Permission permission) async => current;
+
+  @override
+  Future<bool> openSettings() async => true;
+}
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
@@ -81,6 +93,7 @@ void main() {
     Future<(ReminderSettings, ReminderController)> open(
       WidgetTester tester, {
       Locale locale = const Locale('en'),
+      AppPermissions? permissions,
     }) async {
       // Phone width, tall enough for every section (the list builds lazily).
       tester.view.physicalSize = const Size(390, 1600);
@@ -100,7 +113,11 @@ void main() {
             theme: AppTheme.light(),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: ReminderSettingsView(settings: settings, leadTime: lead),
+            home: ReminderSettingsView(
+              settings: settings,
+              leadTime: lead,
+              permissions: permissions,
+            ),
           ),
         ),
       );
@@ -124,6 +141,154 @@ void main() {
       await tester.pumpAndSettle();
       expect(settings.installmentsEnabled, isFalse);
       expect(find.text('On the due day'), findsNothing);
+    });
+
+    testWidgets('switching on needs notifications; off never asks', (
+      tester,
+    ) async {
+      final backend = _DeniedBackend();
+      final (settings, _) = await open(
+        tester,
+        permissions: AppPermissions(backend: backend),
+      );
+      await tester.runAsync(() => settings.setInstallmentsEnabled(false));
+      await tester.pumpAndSettle();
+
+      final installments = find.byType(Switch).at(2);
+      await tester.ensureVisible(installments);
+      await tester.pumpAndSettle();
+
+      // Blocked: the dialog explains, Cancel leaves the switch off.
+      await tester.tap(installments);
+      await tester.pumpAndSettle();
+      expect(find.text('Open Settings'), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(settings.installmentsEnabled, isFalse);
+
+      // Turned on in Settings: the switch comes on after the check.
+      await tester.tap(installments);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open Settings'));
+      await tester.pumpAndSettle();
+      backend.current = PermissionStatus.granted;
+      for (final state in [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pumpAndSettle();
+      expect(settings.installmentsEnabled, isTrue);
+
+      // Off works whatever the permission says.
+      backend.current = PermissionStatus.permanentlyDenied;
+      await tester.tap(installments);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(settings.installmentsEnabled, isFalse);
+    });
+
+    group('notifications-off banner', () {
+      const hint =
+          "Your reminders won't arrive until you allow notifications. "
+          'Tap to turn them on.';
+
+      void awayAndBack(WidgetTester tester) {
+        for (final state in [
+          AppLifecycleState.inactive,
+          AppLifecycleState.hidden,
+          AppLifecycleState.paused,
+          AppLifecycleState.hidden,
+          AppLifecycleState.inactive,
+          AppLifecycleState.resumed,
+        ]) {
+          tester.binding.handleAppLifecycleStateChanged(state);
+        }
+      }
+
+      testWidgets('not shown while notifications are allowed', (tester) async {
+        final backend = _DeniedBackend()..current = PermissionStatus.granted;
+        await open(tester, permissions: AppPermissions(backend: backend));
+        expect(find.text(hint), findsNothing);
+      });
+
+      testWidgets('not shown when the check fails', (tester) async {
+        // No plugin in tests: the real backend throws.
+        await open(tester);
+        expect(find.text(hint), findsNothing);
+      });
+
+      testWidgets('tapping it explains, and allowing it there removes it', (
+        tester,
+      ) async {
+        final backend = _DeniedBackend();
+        await open(tester, permissions: AppPermissions(backend: backend));
+        expect(find.text(hint), findsOneWidget);
+
+        await tester.tap(find.text(hint));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Open Settings'));
+        await tester.pumpAndSettle();
+        backend.current = PermissionStatus.granted;
+        awayAndBack(tester);
+        await tester.pumpAndSettle();
+        expect(find.text(hint), findsNothing);
+      });
+
+      testWidgets('allowed in Settings on the side: gone on coming back', (
+        tester,
+      ) async {
+        final backend = _DeniedBackend();
+        await open(tester, permissions: AppPermissions(backend: backend));
+        backend.current = PermissionStatus.granted;
+        awayAndBack(tester);
+        await tester.pumpAndSettle();
+        expect(find.text(hint), findsNothing);
+      });
+
+      testWidgets('turned off in Settings on the side: back on coming back', (
+        tester,
+      ) async {
+        final backend = _DeniedBackend()..current = PermissionStatus.granted;
+        await open(tester, permissions: AppPermissions(backend: backend));
+        backend.current = PermissionStatus.permanentlyDenied;
+        awayAndBack(tester);
+        await tester.pumpAndSettle();
+        expect(find.text(hint), findsOneWidget);
+      });
+
+      testWidgets('not shown once every reminder is off', (tester) async {
+        final (settings, _) = await open(
+          tester,
+          permissions: AppPermissions(backend: _DeniedBackend()),
+        );
+        await tester.runAsync(() async {
+          await settings.setWarrantyEnabled(false);
+          await settings.setSubscriptionsEnabled(false);
+          await settings.setInstallmentsEnabled(false);
+          await settings.setPapersEnabled(false);
+        });
+        await tester.pumpAndSettle();
+        expect(find.text(hint), findsNothing);
+      });
+
+      testWidgets('lays out in Arabic', (tester) async {
+        await open(
+          tester,
+          locale: const Locale('ar'),
+          permissions: AppPermissions(backend: _DeniedBackend()),
+        );
+        expect(
+          find.text('لن تصلك التذكيرات حتى تسمح بالإشعارات. اضغط لتفعيلها.'),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      });
     });
 
     testWidgets('Pro: an earlier reminder for subscriptions and installments', (

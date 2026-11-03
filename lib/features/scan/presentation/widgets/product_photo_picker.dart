@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -55,6 +56,11 @@ class _ProductPhotoPickerState extends State<ProductPhotoPicker> {
       ),
     );
     if (source == null || !mounted) return;
+    if (source == ImageSource.camera &&
+        !await AppPermissions.instance.ensure(context, AppPermission.camera)) {
+      return;
+    }
+    if (!mounted) return;
     // Same size as scanned photos: sharp enough to read, small to upload.
     final picked = await _picker.pickImage(
       source: source,

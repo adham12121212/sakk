@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/di/get_it.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/service/installment_reminder_service.dart';
 import '../../../../core/service/paper_reminder_service.dart';
 import '../../../../core/service/reminder_controller.dart';
@@ -19,11 +20,17 @@ import '../../../products/presentation/cubit/product_cubit.dart';
 /// and papers, each on or off, with when they arrive. Changes re-schedule
 /// this phone's reminders straight away.
 class ReminderSettingsView extends StatelessWidget {
-  const ReminderSettingsView({super.key, this.settings, this.leadTime});
+  const ReminderSettingsView({
+    super.key,
+    this.settings,
+    this.leadTime,
+    this.permissions,
+  });
 
   /// For tests; the app-wide ones by default.
   final ReminderSettings? settings;
   final ReminderController? leadTime;
+  final AppPermissions? permissions;
 
   // Each kind of reminder has its own colour on this screen.
   static const _subscriptionsColor = Color(0xFF8B5CF6);
@@ -44,6 +51,22 @@ class ReminderSettingsView extends StatelessWidget {
           getIt<ProductsCubit>().state.products,
         );
       }
+    }
+
+    final permissions = this.permissions ?? AppPermissions.instance;
+
+    /// A switch's change. Turning reminders on needs notifications, so it
+    /// stays off unless they're allowed; turning off needs nothing.
+    ValueChanged<bool> needingPermission(
+      Future<void> Function(bool enabled) save,
+    ) {
+      return (enabled) async {
+        if (enabled &&
+            !await permissions.ensure(context, AppPermission.notifications)) {
+          return;
+        }
+        await save(enabled);
+      };
     }
 
     return Scaffold(
@@ -69,13 +92,19 @@ class ReminderSettingsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+                // Nothing to warn about while every reminder is off.
+                if (settings.warrantyEnabled ||
+                    settings.subscriptionsEnabled ||
+                    settings.installmentsEnabled ||
+                    settings.papersEnabled)
+                  _NotificationsOffBanner(permissions: permissions),
                 _ReminderSection(
                   icon: AppIcons.warranty,
                   color: warrantyColor,
                   title: l10n.reminderWarranties,
                   subtitle: l10n.reminderWarrantiesHint,
                   enabled: settings.warrantyEnabled,
-                  onEnabled: settings.setWarrantyEnabled,
+                  onEnabled: needingPermission(settings.setWarrantyEnabled),
                   children: [
                     _Label(l10n.warrantyReminder),
                     _Pills(
@@ -98,7 +127,9 @@ class ReminderSettingsView extends StatelessWidget {
                   title: l10n.subscriptions,
                   subtitle: l10n.reminderSubscriptionsHint,
                   enabled: settings.subscriptionsEnabled,
-                  onEnabled: settings.setSubscriptionsEnabled,
+                  onEnabled: needingPermission(
+                    settings.setSubscriptionsEnabled,
+                  ),
                   children: [
                     _KindPills<RenewalReminder>(
                       color: _subscriptionsColor,
@@ -127,7 +158,7 @@ class ReminderSettingsView extends StatelessWidget {
                   title: l10n.installments,
                   subtitle: l10n.reminderInstallmentsHint,
                   enabled: settings.installmentsEnabled,
-                  onEnabled: settings.setInstallmentsEnabled,
+                  onEnabled: needingPermission(settings.setInstallmentsEnabled),
                   children: [
                     _KindPills<InstallmentReminder>(
                       color: _installmentsColor,
@@ -154,7 +185,7 @@ class ReminderSettingsView extends StatelessWidget {
                   title: l10n.myPapers,
                   subtitle: l10n.reminderPapersHint,
                   enabled: settings.papersEnabled,
-                  onEnabled: settings.setPapersEnabled,
+                  onEnabled: needingPermission(settings.setPapersEnabled),
                   children: [
                     _KindPills<PaperReminder>(
                       color: _papersColor,
@@ -171,6 +202,97 @@ class ReminderSettingsView extends StatelessWidget {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+/// Shown while reminders are on but the system won't deliver them. Tapping it
+/// asks for notifications; it goes away by itself once they're allowed, also
+/// when that happens in Settings without going through here.
+class _NotificationsOffBanner extends StatefulWidget {
+  const _NotificationsOffBanner({required this.permissions});
+
+  final AppPermissions permissions;
+
+  @override
+  State<_NotificationsOffBanner> createState() =>
+      _NotificationsOffBannerState();
+}
+
+class _NotificationsOffBannerState extends State<_NotificationsOffBanner> {
+  late final AppLifecycleListener _lifecycle;
+  bool _off = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _check);
+    _check();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  Future<void> _check() async {
+    final granted = await widget.permissions.isGranted(
+      AppPermission.notifications,
+    );
+    if (mounted) setState(() => _off = !granted);
+  }
+
+  Future<void> _turnOn() async {
+    await widget.permissions.ensure(context, AppPermission.notifications);
+    await _check();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_off) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
+    final palette = context.palette;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: AppCard(
+        color: palette.warningContainer,
+        onTap: _turnOn,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(AppIcons.warning, color: palette.warning, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.notificationPermissionTitle,
+                    style: textTheme.titleSmall,
+                  ),
+                  Text(
+                    l10n.remindersBlockedMessage,
+                    style: textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(AppIcons.chevronForward, color: palette.warning),
+          ],
         ),
       ),
     );

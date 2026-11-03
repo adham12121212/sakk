@@ -221,6 +221,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
+  String get openSettings => 'فتح الإعدادات';
+
+  @override
+  String get remindersBlockedMessage =>
+      'لن تصلك التذكيرات حتى تسمح بالإشعارات. اضغط لتفعيلها.';
+
+  @override
+  String get cameraPermissionTitle => 'الوصول إلى الكاميرا مُعطّل';
+
+  @override
+  String get cameraPermissionMessage =>
+      'يستخدم صك الكاميرا لمسح الفواتير والتقاط صور منتجاتك وأوراقك. فعّل الوصول إلى الكاميرا من الإعدادات للمتابعة.';
+
+  @override
+  String get notificationPermissionTitle => 'الإشعارات مُعطّلة';
+
+  @override
+  String get notificationPermissionMessage =>
+      'يستخدم صك الإشعارات لتذكيرك قبل انتهاء الضمانات وتجديد الاشتراكات واستحقاق الأقساط وانتهاء الأوراق. فعّلها من الإعدادات لتصلك هذه التذكيرات.';
+
+  @override
   String get warrantyStatus => 'حالة الضمان';
 
   @override

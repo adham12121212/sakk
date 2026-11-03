@@ -518,6 +518,42 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @remindersBlockedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reminders won\'t arrive until you allow notifications. Tap to turn them on.'**
+  String get remindersBlockedMessage;
+
+  /// No description provided for @cameraPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is off'**
+  String get cameraPermissionTitle;
+
+  /// No description provided for @cameraPermissionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk uses the camera to scan receipts and take photos of your products and papers. Turn on camera access in Settings to continue.'**
+  String get cameraPermissionMessage;
+
+  /// No description provided for @notificationPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off'**
+  String get notificationPermissionTitle;
+
+  /// No description provided for @notificationPermissionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sakk uses notifications to remind you before warranties end, subscriptions renew, installments come due and papers expire. Turn them on in Settings to get these reminders.'**
+  String get notificationPermissionMessage;
+
   /// No description provided for @warrantyStatus.
   ///
   /// In en, this message translates to:

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -91,6 +92,14 @@ class PaperPhotoSlot extends StatelessWidget {
       case _Action.remove:
         onChanged(const PaperPhoto.none());
       case _Action.camera || _Action.gallery:
+        if (action == _Action.camera &&
+            !await AppPermissions.instance.ensure(
+              context,
+              AppPermission.camera,
+            )) {
+          return;
+        }
+        if (!context.mounted) return;
         // Sharp enough to read the small print, small enough to upload.
         final picked = await (_picker ?? ImagePicker()).pickImage(
           source: action == _Action.camera

@@ -221,6 +221,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get remindersBlockedMessage =>
+      'Your reminders won\'t arrive until you allow notifications. Tap to turn them on.';
+
+  @override
+  String get cameraPermissionTitle => 'Camera access is off';
+
+  @override
+  String get cameraPermissionMessage =>
+      'Sakk uses the camera to scan receipts and take photos of your products and papers. Turn on camera access in Settings to continue.';
+
+  @override
+  String get notificationPermissionTitle => 'Notifications are off';
+
+  @override
+  String get notificationPermissionMessage =>
+      'Sakk uses notifications to remind you before warranties end, subscriptions renew, installments come due and papers expire. Turn them on in Settings to get these reminders.';
+
+  @override
   String get warrantyStatus => 'Warranty Status';
 
   @override

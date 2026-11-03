@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/widgets/app_choice_chip.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/service/pdf_invoice_reader.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/util/date_math.dart';
@@ -342,6 +343,14 @@ class _InstallmentFormViewState extends State<InstallmentFormView> {
           return;
         }
       case SmartAddSource.camera || SmartAddSource.gallery:
+        if (source == SmartAddSource.camera &&
+            !await AppPermissions.instance.ensure(
+              context,
+              AppPermission.camera,
+            )) {
+          return;
+        }
+        if (!mounted) return;
         // Same size limits as receipt scanning: sharp text, small upload.
         final picked = await _imagePicker.pickImage(
           source: source == SmartAddSource.camera

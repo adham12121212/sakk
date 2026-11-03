@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/widgets/app_choice_chip.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/service/pdf_invoice_reader.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_snackbar.dart';
@@ -287,6 +288,11 @@ class _AddDocumentSheetState extends State<_AddDocumentSheet> {
   }
 
   Future<String?> _photo(ImageSource source) async {
+    if (source == ImageSource.camera &&
+        !await AppPermissions.instance.ensure(context, AppPermission.camera)) {
+      return null;
+    }
+    if (!mounted) return null;
     final picked = await ImagePicker().pickImage(
       source: source,
       imageQuality: 85,

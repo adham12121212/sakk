@@ -5,6 +5,8 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import 'app_permissions.dart';
+
 @pragma('vm:entry-point')
 void notificationTapBackgroundHandler(NotificationResponse response) {
   developer.log('Background notification tapped: ${response.payload}');
@@ -29,12 +31,6 @@ class NotificationService {
   static const _installmentCategoryId = 'installment_due';
 
   bool _initialized = false;
-
-  /// Last known permission grant result, cached after [requestPermission]
-  /// so [showNotification]/[scheduleNotification] can log a clear warning
-  /// instead of silently doing nothing when permission is missing —
-  /// that's the single most common reason a notification "goes nowhere".
-  bool _permissionGranted = false;
 
   /// Called whenever a notification is tapped while the app process is
   /// already alive (foreground or backgrounded-but-not-killed). For the
@@ -166,40 +162,15 @@ class NotificationService {
     return null;
   }
 
-  /// Requests notification permissions on iOS and Android 13+, and caches
-  /// the result so later show/schedule calls can warn loudly instead of
-  /// failing silently. **This does NOT re-prompt if the user already
-  /// denied it** — that's an OS restriction, not a bug here; the user has
-  /// to flip it on manually in system Settings once denied.
+  /// Asks for notifications if the system still can, for app start, where
+  /// nothing was tapped. Taps go through [AppPermissions.ensure], which also
+  /// handles a permission the system will no longer ask for.
   Future<bool> requestPermission() async {
-    bool? iosGranted;
-    bool? androidGranted;
-
-    try {
-      iosGranted = await _notifications
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-    } catch (e) {
-      developer.log('iOS permission request failed: $e');
-    }
-
-    try {
-      androidGranted = await _notifications
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >()
-          ?.requestNotificationsPermission();
-    } catch (e) {
-      developer.log('Android notification permission request failed: $e');
-    }
-
-    _permissionGranted = (iosGranted ?? false) || (androidGranted ?? false);
-
-    developer.log('>>> Notification permission granted: $_permissionGranted');
-
-    return _permissionGranted;
+    final granted = await AppPermissions.instance.requestQuietly(
+      AppPermission.notifications,
+    );
+    developer.log('>>> Notification permission granted: $granted');
+    return granted;
   }
 
   /// Shows a notification now (a banner, also while the app is open).
@@ -211,7 +182,7 @@ class NotificationService {
     String? payload,
     String? markPaidLabel,
   }) async {
-    if (!_permissionGranted) {
+    if (!await AppPermissions.instance.isGranted(AppPermission.notifications)) {
       developer.log(
         '>>> showNotification SKIPPED-ISH (permission not confirmed granted): '
         'id=$id title="$title". The call will still be attempted, but the '
@@ -293,7 +264,7 @@ class NotificationService {
       return;
     }
 
-    if (!_permissionGranted) {
+    if (!await AppPermissions.instance.isGranted(AppPermission.notifications)) {
       developer.log(
         '>>> scheduleNotification SKIPPED-ISH (permission not confirmed '
         'granted): id=$id title="$title" for $dateTime.',

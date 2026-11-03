@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/route/app_router.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_empty_view.dart';
@@ -84,6 +85,14 @@ class _CatalogPickerViewState extends State<CatalogPickerView> {
       text = await showPasteMessageSheet(context);
       if (text == null) return;
     } else {
+      if (source == SmartAddSource.camera &&
+          !await AppPermissions.instance.ensure(
+            context,
+            AppPermission.camera,
+          )) {
+        return;
+      }
+      if (!mounted) return;
       // Same size limits as receipt scanning: sharp text, small upload.
       final picked = await _picker.pickImage(
         source: source == SmartAddSource.camera

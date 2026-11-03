@@ -10,6 +10,7 @@ import 'package:sakk/core/route/app_router.dart';
 import '../../../../core/di/get_it.dart';
 import '../../../../core/error/network_info.dart';
 import '../../../../core/error/user_facing_error.dart';
+import '../../../../core/service/app_permissions.dart';
 import '../../../../core/service/share_intake.dart';
 import '../../../products/data/product_data_source/product_data_source.dart';
 import '../../../../core/widgets/app_snackbar.dart';
@@ -103,7 +104,12 @@ class ScanViewState extends State<ScanView> {
   }
 
   Future<void> pickAndScan(ImageSource source) async {
-    if (!await _canScan()) return;
+    if (!await _canScan() || !mounted) return;
+    if (source == ImageSource.camera &&
+        !await AppPermissions.instance.ensure(context, AppPermission.camera)) {
+      return;
+    }
+    if (!mounted) return;
     // ~2000px keeps receipt text sharp while cutting a 4-8 MB camera photo
     // to a few hundred KB: faster uploads and scans on mobile data.
     final picked = await picker.pickImage(
