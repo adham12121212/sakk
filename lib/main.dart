@@ -24,6 +24,7 @@ import 'core/service/reminder_settings.dart';
 import 'core/service/share_intake.dart';
 import 'core/service/temp_file_cleaner.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/screen_scaling.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/widgets/route_aware_connectivity_banner.dart';
 import 'core/widgets/app_skeleton_config.dart';
@@ -207,6 +208,8 @@ class MyApp extends StatelessWidget {
           designSize: const Size(390, 844),
           minTextAdapt: true,
           splitScreenMode: true,
+          enableScaleWH: scalesWithScreen,
+          enableScaleText: scalesWithScreen,
           builder: (_, child) {
             return MaterialApp.router(
               routerConfig: appRouter,
