@@ -13,6 +13,7 @@ import '../widgets/processing_field_tile.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/constant/app_colors.dart';
 import 'scan_failed_view.dart';
+import '../../../../core/widgets/tablet_frame.dart';
 
 class ScanProcessingView extends StatelessWidget {
   const ScanProcessingView({super.key});
@@ -89,8 +90,12 @@ class _ScanProcessingBodyState extends State<_ScanProcessingBody>
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider.value(value: cubit, child: const ReviewProductView()),
+        builder: (_) => TabletColumn(
+          child: BlocProvider.value(
+            value: cubit,
+            child: const ReviewProductView(),
+          ),
+        ),
       ),
     );
   }

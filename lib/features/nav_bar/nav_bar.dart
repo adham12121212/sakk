@@ -4,6 +4,8 @@ import '../../core/constant/app_colors.dart';
 import '../../core/route/app_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_icons.dart';
+import '../../core/theme/screen_scaling.dart';
+import '../../core/widgets/tablet_frame.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   const ScaffoldWithNavBar({super.key, required this.navigationShell});
@@ -13,6 +15,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isHome = navigationShell.currentIndex == 0;
+    final isTablet = isTabletLayout(context);
+    void onTap(int index) => navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
     // Android back on any other tab goes to Home; only Home leaves the app.
     return PopScope(
       canPop: isHome,
@@ -20,17 +27,76 @@ class ScaffoldWithNavBar extends StatelessWidget {
         if (!didPop) navigationShell.goBranch(0);
       },
       child: Scaffold(
-        body: navigationShell,
-        bottomNavigationBar: _BottomBar(
-          currentIndex: navigationShell.currentIndex,
-          onTap: (index) => navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          ),
-        ),
+        // On tablets the rail keeps its full height under the keyboard; each
+        // tab's own Scaffold makes room for it.
+        resizeToAvoidBottomInset: !isTablet,
+        body: isTablet
+            ? Row(
+                children: [
+                  _SideRail(
+                    currentIndex: navigationShell.currentIndex,
+                    onTap: onTap,
+                  ),
+                  Expanded(
+                    child: SafeArea(
+                      top: false,
+                      left: false,
+                      right: false,
+                      child: TabletColumn(child: navigationShell),
+                    ),
+                  ),
+                ],
+              )
+            : navigationShell,
+        bottomNavigationBar: isTablet
+            ? null
+            : _BottomBar(
+                currentIndex: navigationShell.currentIndex,
+                onTap: onTap,
+              ),
       ),
     );
   }
+}
+
+/// The tabs in display order, shared by the bottom bar and the side rail.
+List<Widget> _navItems(
+  BuildContext context,
+  int currentIndex,
+  ValueChanged<int> onTap,
+) {
+  final l10n = AppLocalizations.of(context)!;
+  return [
+    _NavItem(
+      icon: AppIcons.home,
+      activeIcon: AppIcons.homeFilled,
+      label: l10n.home,
+      isActive: currentIndex == 0,
+      onTap: () => onTap(0),
+    ),
+    _NavItem(
+      icon: AppIcons.productsTab,
+      activeIcon: AppIcons.productsTabFilled,
+      label: l10n.products,
+      isActive: currentIndex == 1,
+      onTap: () => onTap(1),
+    ),
+    _ScanItem(label: l10n.scan, onTap: () => context.push(AppRoutes.scan)),
+    _NavItem(
+      icon: AppIcons.analytics,
+      activeIcon: AppIcons.analyticsFilled,
+      label: l10n.analytics,
+      isActive: currentIndex == 2,
+      onTap: () => onTap(2),
+    ),
+    _NavItem(
+      icon: AppIcons.ai,
+      activeIcon: AppIcons.aiFilled,
+      label: l10n.ai,
+      isActive: currentIndex == 3,
+      onTap: () => onTap(3),
+    ),
+  ];
 }
 
 /// White bar with a soft top shadow: the active tab's icon sits in a tinted
@@ -43,7 +109,6 @@ class _BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -69,38 +134,44 @@ class _BottomBar extends StatelessWidget {
           height: 72,
           child: Row(
             children: [
-              _NavItem(
-                icon: AppIcons.home,
-                activeIcon: AppIcons.homeFilled,
-                label: l10n.home,
-                isActive: currentIndex == 0,
-                onTap: () => onTap(0),
-              ),
-              _NavItem(
-                icon: AppIcons.productsTab,
-                activeIcon: AppIcons.productsTabFilled,
-                label: l10n.products,
-                isActive: currentIndex == 1,
-                onTap: () => onTap(1),
-              ),
-              _ScanItem(
-                label: l10n.scan,
-                onTap: () => context.push(AppRoutes.scan),
-              ),
-              _NavItem(
-                icon: AppIcons.analytics,
-                activeIcon: AppIcons.analyticsFilled,
-                label: l10n.analytics,
-                isActive: currentIndex == 2,
-                onTap: () => onTap(2),
-              ),
-              _NavItem(
-                icon: AppIcons.ai,
-                activeIcon: AppIcons.aiFilled,
-                label: l10n.ai,
-                isActive: currentIndex == 3,
-                onTap: () => onTap(3),
-              ),
+              for (final item in _navItems(context, currentIndex, onTap))
+                Expanded(child: item),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The tablet form of [_BottomBar]: the same tabs, stacked along the side.
+/// Sits on the right in Arabic.
+class _SideRail extends StatelessWidget {
+  const _SideRail({required this.currentIndex, required this.onTap});
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: BorderDirectional(end: BorderSide(color: colorScheme.outline)),
+      ),
+      child: SafeArea(
+        left: !isRtl,
+        right: isRtl,
+        child: SizedBox(
+          width: 88,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (final item in _navItems(context, currentIndex, onTap))
+                SizedBox(height: 76, child: item),
             ],
           ),
         ),
@@ -129,49 +200,43 @@ class _NavItem extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final color = isActive ? AppColors.primary : colorScheme.onSurfaceVariant;
 
-    return Expanded(
-      child: Semantics(
-        button: true,
-        selected: isActive,
-        label: label,
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: onTap,
-          radius: 32,
-          child: Column(
-            // Bottom-aligned so every label shares one baseline (the Scan
-            // circle is taller and rises above the others).
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeOut,
-                width: 52,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? AppColors.primary.withValues(alpha: 0.12)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Icon(
-                  isActive ? activeIcon : icon,
-                  color: color,
-                  size: 22,
-                ),
+    return Semantics(
+      button: true,
+      selected: isActive,
+      label: label,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 32,
+        child: Column(
+          // Bottom-aligned so every label shares one baseline (the Scan
+          // circle is taller and rises above the others).
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOut,
+              width: 52,
+              height: 30,
+              decoration: BoxDecoration(
+                color: isActive
+                    ? AppColors.primary.withValues(alpha: 0.12)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(15),
               ),
-              const SizedBox(height: 4),
-              _Label(
-                label,
-                TextStyle(
-                  fontSize: 11,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                  color: color,
-                ),
+              child: Icon(isActive ? activeIcon : icon, color: color, size: 22),
+            ),
+            const SizedBox(height: 4),
+            _Label(
+              label,
+              TextStyle(
+                fontSize: 11,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                color: color,
               ),
-              const SizedBox(height: 10),
-            ],
-          ),
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
       ),
     );
@@ -188,51 +253,49 @@ class _ScanItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Expanded(
-      child: Semantics(
-        button: true,
-        label: label,
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: onTap,
-          radius: 34,
-          child: Column(
-            // Bottom-aligned so every label shares one baseline (the Scan
-            // circle is taller and rises above the others).
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: AppColors.brandGradientColors,
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 34,
+        child: Column(
+          // Bottom-aligned so every label shares one baseline (the Scan
+          // circle is taller and rises above the others).
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: AppColors.brandGradientColors,
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6),
                   ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.35),
-                      blurRadius: 14,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: const Icon(AppIcons.scan, color: Colors.white, size: 22),
+                ],
               ),
-              const SizedBox(height: 4),
-              _Label(
-                label,
-                TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+              child: const Icon(AppIcons.scan, color: Colors.white, size: 22),
+            ),
+            const SizedBox(height: 4),
+            _Label(
+              label,
+              TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(height: 10),
-            ],
-          ),
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
       ),
     );
