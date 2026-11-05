@@ -53,6 +53,7 @@ import '../../features/pro/presentation/views/monthly_summary_view.dart';
 import '../../features/pro/presentation/views/paywall_view.dart';
 import '../di/get_it.dart';
 import '../service/share_intake.dart';
+import '../widgets/tablet_frame.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -86,6 +87,26 @@ class AppRoutes {
   static const monthlySummary = '/pro/monthly-summary';
 }
 
+/// A full-screen route, centred in a column on tablets.
+GoRoute _screen({
+  required String path,
+  required GoRouterWidgetBuilder builder,
+  GoRouterRedirect? redirect,
+}) => GoRoute(
+  path: path,
+  redirect: redirect,
+  builder: (context, state) => TabletColumn(child: builder(context, state)),
+);
+
+/// A pre-sign-in route, shown as a centred card on tablets.
+GoRoute _authScreen({
+  required String path,
+  required GoRouterWidgetBuilder builder,
+}) => GoRoute(
+  path: path,
+  builder: (context, state) => TabletCard(child: builder(context, state)),
+);
+
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   routes: [
@@ -93,40 +114,40 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.splash,
       builder: (context, state) => const SplashView(),
     ),
-    GoRoute(
+    _authScreen(
       path: AppRoutes.onboarding,
       builder: (context, state) => const OnboardingView(),
     ),
-    GoRoute(
+    _authScreen(
       path: AppRoutes.signin,
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<AuthCubit>(),
         child: const SigninView(),
       ),
     ),
-    GoRoute(
+    _authScreen(
       path: AppRoutes.signup,
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<AuthCubit>(),
         child: const SignupView(),
       ),
     ),
-    GoRoute(
+    _authScreen(
       path: AppRoutes.forgotPassword,
 
       builder: (context, state) => const ForgotPasswordView(),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.biometricLock,
       builder: (context, state) => const BiometricLockView(),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.terms,
       builder: (context, state) => const TermsOfServiceView(),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.privacy,
       builder: (context, state) => const PrivacyPolicyView(),
     ),
@@ -140,7 +161,7 @@ final GoRouter appRouter = GoRouter(
             : null,
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.notifications,
       // Opened with the user's id as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -154,7 +175,7 @@ final GoRouter appRouter = GoRouter(
           ),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.details,
       // Opened with the product as `extra`. If the route is ever rebuilt
       // without it (e.g. Android restoring the app after killing it), the
@@ -170,14 +191,14 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.subscriptions,
       builder: (context, state) => BlocProvider.value(
         value: getIt<SubscriptionsCubit>(),
         child: const SubscriptionsView(),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.subscriptionCatalog,
       builder: (context, state) => MultiBlocProvider(
         providers: [
@@ -187,7 +208,7 @@ final GoRouter appRouter = GoRouter(
         child: const CatalogPickerView(),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.subscriptionDetails,
       // Opened with the UserSubscription as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -199,7 +220,7 @@ final GoRouter appRouter = GoRouter(
         ),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.subscriptionForm,
       // Opened with SubscriptionFormArgs as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -210,14 +231,14 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.papers,
       builder: (context, state) => BlocProvider.value(
         value: getIt<PapersCubit>(),
         child: const PapersView(),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.paperDetails,
       // Opened with the Paper as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -227,7 +248,7 @@ final GoRouter appRouter = GoRouter(
         child: PaperDetailsView(paper: state.extra as Paper),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.paperForm,
       // A Paper as `extra` to edit it; nothing to add a new one.
       builder: (context, state) => BlocProvider(
@@ -236,14 +257,14 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
 
-    GoRoute(
+    _screen(
       path: AppRoutes.installments,
       builder: (context, state) => BlocProvider.value(
         value: getIt<InstallmentsCubit>(),
         child: const InstallmentsView(),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.installmentForm,
       // Opened with InstallmentFormArgs as `extra`; same fallback as details.
       redirect: (context, state) =>
@@ -256,7 +277,7 @@ final GoRouter appRouter = GoRouter(
         child: InstallmentFormView(args: state.extra as InstallmentFormArgs),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.installmentDetails,
       // Opened with the plan's id as `extra` (from the list, a product or a
       // reminder); the plan itself is read from the shared cubit.
@@ -276,17 +297,19 @@ final GoRouter appRouter = GoRouter(
       // Opened with a PaywallReason as `extra`; a general upgrade without one.
       pageBuilder: (context, state) => MaterialPage(
         fullscreenDialog: true,
-        child: BlocProvider(
-          create: (_) => getIt<PaywallCubit>(),
-          child: PaywallView(
-            reason: state.extra is PaywallReason
-                ? state.extra as PaywallReason
-                : PaywallReason.upgrade,
+        child: TabletColumn(
+          child: BlocProvider(
+            create: (_) => getIt<PaywallCubit>(),
+            child: PaywallView(
+              reason: state.extra is PaywallReason
+                  ? state.extra as PaywallReason
+                  : PaywallReason.upgrade,
+            ),
           ),
         ),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.monthlySummary,
       // Pro only: free users get the paywall in its place. Follows the plan,
       // so it turns into the summary once the plan loads or after buying.
@@ -308,11 +331,11 @@ final GoRouter appRouter = GoRouter(
               ),
       ),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.reminders,
       builder: (context, state) => const ReminderSettingsView(),
     ),
-    GoRoute(
+    _screen(
       path: AppRoutes.profile,
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<AuthCubit>(),

@@ -6,6 +6,7 @@ import 'package:sakk/core/di/get_it.dart';
 import 'package:sakk/core/locale_controller/locale_controller.dart';
 import 'package:sakk/core/theme/app_theme.dart';
 import 'package:sakk/core/theme/screen_scaling.dart';
+import 'package:sakk/core/widgets/tablet_frame.dart';
 import 'package:sakk/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:sakk/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +40,8 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          home: const OnboardingView(),
+          // As the router shows it.
+          home: const TabletCard(child: OnboardingView()),
         ),
       ),
     );

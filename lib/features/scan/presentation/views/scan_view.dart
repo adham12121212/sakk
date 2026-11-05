@@ -25,6 +25,7 @@ import 'reviewproduct_view.dart';
 import 'scan_processing_view.dart';
 import '../../../../core/theme/app_icons.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/tablet_frame.dart';
 
 class ScanView extends StatefulWidget {
   const ScanView({super.key, this.shared});
@@ -78,8 +79,12 @@ class ScanViewState extends State<ScanView> {
   void _openProcessing(ScanCubit cubit) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider.value(value: cubit, child: const ScanProcessingView()),
+        builder: (_) => TabletColumn(
+          child: BlocProvider.value(
+            value: cubit,
+            child: const ScanProcessingView(),
+          ),
+        ),
       ),
     );
   }
@@ -170,8 +175,12 @@ class ScanViewState extends State<ScanView> {
     final cubit = ScanCubit()..startManualEntry();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =>
-            BlocProvider.value(value: cubit, child: const ReviewProductView()),
+        builder: (_) => TabletColumn(
+          child: BlocProvider.value(
+            value: cubit,
+            child: const ReviewProductView(),
+          ),
+        ),
       ),
     );
   }

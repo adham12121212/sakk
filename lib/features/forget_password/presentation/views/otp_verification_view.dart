@@ -14,6 +14,7 @@ import '../cubit/password_reset_cubit.dart';
 import '../widgets/otp_box.dart';
 import 'new_password_view.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/tablet_frame.dart';
 
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({super.key, required this.email});
@@ -117,9 +118,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     } else if (state is PasswordResetOtpVerified) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: context.read<PasswordResetCubit>(),
-            child: const NewPasswordView(),
+          builder: (_) => TabletCard(
+            child: BlocProvider.value(
+              value: context.read<PasswordResetCubit>(),
+              child: const NewPasswordView(),
+            ),
           ),
         ),
       );

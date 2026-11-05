@@ -13,6 +13,7 @@ import '../../../auth/presentation/widgets/email_text_field.dart';
 import '../cubit/password_reset_cubit.dart';
 import 'otp_verification_view.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/tablet_frame.dart';
 
 class ForgotPasswordView extends StatelessWidget {
   const ForgotPasswordView({super.key});
@@ -62,10 +63,12 @@ class _ForgotPasswordBodyState extends State<_ForgotPasswordBody> {
     } else if (state is PasswordResetOtpSent) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: context.read<PasswordResetCubit>(),
-            child: OtpVerificationView(
-              email: AppValidators.normalizeEmail(_emailController.text),
+          builder: (_) => TabletCard(
+            child: BlocProvider.value(
+              value: context.read<PasswordResetCubit>(),
+              child: OtpVerificationView(
+                email: AppValidators.normalizeEmail(_emailController.text),
+              ),
             ),
           ),
         ),

@@ -34,6 +34,7 @@ import '../widgets/warranty_banner.dart';
 import 'edit_view.dart';
 import '../../../../core/util/localized_number.dart';
 import '../../../../core/theme/app_icons.dart';
+import '../../../../core/widgets/tablet_frame.dart';
 
 class DetailsView extends StatelessWidget {
   const DetailsView({super.key, required this.product});
@@ -241,9 +242,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   Future<void> _editProduct() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<DetailsCubit>(),
-          child: EditView(product: product),
+        builder: (_) => TabletColumn(
+          child: BlocProvider.value(
+            value: context.read<DetailsCubit>(),
+            child: EditView(product: product),
+          ),
         ),
       ),
     );
