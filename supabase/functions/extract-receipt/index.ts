@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { consumeQuota, limitReachedResponse, QuotaType, refundQuota } from "../_shared/quota.ts";
+import { geminiConfigured, geminiGenerate, GeminiPart, inlinePartFromUrl } from "../_shared/gemini.ts";
 
 interface ExtractRequest {
   // "receipt" (default): a product receipt, invoice or warranty card.
@@ -322,7 +323,7 @@ serve(async (req) => {
     if (error instanceof AiBusyError) {
       return jsonResponse({ error: "ai_busy" }, 503);
     }
-    // The details stay in the function logs: they can hold Groq's or the
+    // The details stay in the function logs: they can hold the AI provider's or the
     // database's own error text. The app shows its generic message.
     console.error("extract-receipt error:", error);
     return jsonResponse({ error: "internal_error" }, 500);
@@ -346,8 +347,45 @@ type UserContent = Array<
   { type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }
 >;
 
-/** Asks the model and returns its JSON answer as an object. */
+/**
+ * Asks the model and returns its JSON answer as an object. Groq first;
+ * Gemini takes over when Groq fails or hits its limits. If Gemini fails
+ * too, Groq's error is the one reported (busy, unreadable...).
+ */
 async function callModel(systemPrompt: string, content: UserContent): Promise<Record<string, unknown>> {
+  try {
+    return await callGroq(systemPrompt, content);
+  } catch (groqError) {
+    if (!geminiConfigured()) throw groqError;
+    console.warn("extract-receipt: Groq failed, trying Gemini:", groqError);
+    try {
+      const parsed = parseJsonObject(await callGemini(systemPrompt, content));
+      if (parsed) return parsed;
+      console.warn("extract-receipt: Gemini answer wasn't JSON either");
+    } catch (geminiError) {
+      console.error("extract-receipt: Gemini failed too:", geminiError);
+    }
+    throw groqError;
+  }
+}
+
+async function callGemini(systemPrompt: string, content: UserContent): Promise<string> {
+  const parts: GeminiPart[] = [];
+  for (const item of content) {
+    // Gemini can't open URLs itself: the image is downloaded and sent inline.
+    parts.push(item.type === "text" ? { text: item.text } : await inlinePartFromUrl(item.image_url.url, "image/jpeg"));
+  }
+  return await geminiGenerate({
+    system: systemPrompt,
+    contents: [{ role: "user", parts }],
+    json: true,
+    maxOutputTokens: 1500,
+    // Reading data, not writing: keep answers the same for the same input.
+    temperature: 0.1,
+  });
+}
+
+async function callGroq(systemPrompt: string, content: UserContent): Promise<Record<string, unknown>> {
   const apiKey = Deno.env.get("GROQ_API_KEY");
   if (!apiKey) {
     throw new Error("GROQ_API_KEY secret is not configured");
@@ -474,8 +512,41 @@ async function runVoiceExtraction(transcript: string): Promise<ExtractResponse> 
 const TRANSCRIBE_HINT = "اشتريت تليفزيون Samsung من B.TECH بعشرين ألف جنيه وضمانه سنتين. " +
   "LG, Toshiba, Sharp, iPhone, Raya, 2B, Carrefour, Amazon, Noon.";
 
-/** The words in the recording at [audioUrl], or "" if none were heard. */
+/**
+ * The words in the recording at [audioUrl], or "" if none were heard.
+ * Groq's Whisper first (built for speech, generous free limit); Gemini
+ * listens to the recording itself when Whisper fails or is busy.
+ */
 async function transcribe(audioUrl: string): Promise<string> {
+  try {
+    return await transcribeWithGroq(audioUrl);
+  } catch (error) {
+    if (error instanceof UnreadableReceiptError || !geminiConfigured()) throw error;
+    console.warn("extract-receipt: Whisper failed, trying Gemini:", error);
+    return await transcribeWithGemini(audioUrl);
+  }
+}
+
+async function transcribeWithGemini(audioUrl: string): Promise<string> {
+  // The app records AAC in an .m4a file.
+  const audio = await inlinePartFromUrl(audioUrl, "audio/aac");
+  const text = await geminiGenerate({
+    system: "You transcribe short voice notes about purchases, in Egyptian Arabic, English or both. " +
+      "Write exactly what is said, in the language it is said in, with no translation or comments. " +
+      `Spell brands and stores like this: ${TRANSCRIBE_HINT} ` +
+      "If nothing is said, answer with nothing.",
+    contents: [{ role: "user", parts: [{ text: "Transcribe this recording." }, audio] }],
+    maxOutputTokens: 600,
+    temperature: 0,
+  }).catch((error) => {
+    // A silent recording can come back empty: treat it as "nothing heard".
+    if (error instanceof Error && error.message.startsWith("Gemini returned no content")) return "";
+    throw error;
+  });
+  return text.trim().slice(0, MAX_MESSAGE_TEXT);
+}
+
+async function transcribeWithGroq(audioUrl: string): Promise<string> {
   const apiKey = Deno.env.get("GROQ_API_KEY");
   if (!apiKey) throw new Error("GROQ_API_KEY secret is not configured");
 
@@ -723,7 +794,8 @@ const MAX_RETRY_WAIT_SECONDS = 20;
 
 async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
   const first = await fetch(url, init);
-  if (first.status !== 429) return first;
+  // With Gemini as the fallback, going to it beats waiting for Groq.
+  if (first.status !== 429 || geminiConfigured()) return first;
   const wait = Number(first.headers.get("retry-after"));
   if (!Number.isFinite(wait) || wait < 0 || wait > MAX_RETRY_WAIT_SECONDS) return first;
   await first.body?.cancel();

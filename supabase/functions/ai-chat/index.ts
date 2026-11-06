@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { consumeQuota, limitReachedResponse, refundQuota } from "../_shared/quota.ts";
+import { GeminiBusyError, geminiConfigured, geminiGenerate, GeminiMessage } from "../_shared/gemini.ts";
 
 interface ChatRequest {
   message: string;
@@ -16,7 +17,7 @@ const MAX_MESSAGE_LENGTH = 2000;
 // Earlier messages sent to the model with each request.
 const HISTORY_FOR_MODEL = 10;
 
-// Shown when Groq's rate limit is hit; the app shows its own localized text
+// Shown when the AI's rate limit is hit; the app shows its own localized text
 // for "ai_busy", this is for anything that shows the raw reply.
 const BUSY_MESSAGE = "المساعد عليه ضغط دلوقتي. جرّب تاني كمان دقيقة.";
 
@@ -166,7 +167,7 @@ serve(async (req) => {
     if (error instanceof AiBusyError) {
       return jsonResponse({ error: "ai_busy", message: BUSY_MESSAGE }, 503);
     }
-    // The details stay in the function logs: they can hold Groq's or the
+    // The details stay in the function logs: they can hold the AI provider's or the
     // database's own error text. The app shows its generic message.
     console.error("ai-chat error:", error);
     return jsonResponse({ error: "internal_error" }, 500);
@@ -440,21 +441,54 @@ function returnWindow(purchaseDate: string, returnDays: number, today: number): 
 }
 
 // ---------------------------------------------------------------------------
-// Groq
+// AI providers: Groq first, Gemini when Groq fails or hits its limits
 // ---------------------------------------------------------------------------
 
-/** Groq's rate limit was hit even after a retry. */
+/** The AI's rate limit was hit (Groq, and Gemini too when it's set up). */
 class AiBusyError extends Error {
   constructor() {
     super("ai_busy");
   }
 }
 
-async function runChat(
-  systemPrompt: string,
-  message: string,
-  history: { role: string; content: string }[],
-): Promise<string> {
+type ChatHistory = { role: string; content: string }[];
+
+/**
+ * The reply to [message]. Groq first; Gemini takes over when Groq fails or
+ * is busy. If Gemini fails too, Groq's error is the one reported.
+ */
+async function runChat(systemPrompt: string, message: string, history: ChatHistory): Promise<string> {
+  try {
+    return await runGroqChat(systemPrompt, message, history);
+  } catch (groqError) {
+    if (!geminiConfigured()) throw groqError;
+    console.warn("ai-chat: Groq failed, trying Gemini:", groqError);
+    try {
+      return await runGeminiChat(systemPrompt, message, history);
+    } catch (geminiError) {
+      console.error("ai-chat: Gemini failed too:", geminiError);
+      // Both busy: the app's "try again in a minute" fits.
+      if (geminiError instanceof GeminiBusyError) throw new AiBusyError();
+      throw groqError;
+    }
+  }
+}
+
+async function runGeminiChat(systemPrompt: string, message: string, history: ChatHistory): Promise<string> {
+  const contents: GeminiMessage[] = [
+    ...history.map((m): GeminiMessage => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    })),
+    { role: "user", parts: [{ text: message }] },
+  ];
+  const raw = await geminiGenerate({ system: systemPrompt, contents, temperature: 0.3, maxOutputTokens: 2000 });
+  const reply = cleanReply(raw);
+  if (!reply) throw new Error("Gemini returned no content");
+  return reply;
+}
+
+async function runGroqChat(systemPrompt: string, message: string, history: ChatHistory): Promise<string> {
   const apiKey = Deno.env.get("GROQ_API_KEY");
   if (!apiKey) {
     throw new Error("GROQ_API_KEY secret is not configured");
@@ -497,15 +531,19 @@ async function runChat(
 
   const completion = await response.json();
   const raw: string = completion.choices?.[0]?.message?.content ?? "";
-  // The model sometimes uses Markdown despite the prompt; the app renders plain text.
-  const reply = raw
+  const reply = cleanReply(raw);
+  if (!reply) throw new Error("AI returned no content");
+
+  return reply;
+}
+
+/** Models sometimes use Markdown despite the prompt; the app renders plain text. */
+function cleanReply(raw: string): string {
+  return raw
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/^#{1,6}\s+/gm, "")
     .replace(/[ \t]+$/gm, "")
     .trim();
-  if (!reply) throw new Error("AI returned no content");
-
-  return reply;
 }
 
 // Groq's free tier allows only a few requests per minute. When it answers
@@ -515,7 +553,8 @@ const MAX_RETRY_WAIT_SECONDS = 20;
 
 async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
   const first = await fetch(url, init);
-  if (first.status !== 429) return first;
+  // With Gemini as the fallback, going to it beats waiting for Groq.
+  if (first.status !== 429 || geminiConfigured()) return first;
   const wait = Number(first.headers.get("retry-after"));
   if (!Number.isFinite(wait) || wait < 0 || wait > MAX_RETRY_WAIT_SECONDS) return first;
   await first.body?.cancel();
