@@ -27,8 +27,8 @@ class PrivacyPolicyView extends StatelessWidget {
             children: [
               Text(
                 isArabic
-                    ? 'آخر تحديث: 28 أكتوبر 2026'
-                    : 'Last updated: October 28, 2026',
+                    ? 'آخر تحديث: 6 نوفمبر 2026'
+                    : 'Last updated: November 6, 2026',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -119,13 +119,13 @@ const List<_LegalSection> _enSections = [
   ),
   _LegalSection(
     'The AI assistant and receipt scanning',
-    'AI features are processed by Groq, our AI provider, through our server. '
-        'When you scan, Groq receives the receipt or invoice photo, the pages '
+    'AI features are processed through our server by our AI providers: Groq, and Google Gemini when Groq is busy or unavailable. '
+        'When you scan, the AI provider receives the receipt or invoice photo, the pages '
         'and text of a PDF you pick, and, for adding a subscription or '
         'installment plan, the screenshot, contract or message you share. When '
-        'you add a product by voice, Groq receives your recording to turn it '
+        'you add a product by voice, the AI provider receives your recording to turn it '
         'into text; we delete the recording as soon as it is transcribed. When '
-        'you use the AI assistant, Groq receives your message, recent messages '
+        'you use the AI assistant, the AI provider receives your message, recent messages '
         'in the conversation, and the details of the products you can see in '
         'the app (yours and, if you are in a household, your household\'s). '
         'Your chat history is stored in our database until you delete your '
@@ -135,8 +135,8 @@ const List<_LegalSection> _enSections = [
   _LegalSection(
     'Third-party services we use',
     'Supabase provides sign-in, our database, file storage and the server '
-        'functions that talk to the AI provider. Groq (our current AI provider) '
-        'processes scanned receipts and assistant messages as described above. '
+        'functions that talk to the AI provider. Groq and Google Gemini (our AI '
+        'providers) process scanned receipts and assistant messages as described above. '
         'Firebase Crashlytics (Google) receives crash reports; before a report '
         'leaves your device we remove email addresses and private links. Google '
         'processes Google sign-in, and Firebase provides app services. Google '
@@ -257,11 +257,11 @@ const List<_LegalSection> _arSections = [
   ),
   _LegalSection(
     'المساعد الذكي ومسح الفواتير',
-    'تعالج Groq، مزوّد الذكاء الاصطناعي لدينا، ميزات الذكاء الاصطناعي عبر '
-        'خادمنا. عند المسح، تتلقى Groq صورة الفاتورة، وصفحات ونص ملف PDF الذي '
+    'يعالج مزوّدا الذكاء الاصطناعي لدينا ميزات الذكاء الاصطناعي عبر '
+        'خادمنا: Groq، وGoogle Gemini عندما تكون Groq مشغولة أو غير متاحة. عند المسح، يتلقى مزوّد الذكاء الاصطناعي صورة الفاتورة، وصفحات ونص ملف PDF الذي '
         'تختاره، وعند إضافة اشتراك أو خطة تقسيط، لقطة الشاشة أو العقد أو '
-        'الرسالة التي تشاركها. وعند إضافة منتج بصوتك، تتلقى Groq تسجيلك '
-        'الصوتي لتحويله إلى نص، ونحذف التسجيل فور تحويله. وعند استخدام المساعد الذكي، تتلقى Groq رسالتك '
+        'الرسالة التي تشاركها. وعند إضافة منتج بصوتك، يتلقى مزوّد الذكاء الاصطناعي تسجيلك '
+        'الصوتي لتحويله إلى نص، ونحذف التسجيل فور تحويله. وعند استخدام المساعد الذكي، يتلقى مزوّد الذكاء الاصطناعي رسالتك '
         'والرسائل الأخيرة في المحادثة وتفاصيل المنتجات التي تراها في التطبيق '
         '(منتجاتك ومنتجات عائلتك إذا كنت في عائلة). يُحفظ سجل المحادثة في '
         'قاعدة بياناتنا حتى تحذف حسابك. قد تكون إجابات الذكاء الاصطناعي خاطئة، '
@@ -270,8 +270,8 @@ const List<_LegalSection> _arSections = [
   _LegalSection(
     'خدمات طرف ثالث نستخدمها',
     'يوفّر Supabase تسجيل الدخول وقاعدة البيانات وتخزين الملفات ووظائف '
-        'الخادم التي تتواصل مع مزوّد الذكاء الاصطناعي. تعالج Groq (مزوّد الذكاء '
-        'الاصطناعي الحالي) الفواتير الممسوحة ورسائل المساعد كما هو موضّح أعلاه. '
+        'الخادم التي تتواصل مع مزوّد الذكاء الاصطناعي. تعالج Groq وGoogle Gemini (مزوّدا الذكاء '
+        'الاصطناعي) الفواتير الممسوحة ورسائل المساعد كما هو موضّح أعلاه. '
         'تستقبل Firebase Crashlytics (من جوجل) تقارير الأعطال، ونزيل منها عناوين البريد والروابط الخاصة '
         'قبل أن تغادر جهازك. تعالج جوجل تسجيل الدخول بحساب جوجل، وتوفّر Firebase '
         'خدمات للتطبيق. يتولى Google Play مدفوعات Sakk Pro، ويخبرنا RevenueCat '
