@@ -545,9 +545,7 @@ void setupLocator() {
     () => ProCubit(
       getIt<ProStatusDataSource>(),
       getIt<PurchasesGateway>(),
-      userIdChanges: Supabase.instance.client.auth.onAuthStateChange.map(
-        (auth) => auth.session?.user.id,
-      ),
+      userIdChanges: _authUserIds(),
       logger: getIt<AppLogger>(),
       appResumed: _appResumed(),
     ),
@@ -581,9 +579,7 @@ void setupLocator() {
   getIt.registerLazySingleton<ChatCubit>(
     () => ChatCubit(
       getIt<SendMessageUseCase>(),
-      Supabase.instance.client.auth.onAuthStateChange.map(
-        (auth) => auth.session?.user.id,
-      ),
+      _authUserIds(),
       getHistoryUseCase: getIt<GetChatHistoryUseCase>(),
     ),
   );
@@ -623,6 +619,18 @@ void setupLocator() {
 
 /// Fires each time the app comes back to the foreground. Lives as long as
 /// the app (the cubits that listen are app-wide).
+/// The signed-in user's id on every auth change (null when signed out).
+/// A failed background token refresh (usually offline) arrives as a stream
+/// error; Supabase keeps the session and retries, so it is dropped here
+/// instead of reaching the listener as an uncaught error.
+Stream<String?> _authUserIds() => Supabase
+    .instance
+    .client
+    .auth
+    .onAuthStateChange
+    .map((auth) => auth.session?.user.id)
+    .handleError((Object _) {});
+
 Stream<void> _appResumed() {
   final controller = StreamController<void>.broadcast();
   AppLifecycleListener(onResume: () => controller.add(null));

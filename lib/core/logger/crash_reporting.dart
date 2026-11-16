@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../util/pii_masker.dart';
@@ -26,21 +28,35 @@ class CrashReporting {
         details.exception,
         details.stack,
         reason: details.context?.toDescription(),
-        fatal: true,
+        fatal: !isNetworkError(details.exception),
       );
     };
     PlatformDispatcher.instance.onError = (error, stack) {
-      recordError(error, stack, fatal: true);
+      recordError(error, stack, fatal: !isNetworkError(error));
       return true;
     };
   }
+
+  /// No internet, DNS failure or a timeout: not a bug in the app, so it is
+  /// reported as non-fatal and doesn't count against crash-free users.
+  static bool isNetworkError(Object e) =>
+      e is SocketException ||
+      e is TimeoutException ||
+      e is AuthRetryableFetchException ||
+      e is http.ClientException ||
+      e.toString().contains('Failed host lookup');
 
   /// Keeps the Crashlytics user in sync with the Supabase session: set on
   /// sign-in (including a session restored at launch), cleared on sign-out
   /// and after account deletion. Call once, after `Supabase.initialize`.
   static void bindSupabaseUser(GoTrueClient auth) {
     _setUser(auth.currentUser);
-    auth.onAuthStateChange.listen((data) => _setUser(data.session?.user));
+    auth.onAuthStateChange.listen(
+      (data) => _setUser(data.session?.user),
+      // A background token refresh that failed (usually offline). The
+      // session is kept and retried; nothing to do here.
+      onError: (Object _) {},
+    );
   }
 
   static void _setUser(User? user) {
