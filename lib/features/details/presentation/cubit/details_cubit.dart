@@ -53,6 +53,7 @@ class DetailsCubit extends Cubit<DetailsState> {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) async {
@@ -72,6 +73,7 @@ class DetailsCubit extends Cubit<DetailsState> {
       category: category,
       currency: currency,
       returnDays: returnDays,
+      modelNumber: modelNumber,
       serialNumber: serialNumber,
       invoiceNumber: invoiceNumber,
     );

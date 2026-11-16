@@ -134,6 +134,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
       (l10n.warrantyEnds, date.format(product.warrantyEndDate)),
       if (daysToReturn != null && daysToReturn >= 0)
         (l10n.returnBy, date.format(product.returnByDate!)),
+      if (product.modelNumber != null) (l10n.modelNumber, product.modelNumber!),
       if (product.serialNumber != null)
         (l10n.serialNumber, product.serialNumber!),
       if (product.invoiceNumber != null)

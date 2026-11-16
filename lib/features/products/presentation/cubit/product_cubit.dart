@@ -106,6 +106,7 @@ class ProductsCubit extends Cubit<ProductsState> {
           (p.brand?.toLowerCase().contains(lower) ?? false) ||
           (p.store?.toLowerCase().contains(lower) ?? false) ||
           // The numbers a store asks for when you make a claim.
+          (p.modelNumber?.toLowerCase().contains(lower) ?? false) ||
           (p.serialNumber?.toLowerCase().contains(lower) ?? false) ||
           (p.invoiceNumber?.toLowerCase().contains(lower) ?? false);
     }).toList();

@@ -1844,6 +1844,12 @@ abstract class AppLocalizations {
   /// **'Invoice saved to your photos'**
   String get invoiceSavedToPhotos;
 
+  /// No description provided for @modelNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Model number'**
+  String get modelNumber;
+
   /// No description provided for @serialNumber.
   ///
   /// In en, this message translates to:

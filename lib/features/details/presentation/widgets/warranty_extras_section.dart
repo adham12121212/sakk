@@ -388,6 +388,9 @@ class _StartClaimSheetState extends State<_StartClaimSheet> {
         ),
       );
     if (p.store != null) buffer.writeln(l10n.shareStore(p.store!));
+    if (p.modelNumber != null) {
+      buffer.writeln('${l10n.modelNumber}: ${p.modelNumber}');
+    }
     if (p.serialNumber != null) {
       buffer.writeln('${l10n.serialNumber}: ${p.serialNumber}');
     }

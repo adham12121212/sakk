@@ -12,6 +12,7 @@ class ScannedReceiptData extends Equatable {
   final String? receiptImageUrl;
   final String? imageUrl;
   final ProductCategory? category;
+  final String? modelNumber;
   final String? serialNumber;
   final String? invoiceNumber;
 
@@ -40,6 +41,7 @@ class ScannedReceiptData extends Equatable {
     this.confidence = 0.0,
     this.imageUrl,
     this.category,
+    this.modelNumber,
     this.serialNumber,
     this.invoiceNumber,
     this.foreignPrice,
@@ -59,6 +61,7 @@ class ScannedReceiptData extends Equatable {
     String? imageUrl,
     double? confidence,
     ProductCategory? category,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
     double? foreignPrice,
@@ -77,6 +80,7 @@ class ScannedReceiptData extends Equatable {
       imageUrl: imageUrl ?? this.imageUrl,
       confidence: confidence ?? this.confidence,
       category: category ?? this.category,
+      modelNumber: modelNumber ?? this.modelNumber,
       serialNumber: serialNumber ?? this.serialNumber,
       invoiceNumber: invoiceNumber ?? this.invoiceNumber,
       foreignPrice: foreignPrice ?? this.foreignPrice,
@@ -98,6 +102,7 @@ class ScannedReceiptData extends Equatable {
     confidence,
     imageUrl,
     category,
+    modelNumber,
     serialNumber,
     invoiceNumber,
     foreignPrice,

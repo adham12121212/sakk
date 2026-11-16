@@ -172,6 +172,7 @@ class ProductDataSourceImpl implements ProductDataSource {
           ? DateTime.tryParse(data['purchaseDate'] as String)
           : null,
       warrantyMonths: data['warrantyMonths'] as int?,
+      modelNumber: data['modelNumber'] as String?,
       serialNumber: data['serialNumber'] as String?,
       invoiceNumber: data['invoiceNumber'] as String?,
       foreignPrice: (data['foreignPrice'] as num?)?.toDouble(),

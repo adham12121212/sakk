@@ -74,6 +74,12 @@ class DetailsTab extends StatelessWidget {
                       formatLocalizedInt(appLocale, product.daysToReturn!),
                     ),
             ),
+          if (product.modelNumber != null)
+            DetailRow(
+              icon: AppIcons.receipt,
+              label: l10n.modelNumber,
+              value: product.modelNumber!,
+            ),
           if (product.serialNumber != null)
             DetailRow(
               icon: AppIcons.receipt,

@@ -20,6 +20,7 @@ abstract class AddProductUseCase {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   });
@@ -44,6 +45,7 @@ class AddProductUseCaseImpl implements AddProductUseCase {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) {
@@ -61,6 +63,7 @@ class AddProductUseCaseImpl implements AddProductUseCase {
       category: category,
       currency: currency,
       returnDays: returnDays,
+      modelNumber: modelNumber,
       serialNumber: serialNumber,
       invoiceNumber: invoiceNumber,
     );

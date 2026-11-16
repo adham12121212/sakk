@@ -1037,6 +1037,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invoiceSavedToPhotos => 'Invoice saved to your photos';
 
   @override
+  String get modelNumber => 'Model number';
+
+  @override
   String get serialNumber => 'Serial number';
 
   @override

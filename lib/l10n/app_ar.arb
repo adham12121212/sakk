@@ -292,6 +292,7 @@
   "showTotalSpent": "إظهار إجمالي الإنفاق",
   "totalSpentHidden": "إجمالي الإنفاق مخفي",
   "invoiceSavedToPhotos": "تم حفظ الفاتورة في الصور",
+  "modelNumber": "رقم الموديل",
   "serialNumber": "الرقم التسلسلي",
   "invoiceNumber": "رقم الفاتورة",
   "foreignPriceHint": "الفاتورة بعملة أخرى ({amount}). أدخل السعر بالجنيه المصري.",

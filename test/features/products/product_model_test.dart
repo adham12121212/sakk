@@ -23,6 +23,7 @@ Map<String, dynamic> row() => {
   'status': 'active',
   'category': 'appliances',
   'return_days': 14,
+  'model_number': 'NP750XFG',
   'serial_number': 'SN-1',
   'invoice_number': 'INV-9',
   'product_warranties': [
@@ -63,6 +64,7 @@ void main() {
     final p = ProductModel.fromJson(row());
     expect(p.category, ProductCategory.appliances);
     expect(p.returnDays, 14);
+    expect(p.modelNumber, 'NP750XFG');
     expect((p.serialNumber, p.invoiceNumber), ('SN-1', 'INV-9'));
     expect(p.warrantyEndDate, DateTime(2027, 1, 15));
     expect(p.claims.map((c) => c.status), [
@@ -82,12 +84,14 @@ void main() {
   test('rows saved before the new columns existed still load', () {
     final old = row()
       ..remove('return_days')
+      ..remove('model_number')
       ..remove('serial_number')
       ..remove('invoice_number')
       ..remove('product_warranties')
       ..remove('warranty_claims');
     final p = ProductModel.fromJson(old);
     expect(p.returnDays, isNull);
+    expect(p.modelNumber, isNull);
     expect(p.extraWarranties, isEmpty);
     expect(p.claims, isEmpty);
     expect(p.warrantyEndDate, DateTime(2025, 1, 15));
@@ -98,9 +102,16 @@ void main() {
     expect(json['user_id'], 'u1');
     expect(json['store_name'], 'Raya');
     expect(json['return_days'], 14);
+    expect(json['model_number'], 'NP750XFG');
     expect(json['serial_number'], 'SN-1');
     expect(json['invoice_number'], 'INV-9');
     expect(json['purchase_date'], '2024-01-15');
+  });
+
+  test('model number is kept on update and in the offline cache', () {
+    final p = ProductModel.fromJson(row());
+    expect(p.toUpdateJson()['model_number'], 'NP750XFG');
+    expect(ProductModel.fromJson(p.toCacheJson()).modelNumber, 'NP750XFG');
   });
 
   test('claim status matches the database values', () {

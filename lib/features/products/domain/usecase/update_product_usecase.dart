@@ -20,6 +20,7 @@ abstract class UpdateProductUseCase {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   });
@@ -44,6 +45,7 @@ class UpdateProductUsecaseImpl implements UpdateProductUseCase {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) {
@@ -60,6 +62,7 @@ class UpdateProductUsecaseImpl implements UpdateProductUseCase {
       store: store,
       notes: notes,
       returnDays: returnDays,
+      modelNumber: modelNumber,
       serialNumber: serialNumber,
       invoiceNumber: invoiceNumber,
     );

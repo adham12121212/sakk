@@ -148,12 +148,14 @@ void main() {
       category: ProductCategory.electronics,
       currency: 'EGP',
       returnDays: 14,
+      modelNumber: 'M1',
       serialNumber: 'SN1',
       invoiceNumber: 'INV9',
     );
     await c.close();
     expect(scan.discarded, isEmpty);
     expect(add.saved![#returnDays], 14);
+    expect(add.saved![#modelNumber], 'M1');
     expect(add.saved![#serialNumber], 'SN1');
     expect(add.saved![#invoiceNumber], 'INV9');
   });
