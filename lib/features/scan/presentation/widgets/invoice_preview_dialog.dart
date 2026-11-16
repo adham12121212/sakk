@@ -15,7 +15,15 @@ void showInvoicePreviewDialog(BuildContext context, String? imageUrl) {
         children: [
           Center(
             child: InteractiveViewer(
-              child: Image.network(imageUrl, fit: BoxFit.contain),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) => const Icon(
+                  AppIcons.brokenImage,
+                  color: Colors.white70,
+                  size: 48,
+                ),
+              ),
             ),
           ),
           Positioned(

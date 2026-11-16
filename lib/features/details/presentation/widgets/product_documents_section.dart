@@ -152,7 +152,15 @@ Future<void> _openDocument(
             child: InteractiveViewer(
               maxScale: 5,
               child: Center(
-                child: Image.network(document.url, fit: BoxFit.contain),
+                child: Image.network(
+                  document.url,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(
+                    AppIcons.brokenImage,
+                    color: Colors.white70,
+                    size: 48,
+                  ),
+                ),
               ),
             ),
           ),

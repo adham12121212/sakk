@@ -45,6 +45,8 @@ class Avatar extends StatelessWidget {
                     ? DecorationImage(
                         image: avatarImage(avatarUrl!),
                         fit: BoxFit.cover,
+                        // Offline or a broken link: the circle stays.
+                        onError: (_, _) {},
                       )
                     : null,
               ),
