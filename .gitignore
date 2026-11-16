@@ -55,3 +55,6 @@ supabase/.temp/
 # Stray local state from running tools inside ios/
 /ios/build/
 /ios/supabase/
+
+# Dart symbols from obfuscated release builds (upload to Crashlytics, keep a copy)
+/symbols/
