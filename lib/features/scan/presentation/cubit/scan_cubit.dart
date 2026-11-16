@@ -167,6 +167,7 @@ class ScanCubit extends Cubit<ScanState> {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) async {
@@ -190,6 +191,7 @@ class ScanCubit extends Cubit<ScanState> {
       currency: currency,
       category: category,
       returnDays: returnDays,
+      modelNumber: modelNumber,
       serialNumber: serialNumber,
       invoiceNumber: invoiceNumber,
     );

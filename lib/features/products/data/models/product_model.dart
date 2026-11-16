@@ -20,6 +20,7 @@ class ProductModel extends ProductEntity {
     super.category,
     super.returnDays,
     super.ownerId,
+    super.modelNumber,
     super.serialNumber,
     super.invoiceNumber,
     super.extraWarranties,
@@ -48,6 +49,7 @@ class ProductModel extends ProductEntity {
       category: ProductCategoryX.fromName(json['category'] as String?),
       returnDays: json['return_days'] as int?,
       ownerId: json['user_id'] as String?,
+      modelNumber: json['model_number'] as String?,
       serialNumber: json['serial_number'] as String?,
       invoiceNumber: json['invoice_number'] as String?,
       extraWarranties: [
@@ -106,6 +108,7 @@ class ProductModel extends ProductEntity {
       'status': status.name,
       'category': category.name,
       'return_days': returnDays,
+      'model_number': modelNumber,
       'serial_number': serialNumber,
       'invoice_number': invoiceNumber,
     };
@@ -164,6 +167,7 @@ class ProductModel extends ProductEntity {
       'status': status.name,
       'category': category.name,
       'return_days': returnDays,
+      'model_number': modelNumber,
       'serial_number': serialNumber,
       'invoice_number': invoiceNumber,
     };

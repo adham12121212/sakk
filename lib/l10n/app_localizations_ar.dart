@@ -1050,6 +1050,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invoiceSavedToPhotos => 'تم حفظ الفاتورة في الصور';
 
   @override
+  String get modelNumber => 'رقم الموديل';
+
+  @override
   String get serialNumber => 'الرقم التسلسلي';
 
   @override

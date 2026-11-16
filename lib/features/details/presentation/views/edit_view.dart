@@ -55,6 +55,9 @@ class _EditProductBodyState extends State<_EditProductBody> {
   late final _notesController = TextEditingController(
     text: widget.product.notes ?? '',
   );
+  late final _modelController = TextEditingController(
+    text: widget.product.modelNumber ?? '',
+  );
   late final _serialController = TextEditingController(
     text: widget.product.serialNumber ?? '',
   );
@@ -77,6 +80,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
     _storeController.dispose();
     _notesController.dispose();
     _returnDaysController.dispose();
+    _modelController.dispose();
     _serialController.dispose();
     _invoiceController.dispose();
     super.dispose();
@@ -114,6 +118,7 @@ class _EditProductBodyState extends State<_EditProductBody> {
       category: _selectedCategory,
       currency: 'EGP',
       returnDays: int.tryParse(_returnDaysController.text.trim()),
+      modelNumber: _emptyToNull(_modelController.text),
       serialNumber: _emptyToNull(_serialController.text),
       invoiceNumber: _emptyToNull(_invoiceController.text),
     );
@@ -246,6 +251,13 @@ class _EditProductBodyState extends State<_EditProductBody> {
                     CapsuleField(
                       semanticLabel: l10n.store,
                       controller: _storeController,
+                    ),
+                    SizedBox(height: 20.h),
+
+                    FieldLabel(l10n.modelNumber),
+                    CapsuleField(
+                      semanticLabel: l10n.modelNumber,
+                      controller: _modelController,
                     ),
                     SizedBox(height: 20.h),
 

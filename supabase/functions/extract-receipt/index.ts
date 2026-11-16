@@ -43,6 +43,7 @@ interface ExtractResponse {
   foreignCurrency: string | null;
   purchaseDate: string | null;
   warrantyMonths: number | null;
+  modelNumber: string | null;
   serialNumber: string | null;
   invoiceNumber: string | null;
   category: string | null;
@@ -63,7 +64,7 @@ const SYSTEM_PROMPT = `You read receipts, invoices and warranty cards (Arabic, E
 warranty-tracking app, and return the details of the ONE product the user is registering.
 
 Return ONLY a JSON object with exactly these keys:
-productName, brand, store_name, price, currency, purchaseDate, warrantyMonths, serialNumber,
+productName, brand, store_name, price, currency, purchaseDate, warrantyMonths, modelNumber, serialNumber,
 invoiceNumber, category, confidence.
 
 Which product: if the receipt lists several items, pick the main durable product that would
@@ -84,6 +85,8 @@ Fields:
 - warrantyMonths: an integer number of MONTHS. Convert years: 1 year / سنة / عام = 12,
   2 years / سنتين / سنتان / عامين = 24, 3 years / ٣ سنوات = 36, 6 months / ٦ شهور = 6.
   Only from the receipt or card; never assume a typical warranty.
+- modelNumber: the manufacturer's model code (Model, Model No., M/N, الموديل, رقم الموديل), exactly as
+  printed. Not the serial number, and not the product's marketing name.
 - serialNumber: the product's serial number (S/N, Serial, الرقم التسلسلي, IMEI), exactly as printed.
 - invoiceNumber: the receipt or invoice number (Invoice No., رقم الفاتورة), exactly as printed.
 - category: exactly one of electronics, appliances, furniture, vehicles, accessories, other.
@@ -461,6 +464,7 @@ function toExtractResponse(parsed: Record<string, unknown>): ExtractResponse {
     foreignCurrency: isForeign ? currency : null,
     purchaseDate: toText(parsed.purchaseDate),
     warrantyMonths: toNumber(parsed.warrantyMonths),
+    modelNumber: toText(parsed.modelNumber),
     serialNumber: toText(parsed.serialNumber),
     invoiceNumber: toText(parsed.invoiceNumber),
     category: toText(parsed.category),
@@ -476,7 +480,7 @@ by speech recognition, so words can be misspelled) into the details of ONE produ
 warranty-tracking app.
 
 Return ONLY a JSON object with exactly these keys:
-productName, brand, store_name, price, currency, purchaseDate, warrantyMonths, serialNumber,
+productName, brand, store_name, price, currency, purchaseDate, warrantyMonths, modelNumber, serialNumber,
 invoiceNumber, category, confidence.
 
 - productName: the product as a short name with the brand or line if said ("Samsung 55 inch TV",
@@ -492,7 +496,7 @@ invoiceNumber, category, confidence.
   امبارح/yesterday = Today minus 1 day, من أسبوع = minus 7 days, الشهر اللي فات = the same day last month.
   Null if no date is said.
 - warrantyMonths: integer months. سنة = 12, سنتين = 24, ٣ سنين = 36, ست شهور = 6. Only if said.
-- serialNumber, invoiceNumber: only if read out.
+- modelNumber, serialNumber, invoiceNumber: only if read out.
 - category: exactly one of electronics, appliances, furniture, vehicles, accessories, other
   (TVs, phones, laptops, headphones = electronics; fridges, washing machines, ACs = appliances). Never null.
 - confidence: 0 to 1, how sure you are that you understood it.
@@ -780,6 +784,7 @@ function validate(data: ExtractResponse): ExtractResponse {
         ? Math.round(data.warrantyMonths)
         : null,
     // Standard digits so the numbers are easy to search and to read out to a store.
+    modelNumber: data.modelNumber ? toAsciiDigits(data.modelNumber).slice(0, 100) : null,
     serialNumber: data.serialNumber ? toAsciiDigits(data.serialNumber).slice(0, 100) : null,
     invoiceNumber: data.invoiceNumber ? toAsciiDigits(data.invoiceNumber).slice(0, 100) : null,
     category,

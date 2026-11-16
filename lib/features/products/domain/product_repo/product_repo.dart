@@ -41,6 +41,7 @@ abstract class ProductRepo {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   });
@@ -68,6 +69,7 @@ abstract class ProductRepo {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   });

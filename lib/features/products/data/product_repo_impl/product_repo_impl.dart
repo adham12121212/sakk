@@ -143,6 +143,7 @@ class ProductRepoImpl implements ProductRepo {
     required ProductCategory category,
     required String currency,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) async {
@@ -171,6 +172,7 @@ class ProductRepoImpl implements ProductRepo {
         notes: notes,
         category: category,
         returnDays: returnDays,
+        modelNumber: modelNumber,
         serialNumber: serialNumber,
         invoiceNumber: invoiceNumber,
       );
@@ -317,6 +319,7 @@ class ProductRepoImpl implements ProductRepo {
     String? notes,
     required ProductCategory category,
     int? returnDays,
+    String? modelNumber,
     String? serialNumber,
     String? invoiceNumber,
   }) async {
@@ -338,6 +341,7 @@ class ProductRepoImpl implements ProductRepo {
         category: category,
         currency: currency,
         returnDays: returnDays,
+        modelNumber: modelNumber,
         serialNumber: serialNumber,
         invoiceNumber: invoiceNumber,
       );

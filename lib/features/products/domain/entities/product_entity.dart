@@ -34,6 +34,7 @@ class ProductEntity extends Equatable {
   final String? ownerId;
 
   /// Stores ask for these when you make a warranty claim.
+  final String? modelNumber;
   final String? serialNumber;
   final String? invoiceNumber;
 
@@ -60,6 +61,7 @@ class ProductEntity extends Equatable {
     this.category = ProductCategory.other,
     this.returnDays,
     this.ownerId,
+    this.modelNumber,
     this.serialNumber,
     this.invoiceNumber,
     this.extraWarranties = const [],
@@ -151,6 +153,7 @@ class ProductEntity extends Equatable {
     category,
     returnDays,
     ownerId,
+    modelNumber,
     serialNumber,
     invoiceNumber,
     extraWarranties,

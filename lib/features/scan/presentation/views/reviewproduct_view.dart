@@ -50,6 +50,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
   final _warrantyController = TextEditingController();
   final _storeController = TextEditingController();
   final _notesController = TextEditingController();
+  final _modelController = TextEditingController();
   final _serialController = TextEditingController();
   final _invoiceController = TextEditingController();
 
@@ -69,6 +70,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     _priceController.text = scanned.price?.toStringAsFixed(2) ?? '';
     _warrantyController.text = scanned.warrantyMonths?.toString() ?? '';
     _storeController.text = scanned.store ?? '';
+    _modelController.text = scanned.modelNumber ?? '';
     _serialController.text = scanned.serialNumber ?? '';
     _invoiceController.text = scanned.invoiceNumber ?? '';
     _selectedCategory = scanned.category ?? ProductCategory.other;
@@ -83,6 +85,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
     _storeController.dispose();
     _notesController.dispose();
     _returnDaysController.dispose();
+    _modelController.dispose();
     _serialController.dispose();
     _invoiceController.dispose();
     super.dispose();
@@ -126,6 +129,7 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
       category: _selectedCategory,
       currency: 'EGP',
       returnDays: int.tryParse(_returnDaysController.text.trim()),
+      modelNumber: _emptyToNull(_modelController.text),
       serialNumber: _emptyToNull(_serialController.text),
       invoiceNumber: _emptyToNull(_invoiceController.text),
     );
@@ -394,6 +398,13 @@ class _ReviewProductBodyState extends State<_ReviewProductBody> {
                             CapsuleField(
                               semanticLabel: l10n.store,
                               controller: _storeController,
+                            ),
+                            SizedBox(height: 20.h),
+
+                            FieldLabel(l10n.modelNumber),
+                            CapsuleField(
+                              semanticLabel: l10n.modelNumber,
+                              controller: _modelController,
                             ),
                             SizedBox(height: 20.h),
 

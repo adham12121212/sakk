@@ -313,6 +313,7 @@
   "showTotalSpent": "Show total spent",
   "totalSpentHidden": "Total spent hidden",
   "invoiceSavedToPhotos": "Invoice saved to your photos",
+  "modelNumber": "Model number",
   "serialNumber": "Serial number",
   "invoiceNumber": "Invoice number",
   "foreignPriceHint": "The receipt shows {amount}. Enter the price in EGP.",
