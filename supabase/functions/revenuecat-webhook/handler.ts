@@ -141,8 +141,14 @@ async function applyEventPayload(admin: SupabaseClient, userId: string, event: R
   }
 }
 
-/** Reads the subscriber's current state from RevenueCat (REST API v1) and stores it. */
-async function syncFromRevenueCat(admin: SupabaseClient, userId: string, apiKey: string) {
+/**
+ * Reads the subscriber's current state from RevenueCat (REST API v1) and
+ * stores it. Returns whether the user has Pro afterwards.
+ *
+ * A manual grant (store "manual") is never shortened by RevenueCat saying
+ * there's no entitlement; a real store purchase replaces it.
+ */
+export async function syncFromRevenueCat(admin: SupabaseClient, userId: string, apiKey: string): Promise<boolean> {
   const response = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(userId)}`, {
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
   });
@@ -157,8 +163,17 @@ async function syncFromRevenueCat(admin: SupabaseClient, userId: string, apiKey:
     ? subscriber?.subscriptions?.[productId] ?? subscriber?.subscriptions?.[productId.split(":")[0]]
     : null;
 
+  if (!entitlement) {
+    const { data: existing } = await admin.from("pro_subscriptions").select("store, active_until").eq("user_id", userId)
+      .maybeSingle();
+    const row = existing as Pick<ProRow, "store" | "active_until"> | null;
+    if (!row) return false;
+    if (row.store === "manual") return row.active_until != null && Date.parse(row.active_until) > Date.now();
+  }
+
+  const activeUntil: string | null = entitlement?.grace_period_expires_date ?? entitlement?.expires_date ?? null;
   await upsert(admin, userId, {
-    active_until: entitlement?.grace_period_expires_date ?? entitlement?.expires_date ?? null,
+    active_until: activeUntil,
     product_id: productId,
     is_trial: sub?.period_type === "trial",
     will_renew: sub ? sub.unsubscribe_detected_at == null : false,
@@ -166,6 +181,7 @@ async function syncFromRevenueCat(admin: SupabaseClient, userId: string, apiKey:
     store: sub?.store ?? null,
     last_event_at: new Date().toISOString(),
   });
+  return activeUntil != null && Date.parse(activeUntil) > Date.now();
 }
 
 async function upsert(admin: SupabaseClient, userId: string, fields: Partial<ProRow>) {

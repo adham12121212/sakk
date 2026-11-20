@@ -22,6 +22,9 @@ class _Server implements ProStatusDataSource {
     }
     return const ProStatus();
   }
+
+  @override
+  Future<bool> syncFromStore() async => false;
 }
 
 void main() {

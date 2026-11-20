@@ -33,6 +33,18 @@ class _Server implements ProStatusDataSource {
     if (fail) throw Exception('PGRST202');
     return status;
   }
+
+  int syncs = 0;
+
+  /// What the store says: a sync makes the server Pro when set.
+  ProStatus? afterSync;
+
+  @override
+  Future<bool> syncFromStore() async {
+    syncs++;
+    if (afterSync != null) status = afterSync!;
+    return status.isPro;
+  }
 }
 
 class FakeStore implements PurchasesGateway {
@@ -54,7 +66,14 @@ class FakeStore implements PurchasesGateway {
   @override
   Future<void> init() async {}
   @override
-  Future<void> logIn(String userId) async => logins.add(userId);
+  Future<void> logIn(String userId) async {
+    logins.add(userId);
+    final e = onLogIn;
+    if (e != null) changes.add(e);
+  }
+
+  /// What the store reports for the account on login, if anything.
+  ProEntitlement? onLogIn;
   @override
   Future<void> logOut() async => logouts++;
   @override
@@ -185,6 +204,38 @@ void main() {
       const ProEntitlement(isActive: true, productId: 'sakk_pro:monthly'),
     );
     expect(cubit.state.status, _pro);
+  });
+
+  test('a purchase has the server read the store at once', () async {
+    users.add('user-1');
+    await settle();
+    server.afterSync = _pro;
+    await cubit.applyPurchase(
+      const ProEntitlement(isActive: true, productId: 'sakk_pro:monthly'),
+    );
+    expect(server.syncs, 1);
+    expect(cubit.state.status, _pro);
+  });
+
+  test(
+    'on sign-in, a store Pro the server missed is synced to the server',
+    () async {
+      store.onLogIn = const ProEntitlement(
+        isActive: true,
+        productId: 'sakk_pro:monthly',
+      );
+      server.afterSync = _pro;
+      users.add('user-1');
+      await settle();
+      expect(server.syncs, 1);
+      expect(cubit.state.status, _pro);
+    },
+  );
+
+  test('on sign-in, no store Pro means no sync', () async {
+    users.add('user-1');
+    await settle();
+    expect(server.syncs, 0);
   });
 
   test(
