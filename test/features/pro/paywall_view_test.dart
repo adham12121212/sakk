@@ -27,6 +27,8 @@ class _Server implements ProStatusDataSource {
       LimitedItem.installments: ItemUsage(count: 0, limit: 1),
     },
   );
+  @override
+  Future<bool> syncFromStore() async => false;
 }
 
 void main() {

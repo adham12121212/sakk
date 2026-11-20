@@ -110,7 +110,30 @@ class ProCubit extends Cubit<ProState> {
       // and the server's status still apply.
       _logger.error('RevenueCat login/logout failed', error: e, stackTrace: st);
     }
-    if (userId != null) await refresh();
+    if (userId == null) return;
+    final generation = _generation;
+    await refresh();
+    // The store says Pro but the server doesn't (a webhook was missed or
+    // is late): have the server read the store now.
+    if (generation == _generation &&
+        (_store?.isActive ?? false) &&
+        !_serverPro) {
+      await _syncFromStore();
+      if (generation == _generation) await refresh();
+    }
+  }
+
+  /// Has the server copy the subscription from the store. Failures are
+  /// logged only: the webhook still catches up later.
+  Future<void> _syncFromStore() async {
+    try {
+      await _dataSource.syncFromStore();
+    } catch (e) {
+      _logger.warning(
+        'Syncing Pro from the store failed',
+        data: {'error': '$e'},
+      );
+    }
   }
 
   /// Reads the plan and counters from the server.
@@ -172,6 +195,7 @@ class ProCubit extends Cubit<ProState> {
       await refresh();
       return;
     }
+    await _syncFromStore();
     for (var i = 0; i < attempts; i++) {
       await refresh();
       if (isClosed || _serverPro) return;
